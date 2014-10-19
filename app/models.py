@@ -1,6 +1,24 @@
 from app import db
 from hashlib import md5
 
+class Address(db.Model):
+    id = db.Column(db.Integer, primary_key = true)
+    line1 = db.Column(db.String(100))
+    line2 = db.Column(db.String(100))
+    city = db.Column(db.String(35))
+    state = db.Column(db.String(2))
+    zip_code = db.Column(db.String(5))
+
+
+
+
+
+
+
+
+
+
+# Everything below this point is from Ali's tutorial
 ROLE_USER = 0
 ROLE_ADMIN = 1
 
@@ -8,6 +26,7 @@ followers = db.Table('followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
