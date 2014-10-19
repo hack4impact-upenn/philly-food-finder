@@ -1,2 +1,1 @@
-hack4impact-tutorial
-====================
+Greater Philadelphia Coalition Against Hunger
