@@ -1,6 +1,7 @@
 from app import db
 from hashlib import md5
 
+# Everything below this point is from Ali's tutorial
 ROLE_USER = 0
 ROLE_ADMIN = 1
 
@@ -8,6 +9,7 @@ followers = db.Table('followers',
     db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
