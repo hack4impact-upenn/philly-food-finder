@@ -5,7 +5,7 @@ from datetime import time
 from sqlalchemy.exc import IntegrityError
 from app import app, db
 from config import basedir
-from app.models import Address, FoodResource, TimeSlot
+from app.models import Address, FoodResource, TimeSlot, User, Role
 
 class TestCase(unittest.TestCase):
 
@@ -65,6 +65,14 @@ class TestCase(unittest.TestCase):
         self.assertRaises(IntegrityError, r1 = FoodResource(name='Test Food Resource 1',address=self.a2,phone='1234567898',
                           timeslots=self.timeslots_list,description=self.desc,location_type='WRONG_ENUM!!!!!!!!!!!!!'))
 
+    def test_create_user(self):
+      r = Role(name = 'User')
+      u = User(username = 'ben', password = 'pass123', email = 'ben@ben.com', first_name = 'Ben', last_name = 'Sandler', roles = [r])
+      db.session.add(u)
+      db.session.commit()
+      assert len(Role.query.filter_by(name = 'User').all()) == 1
+      assert User.query.filter_by(username = 'ben').first()
+      
 if __name__ == '__main__':
     unittest.main()
 
