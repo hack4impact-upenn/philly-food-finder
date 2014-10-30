@@ -3,7 +3,7 @@ import unittest
 import os
 from datetime import time
 from sqlalchemy.exc import IntegrityError
-from app import app, db
+from app import app, db, bcrypt
 from config import basedir
 from app.models import Address, FoodResource, TimeSlot, User, Role
 
@@ -29,6 +29,11 @@ class TestCase(unittest.TestCase):
                        parturient montes, nascetur ridiculus mus. Nulla facilisi. In et dui ante. Morbi elementum dolor ligula,
                        et mollis magna interdum non. Mauris ligula mi, mattis at ex ut, pellentesque porttitor elit. Integer 
                        volutpat elementum tristique. Ut interdum, mauris a feugiat euismod, tortor."""
+
+        self.u1 = User(username = 'ben', password = 'pass123', email = 'ben@ben.com', first_name = 'Ben', last_name = 'Sandler', roles = [Role(name = 'User')])
+        self.u2 = User(username = 'steve', password = 'p@$$w0rd', email = 'steve@gmail.com', first_name = 'Steve', last_name = 'Smith', roles = [Role(name = 'User')])
+        self.u3 = User(username = 'sarah', password = '139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#', email = 'sarah@gmail.com', first_name = 'Sarah', last_name = 'Smith', roles = [Role(name = 'Admin')])
+
 
     def setUp(self):
         app.config['TESTING'] = True
@@ -66,13 +71,25 @@ class TestCase(unittest.TestCase):
                           timeslots=self.timeslots_list,description=self.desc,location_type='WRONG_ENUM!!!!!!!!!!!!!'))
 
     def test_create_user(self):
-      r = Role(name = 'User')
-      u = User(username = 'ben', password = 'pass123', email = 'ben@ben.com', first_name = 'Ben', last_name = 'Sandler', roles = [r])
-      db.session.add(u)
+      db.session.add(self.u1)
       db.session.commit()
       assert len(Role.query.filter_by(name = 'User').all()) == 1
-      assert User.query.filter_by(username = 'ben').first()
-      
+      u = User.query.filter_by(username = 'ben').first()
+      assert u
+      assert bcrypt.check_password_hash(u.password,'pass123')
+      assert not(bcrypt.check_password_hash(u.password,'pass124'))
+
+    def test_create_multiple_users(self):
+      db.session.add(self.u1)
+      db.session.add(self.u2)
+      db.session.add(self.u3)
+      db.session.commit()
+      assert len(Role.query.filter_by(name = 'User').all()) == 2
+      assert len(Role.query.filter_by(name = 'Admin').all()) == 1
+      assert len(Role.query.filter_by(name = 'N/A').all()) == 0
+      u = User.query.filter_by(username = 'sarah').first()
+      assert bcrypt.check_password_hash(u.password,'139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#')
+
 if __name__ == '__main__':
     unittest.main()
 

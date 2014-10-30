@@ -1,4 +1,4 @@
-from app import db
+from app import db, bcrypt
 from flask_user import UserMixin
 
 class Address(db.Model):
@@ -48,7 +48,15 @@ class User(db.Model, UserMixin):
 			backref=db.backref('users', lazy='dynamic'))
 
 	def is_active(self):
-	  return self.is_enabled
+		return self.is_enabled
+
+	def __init__(self, username, password, email, first_name, last_name, roles):
+		self.username = username
+		self.password = bcrypt.generate_password_hash(password)
+		self.email = email
+		self.first_name = first_name
+		self.last_name = last_name
+		self.roles = roles
 
 class Role(db.Model):
 	role_type_enums = ('User','Admin')
