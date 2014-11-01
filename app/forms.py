@@ -3,6 +3,15 @@ from wtforms import TextField, BooleanField, TextAreaField
 from wtforms.validators import Required, Length
 from app.models import User
 
+class FoodResourceSubmissionForm(Form):
+    first_name = TextField(u'First Name')
+    last_name = TextField
+    email_address = TextFile
+    phone_number
+    food_resource_name
+    food_resource_type
+
+
 class LoginForm(Form):
   openid = TextField('openid', validators = [Required()])
   remember_me = BooleanField('remember_me', default = False)
