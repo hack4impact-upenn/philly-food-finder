@@ -1,8 +1,13 @@
+Django==1.6.1
 Flask==0.10.1
-Flask-SQLAlchemy==2.0
+Flask-SQLAlchemy==1.0
 Jinja2==2.7.3
 MarkupSafe==0.23
-SQLAlchemy==0.9.8
+MySQL-python==1.2.4
+PIL==1.1.7
+SQLAlchemy==0.9.4
+WTForms==2.0.1
 Werkzeug==0.9.6
 itsdangerous==0.24
+virtualenv==1.11
 wsgiref==0.1.2
