@@ -1,17 +1,63 @@
 <html>
   <head>
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
+
+    <!-- CSS -->
+    <link href="/static/css/foundation.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/foundation.min.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/normalize.css" rel="stylesheet" type="text/css">
+    <link href="/static/css/styles.css" rel="stylesheet" type="text/css">
+
+    <!-- JavaScript -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="/static/js/vendor/jquery.js"></script>
+    <script src="/static/js/foundation.min.js"></script>
+
+    <!-- Don't launch the Foundation JS until the DOM has loaded -->
+    <script>
+        $(document).ready(function() {
+            $(document).foundation();
+        });  
+    </script>
+    
     {% if title %}
     <title>{{title}} - microblog</title>
     {% else %}
     <title>microblog</title>
     {% endif %}
+
   </head>
   <body>
+    
+    <nav class="top-bar" data-topbar role="navigation">
+  <ul class="title-area">
+    <li class="name">
+      <h1><a href="#">My Site</a></h1>
+    </li>
+     <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+    <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+  </ul>
+
+  <section class="top-bar-section">
+    <!-- Right Nav Section -->
+    <ul class="right">
+      <li class="active"><a href="#">Right Button Active</a></li>
+      <li class="has-dropdown">
+        <a href="#">Right Button Dropdown</a>
+        <ul class="dropdown">
+          <li><a href="#">First link in dropdown</a></li>
+          <li class="active"><a href="#">Active link in dropdown</a></li>
+        </ul>
+      </li>
+    </ul>
+
+    <!-- Left Nav Section -->
+    <ul class="left">
+      <li><a href="#">Left Nav Button</a></li>
+    </ul>
+  </section>
+</nav>
+    
     {% block content %}{% endblock %}
   </body>
 </html>
