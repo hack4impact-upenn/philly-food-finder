@@ -3,7 +3,7 @@ import unittest
 import os
 from datetime import time
 from sqlalchemy.exc import IntegrityError
-from app import app, db, bcrypt
+from app import app, db
 from config import basedir
 from app.models import Address, FoodResource, TimeSlot, User, Role
 
@@ -76,8 +76,8 @@ class TestCase(unittest.TestCase):
       assert len(Role.query.filter_by(name = 'User').all()) == 1
       u = User.query.filter_by(username = 'ben').first()
       assert u
-      assert bcrypt.check_password_hash(u.password,'pass123')
-      assert not(bcrypt.check_password_hash(u.password,'pass124'))
+      assert u.verify_password('pass123')
+      assert not(u.verify_password('pass124'))
 
     def test_create_multiple_users(self):
       db.session.add(self.u1)
@@ -88,7 +88,7 @@ class TestCase(unittest.TestCase):
       assert len(Role.query.filter_by(name = 'Admin').all()) == 1
       assert len(Role.query.filter_by(name = 'N/A').all()) == 0
       u = User.query.filter_by(username = 'sarah').first()
-      assert bcrypt.check_password_hash(u.password,'139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#')
+      assert u.verify_password('139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#')
 
 if __name__ == '__main__':
     unittest.main()
