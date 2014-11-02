@@ -1,4 +1,7 @@
 from app import db
+from werkzeug.security import generate_password_hash, \
+     check_password_hash
+from flask_user import UserMixin
 
 class Address(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -26,4 +29,47 @@ class FoodResource(db.Model):
 	description = db.Column(db.String(500))
 	location_type = db.Column(db.Enum(*food_resource_type_enums))
 
+class User(db.Model, UserMixin):
+	id = db.Column(db.Integer, primary_key=True)
 
+	# User Authentication information
+	username = db.Column(db.String(50), nullable=False, unique=True)
+	password = db.Column(db.String(255), nullable=False, default='')
+	reset_password_token = db.Column(db.String(100), nullable=False, default='')
+
+	# User Email information
+	email = db.Column(db.String(255), nullable=False, unique=True)
+	confirmed_at = db.Column(db.DateTime())
+
+	# User information
+	is_enabled = db.Column(db.Boolean(), nullable=False, default=False)
+	first_name = db.Column(db.String(50), nullable=False, default='')
+	last_name = db.Column(db.String(50), nullable=False, default='')
+
+	roles = db.relationship('Role', secondary='user_roles',
+			backref=db.backref('users', lazy='dynamic'))
+
+	def is_active(self):
+		return self.is_enabled
+
+	def verify_password(self, candidate):
+		return check_password_hash(self.password, candidate)
+
+	def __init__(self, username, password, email, first_name, last_name, roles):
+		self.username = username
+		self.password = generate_password_hash(password)
+		self.email = email
+		self.first_name = first_name
+		self.last_name = last_name
+		self.roles = roles
+
+class Role(db.Model):
+	role_type_enums = ('User','Admin')
+	id = db.Column(db.Integer(), primary_key=True)
+	name = db.Column(db.Enum(*role_type_enums))
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+class UserRoles(db.Model):
+	id = db.Column(db.Integer(), primary_key=True)
+	user_id = db.Column(db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE'))
+	role_id = db.Column(db.Integer(), db.ForeignKey('role.id', ondelete='CASCADE'))
