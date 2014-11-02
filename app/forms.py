@@ -38,7 +38,7 @@ class AddNewFoodResourceForm(Form):
             Length(1, 2) # Same max length as in Address model.
         ])
     address_zip_code = TextField(
-        label = 'State', 
+        label = 'Zip Code', 
         validators = [
             InputRequired("Please provide the food resource's zip code."),
             Length(1, 5) # Same max length as in Address model.
@@ -46,8 +46,7 @@ class AddNewFoodResourceForm(Form):
     additional_information = TextAreaField(
         label = 'Any additional information?', 
         validators = [
-            InputRequired("Please provide the food resource's zip code."),
-            Length(1, 5) # Same max length as in Address model.
+            Length(1, 300)
         ])
 
 # Information about the person submitting the food resource for evaluation. 
