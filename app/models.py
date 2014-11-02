@@ -1,81 +1,29 @@
 from app import db
-from hashlib import md5
 
-ROLE_USER = 0
-ROLE_ADMIN = 1
+class Address(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	line1 = db.Column(db.String(100))
+	line2 = db.Column(db.String(100))
+	city = db.Column(db.String(35))
+	state = db.Column(db.String(2))
+	zip_code = db.Column(db.String(5))
+	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
-followers = db.Table('followers',
-    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
-)
+class TimeSlot(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	day_of_week = db.Column(db.Integer)
+	start_time = db.Column(db.Time)
+	end_time = db.Column(db.Time)
+	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    nickname = db.Column(db.String(64), unique = True)
-    email = db.Column(db.String(120), unique = True)
-    role = db.Column(db.SmallInteger, default = ROLE_USER)
-    posts = db.relationship('Post', backref = 'author', lazy = 'dynamic')
-    about_me = db.Column(db.String(140))
-    last_seen = db.Column(db.DateTime)
-    followed = db.relationship('User',
-        secondary = followers,
-        primaryjoin = (followers.c.follower_id == id),
-        secondaryjoin = (followers.c.followed_id == id),
-        backref = db.backref('followers', lazy = 'dynamic'),
-        lazy = 'dynamic')
+class FoodResource(db.Model):
+	food_resource_type_enums = ('FARMERS_MARKET','MEALS_ON_WHEELS','FOOD_CUPBOARD','SHARE','SOUP_KITCHEN','WIC_OFFICE')
+	id = db.Column(db.Integer, primary_key = True)
+	name = db.Column(db.String(50))
+	address = db.relationship('Address', backref='food_resource', lazy='select', uselist=False)
+	phone = db.Column(db.String(35))
+	timeslots = db.relationship('TimeSlot', backref='food_resource', lazy='select', uselist=True)
+	description = db.Column(db.String(500))
+	location_type = db.Column(db.Enum(*food_resource_type_enums))
 
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return unicode(self.id)
-
-    def __repr__(self):
-        return '<User %r>' % (self.nickname)
-
-    def avatar(self, size):
-        return 'http://www.gravatar.com/avatar/' + md5(self.email).hexdigest() + '?d=mm&s=' + str(size)
-
-    @staticmethod
-    def make_unique_nickname(nickname):
-        if User.query.filter_by(nickname = nickname).first() == None:
-            return nickname
-        version = 2
-        while True:
-            new_nickname = nickname + str(version)
-            if User.query.filter_by(nickname = new_nickname).first() == None:
-                break
-            version += 1
-        return new_nickname
-
-    def follow(self, user):
-        if not self.is_following(user):
-            self.followed.append(user)
-            return self
-
-    def unfollow(self, user):
-        if self.is_following(user):
-            self.followed.remove(user)
-            return self
-
-    def is_following(self, user):
-        return self.followed.filter(followers.c.followed_id == user.id).count() > 0
-
-    def followed_posts(self):
-        return Post.query.join(followers, (followers.c.followed_id == Post.user_id)).filter(followers.c.follower_id == self.id).order_by(Post.timestamp.desc())
-
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
-    def __repr__(self):
-        return '<Post %r>' % (self.body)
 
