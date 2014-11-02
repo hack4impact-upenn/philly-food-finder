@@ -1,6 +1,5 @@
 from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.scss import Scss
 from flask.ext.bcrypt import Bcrypt
 import os
 from config import basedir
@@ -8,7 +7,6 @@ from config import basedir
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
-Scss(app)
 bcrypt = Bcrypt(app)
 
 from app import views, models, forms
