@@ -89,6 +89,7 @@ class TestCase(unittest.TestCase):
       assert len(Role.query.filter_by(name = 'N/A').all()) == 0
       u = User.query.filter_by(username = 'sarah').first()
       assert u.verify_password('139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#')
+      assert not(u.verify_password('239rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#'))
 
 if __name__ == '__main__':
     unittest.main()
