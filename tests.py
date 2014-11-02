@@ -5,7 +5,7 @@ from datetime import time
 from sqlalchemy.exc import IntegrityError
 from app import app, db
 from config import basedir
-from app.models import Address, FoodResource, TimeSlot, User, Role
+from app.models import Address, FoodResource, TimeSlot, User, Role, PhoneNumber
 
 class TestCase(unittest.TestCase):
 
@@ -29,6 +29,8 @@ class TestCase(unittest.TestCase):
                        parturient montes, nascetur ridiculus mus. Nulla facilisi. In et dui ante. Morbi elementum dolor ligula,
                        et mollis magna interdum non. Mauris ligula mi, mattis at ex ut, pellentesque porttitor elit. Integer 
                        volutpat elementum tristique. Ut interdum, mauris a feugiat euismod, tortor."""
+
+        self.p1 = [PhoneNumber(number = '1234567898')]
 
         self.u1 = User(username = 'ben', password = 'pass123', email = 'ben@ben.com', first_name = 'Ben', last_name = 'Sandler', roles = [Role(name = 'User')])
         self.u2 = User(username = 'steve', password = 'p@$$w0rd', email = 'steve@gmail.com', first_name = 'Steve', last_name = 'Smith', roles = [Role(name = 'User')])
@@ -58,7 +60,7 @@ class TestCase(unittest.TestCase):
     # Adds a valid Address to the database and then makes sure it can be retrieved by name and address
     def test_create_valid_resource(self):
 
-        r1 = FoodResource(name='Test Food Resource 1',address=self.a1,phone='1234567898',timeslots=self.timeslots_list,
+        r1 = FoodResource(name='Test Food Resource 1',address=self.a1,phone_numbers=self.p1,timeslots=self.timeslots_list,
                           description=self.desc,location_type='FARMERS_MARKET')
         db.session.add(r1)
         db.session.commit()
@@ -67,7 +69,7 @@ class TestCase(unittest.TestCase):
 
     # Tries to add an invalid Address to the database (does not use a proper location_type enum) and ensures IntegrityError is raised
     def test_create_invalid_enum_resource(self):
-        self.assertRaises(IntegrityError, r1 = FoodResource(name='Test Food Resource 1',address=self.a2,phone='1234567898',
+        self.assertRaises(IntegrityError, r1 = FoodResource(name='Test Food Resource 1',address=self.a2,phone_numbers=self.p1,
                           timeslots=self.timeslots_list,description=self.desc,location_type='WRONG_ENUM!!!!!!!!!!!!!'))
 
     def test_create_user(self):

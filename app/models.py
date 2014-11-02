@@ -19,14 +19,28 @@ class TimeSlot(db.Model):
 	end_time = db.Column(db.Time)
 	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
+class OpenMonthPair(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	start_month = db.Column(db.Integer)
+	end_month = db.Column(db.Integer)
+	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+
+class PhoneNumber(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	number = db.Column(db.String(35))
+	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+
 class FoodResource(db.Model):
 	food_resource_type_enums = ('FARMERS_MARKET','MEALS_ON_WHEELS','FOOD_CUPBOARD','SHARE','SOUP_KITCHEN','WIC_OFFICE')
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50))
 	address = db.relationship('Address', backref='food_resource', lazy='select', uselist=False)
-	phone = db.Column(db.String(35))
+	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', lazy='select', uselist=True)
+	url = db.Column(db.Text)
 	timeslots = db.relationship('TimeSlot', backref='food_resource', lazy='select', uselist=True)
-	description = db.Column(db.String(500))
+	openmonthpairs = db.relationship('OpenMonthPair', backref='food_resource', lazy='select', uselist=True)
+	exceptions = db.Column(db.Text)
+	description = db.Column(db.Text)
 	location_type = db.Column(db.Enum(*food_resource_type_enums))
 
 class User(db.Model, UserMixin):
