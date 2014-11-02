@@ -3,13 +3,48 @@ from wtforms import TextField, BooleanField, TextAreaField
 from wtforms.validators import Required, Length
 from app.models import User
 
-class FoodResourceSubmissionForm(Form):
-    first_name = TextField(u'First Name')
-    last_name = TextField
-    email_address = TextFile
-    phone_number
-    food_resource_name
-    food_resource_type
+class RequestNewFoodResourceForm(Form):
+    # Information about the person submitting the food resource for evaluation. 
+    first_name = TextField(
+        label = 'First Name', 
+        validators = [
+            InputRequired("Please provide your first name.")
+            Length(0, 35)
+        ])
+    last_name = TextField(
+        label = 'Last Name', 
+        validators = [
+            InputRequired("Please provide your last name.")
+            Length(0, 35)
+        ])
+    email_address = TextFile(
+        label = 'Email Address', 
+        validators = [
+            InputRequired("Please provide an email address at which we can contact you."), 
+            Email("Invalid email address.")
+            Length(0, 35)
+        ])
+    phone_number = TextFile(
+        label = 'Phone Number', 
+        validators = [
+            InputRequired("Please provide a phone number at which we can contact you.")
+        ])
+
+    # Information about the food resource itself. 
+    food_resource_website = TextFile('Website', 
+        validators = [
+            URL(True, "Invalid website URL.")])
+    food_resource_name = TextField('Food Resource Name')
+    food_resource_type = TextField
+    address_line1
+    address_line2
+    address_city
+    address_state
+    address_zip_code
+    additional_information = TextAreaField
+
+class AddNewFoodResourceForm(Form):
+
 
 
 class LoginForm(Form):
