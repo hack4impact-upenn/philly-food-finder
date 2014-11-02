@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.bcrypt import Bcrypt
 import os
@@ -9,7 +9,7 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
-from app import views, models
+from app import views, models, forms
 from app.models import User
 from flask_user import SQLAlchemyAdapter, UserManager
 
