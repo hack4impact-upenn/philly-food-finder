@@ -1,4 +1,6 @@
-from app import db, bcrypt
+from app import db
+from werkzeug.security import generate_password_hash, \
+     check_password_hash
 from flask_user import UserMixin
 
 class Address(db.Model):
@@ -50,9 +52,12 @@ class User(db.Model, UserMixin):
 	def is_active(self):
 		return self.is_enabled
 
+	def verify_password(self, candidate):
+		return check_password_hash(self.password, candidate)
+
 	def __init__(self, username, password, email, first_name, last_name, roles):
 		self.username = username
-		self.password = bcrypt.generate_password_hash(password)
+		self.password = generate_password_hash(password)
 		self.email = email
 		self.first_name = first_name
 		self.last_name = last_name
