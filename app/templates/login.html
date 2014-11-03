@@ -1,3 +1,28 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
 {% block content %}
 <h1>Sign In</h1>
+<form action="" method="post" name="login">
+  <div class="row">
+    <div class="small-8">
+      <div class="row">
+        <div class="small-3 columns">
+          <label for="right-label" class="right">Email Address</label>
+        </div>
+        <div class="small-9 columns">
+          <input type="text" id="right-label" placeholder="example@email.com">
+        </div>
+        <div class="small-3 columns">
+          <label for="right-label" class="right">Password</label>
+        </div>
+        <div class="small-9 columns">
+          <input type="text" id="right-label" placeholder="********">
+        </div>
+        <a href="#" class="button">Login</a>
+        <a href="#" class="button">Reset Password</a>
+      </div>
+    </div>
+  </div>
+</form>
 {% endblock %}
