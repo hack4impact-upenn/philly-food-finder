@@ -1,9 +1,15 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
+{% from "formhelpers.html" import render_field with context %}
 
 {% block content %}
 <h1>Sign In</h1>
-<form action="" method="post" name="login">
+<form action="/login" method=post name="login">
+<dl>
+    {{ render_field(form.username) }}
+    {{ render_field(form.password) }}
+</dl>
+  <p><input type=submit value=Register>
   <div class="row">
     <div class="small-8">
       <div class="row">
