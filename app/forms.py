@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, TextAreaField, validators
+from wtforms import TextField, TextAreaField, validators, PasswordField
 from wtforms.validators import InputRequired, Length, URL, Email
 
 # Information about a new food resource. 
@@ -76,3 +76,15 @@ class RequestNewFoodResourceForm(AddNewFoodResourceForm):
         validators = [
             InputRequired("Please provide a phone number at which we can contact you.")
         ])
+
+# Form to login
+class LoginForm(Form):
+    username = TextField(
+        label = 'Your Username', 
+        validators = [
+            InputRequired("Please provide your username."),
+            Length(0, 50)
+        ])
+    password = PasswordField('New Password', [
+        validators.Required(),
+    ])
