@@ -80,11 +80,11 @@ class RequestNewFoodResourceForm(AddNewFoodResourceForm):
 # Form to login
 class LoginForm(Form):
     username = TextField(
-        label = 'Your Username', 
+        label = 'Username', 
         validators = [
             InputRequired("Please provide your username."),
             Length(0, 50)
         ])
-    password = PasswordField('New Password', [
+    password = PasswordField('Password', [
         validators.Required(),
     ])
