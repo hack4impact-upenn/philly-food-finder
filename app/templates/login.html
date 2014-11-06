@@ -6,8 +6,18 @@
 <h1>Sign In</h1>
 <form action="/login" method=post name="login">
 <dl>
-    {{ render_field(form.username) }}
+  <div class="small-3 columns">
+        </div>
+        <div class="small-9 columns">
+              {{ render_field(form.username) }}
+        </div>
+    <div class="small-3 columns">
+        </div>
+        <div class="small-9 columns">
     {{ render_field(form.password) }}
+        </div>
+        <a href="#" class="button">Login</a>
+        <a href="#" class="button">Reset Password</a>
 </dl>
   <p><input type=submit value=Register>
   <div class="row">
