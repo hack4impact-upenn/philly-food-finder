@@ -24,4 +24,12 @@ def register():
 #@login_required
 def admin():
     resources = FoodResource.query.all()
-    return render_template('admin.html', resources=resources)
+    resources_info = [
+        ["farmers-markets", "Farmers' Markets"], 
+        ["food-cupboards", "Food Cupboards"], 
+        ["meals-on-wheels", "Meals On Wheels"], 
+        ["share-host-sites", "SHARE Host Sites"], 
+        ["soup-kitchens", "Soup Kitchens"],
+        ["wic-offices", "WIC Offices"]]
+    return render_template('admin.html', resources=resources, 
+        resources_info=resources_info)

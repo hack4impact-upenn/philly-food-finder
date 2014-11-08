@@ -6,32 +6,49 @@
 /* #84459b - purple */
 /* #343434 - black */
 
-.block-header {
-	color: #343434;
-	margin: 0.3em;
+.block-header, 
+.block-header table {
+	color: #343434	; /* black */
+	margin: 0.6em 0.3em;
 	padding: 0 0.3em;
 }
 
-#farmers-markets-header {
+#farmers-markets-header table thead, 
+#farmers-markets-header table {
 	background-color: #fdd800; /* yellow */
+	border: none; 
 }
 
-#food-cupboards-header {
+#food-cupboards-header table thead, 
+#food-cupboards-header table {
 	background-color: #09ab4b; /* green */
+	border: none;
 }
 
-#meals-on-wheels-header {
+#meals-on-wheels-header table thead, 
+#meals-on-wheels-header table {
 	background-color: #0f85c7; /* blue */
+	border: none; 
 }
 
-#share-host-sites-header {
+#share-host-sites-header table thead, 
+#share-host-sites-header table {
 	background-color: #ef3d23; /* red */
+	border: none; 
 }
 
-#soup-kitchens-header {
+#soup-kitchens-header table thead, 
+#soup-kitchens-header table {
 	background-color: #f8a11d; /* orange */
+	border: none; 
 }
 
-#wic-offices-header {
+#wic-offices-header table thead, 
+#wic-offices-header table {
 	background-color: #84459b; /* purple */
+	border: none; 
+}
+
+.expand {
+	cursor: pointer; 
 }
