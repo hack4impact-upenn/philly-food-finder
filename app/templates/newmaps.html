@@ -1,53 +1,5 @@
-<!-- <html>
-<head>
-  <meta charset="utf-8">
-  <title>GMaps.js &mdash; Markers</title>
-    <link href="../static/css/foundation.min.css" rel="stylesheet" media="screen">
-    <link href="../static/css/foundation.css" rel="stylesheet">
-    <script src="http://code.jquery.com/jquery-latest.js"></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
-  <script type="text/javascript" src="../static/js/gmaps.js"></script>   -->
-<!-- </head>
-<body> -->
   {% extends "base.html" %}
   {% block content %}
-  <script type="text/javascript"> 
-    var map;
-    $(document).ready(function(){
-      map = new GMaps({
-        el: 'map',
-        lat: -12.043333,
-        lng: -77.028333
-      });
-      map.addMarker({
-        lat: -12.043333,
-        lng: -77.03,
-        title: 'Lima',
-        details: {
-          database_id: 42,
-          author: 'HPNeo'
-        },
-        click: function(e){
-          if(console.log)
-            console.log(e);
-          alert('You clicked in this marker');
-        },
-        mouseover: function(e){
-          if(console.log)
-            console.log(e);
-        }
-      });
-      map.addMarker({
-        lat: -12.042,
-        lng: -77.028333,
-        title: 'Marker with InfoWindow',
-        infoWindow: {
-          content: '<p>HTML Content</p>'
-        }
-      });
-    }); 
-  </script>  
   <h1>GMaps.js &mdash; Markers</h1>
   <div class="row">
     <div class="span11">
@@ -72,5 +24,3 @@
     </div> 
   </div>
   {% endblock %}
-<!-- </body>
-</html> -->
