@@ -23,5 +23,5 @@ def register():
 @app.route('/admin')
 #@login_required
 def admin():
-    results = FoodResource.query.all()
-    return render_template('admin.html', results=results)
+    resources = FoodResource.query.all()
+    return render_template('admin.html', resources=resources)
