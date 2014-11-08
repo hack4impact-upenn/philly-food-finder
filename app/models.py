@@ -17,15 +17,13 @@ class TimeSlot(db.Model):
 	day_of_week = db.Column(db.Integer)
 	start_time = db.Column(db.Time)
 	end_time = db.Column(db.Time)
-	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
 class FoodResource(db.Model):
 	food_resource_type_enums = ('FARMERS_MARKET','MEALS_ON_WHEELS',
 		'FOOD_CUPBOARD','SHARE','SOUP_KITCHEN','WIC_OFFICE')
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50))
-	address = db.relationship('Address', backref='food_resource', 
-		lazy='select', uselist=False)
 	phone_number = db.Column(db.String(35))
 	description = db.Column(db.String(500))
 	location_type = db.Column(db.Enum(*food_resource_type_enums))
@@ -33,6 +31,8 @@ class FoodResource(db.Model):
 		'TimeSlot', # One-to-many relationship (one Address with many TimeSlots).
 		backref='food_resource', # Declare a new property of the TimeSlot class.
 		lazy='select', uselist=True)
+	address = db.relationship('Address', backref='food_resource', 
+		lazy='select', uselist=False)
 
 class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True)
