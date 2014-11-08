@@ -1,0 +1,37 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1>All Food Resources</h1>
+
+{% for resource in resources %}
+
+{{ resource.name }} <br>
+
+{{ resource.address.line1 }} <br>
+
+{% if resource.address %}
+	address! <br>
+{% endif %}
+
+{% endfor %}
+
+<h1>All Food Locations</h1>
+
+<h2 class="block-header" id="farmers-markets-header">Farmers' Markets</h2>
+<h2 class="block-header" id="food-cupboards-header">Food Cupboards</h2>
+<h2 class="block-header" id="meals-on-wheels-header">Meals on Wheels</h2>
+<h2 class="block-header" id="share-host-sites-header">SHARE Host Sites</h2>
+<h2 class="block-header" id="soup-kitchens-header">Soup Kitchens</h2>
+<h2 class="block-header" id="wic-offices-header">WIC Offices</h2>
+
+
+<table>
+	<thead>
+		<tr>
+
+		</tr>
+	</thead>
+</table>
+
+{% endblock %}

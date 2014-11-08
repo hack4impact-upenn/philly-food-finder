@@ -1,0 +1,37 @@
+/* #ef3d23 - red */
+/* #f8a11d - orange */
+/* #fdd800 - yellow */
+/* #09ab4b - green */
+/* #0f85c7 - blue */
+/* #84459b - purple */
+/* #343434 - black */
+
+.block-header {
+	color: #343434;
+	margin: 0.3em;
+	padding: 0 0.3em;
+}
+
+#farmers-markets-header {
+	background-color: #fdd800; /* yellow */
+}
+
+#food-cupboards-header {
+	background-color: #09ab4b; /* green */
+}
+
+#meals-on-wheels-header {
+	background-color: #0f85c7; /* blue */
+}
+
+#share-host-sites-header {
+	background-color: #ef3d23; /* red */
+}
+
+#soup-kitchens-header {
+	background-color: #f8a11d; /* orange */
+}
+
+#wic-offices-header {
+	background-color: #84459b; /* purple */
+}
