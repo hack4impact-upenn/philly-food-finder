@@ -86,5 +86,5 @@ class LoginForm(Form):
             Length(0, 50)
         ])
     password = PasswordField('Password', [
-        validators.Required(),
+        validators.DataRequired(),
     ])
