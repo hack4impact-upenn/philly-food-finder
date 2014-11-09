@@ -16,7 +16,9 @@ $(document).ready(function() {
         	a: "hello",
         	b: "goodbye"
       	}, function(data) {
-        	console.log("helloasdfasdf!"); 
+        	console.log(data["names"][0]["name"]); 
+
+        	// create table entries with data in them
       	});
 
 		// DISPLAY CURRENT COURSES AT TOP OF PAGE

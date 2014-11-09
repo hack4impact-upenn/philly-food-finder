@@ -34,6 +34,20 @@ class FoodResource(db.Model):
 	address = db.relationship('Address', backref='food_resource', 
 		lazy='select', uselist=False)
 
+	def serialize_name_only(self):
+		return {
+			'id': self.id, 
+			'name': self.name
+		}
+
+	def serialize_all_data(self):
+		return {
+			'id': self.id, 
+			'name': self.name, 
+			'phone_number': self.phone_number, 
+			'description': self.description
+		}
+
 class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True)
 
