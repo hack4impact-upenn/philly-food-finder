@@ -1,7 +1,7 @@
 from app import app, db
 from models import Address, FoodResource, TimeSlot, User
 from forms import RequestNewFoodResourceForm
-from flask import render_template, flash, redirect, session, url_for, request, g
+from flask import render_template, flash, redirect, session, url_for, request, g, jsonify
 from flask.ext.login import login_user, logout_user, current_user, login_required
 
 @app.route('/')
@@ -33,3 +33,8 @@ def admin():
         ["wic-offices", "WIC Offices"]]
     return render_template('admin.html', resources=resources, 
         resources_info=resources_info)
+
+@app.route('/_admin')
+def get_food_resource_data():
+    names = FoodResource.query.with_entities(FoodResource.id, FoodResource.name)
+    return jsonify(result="helloasdf")

@@ -12,6 +12,29 @@ $(document).ready(function() {
 		var resource_type = id.substring(0, end_index); 
 		var table_to_expand = resource_type + "-table"; 
 
+		$.getJSON($SCRIPT_ROOT + '/_admin', {
+        	a: "hello",
+        	b: "goodbye"
+      	}, function(data) {
+        	console.log("helloasdfasdf!"); 
+      	});
+
+		// DISPLAY CURRENT COURSES AT TOP OF PAGE
+        /*$.ajax({
+            url: '/_admin', 
+            type: 'POST', 
+            dataType: 'json',
+            data: { step: 1 },
+            success: function(response) {
+            
+                // save Timestamp
+                current_timestamp = response.current_timestamp;
+                
+                // display agenda
+                updateAgenda(response, current_timestamp);
+            } 
+        });*/
+
 		// If the table is currently hidden, show the table.
 		if ($("#"+table_to_expand).is(":hidden")) {
 			$("#"+table_to_expand).slideDown("medium", function() {
