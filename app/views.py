@@ -10,6 +10,8 @@ def index():
 @app.route('/new_food_resource', methods=['GET', 'POST'])
 def register():
     form = RequestNewFoodResourceForm(request.form)
+    days_of_week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
+        "Friday", "Saturday"]
     if request.method == 'POST' and form.validate():
         # user = User(form.username.data, form.email.data,
         #             form.password.data)
@@ -17,4 +19,5 @@ def register():
         # flash('Thanks for registering')
         # return redirect(url_for('login'))
         return "Hello World!"
-    return render_template('add_resource.html', form=form)
+    return render_template('add_resource.html', form=form, 
+        days_of_week=days_of_week)
