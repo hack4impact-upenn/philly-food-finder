@@ -5,8 +5,158 @@
 <h1>Submit New Food Resource</h1>
 <form action="" method="post" name="submit_food_resource">
     {{form.hidden_tag()}}
-    <p>
-    </p>
-    <p><input type="submit" value="Submit"></p>
+    <div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<label>Name
+	        	<input type="text" placeholder="1000 Chestnut Street" />
+			</label>
+		</div>
+	</div>
+	<div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	    	<label>Food Resource Type
+		    	<select>
+					<option value="husker">Farmers' Market</option>
+					<option value="hotdog">Food Cupboard</option>
+		          	<option value="starbuck">Meals on Wheels</option>
+		          	<option value="apollo">Soup Kitchen</option>
+		          	<option value="apollo">SHARE Food Site</option>
+		          	<option value="apollo">WIC Office</option>
+		    	</select>
+	      	</label>
+	    </div>
+  	</div>
+    <div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<label>Address Line 1
+	        	<input type="text" placeholder="1000 Chestnut Street" />
+			</label>
+		</div>
+	</div>
+	<div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<label>Address Line 2
+	        	<input type="text" placeholder="1000 Chestnut Street" />
+			</label>
+		</div>
+	</div>
+	<div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<label>City
+	        	<input type="text" placeholder="Philadelphia" />
+			</label>
+		</div>
+	</div>
+	<div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<label>State
+	        	<input type="text" placeholder="PA" />
+			</label>
+		</div>
+	</div>
+	<div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<label>Zip Code
+	        	<input type="text" placeholder="19104" />
+			</label>
+		</div>
+	</div>
+	<div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<label>Phone Number
+	        	<input type="text" placeholder="19104" />
+			</label>
+		</div>
+	</div>
+	<div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<label>Website
+	        	<input type="text" placeholder="19104" />
+			</label>
+		</div>
+	</div>
+
+	<div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<label>Days/Hours of Operation
+			</label>
+		</div>
+	</div>
+
+	{% for day_of_week in days_of_week %}
+
+	<div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+      		<div class="large-4 small-4 columns">
+      			<label>{{ day_of_week }}
+			    	<select>
+						<option value="husker">Open</option>
+						<option value="hotdog">Closed</option>
+			    	</select>
+      			</label>
+      		</div>
+      		<div class="large-4 small-4 columns">
+      			<label>Opens at
+			    	<select>
+			    		{% for hour in [8, 9, 10, 11, 12, 1, 2, 3, 4, 5] %}
+			    			{% for minute in ["00", 15, 30, 45] %}
+			    				{% if hour >= 8 and hour <= 11 %}
+									<option value="husker">{{ hour }}:{{ minute }} AM</option>
+								{% else %}
+									<option value="husker">{{ hour }}:{{ minute }} PM</option>
+								{% endif %}
+							{% endfor %}
+						{% endfor %}
+			    	</select>
+      			</label>
+      		</div>
+      		<div class="large-4 small-4 columns">
+      			<label>Closes at
+			    	<select>
+			    		{% for hour in [11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
+			    			{% for minute in ["00", 15, 30, 45] %}
+			    				{% if hour == 11 %}
+									<option value="husker">{{ hour }}:{{ minute }} AM</option>
+								{% else %}
+									<option value="husker">{{ hour }}:{{ minute }} PM</option>
+								{% endif %}
+							{% endfor %}
+						{% endfor %}
+			    	</select>
+      			</label>
+      		</div>
+      	</div>
+	</div>
+
+	{% endfor %}
+
+	<div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<label>Additional Information
+	        	<textarea placeholder="Exceptions, eligibility information, etc."></textarea>
+	      	</label>
+	    </div>
+	</div>
+
+	<div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<input type="submit" value="Submit">
+	    </div>
+	</div>
+    
 </form>
+
 {% endblock %}
