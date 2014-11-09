@@ -36,5 +36,5 @@ def admin():
 
 @app.route('/_admin')
 def get_food_resource_data():
-    names = FoodResource.query.with_entities(FoodResource.id, FoodResource.name)
-    return jsonify(result="helloasdf")
+    names = FoodResource.query.all()
+    return jsonify(names=[i.serialize_name_only() for i in names])
