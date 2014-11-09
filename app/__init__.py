@@ -5,6 +5,7 @@ import os
 from config import basedir
 
 app = Flask(__name__)
+app.secret_key = 'development key'
 app.config.from_object('config')
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
