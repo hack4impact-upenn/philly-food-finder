@@ -1,0 +1,32 @@
+body {
+  background: #fdd800;
+}
+
+/* font color - hover?? */
+.sub-nav dt a, .sub-nav dd a, .sub-nav li a {
+  text-decoration: none;
+  color: #2D4F9F;
+  padding: 0.1875rem 1rem;
+}
+
+/* font size/weight */
+.sub-nav dt, .sub-nav dd, .sub-nav li {
+  font-weight: 200;
+  font-size: 2rem;
+  color: #999;
+}
+
+data-magellan-expedition] .sub-nav a, [data-magellan-expedition-clone] .sub-nav a {
+line-height: 1.5em;
+}
+
+[data-magellan-expedition], [data-magellan-expedition-clone] {
+  background: rgba(255, 255, 255, 0.80);
+  z-index: 50;
+  min-width: 100%;
+  padding: 10px;
+}
+
+a:hover {
+  color: #FFFFFF !important;
+}
