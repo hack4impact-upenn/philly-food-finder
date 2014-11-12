@@ -20,6 +20,10 @@
             $(document).foundation();
         });  
     </script>
+
+    <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
     
     {% if title %}
     <title>{{title}} - GPCAH</title>
@@ -39,7 +43,7 @@
     <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
   </ul>
 
-  <section class="top-bar-section">
+  <section class="top-bar-section"> 
     <!-- Right Nav Section -->
     <ul class="right">
       <li class="active"><a href="#">Right Button Active</a></li>
@@ -59,6 +63,8 @@
   </section>
 </nav>
 
-    {% block content %}{% endblock %}
+    {% block content %}
+
+    {% endblock %}
   </body>
 </html>
