@@ -2,6 +2,8 @@ from app import app, db
 from models import Address, User
 from forms import RequestNewFoodResourceForm, LoginForm
 from flask import render_template, flash, redirect, session, url_for, request, g
+from flask.ext.user.forms import LoginForm as LoginForm2
+from flask.ext.user.forms import Form as Form2
 
 @app.route('/')
 def index():
@@ -27,3 +29,9 @@ def login():
         else:
         	print 'failed to login!'
     return render_template('login.html', form=form)
+
+@app.route('/login2', methods=['GET', 'POST'])
+def login2():
+    login_form = LoginForm2()
+    form = LoginForm2()
+    return render_template('user/login_temp_rename.html',form=form, login_form=login_form)
