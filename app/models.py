@@ -66,7 +66,6 @@ class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True)
 
 	# User Authentication information
-	username = db.Column(db.String(50), nullable=False, unique=True)
 	password = db.Column(db.String(255), nullable=False, default='')
 	reset_password_token = db.Column(db.String(100), nullable=False, default='')
 
@@ -88,10 +87,9 @@ class User(db.Model, UserMixin):
 	def verify_password(self, candidate):
 		return check_password_hash(self.password, candidate)
 
-	def __init__(self, username, password, email, first_name, last_name, roles):
-		self.username = username
-		self.password = generate_password_hash(password)
+	def __init__(self, email, password, first_name, last_name, roles):
 		self.email = email
+		self.password = generate_password_hash(password)
 		self.first_name = first_name
 		self.last_name = last_name
 		self.roles = roles
