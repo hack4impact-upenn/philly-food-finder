@@ -20,9 +20,6 @@ def register():
         # flash('Thanks for registering')
         # return redirect(url_for('login'))
         return "Hello World!"
-<<<<<<< HEAD
-    return render_template('add_resource.html', form=form)
-=======
     return render_template('add_resource.html', form=form, 
         days_of_week=days_of_week)
 
@@ -44,4 +41,3 @@ def admin():
 def get_food_resource_data():
     names = FoodResource.query.all()
     return jsonify(names=[i.serialize_name_only() for i in names])
->>>>>>> c0d85c7dc25381fd1aea8ead8cf5fd905b476137
