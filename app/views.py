@@ -5,7 +5,7 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 
 @app.route('/')
 def index():
-    return "Hello World!"
+    return render_template('base.html')
 
 @app.route('/new_food_resource', methods=['GET', 'POST'])
 def register():
