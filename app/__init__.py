@@ -21,6 +21,8 @@ class ConfigClass(object):
 
     # Flask-User settings
     USER_ENABLE_EMAIL              = True
+    USER_ENABLE_LOGIN_WITHOUT_CONFIRM           = True
+    USER_REQUIRE_INVITATION        = True
     USER_ENABLE_USERNAME           = False
     USER_ENABLE_CHANGE_USERNAME    = False
     USER_ENABLE_FORGOT_PASSWORD    = True
@@ -28,7 +30,6 @@ class ConfigClass(object):
     USER_APP_NAME        = 'AppName'                # Used by email templates
     USER_PASSWORD_HASH		= 'sha512_crypt'
     USER_PASSWORD_HASH_MODE          = 'passlib'
-
 
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')
@@ -42,5 +43,4 @@ from app.models import User
 from flask_user import SQLAlchemyAdapter, UserManager
 
 db_adapter = SQLAlchemyAdapter(db, User)        # Register the User model
-
 user_manager = UserManager(db_adapter, app)     # Initialize Flask-User
