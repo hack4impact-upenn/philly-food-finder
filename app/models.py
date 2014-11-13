@@ -1,6 +1,4 @@
-from app import db
-from werkzeug.security import generate_password_hash, \
-     check_password_hash
+from app import app, db
 from flask_user import UserMixin
 
 class Address(db.Model):
@@ -84,12 +82,12 @@ class User(db.Model, UserMixin):
 	def is_active(self):
 		return self.is_enabled
 
-	def verify_password(self, candidate):
-		return check_password_hash(self.password, candidate)
+	def verify_password(self, attept):
+		return app.user_manager.verify_password(attept, self.password)
 
 	def __init__(self, email, password, first_name, last_name, roles):
 		self.email = email
-		self.password = generate_password_hash(password)
+		self.password = app.user_manager.hash_password(password = password)
 		self.first_name = first_name
 		self.last_name = last_name
 		self.roles = roles

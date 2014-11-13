@@ -2,8 +2,8 @@ from app import app, db
 from models import Address, FoodResource, TimeSlot, User
 from forms import RequestNewFoodResourceForm, LoginForm
 from flask import render_template, flash, redirect, session, url_for, request, g, jsonify
-from flask.ext.user.forms import LoginForm as LoginForm2
-from flask.ext.user.forms import Form as Form2
+from flask_user import login_required
+from flask_login import current_user, login_user, logout_user
 
 @app.route('/')
 def index():
@@ -20,26 +20,45 @@ def add_resource():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    user_manager =  app.user_manager
+    db_adapter = user_manager.db_adapter
+
+    # Immediately redirect already logged in users
+    if current_user.is_authenticated():
+        return redirect('/admin')
+
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
-        u = User.query.filter_by(username = form.username.data).first()
-        if(u):
-        	if(u.verify_password(candidate = form.password.data)):
-        		print 'verified!'
-        	else:
-        		print 'password is wrong!'
-        else:
-        	print 'failed to login!'
+        user = None
+        user_email = None
+        user, user_email = user_manager.find_user_by_email(form.email.data)
+
+        if user:
+            # Log user in
+            login_user(user)
+            redirect('/admin')
+
     return render_template('login.html', form=form)
 
-@app.route('/login2', methods=['GET', 'POST'])
-def login2():
-    login_form = LoginForm2()
-    form = LoginForm2()
-    return render_template('user/login_temp_rename.html',form=form, login_form=login_form)
+def logout():
+    """ Sign the user out."""
+    user_manager =  current_app.user_manager
 
+    # Send user_logged_out signal
+    signals.user_logged_out.send(current_app._get_current_object(), user=current_user)
+
+    # Use Flask-Login to sign out user
+    logout_user()
+
+    # Prepare one-time system message
+    flash(_('You have signed out successfully.'), 'success')
+
+    # Redirect to logout_next endpoint or '/'
+    next = request.args.get('next', _endpoint_url(user_manager.after_logout_endpoint))  # Get 'next' query param
+    return redirect(next)
+
+@login_required
 @app.route('/admin')
-#@login_required
 def admin():
     resources = FoodResource.query.all()
     resources_info = [

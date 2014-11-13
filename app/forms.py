@@ -1,5 +1,6 @@
+from app import app
 from flask.ext.wtf import Form
-from wtforms import TextField, TextAreaField, validators, PasswordField
+from wtforms import TextField, TextAreaField, validators, PasswordField, StringField, BooleanField, SubmitField
 from wtforms.validators import InputRequired, Length, URL, Email
 
 # Information about a new food resource. 
@@ -77,14 +78,56 @@ class RequestNewFoodResourceForm(AddNewFoodResourceForm):
             InputRequired("Please provide a phone number at which we can contact you.")
         ])
 
-# Form to login
+def password_validator(form, field):
+    # Convert string to list of characters
+    password = list(field.data)
+    password_length = len(password)
+
+    # Password must have one lowercase letter, one uppercase letter and one digit
+    is_valid = password_length>=6
+    if not is_valid:
+        raise ValidationError('Password must have at least 6 characters')
+
+def unique_email_validator(form, field):
+    """ Email must be unique"""
+    user_manager =  app.user_manager
+    if not user_manager.email_is_available(field.data):
+        raise ValidationError('This Email is already in use. Please try another one.')
+
 class LoginForm(Form):
-    username = TextField(
-        label = 'Username', 
-        validators = [
-            InputRequired("Please provide your username."),
-            Length(0, 50)
-        ])
-    password = PasswordField('Password', [
-        validators.DataRequired(),
+    email = StringField(('Email'), validators=[
+        validators.Required('Email is required'),
+        validators.Email('Invalid Email')
     ])
+    password = PasswordField(('Password'), validators=[
+        validators.Required('Password is required'),
+    ])
+    remember_me = BooleanField('Remember me')
+
+    submit = SubmitField('Sign in')
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+
+    def validate(self):
+        user_manager =  app.user_manager
+
+        # Validate field-validators
+        if not super(LoginForm, self).validate():
+            return False
+
+        # Find user by username and/or email
+        user = None
+        user_email = None
+
+        user, user_email = user_manager.find_user_by_email(self.email.data)
+
+        # Handle successful authentication
+        if user:
+            if user.verify_password(self.password.data):
+                return True                         # Successful authentication
+
+        # Handle unsuccessful authentication
+        self.email.errors.append('Incorrect Email and Password')
+        self.password.errors.append('')
+        return False             

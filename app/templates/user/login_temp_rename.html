@@ -1,8 +1,9 @@
-{% extends 'flask_user/public_base.html' %}
+<!-- extend base layout -->
+{% extends "base.html" %}
 
 {% block content %}
 {% from "flask_user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
-<h1>{%trans%}Sign in{%endtrans%}TEST</h1>
+<h1>{%trans%}Sign in{%endtrans%}</h1>
 
 <form action="" method="POST" class="form" role="form">
     {{ form.hidden_tag() }}
