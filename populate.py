@@ -1,6 +1,6 @@
 # Necessary set-up.
 from app import db
-from app.models import Address, User, TimeSlot, FoodResource
+from app.models import Address, User, TimeSlot, FoodResource, Role
 from datetime import time
 
 # Drop all database tables.
@@ -223,4 +223,22 @@ db.session.add(f5)
 db.session.add(a5)
 for timeslot in timeslots_list_5:
 	db.session.add(timeslot)
+db.session.commit()
+
+# Create 3 admin users
+u1 = User(email='ben@ben.com', password = 'pass123', 
+            first_name = 'Ben', last_name = 'Sandler', 
+            roles=[Role(name = 'Admin')])
+u2 = User(email = 'steve@gmail.com', password = 'p@$$w0rd', 
+            first_name = 'Steve', 
+            last_name = 'Smith', roles = [Role(name = 'Admin')])
+u3 = User(email = 'sarah@gmail.com',
+            password = '139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#', 
+            first_name = 'Sarah', last_name = 'Smith', 
+            roles = [Role(name = 'Admin')])
+
+# Add each new object to session and commit session. 
+db.session.add(u1)
+db.session.add(u2)
+db.session.add(u3)
 db.session.commit()
