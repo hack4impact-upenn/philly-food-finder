@@ -1,5 +1,6 @@
 from app import app, db
 from flask_user import UserMixin
+from datetime import datetime
 
 class Address(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -69,10 +70,10 @@ class User(db.Model, UserMixin):
 
 	# User Email information
 	email = db.Column(db.String(255), nullable=False, unique=True)
-	confirmed_at = db.Column(db.DateTime())
+	confirmed_at = db.Column(db.DateTime(), default = datetime.now()) #this is also for debug
 
 	# User information
-	is_enabled = db.Column(db.Boolean(), nullable=False, default=False)
+	is_enabled = db.Column(db.Boolean(), nullable=False, default=True)  #this is only for debug!
 	first_name = db.Column(db.String(50), nullable=False, default='')
 	last_name = db.Column(db.String(50), nullable=False, default='')
 
