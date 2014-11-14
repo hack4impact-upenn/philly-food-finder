@@ -14,5 +14,13 @@ resources_info_singular = [
         {'id' : "soup-kitchen", 'name' : "Soup Kitchen"},
         {'id' : "wic-office", 'name' : "WIC Office"}]
 
-days_of_week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
-        "Friday", "Saturday"]
+days_of_week = [
+		{'id' : "sunday", 'name': "Sunday"},
+		{'id' : "monday", 'name': "Monday"},
+		{'id' : "tuesday", 'name': "Tuesday"},
+		{'id' : "wednesday", 'name': "Wednesday"},
+		{'id' : "thursday", 'name': "Thursday"},
+		{'id' : "friday", 'name': "Friday"},
+		{'id' : "saturday", 'name': "Saturday"}]
+
+opening_times = ["8:00", "8:15", "8:30", "8:45"]
