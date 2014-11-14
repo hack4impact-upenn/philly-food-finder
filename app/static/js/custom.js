@@ -1,33 +1,54 @@
-/*    var map;
-    $(document).ready(function(){
-      map = new GMaps({
-        el: 'map',
-        lat: -12.043333,
-        lng: -77.028333
-      });
-      map.addMarker({
-        lat: -12.043333,
-        lng: -77.03,
-        title: 'Lima',
-        click: function(e){
-          if(console.log) 
-            console.log(e);
-          alert('You clicked in this marker');
-        },
-        mouseover: function(e){
-          if(console.log)
-            console.log(e);
-        }
-      });
-      map.addMarker({
-        lat: -12.042,
-        lng: -77.028333,
-        size: 'large',
-        color: 'blue',
-        title: 'Marker with InfoWindow',
-        infoWindow: {
-          content: '<p>HTML Content</p>'
-        },
-        icon: "http://maps.gstatic.com/mapfiles/markers2/marker_sprite.png"
-      });    
-    }); */
+
+$(document).ready(function() {
+
+	// Hide all food resource tables initially.
+	$("[id$='-table']").hide(); 
+
+	// If an "Expand" button is pressed, either show or hide the associated
+	// food resource table.
+	$(".expand").click(function() {
+		// Get the id of the associated food resource table.
+		var id = $(this).attr('id');  
+		var end_index = id.indexOf("-expand"); 
+		var resource_type = id.substring(0, end_index); 
+		var table_to_expand = resource_type + "-table"; 
+
+		$.getJSON($SCRIPT_ROOT + '/_admin', {
+        	a: "hello",
+        	b: "goodbye"
+      	}, function(data) {
+        	console.log(data["names"][0]["name"]); 
+
+        	// create table entries with data in them
+      	});
+
+		// DISPLAY CURRENT COURSES AT TOP OF PAGE
+        /*$.ajax({
+            url: '/_admin', 
+            type: 'POST', 
+            dataType: 'json',
+            data: { step: 1 },
+            success: function(response) {
+            
+                // save Timestamp
+                current_timestamp = response.current_timestamp;
+                
+                // display agenda
+                updateAgenda(response, current_timestamp);
+            } 
+        });*/
+
+		// If the table is currently hidden, show the table.
+		if ($("#"+table_to_expand).is(":hidden")) {
+			$("#"+table_to_expand).slideDown("medium", function() {
+				$(this).show(); 
+			});
+		// Else hide the table.
+		} else {
+			$("#"+table_to_expand).slideUp("medium", function() {
+				$(this).hide(); 
+			});
+		}
+	})
+});
+
