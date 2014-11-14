@@ -22,6 +22,10 @@
         });  
     </script>
     
+    <script type=text/javascript>
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    
     {% if title %}
     <title>{{title}} - microblog</title>
     {% else %}
