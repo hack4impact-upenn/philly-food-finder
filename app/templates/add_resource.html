@@ -18,12 +18,11 @@
 	    	medium-centered">
 	    	<label>Food Resource Type
 		    	<select>
-					<option value="husker">Farmers' Market</option>
-					<option value="hotdog">Food Cupboard</option>
-		          	<option value="starbuck">Meals on Wheels</option>
-		          	<option value="apollo">Soup Kitchen</option>
-		          	<option value="apollo">SHARE Food Site</option>
-		          	<option value="apollo">WIC Office</option>
+		    		{% for resource_info in resources_info %}
+						<option value="{{ resource_info.id }}-option">
+							{{ resource_info.name }}
+						</option>
+					{% endfor %}
 		    	</select>
 	      	</label>
 	    </div>
