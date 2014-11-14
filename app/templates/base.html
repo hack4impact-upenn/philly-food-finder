@@ -46,8 +46,8 @@
   <section class="top-bar-section"> 
     <!-- Right Nav Section -->
     <ul class="right">
-      {% if g.user %}
-        <li class="active"><a href="#"> Logged in as {{ g.user.email }} </a></li>
+      {% if current_user.is_authenticated() %}
+        <li class="active"><a href="#"> Logged in as {{ current_user.email }} </a></li>
       {% endif %}
       <li class="has-dropdown">
         <a href="#">Right Button Dropdown</a>
@@ -68,5 +68,9 @@
     {% block content %}
 
     {% endblock %}
+
+      {% if current_user.is_authenticated() %}
+        <h5> Logged in as {{ current_user.email }} </h5>
+      {% endif %}
   </body>
 </html>

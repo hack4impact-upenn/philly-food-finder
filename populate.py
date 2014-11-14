@@ -226,16 +226,20 @@ for timeslot in timeslots_list_5:
 db.session.commit()
 
 # Create 3 admin users
-u1 = User(email='ben@ben.com', password = 'pass123', 
+u1 = User(email='ben@ben.com', password = 'pass123', is_enabled = True,
             first_name = 'Ben', last_name = 'Sandler', 
             roles=[Role(name = 'Admin')])
-u2 = User(email = 'steve@gmail.com', password = 'p@$$w0rd', 
+u2 = User(email = 'steve@gmail.com', password = 'p@$$w0rd', is_enabled = True,
             first_name = 'Steve', 
             last_name = 'Smith', roles = [Role(name = 'Admin')])
 u3 = User(email = 'sarah@gmail.com',
             password = '139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#', 
-            first_name = 'Sarah', last_name = 'Smith', 
+            is_enabled = True, first_name = 'Sarah', last_name = 'Smith', 
             roles = [Role(name = 'Admin')])
+
+u1.confirm_and_enable_debug()
+u2.confirm_and_enable_debug()
+u3.confirm_and_enable_debug()
 
 # Add each new object to session and commit session. 
 db.session.add(u1)

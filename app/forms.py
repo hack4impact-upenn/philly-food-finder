@@ -1,7 +1,9 @@
 from app import app
 from flask.ext.wtf import Form
-from wtforms import TextField, TextAreaField, validators, PasswordField, StringField, BooleanField, SubmitField
+from wtforms import TextField, TextAreaField, validators, PasswordField, StringField, BooleanField, SubmitField, HiddenField
 from wtforms.validators import InputRequired, Length, URL, Email
+from flask_user.forms import RegisterForm, unique_email_validator
+from flask_user.translations import lazy_gettext as _
 
 # Information about a new food resource. 
 class AddNewFoodResourceForm(Form):
@@ -77,3 +79,24 @@ class RequestNewFoodResourceForm(AddNewFoodResourceForm):
         validators = [
             InputRequired("Please provide a phone number at which we can contact you.")
         ])   
+
+class InviteForm(RegisterForm):
+    password_validator_added = False
+
+    next = HiddenField()        # for login_or_register.html
+    reg_next = HiddenField()    # for register.html
+
+    email = StringField(_('Email'), validators=[
+        validators.Required(_('Email is required')),
+        validators.Email(_('Invalid Email')),
+        unique_email_validator])
+
+    first_name = StringField(_('First Name'), validators=[
+        validators.Required(_('First Name is required'))
+        ])
+
+    last_name = StringField(_('Last Name'), validators=[
+        validators.Required(_('First Name is required'))
+        ]
+        
+    submit = SubmitField(_('Invite'))

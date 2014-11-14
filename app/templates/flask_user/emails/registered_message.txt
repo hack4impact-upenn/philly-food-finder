@@ -1,15 +1,16 @@
 {% extends 'flask_user/emails/base_message.txt' %}
 
 {% block message %}
-Thank you for registering with {{ app_name }}.
+You've been invited to become an Admin for {{ app_name }}.
 
 {% if user_manager.enable_confirm_email -%}
-You will need to confirm your email next.
+You will need to confirm your email and change your password next.
 
-If you initiated this registration, please visit the link below:
+Your temporary password is:
+	439rijfeks
+
+Please visit the link below:
     {{ confirm_email_link }}
-
-If you did not initiate this registration, you may safely ignore this email.
 
 {%- endif %}
 {% endblock %}

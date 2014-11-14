@@ -60,39 +60,6 @@ class FoodResource(db.Model):
 			'phone_number': self.phone_number, 
 			'description': self.description
 		}
-
-class User(db.Model, UserMixin):
-	id = db.Column(db.Integer, primary_key=True)
-
-	# User Authentication information
-	password = db.Column(db.String(255), nullable=False, default='')
-	reset_password_token = db.Column(db.String(100), nullable=False, default='')
-
-	# User Email information
-	email = db.Column(db.String(255), nullable=False, unique=True)
-	confirmed_at = db.Column(db.DateTime(), default = datetime.now()) #this is also for debug
-
-	# User information
-	is_enabled = db.Column(db.Boolean(), nullable=False, default=True)  #this is only for debug!
-	first_name = db.Column(db.String(50), nullable=False, default='')
-	last_name = db.Column(db.String(50), nullable=False, default='')
-
-	roles = db.relationship('Role', secondary='user_roles',
-			backref=db.backref('users', lazy='dynamic'))
-
-	def is_active(self):
-		return self.is_enabled
-
-	def verify_password(self, attept):
-		return app.user_manager.verify_password(attept, self.password)
-
-	def __init__(self, email, password, first_name, last_name, roles):
-		self.email = email
-		self.password = app.user_manager.hash_password(password = password)
-		self.first_name = first_name
-		self.last_name = last_name
-		self.roles = roles
-
 class Role(db.Model):
 	role_type_enums = ('User','Admin')
 	id = db.Column(db.Integer(), primary_key=True)
@@ -105,3 +72,40 @@ class UserRoles(db.Model):
 		ondelete='CASCADE'))
 	role_id = db.Column(db.Integer(), db.ForeignKey('role.id', 
 		ondelete='CASCADE'))
+
+class User(db.Model, UserMixin):
+	id = db.Column(db.Integer, primary_key=True)
+
+	# User Authentication information
+	password = db.Column(db.String(255), nullable=False, default='')
+	reset_password_token = db.Column(db.String(100), nullable=False, default='')
+
+	# User Email information
+	email = db.Column(db.String(255), nullable=False, unique=True)
+	confirmed_at = db.Column(db.DateTime())
+
+	# User information
+	is_enabled = db.Column(db.Boolean(), nullable=False, default=False)
+	first_name = db.Column(db.String(50), nullable=False, default='')
+	last_name = db.Column(db.String(50), nullable=False, default='')
+
+	roles = db.relationship('Role', secondary='user_roles',
+			backref=db.backref('users', lazy='dynamic'))
+
+	def is_active(self):
+		return self.is_enabled
+
+	def verify_password(self, attept):
+		return app.user_manager.verify_password(attept, self.password)
+
+	def confirm_and_enable_debug(self):
+		self.confirmed_at = datetime.now()
+		self.is_enabled = True
+
+	def __init__(self, email, password, is_enabled, first_name = '', last_name = '', roles = [Role(name = 'Admin')]):
+		self.email = email
+		self.password = app.user_manager.hash_password(password = password)
+		self.first_name = first_name
+		self.last_name = last_name
+		self.roles = roles
+		self.is_enabled = is_enabled
