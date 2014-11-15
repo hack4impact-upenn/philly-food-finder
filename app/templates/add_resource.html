@@ -171,13 +171,13 @@
 	    	medium-centered">
       		<div class="large-4 small-4 columns">
       			<label>{{ day_of_week.name }}
-			    	<select name='{{ day_of_week.id }}-open-or-closed'>
+			    	<select name='{{ day_of_week.id }}-open-or-closed' class='open-or-closed'>
+			    		<option value="closed">Closed</option>
 						<option value="open">Open</option>
-						<option value="closed">Closed</option>
 			    	</select>
       			</label>
       		</div>
-      		<div class="large-4 small-4 columns">
+      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker">
       			<label>Opens at
 			    	<select name='{{ day_of_week.id }}-opening-time'>
 			    		{% for hour in [8, 9, 10, 11, 12, 1, 2, 3, 4, 5] %}
@@ -192,7 +192,7 @@
 			    	</select>
       			</label>
       		</div>
-      		<div class="large-4 small-4 columns">
+      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker">
       			<label>Closes at
 			    	<select name='{{ day_of_week.id }}-closing-time'>
 			    		{% for hour in [11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
