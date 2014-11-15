@@ -97,6 +97,35 @@ class InviteForm(RegisterForm):
 
     last_name = StringField(_('Last Name'), validators=[
         validators.Required(_('First Name is required'))
-        ]
-        
+        ])
     submit = SubmitField(_('Invite'))
+
+    def validate(self):
+        # remove certain form fields depending on user manager config
+        user_manager =  app.user_manager
+        if not user_manager.enable_username:
+            delattr(self, 'username')
+        if not user_manager.enable_email:
+            delattr(self, 'email')
+        if not user_manager.enable_retype_password:
+            delattr(self, 'retype_password')
+        # Add custom username validator if needed
+        if user_manager.enable_username:
+            has_been_added = False
+            for v in self.username.validators:
+                if v==user_manager.username_validator:
+                    has_been_added = True
+            if not has_been_added:
+                self.username.validators.append(user_manager.username_validator)
+        # Add custom password validator if needed
+        has_been_added = False
+        for v in self.password.validators:
+            if v==user_manager.password_validator:
+                has_been_added = True
+        if not has_been_added:
+            self.password.validators.append(user_manager.password_validator)
+        # Validate field-validators
+        # if not super(RegisterForm, self).validate():
+        #     return False
+        # All is well
+        return True

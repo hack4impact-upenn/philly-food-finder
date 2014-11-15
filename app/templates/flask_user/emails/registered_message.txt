@@ -7,7 +7,7 @@ You've been invited to become an Admin for {{ app_name }}.
 You will need to confirm your email and change your password next.
 
 Your temporary password is:
-	439rijfeks
+	{{ g.temp_password }}
 
 Please visit the link below:
     {{ confirm_email_link }}
