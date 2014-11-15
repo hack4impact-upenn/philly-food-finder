@@ -13,8 +13,6 @@
     <script src="/static/js/vendor/jquery.js"></script>
     <script src="/static/js/foundation.min.js"></script>
     <script src="/static/js/custom.js"></script>
-    <script src="/static/js/foundation/foundation.js"></script>
-    <script src="/static/js/foundation/foundation.magellan.js"></script>
 
     <!-- Don't launch the Foundation JS until the DOM has loaded -->
     <script>
@@ -35,65 +33,40 @@
 
   </head>
   <body>
-<!--
-  <nav class="top-bar" data-topbar role="navigation">
-    <ul class="title-area">
-      <li class="name">
-        <h1><a href="#">My Site</a></h1>
-
-    <nav class="top-bar" data-topbar role="navigation">
-  <ul class="title-area">
-    <li class="name">
-      <h1><a href="#">My Site</a></h1>
-    </li>
-     <Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone 
-    <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-  </ul>
-
-  <section class="top-bar-section"> 
-    <Right Nav Section -
-    <ul class="right">
-      <li class="active"><a href="#">Right Button Active</a></li>
-      <li class="has-dropdown">
-        <a href="#">Right Button Dropdown</a>
-        <ul class="dropdown">
-          <li><a href="#">First link in dropdown</a></li>
-          <li class="active"><a href="#">Active link in dropdown</a></li>
+    <div class="fixed sticky">
+      <nav class="top-bar" data-topbar role="navigation" 
+           data-options="sticky_on: large">
+        <ul class="title-area">
+          <li class="name">
+            <h1><a href="#"><img src="../static/img/FPAC_logo.svg"/></a></h1>
+          </li>
+          <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a></li>
         </ul>
-      </li>
-      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
-    </ul>
--->
-  <section class="top-bar-section">
-  <div data-magellan-expedition="fixed">
-    <dl class="sub-nav" id="top-header">
-      <dd data-magellan-arrival="map"><a href="#map">logo</a</dd>
-      <dd data-magellan-arrival="map"><a href="#map">map</a></dd>
-      <dd data-magellan-arrival="js"><a href="#js">faq</a></dd>
-      <dd data-magellan-arrival="about"><a href="#about">about</a></dd>
-      <dd data-magellan-arrival="contact"><a href="#contact">contact</a></dd>
-<!--      <dd data-magellan-arrival="admin"><a href="#admin">admin</a></dd> -->
-  </dl>
-  </div>
 
+        <section class="top-bar-section">
+          <ul class="left">
+            <li><a href="#" id="l_map">map</a></li>
+            <li><a href="#" id="l_faq">faq</a></li>
+            <li><a href="#" id="l_about">about</a></li>
+            <li><a href="#" id="l_contact">contact</a></li>
+            
+          </ul>
+        </section>
+      </nav>
+    </div>
 
-  </nav>
-
-
-    {% block content %}{% endblock %}
-
- <!-- sections of stuff
-  <a name="map"></a>
-  <h3 data-magellan-destination="map">map</h3>
-
-  <a name="faq"></a>
-  <h3 data-magellan-destination="faq">faq</h3>
--->
-
-
-=======
     {% block content %}
 
     {% endblock %}
+
+    <!-- sections of stuff
+    <a name="map"></a>
+    <h3 data-magellan-destination="map">map</h3>
+
+    <a name="faq"></a>
+    <h3 data-magellan-destination="faq">faq</h3>
+    -->
+
+
   </body>
 </html>
