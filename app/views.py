@@ -2,7 +2,7 @@ from app import app, db, utils
 from models import Address, FoodResource, TimeSlot, User
 from forms import RequestNewFoodResourceForm
 from utils import generate_password
-from flask import render_template, flash, redirect, session, url_for, request, g, jsonify
+from flask import render_template, flash, redirect, session, url_for, request, g, jsonify, current_app
 from flask_user import login_required, signals
 from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
@@ -36,16 +36,16 @@ def admin():
 
 @login_required
 def invite():
-	""" Display registration form and create new User."""
-	user_manager =  app.user_manager
+	""" Display invite form and create new User."""
+	user_manager =  current_app.user_manager
 	db_adapter = user_manager.db_adapter
 
 	next = request.args.get('next', _endpoint_url(user_manager.after_login_endpoint))
 	reg_next = request.args.get('reg_next', _endpoint_url(user_manager.after_register_endpoint))
 
-	# Initialize form
-	login_form = user_manager.login_form()                      # for login_or_register.html
-	register_form = user_manager.register_form(request.form)    # for register.html
+	login_form = user_manager.login_form()                      
+	register_form = user_manager.register_form(request.form)   
+
 	if request.method!='POST':
 		login_form.next.data     = register_form.next.data     = next
 		login_form.reg_next.data = register_form.reg_next.data = reg_next
@@ -53,18 +53,15 @@ def invite():
 	# Process valid POST
 	if request.method=='POST' and register_form.validate():
 
-		# Create a User object using Form fields that have a corresponding User field
 		User = db_adapter.UserClass
 		user_class_fields = User.__dict__
 		user_fields = {}
 
-		# Create a UserEmail object using Form fields that have a corresponding UserEmail field
 		if db_adapter.UserEmailClass:
 			UserEmail = db_adapter.UserEmailClass
 			user_email_class_fields = UserEmail.__dict__
 			user_email_fields = {}
 
-		# Create a UserAuth object using Form fields that have a corresponding UserAuth field
 		if db_adapter.UserAuthClass:
 			UserAuth = db_adapter.UserAuthClass
 			user_auth_class_fields = UserAuth.__dict__
@@ -87,26 +84,19 @@ def invite():
 				user_fields['is_active'] = True
 
 		# For all form fields
-		for field_name, field_value in register_form.data.items():
-			# Hash password field
-			if field_name=='password':
-				hashed_password = user_manager.hash_password(field_value)
-				if db_adapter.UserAuthClass:
-					user_auth_fields['password'] = hashed_password
-				else:
-					user_fields['password'] = hashed_password
+		for field_name, field_value in register_form.data.items():	
 			# Store corresponding Form fields into the User object and/or UserProfile object
-			else:
-				if field_name in user_class_fields:
-					user_fields[field_name] = field_value
-				if db_adapter.UserEmailClass:
-					if field_name in user_email_class_fields:
-						user_email_fields[field_name] = field_value
-				if db_adapter.UserAuthClass:
-					if field_name in user_auth_class_fields:
-						user_auth_fields[field_name] = field_value
-		# Creates temporary password
-		password = generate_password(7)
+			if field_name in user_class_fields:
+				user_fields[field_name] = field_value
+			if db_adapter.UserEmailClass:
+				if field_name in user_email_class_fields:
+					user_email_fields[field_name] = field_value
+			if db_adapter.UserAuthClass:
+				if field_name in user_auth_class_fields:
+					user_auth_fields[field_name] = field_value
+
+		# Generates temporary password
+		password = generate_password(9)
 		if db_adapter.UserAuthClass:
 			user_auth_fields['password'] = password
 		else:
@@ -135,13 +125,12 @@ def invite():
 				user = user_auth
 			else:
 				user.user_auth = user_auth
-
 		db_adapter.commit()
 
-		# Send 'registered' email and delete new User object if send fails
+		# Send 'invite' email and delete new User object if send fails
 		if user_manager.send_registered_email:
 			try:
-				# Send 'registered' email
+				# Send 'invite' email
 				_send_registered_email(user, user_email)
 			except Exception as e:
 				# delete new User object if send  fails
@@ -150,7 +139,7 @@ def invite():
 				raise e
 
 		# Send user_registered signal
-		signals.user_registered.send(app._get_current_object(), user=user)
+		signals.user_registered.send(current_app._get_current_object(), user=user)
 
 		# Redirect if USER_ENABLE_CONFIRM_EMAIL is set
 		if user_manager.enable_confirm_email:
@@ -169,6 +158,11 @@ def invite():
 			form=register_form,
 			login_form=login_form,
 			register_form=register_form)
+
+@app.route('/_invite_sent')
+def invite_sent():
+	return render_template('invite_sent.html')
+
 
 @app.route('/_admin')
 def get_food_resource_data():

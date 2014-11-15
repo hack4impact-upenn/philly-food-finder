@@ -98,6 +98,7 @@ class User(db.Model, UserMixin):
 	def verify_password(self, attept):
 		return app.user_manager.verify_password(attept, self.password)
 
+	# This function is only for the tests in tests.py
 	def confirm_and_enable_debug(self):
 		self.confirmed_at = datetime.now()
 		self.is_enabled = True

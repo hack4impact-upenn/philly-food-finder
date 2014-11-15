@@ -1,4 +1,5 @@
 from app import app
+from flask import current_app
 from flask.ext.wtf import Form
 from wtforms import TextField, TextAreaField, validators, PasswordField, StringField, BooleanField, SubmitField, HiddenField
 from wtforms.validators import InputRequired, Length, URL, Email
@@ -80,17 +81,9 @@ class RequestNewFoodResourceForm(AddNewFoodResourceForm):
             InputRequired("Please provide a phone number at which we can contact you.")
         ])   
 
+# Form to invite new admin.
+# Subclassed from 'flask_user.forms.RegisterForm'
 class InviteForm(RegisterForm):
-    password_validator_added = False
-
-    next = HiddenField()        # for login_or_register.html
-    reg_next = HiddenField()    # for register.html
-
-    email = StringField(_('Email'), validators=[
-        validators.Required(_('Email is required')),
-        validators.Email(_('Invalid Email')),
-        unique_email_validator])
-
     first_name = StringField(_('First Name'), validators=[
         validators.Required(_('First Name is required'))
         ])
@@ -98,17 +91,21 @@ class InviteForm(RegisterForm):
     last_name = StringField(_('Last Name'), validators=[
         validators.Required(_('First Name is required'))
         ])
-    submit = SubmitField(_('Invite'))
 
+    submit = SubmitField(_('Invite'))
+    
+    # Override RegisterForm's validate function so that a temporary password can be set 
     def validate(self):
         # remove certain form fields depending on user manager config
-        user_manager =  app.user_manager
+        user_manager =  current_app.user_manager
+        delattr(self, 'password')
+        delattr(self, 'retype_password')
+
         if not user_manager.enable_username:
             delattr(self, 'username')
         if not user_manager.enable_email:
             delattr(self, 'email')
-        if not user_manager.enable_retype_password:
-            delattr(self, 'retype_password')
+
         # Add custom username validator if needed
         if user_manager.enable_username:
             has_been_added = False
@@ -117,15 +114,9 @@ class InviteForm(RegisterForm):
                     has_been_added = True
             if not has_been_added:
                 self.username.validators.append(user_manager.username_validator)
-        # Add custom password validator if needed
-        has_been_added = False
-        for v in self.password.validators:
-            if v==user_manager.password_validator:
-                has_been_added = True
-        if not has_been_added:
-            self.password.validators.append(user_manager.password_validator)
+        
         # Validate field-validators
-        # if not super(RegisterForm, self).validate():
-        #     return False
-        # All is well
+        if not super(RegisterForm, self).validate():
+            return False
+
         return True
