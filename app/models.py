@@ -18,6 +18,8 @@ class TimeSlot(db.Model):
 	end_time = db.Column(db.Time)
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
+# Represents a start and end month for a resource. 
+# For example OpenMonthPair(3,5) means the resource is open from March to May.
 class OpenMonthPair(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	start_month = db.Column(db.Integer)
