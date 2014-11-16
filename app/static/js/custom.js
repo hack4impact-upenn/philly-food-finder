@@ -16,10 +16,21 @@ $(document).ready(function() {
         	a: "hello",
         	b: "goodbye"
       	}, function(data) {
-        	console.log(data["names"][0]["name"]); 
-
+        	console.log(data); 
         	// create table entries with data in them
       	});
+      			// If the table is currently hidden, show the table.
+		if ($("#"+table_to_expand).is(":hidden")) {
+			$("#"+table_to_expand).slideDown("medium", function() {
+				$(this).show(); 
+			});
+		// Else hide the table.
+		} else {
+			$("#"+table_to_expand).slideUp("medium", function() {
+				$(this).hide(); 
+			});
+		}
+	})
 
     $("#start_edit").click(function() {
 		CKEDITOR.disableAutoInline = true;
@@ -49,17 +60,20 @@ $(document).ready(function() {
             } 
         });*/
 
-		// If the table is currently hidden, show the table.
-		if ($("#"+table_to_expand).is(":hidden")) {
-			$("#"+table_to_expand).slideDown("medium", function() {
-				$(this).show(); 
-			});
-		// Else hide the table.
-		} else {
-			$("#"+table_to_expand).slideUp("medium", function() {
-				$(this).hide(); 
-			});
-		}
-	})
+	// Hide all time-selectors iniially.
+	$("[class$='-time-picker']").hide(); 
+
+	$('select.open-or-closed').on('change', function (e) {
+	    var optionSelected = $("option:selected", this);
+	    var valueSelected = this.value;
+	    var parentName = optionSelected.parent().attr("name"); 
+	    var endIndex = parentName.indexOf("-"); 
+	    var dayOfWeek = parentName.substring(0, endIndex);
+	    if (valueSelected == "open") {
+	    	$("." + dayOfWeek + "-time-picker").show();
+	    } else if (valueSelected == "closed") {
+	    	$("." + dayOfWeek + "-time-picker").hide();
+	    }
+	});
 });
 
