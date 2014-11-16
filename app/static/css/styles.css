@@ -57,3 +57,7 @@
 .expand {
 	cursor: pointer; 
 }
+
+.error {
+	text-transform:none;
+}
