@@ -21,49 +21,55 @@ def index():
 @app.route('/new_food_resource', methods=['GET', 'POST'])
 def new_food_resource():
     form = AddNewFoodResourceForm(request.form)
-    if request.method == 'POST' and form.validate():
+    additional_errors = []
+    if request.method == 'POST' and form.validate(): 
+        # Create food resource's timeslots.
         timeslots = []
+        is_timeslot_valid = True
         for i, day_of_week in enumerate(days_of_week): 
             if (request.form[day_of_week['id'] + '-open-or-closed'] == "open"):
                 opening_time = request.form[day_of_week['id'] + '-opening-time']
                 start_time = get_time(opening_time)
                 closing_time = request.form[day_of_week['id'] + '-closing-time']
                 end_time = get_time(closing_time)
-                timeslot = TimeSlot(day_of_week = i, start_time = start_time, 
-                    end_time = end_time)
-                db.session.add(timeslot)
-                timeslots.append(timeslot)
-        address = Address(
-            line1 = form.address_line1.data, 
-            line2 = form.address_line2.data, 
-            city = form.address_city.data, 
-            state = form.address_state.data, 
-            zip_code = form.address_zip_code.data)
-        db.session.add(address)
-        phone_numbers = []
-        phone_number = PhoneNumber(number = form.phone_number.data)
-        db.session.add(phone_number)
-        phone_numbers.append(phone_number)
-        food_resource = FoodResource(
-            name = form.name.data, 
-            phone_numbers = phone_numbers,
-            description = form.additional_information.data,
-            timeslots = timeslots,
-            address = address)
-        for resource_info in resources_info_singular:
-            if (request.form['food-resource-type'] == resource_info['id']+'-option'):
-                food_resource.location_type = resource_info['enum']
-        db.session.add(food_resource)
-        db.session.commit()
-        #food_resource = FoodResource()
-        # user = User(form.username.data, form.email.data,
-        #             form.password.data)
-        # db_session.add(user)
-        # flash('Thanks for registering')
-        # return redirect(url_for('login'))
-        return redirect(url_for('index'))
+                if start_time >= end_time: 
+                    is_timeslot_valid = False
+                    additional_errors.append("Opening time must be before closing time.")
+                if is_timeslot_valid:
+                    timeslot = TimeSlot(day_of_week = i, start_time = start_time, 
+                        end_time = end_time)
+                    db.session.add(timeslot)
+                    timeslots.append(timeslot)
+        # Create food resource's address.
+        if is_timeslot_valid:
+            address = Address(
+                line1 = form.address_line1.data, 
+                line2 = form.address_line2.data, 
+                city = form.address_city.data, 
+                state = form.address_state.data, 
+                zip_code = form.address_zip_code.data)
+            db.session.add(address)
+            # Create food resource's phone number.
+            phone_numbers = []
+            phone_number = PhoneNumber(number = form.phone_number.data)
+            db.session.add(phone_number)
+            phone_numbers.append(phone_number)
+            # Create food resource and store all data in it.
+            food_resource = FoodResource(
+                name = form.name.data, 
+                phone_numbers = phone_numbers,
+                description = form.additional_information.data,
+                timeslots = timeslots,
+                address = address)
+            for resource_info in resources_info_singular:
+                if (request.form['food-resource-type'] == resource_info['id']+'-option'):
+                    food_resource.location_type = resource_info['enum']
+            db.session.add(food_resource)
+            db.session.commit()
+            return redirect(url_for('index'))
     return render_template('add_resource.html', form=form, 
-        days_of_week=days_of_week, resources_info=resources_info_singular)
+        days_of_week=days_of_week, resources_info=resources_info_singular, 
+        additional_errors=additional_errors)
 
 @app.route('/admin')
 @login_required

@@ -15,6 +15,6 @@ def get_time(time_string):
 	time_hour = int(time_string[:first_dash])
 	time_minute = int(time_string[first_dash+1:second_dash])
 	am_or_pm = time_string[second_dash+1:]
-	if (am_or_pm == "pm"):
+	if (am_or_pm == "pm" and time_hour != 12):
 		time_hour += 12
 	return time(time_hour, time_minute)
