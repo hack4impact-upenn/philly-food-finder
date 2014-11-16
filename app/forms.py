@@ -21,10 +21,7 @@ class AddNewFoodResourceForm(Form):
             InputRequired("Please provide the food resource's name.")
         ])
     phone_number = TextField(
-        label = 'Phone Number',
-        validators = [
-            InputRequired("Please provide a phone number.")
-        ])
+        label = 'Phone Number')
     address_line1 = TextField(
         label = 'Address Line 1', 
         validators = [
@@ -59,6 +56,9 @@ class AddNewFoodResourceForm(Form):
         validators = [
             Length(0, 300)
         ])
+
+    def validate(self):
+        return super(Form, self).validate()
 
 # Information about the person submitting the food resource for evaluation. 
 # Subclassed from 'AddNewFoodResourceForm'

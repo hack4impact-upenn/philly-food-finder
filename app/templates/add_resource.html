@@ -6,6 +6,20 @@
 <form action="" method="POST" role="form" name="submit_food_resource">
     {{ form.hidden_tag() }}
 
+    <div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	        	{% if additional_errors %}
+	                {% for e in additional_errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
+	      	</label>
+	    </div>
+	</div>
+
     {% set field = form.name %}
     <div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
