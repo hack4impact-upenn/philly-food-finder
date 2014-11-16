@@ -1,4 +1,5 @@
 from app import app, db, utils
+from utils import get_time
 from models import *
 from forms import AddNewFoodResourceForm, RequestNewFoodResourceForm
 from flask import render_template, flash, redirect, session, url_for, request, \
@@ -25,9 +26,11 @@ def new_food_resource():
         for i, day_of_week in enumerate(days_of_week): 
             if (request.form[day_of_week['id'] + '-open-or-closed'] == "open"):
                 opening_time = request.form[day_of_week['id'] + '-opening-time']
+                start_time = get_time(opening_time)
                 closing_time = request.form[day_of_week['id'] + '-closing-time']
-                timeslot = TimeSlot(day_of_week = i, start_time = time(8,0), 
-                    end_time = time(18,30))
+                end_time = get_time(closing_time)
+                timeslot = TimeSlot(day_of_week = i, start_time = start_time, 
+                    end_time = end_time)
                 db.session.add(timeslot)
                 timeslots.append(timeslot)
         address = Address(
