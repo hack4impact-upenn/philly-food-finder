@@ -1,5 +1,5 @@
 from app import app, db, utils
-from models import Address, FoodResource, TimeSlot, User
+from models import *
 from forms import AddNewFoodResourceForm, RequestNewFoodResourceForm
 from flask import render_template, flash, redirect, session, url_for, request, \
     g, jsonify, current_app
@@ -37,12 +37,19 @@ def new_food_resource():
             state = form.address_state.data, 
             zip_code = form.address_zip_code.data)
         db.session.add(address)
+        phone_numbers = []
+        phone_number = PhoneNumber(number = form.phone_number.data)
+        db.session.add(phone_number)
+        phone_numbers.append(phone_number)
         food_resource = FoodResource(
             name = form.name.data, 
-            phone_number = form.phone_number.data,
+            phone_numbers = phone_numbers,
             description = form.additional_information.data,
             timeslots = timeslots,
             address = address)
+        for resource_info in resources_info_singular:
+            if (request.form['food-resource-type'] == resource_info['id']+'-option'):
+                food_resource.location_type = resource_info['enum']
         db.session.add(food_resource)
         db.session.commit()
         #food_resource = FoodResource()
