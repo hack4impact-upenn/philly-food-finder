@@ -11,6 +11,15 @@ class Address(db.Model):
 	state = db.Column(db.String(2))
 	zip_code = db.Column(db.String(5))
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+	def serialize_address(self):
+		return {
+		'id': self.id,
+		'line1': self.line1,
+		'line2': self.line2,
+		'city': self.city,
+		'state': self.state,
+		'zip_code': self.zip_code
+		}
 
 class TimeSlot(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -18,6 +27,13 @@ class TimeSlot(db.Model):
 	start_time = db.Column(db.Time)
 	end_time = db.Column(db.Time)
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+	def serialize_timeslot(self):
+		return {
+		'id': self.id,
+		'day_of_week': self.day_of_week,
+		'start_time': self.start_time,
+		'end_time': self.end_time
+		}
 
 class FoodResource(db.Model):
 	food_resource_type_enums = ('FARMERS_MARKET','MEALS_ON_WHEELS',
@@ -46,6 +62,16 @@ class FoodResource(db.Model):
 			'name': self.name, 
 			'phone_number': self.phone_number, 
 			'description': self.description
+		}
+
+	def serialize_map_list(self):
+		return {
+			'id': self.id,
+			'name': self.name,
+			'phone_number': self.phone_number,
+			'description': self.description,
+			'location_type': self.location_type,
+			'address': self.address.serialize_address()
 		}
 
 class User(db.Model, UserMixin):
