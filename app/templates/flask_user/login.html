@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% from "flask_user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
+
+<div class = "row">
+    <h1>{%trans%}Sign in{%endtrans%}</h1>
+</div>
+
+<form action="" method="POST" class="form" role="form">
+    {{ form.hidden_tag() }}
+
+    {% set field = form.username if user_manager.enable_username else form.email %}
+        <div class="row">
+            <div class="large-6 columns">
+                <dt>{{ form.email.label }}
+                <dd class="error">{{ form.email()|safe }}
+                {% if field.errors %}
+                    {% for e in field.errors %}
+                        <small class="error">{{ e }}</small>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+    {% set field = form.password %}
+        <div class="row">
+            <div class="large-6 columns">
+                <dt>{{ form.password.label }}
+                <dd class="error">{{ form.password()|safe }}
+                    {% if field.errors %}
+                        {% for e in field.errors %}
+                            {% if e %}
+                                <small class="error">{{ e }}</small>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+            </div>
+        </div>
+        
+    <div class = "row">
+        {# Remember me #}
+        {% if user_manager.enable_remember_me %}
+        {{ render_checkbox_field(login_form.remember_me, tabindex=130) }}
+        {% endif %}
+    </div>
+
+    <div class = "row">
+        {# Submit button #}
+        {{ render_submit_field(form.submit, tabindex=180) }}
+    </div>
+</form>
+
+{% endblock %}

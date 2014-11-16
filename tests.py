@@ -5,7 +5,7 @@ from datetime import time
 from sqlalchemy.exc import IntegrityError
 from app import app, db
 from config import basedir
-from app.models import Address, FoodResource, TimeSlot, User, Role
+from app.models import Address, FoodResource, TimeSlot, User, Role, PhoneNumber
 
 class TestCase(unittest.TestCase):
 
@@ -59,16 +59,19 @@ class TestCase(unittest.TestCase):
             porttitor elit. Integer volutpat elementum tristique. Ut interdum, 
             mauris a feugiat euismod, tortor."""
 
-        self.u1 = User(username = 'ben', password = 'pass123', 
-            email='ben@ben.com', first_name = 'Ben', last_name = 'Sandler', 
+        self.u1 = User(email='ben@ben.com', password = 'pass123', 
+            first_name = 'Ben', last_name = 'Sandler', 
             roles=[Role(name = 'User')])
-        self.u2 = User(username = 'steve', password = 'p@$$w0rd', 
-            email = 'steve@gmail.com', first_name = 'Steve', 
+        self.u2 = User(email = 'steve@gmail.com', password = 'p@$$w0rd', 
+            first_name = 'Steve', 
             last_name = 'Smith', roles = [Role(name = 'User')])
-        self.u3 = User(username = 'sarah', 
+        self.u3 = User(email = 'sarah@gmail.com',
             password = '139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#', 
-            email = 'sarah@gmail.com', first_name = 'Sarah', last_name = 'Smith', 
+            first_name = 'Sarah', last_name = 'Smith', 
             roles = [Role(name = 'Admin')])
+
+        self.p1 = PhoneNumber(number = '1234567898')
+        self.p2 = PhoneNumber(number = '9876543215')
 
     # Adds two valid addresses to the database and then checks that both can be 
     # retrieved and that a bad query returns no results.
@@ -76,17 +79,15 @@ class TestCase(unittest.TestCase):
     	db.session.add(self.a1)
     	db.session.add(self.a2)
     	db.session.commit()
-    	assert len(Address.query
-            .filter_by(zip_code = '14109').all()) == 2
-    	assert len(Address.query
-            .filter_by(zip_code = '14109', city = 'New York').all()) == 0
+    	assert len(Address.query.filter_by(zip_code = '14109').all()) == 2
+    	assert len(Address.query.filter_by(zip_code = '14109', city = 'New York').all()) == 0
 
     # Adds a valid Address to the database and then makes sure it can be 
     # retrieved by name and address.
     def test_create_valid_food_resource(self):
 
         r1 = FoodResource(name = 'Test Food Resource 1', address = self.a1, 
-            phone_number = '1234567898', timeslots = self.timeslots_list,
+            phone_numbers=[self.p2], timeslots = self.timeslots_list,
             description = self.desc, location_type = 'FARMERS_MARKET')
         db.session.add(r1)
         db.session.commit()
@@ -102,14 +103,14 @@ class TestCase(unittest.TestCase):
     def test_create_invalid_food_resource_enum_resource(self):
       self.assertRaises(IntegrityError, 
         r1 = FoodResource(name = 'Test Food Resource 1', address = self.a2,
-            phone_number = '1234567898', timeslots = self.timeslots_list, 
+            phone_numbers = [self.p2], timeslots = self.timeslots_list, 
             description = self.desc, location_type = 'WRONG_ENUM!!!!!!!!!!!!!'))
 
     def test_create_user(self):
         db.session.add(self.u1)
         db.session.commit()
         assert len(Role.query.filter_by(name = 'User').all()) == 1
-        u = User.query.filter_by(username = 'ben').first()
+        u = User.query.filter_by(email = 'ben@ben.com').first()
         assert u
         assert u.verify_password('pass123')
         assert not(u.verify_password('pass124'))
@@ -122,7 +123,7 @@ class TestCase(unittest.TestCase):
         assert len(Role.query.filter_by(name = 'User').all()) == 2
         assert len(Role.query.filter_by(name = 'Admin').all()) == 1
         assert len(Role.query.filter_by(name = 'N/A').all()) == 0
-        u = User.query.filter_by(username = 'sarah').first()
+        u = User.query.filter_by(email = 'sarah@gmail.com').first()
         assert u.verify_password('139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#')
         assert not(u.verify_password('239rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#'))
 
