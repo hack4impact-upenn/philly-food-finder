@@ -2,6 +2,20 @@ body {
   background: #fdd800;
 }
 
+/* Food Resource Form */
+h1 {
+  margin: 0.67em 50;
+}
+
+#test {
+  margin-bottom: 15px;
+}
+
+.select {
+  padding-bottom: 100px;
+}
+
+/* HEADER */
 .top-bar {
   background: #FFF;
   height: 70px;
