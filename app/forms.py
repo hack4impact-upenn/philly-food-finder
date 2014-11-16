@@ -1,8 +1,10 @@
 from app import app
 from flask import current_app
 from flask.ext.wtf import Form
-from wtforms import TextField, TextAreaField, validators, PasswordField, StringField, BooleanField, SubmitField, HiddenField
 from wtforms.validators import InputRequired, Length, URL, Email
+from variables import opening_times
+from wtforms import TextField, TextAreaField, validators, PasswordField, \
+    StringField, BooleanField, SubmitField, HiddenField, SelectField
 from flask_user.forms import RegisterForm, unique_email_validator
 from flask_user.translations import lazy_gettext as _
 
@@ -18,16 +20,18 @@ class AddNewFoodResourceForm(Form):
         validators = [
             InputRequired("Please provide the food resource's name.")
         ])
+    phone_number = TextField(
+        label = 'Phone Number')
     address_line1 = TextField(
-        label = 'Address Line #1', 
+        label = 'Address Line 1', 
         validators = [
             InputRequired("Please provide the food resource's address."),
             Length(1, 100) # same max length as in Address model.
         ])
     address_line2 = TextField(
-        label = 'Address Line #1', 
+        label = 'Address Line 2', 
         validators = [
-            Length(1, 100) # Same max length as in Address model.
+            Length(0, 100) # Same max length as in Address model.
         ])
     address_city = TextField(
         label = 'City', 
@@ -50,32 +54,35 @@ class AddNewFoodResourceForm(Form):
     additional_information = TextAreaField(
         label = 'Any additional information?', 
         validators = [
-            Length(1, 300)
+            Length(0, 300)
         ])
+
+    def validate(self):
+        return super(Form, self).validate()
 
 # Information about the person submitting the food resource for evaluation. 
 # Subclassed from 'AddNewFoodResourceForm'
 class RequestNewFoodResourceForm(AddNewFoodResourceForm):
-    first_name = TextField(
+    your_first_name = TextField(
         label = 'Your First Name', 
         validators = [
             InputRequired("Please provide your first name."),
             Length(0, 35)
         ])
-    last_name = TextField(
+    your_last_name = TextField(
         label = 'Your Last Name', 
         validators = [
             InputRequired("Please provide your last name."),
             Length(0, 35)
         ])
-    email_address = TextField(
+    your_email_address = TextField(
         label = 'Your Email Address', 
         validators = [
             InputRequired("Please provide an email address at which we can contact you."), 
             Email("Invalid email address."),
             Length(1, 35)
         ])
-    phone_number = TextField(
+    your_phone_number = TextField(
         label = 'Your Phone Number', 
         validators = [
             InputRequired("Please provide a phone number at which we can contact you.")
@@ -94,7 +101,8 @@ class InviteForm(RegisterForm):
 
     submit = SubmitField(_('Invite'))
     
-    # Override RegisterForm's validate function so that a temporary password can be set 
+    # Override RegisterForm's validate function so that a temporary password 
+    # can be set 
     def validate(self):
         # remove certain form fields depending on user manager config
         user_manager =  current_app.user_manager
