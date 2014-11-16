@@ -19,12 +19,13 @@ def new_food_resource():
     if request.method == 'POST' and form.validate():
         timeslots = []
         for i, day_of_week in enumerate(days_of_week): 
-            opening_time = request.form[day_of_week['id'] + '-opening-time']
-            closing_time = request.form[day_of_week['id'] + '-closing-time']
-            timeslot = TimeSlot(day_of_week = i, start_time = time(8,0), 
-                end_time = time(18,30))
-            db.session.add(timeslot)
-            timeslots.append(timeslot)
+            if (request.form[day_of_week['id'] + '-open-or-closed'] == "open"):
+                opening_time = request.form[day_of_week['id'] + '-opening-time']
+                closing_time = request.form[day_of_week['id'] + '-closing-time']
+                timeslot = TimeSlot(day_of_week = i, start_time = time(8,0), 
+                    end_time = time(18,30))
+                db.session.add(timeslot)
+                timeslots.append(timeslot)
         address = Address(
             line1 = form.address_line1.data, 
             line2 = form.address_line2.data, 
