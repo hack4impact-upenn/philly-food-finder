@@ -1,3 +1,4 @@
+
 $(document).ready(function() {
 
 	// Hide all food resource tables initially.
