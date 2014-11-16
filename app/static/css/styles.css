@@ -162,6 +162,11 @@ img {
 #2D4FA0 - navy
 
 **/
+#map {
+    display: block;
+    width: 1000px;
+    height: 1000px;
+}
 
 .block-header, 
 .block-header table {
@@ -208,4 +213,8 @@ img {
 
 .expand {
 	cursor: pointer; 
+}
+
+.error {
+	text-transform:none;
 }
