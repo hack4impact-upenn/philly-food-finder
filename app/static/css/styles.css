@@ -5,14 +5,71 @@ body {
 /* Food Resource Form */
 h1 {
   margin: 0.67em 50;
+  font-size: 1.875rem;
 }
 
-#test {
+label {
+  font-size: 1rem;
+  color: #343434;
+  font-weight: 400;
+}
+
+/* placeholder text */
+input:-ms-input-placeholder {
+  font-weight: 200;
+  
+}
+
+input::-webkit-input-placeholder {
+  font-weight: 200;
+  letter-spacing: .2px;
+}
+
+input:-moz-placeholder {
+  font-weight: 200;
+}
+
+/* firefox 19+ */
+input::-moz-placeholder {
+  font-weight: 200;
+}
+
+#option-header {
+  font-weight: 200;
+}
+
+#option-title {
+  font-size: .875rem;
+}
+
+#food-resources {
+  font-size: .875rem;
+}
+
+/* padding above 'Additional Information'  */
+#top-padding-section {
+  margin-top: 20px;
+}
+
+/* padding for day/time form */
+#middle-padding-section {
+  margin-top: 10px;
+}
+
+/* padding around submit button */
+#bottom-padding-section {
+  margin-bottom: 50px;
+  margin-top: 5px;
+}
+
+#food-resources {
   margin-bottom: 15px;
 }
 
 .select {
   padding-bottom: 100px;
+  height: 2.4rem;
+  font-size: .875rem;
 }
 
 /* HEADER */

@@ -17,7 +17,7 @@
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
 	    	<label>Food Resource Type
-		    	<select id="test">
+		    	<select id="food-resources">
   					<option value="farmers-market">Farmers' Market</option>
 	  				<option value="food-cupboar">Food Cupboard</option>
 		       	<option value="meals-on-wheels">Meals on Wheels</option>
@@ -31,18 +31,18 @@
     <div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-	      	<label>Address Line 1
-	        	<input type="text" placeholder="1000 Chestnut Street" />
+	    	<label>Address Line 1
+	      	<input type="text" placeholder="1000 Chestnut Street" />
 			</label>
 		</div>
 	</div>
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-	      	<label>Address Line 2
-	        	<input type="text" placeholder="1000 Chestnut Street" />
-			</label>
-		</div>
+	      <label>Address Line 2
+	        <input type="text" placeholder="MB 802" />
+  			</label>
+	   	</div>
 	</div>
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
@@ -98,36 +98,36 @@
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-      		<div class="large-4 small-4 columns">
-      			<label>{{ day_of_week }}
-			    	<select>
-						<option value="husker">Open</option>
-						<option value="hotdog">Closed</option>
+      		<div class="large-4 small-4 columns" id="middle-padding-section">
+      			<label id="option-header">{{ day_of_week }}
+			    	<select id="option-title">
+						<option value="open">Open</option>
+						<option value="closed">Closed</option>
 			    	</select>
       			</label>
       		</div>
-      		<div class="large-4 small-4 columns">
-      			<label>Opens at
-			    	<select>
+      		<div class="large-4 small-4 columns" id="middle-padding-section">
+      			<label id="option-header">Opens at
+			    	<select id="option-title">
 			    		{% for hour in [8, 9, 10, 11, 12, 1, 2, 3, 4, 5] %}
 			    			{% for minute in ["00", 15, 30, 45] %}
 			    				{% if hour >= 8 and hour <= 11 %}
-									<option value="husker">{{ hour }}:{{ minute }} AM</option>
+									<option value="AM">{{ hour }}:{{ minute }} AM</option>
 								{% else %}
-									<option value="husker">{{ hour }}:{{ minute }} PM</option>
+									<option value="PM">{{ hour }}:{{ minute }} PM</option>
 								{% endif %}
 							{% endfor %}
 						{% endfor %}
 			    	</select>
       			</label>
       		</div>
-      		<div class="large-4 small-4 columns">
-      			<label>Closes at
-			    	<select>
+      		<div class="large-4 small-4 columns" id="middle-padding-section">
+      			<label id="option-header">Closes at
+			    	<select id="option-title">
 			    		{% for hour in [11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
 			    			{% for minute in ["00", 15, 30, 45] %}
 			    				{% if hour == 11 %}
-									<option value="husker">{{ hour }}:{{ minute }} AM</option>
+									<option value="AM">{{ hour }}:{{ minute }} AM</option>
 								{% else %}
 									<option value="husker">{{ hour }}:{{ minute }} PM</option>
 								{% endif %}
@@ -143,8 +143,8 @@
 
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	      	<label>Additional Information
+	    	medium-centered" id="top-padding-section">
+	      	  Additional Information
 	        	<textarea placeholder="Exceptions, eligibility information, etc.">
             </textarea>
 	      	</label>
@@ -153,7 +153,7 @@
 
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
+	    	medium-centered" id="bottom-padding-section">
 	      	<input type="submit" value="Submit">
 	    </div>
 	</div>
