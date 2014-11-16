@@ -48,6 +48,7 @@
     <div class = "row">
         {# Submit button #}
         {{ render_submit_field(form.submit, tabindex=180) }}
+        <a href="{{ url_for('user.forgot_password') }}" class="button round">Forgot Password</a>
     </div>
 </form>
 

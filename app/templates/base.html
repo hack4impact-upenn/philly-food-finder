@@ -47,7 +47,10 @@
     <!-- Right Nav Section -->
     <ul class="right">
       {% if current_user.is_authenticated() %}
-        <li class="active"><a href="#"> Logged in as {{ current_user.email }} </a></li>
+        <li><a href=" {{ url_for('user.logout') }} "> Logout </a></li>
+      {% endif %}
+      {% if not current_user.is_authenticated() %}
+        <li><a href=" {{ url_for('user.login') }} "> Login </a></li>
       {% endif %}
       <li class="has-dropdown">
         <a href="#">Right Button Dropdown</a>
@@ -68,9 +71,5 @@
     {% block content %}
 
     {% endblock %}
-
-      {% if current_user.is_authenticated() %}
-        <h5> Logged in as {{ current_user.email }} </h5>
-      {% endif %}
   </body>
 </html>
