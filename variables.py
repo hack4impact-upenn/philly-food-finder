@@ -34,5 +34,3 @@ days_of_week = [
 	{'id' : "thursday", 'name': "Thursday"},
 	{'id' : "friday", 'name': "Friday"},
 	{'id' : "saturday", 'name': "Saturday"}]
-
-opening_times = ["8:00", "8:15", "8:30", "8:45"]
