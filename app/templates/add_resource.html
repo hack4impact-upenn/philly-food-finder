@@ -183,9 +183,9 @@
 			    		{% for hour in [8, 9, 10, 11, 12, 1, 2, 3, 4, 5] %}
 			    			{% for minute in ["00", 15, 30, 45] %}
 			    				{% if hour >= 8 and hour <= 11 %}
-									<option value="{{ hour }}:{{ minute }} AM">{{ hour }}:{{ minute }} AM</option>
+									<option value="{{ hour }}-{{ minute }}-am">{{ hour }}:{{ minute }} AM</option>
 								{% else %}
-									<option value="{{ hour }}:{{ minute }} PM">{{ hour }}:{{ minute }} PM</option>
+									<option value="{{ hour }}-{{ minute }}-pm">{{ hour }}:{{ minute }} PM</option>
 								{% endif %}
 							{% endfor %}
 						{% endfor %}
@@ -198,9 +198,9 @@
 			    		{% for hour in [11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
 			    			{% for minute in ["00", 15, 30, 45] %}
 			    				{% if hour == 11 %}
-									<option value="{{ hour }}:{{ minute }} AM">{{ hour }}:{{ minute }} AM</option>
+									<option value="{{ hour }}-{{ minute }}-am">{{ hour }}:{{ minute }} AM</option>
 								{% else %}
-									<option value="{{ hour }}:{{ minute }} PM">{{ hour }}:{{ minute }} PM</option>
+									<option value="{{ hour }}-{{ minute }}-pm">{{ hour }}:{{ minute }} PM</option>
 								{% endif %}
 							{% endfor %}
 						{% endfor %}
