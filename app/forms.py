@@ -1,7 +1,12 @@
+from app import app
+from flask import current_app
 from flask.ext.wtf import Form
-from wtforms import TextField, TextAreaField, validators, SelectField
 from wtforms.validators import InputRequired, Length, URL, Email
 from variables import opening_times
+from wtforms import TextField, TextAreaField, validators, PasswordField, \
+    StringField, BooleanField, SubmitField, HiddenField, SelectField
+from flask_user.forms import RegisterForm, unique_email_validator
+from flask_user.translations import lazy_gettext as _
 
 # Information about a new food resource. 
 class AddNewFoodResourceForm(Form):
@@ -81,4 +86,45 @@ class RequestNewFoodResourceForm(AddNewFoodResourceForm):
         label = 'Your Phone Number', 
         validators = [
             InputRequired("Please provide a phone number at which we can contact you.")
+        ])   
+
+# Form to invite new admin.
+# Subclassed from 'flask_user.forms.RegisterForm'
+class InviteForm(RegisterForm):
+    first_name = StringField(_('First Name'), validators=[
+        validators.Required(_('First Name is required'))
         ])
+
+    last_name = StringField(_('Last Name'), validators=[
+        validators.Required(_('First Name is required'))
+        ])
+
+    submit = SubmitField(_('Invite'))
+    
+    # Override RegisterForm's validate function so that a temporary password 
+    # can be set 
+    def validate(self):
+        # remove certain form fields depending on user manager config
+        user_manager =  current_app.user_manager
+        delattr(self, 'password')
+        delattr(self, 'retype_password')
+
+        if not user_manager.enable_username:
+            delattr(self, 'username')
+        if not user_manager.enable_email:
+            delattr(self, 'email')
+
+        # Add custom username validator if needed
+        if user_manager.enable_username:
+            has_been_added = False
+            for v in self.username.validators:
+                if v==user_manager.username_validator:
+                    has_been_added = True
+            if not has_been_added:
+                self.username.validators.append(user_manager.username_validator)
+        
+        # Validate field-validators
+        if not super(RegisterForm, self).validate():
+            return False
+
+        return True
