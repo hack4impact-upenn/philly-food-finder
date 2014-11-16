@@ -21,6 +21,18 @@ $(document).ready(function() {
         	// create table entries with data in them
       	});
 
+    $("#start_edit").click(function() {
+		CKEDITOR.disableAutoInline = true;
+    	CKEDITOR.inline( 'editor1' );
+    	$( "div.start_edit" ).replaceWith( "<div class=\"button round\" id=\"end_edit\">Save</div>" );
+    	$("#editor1").attr("contenteditable")=true;
+    });
+
+    $("#end_edit").click(function() {
+		var data = CKEDITOR.instances.editor1.getData();
+    	console.log(data);
+      	});
+
 		// DISPLAY CURRENT COURSES AT TOP OF PAGE
         /*$.ajax({
             url: '/_admin', 
