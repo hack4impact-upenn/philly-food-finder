@@ -26,7 +26,7 @@
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
 	    	<label>Food Resource Type
-		    	<select>
+		    	<select name='food-resource-type'>
 		    		{% for resource_info in resources_info %}
 						<option value="{{ resource_info.id }}-option">
 							{{ resource_info.name }}
