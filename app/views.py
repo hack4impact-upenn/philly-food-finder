@@ -211,3 +211,7 @@ def invite_sent():
 def get_food_resource_data():
 	names = FoodResource.query.all()
 	return jsonify(names=[i.serialize_name_only() for i in names])
+
+@app.route('/admin/edit')
+def edit_content():
+	return render_template('edit_content.html')
