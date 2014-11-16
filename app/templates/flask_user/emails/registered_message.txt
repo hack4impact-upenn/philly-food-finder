@@ -1,0 +1,16 @@
+{% extends 'flask_user/emails/base_message.txt' %}
+
+{% block message %}
+You've been invited to become an Admin for {{ app_name }}.
+
+{% if user_manager.enable_confirm_email -%}
+You will need to confirm your email and change your password next.
+
+Your temporary password is:
+	{{ g.temp_password }}
+
+Please visit the link below:
+    {{ confirm_email_link }}
+
+{%- endif %}
+{% endblock %}

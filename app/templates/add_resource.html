@@ -3,84 +3,169 @@
 
 {% block content %}
 <h1>Submit New Food Resource</h1>
-<form action="" method="post" name="submit_food_resource">
-    {{form.hidden_tag()}}
+<form action="" method="POST" role="form" name="submit_food_resource">
+    {{ form.hidden_tag() }}
+
     <div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-	      	<label>Name
-	        	<input type="text" placeholder="1000 Chestnut Street" />
-			</label>
+	        	{% if additional_errors %}
+	                {% for e in additional_errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
+	      	</label>
+	    </div>
+	</div>
+
+    {% set field = form.name %}
+    <div class="row">
+	    <div class="large-8 medium-8 small-12 columns large-centered 
+	    	medium-centered">
+	      	<label>{{ form.name.label }}
+	      		<dd class="error">{{ form.name()|safe }}
+	            {% if field.errors %}
+	                {% for e in field.errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
+            </label>
 		</div>
 	</div>
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
 	    	<label>Food Resource Type
-		    	<select>
-					<option value="husker">Farmers' Market</option>
-					<option value="hotdog">Food Cupboard</option>
-		          	<option value="starbuck">Meals on Wheels</option>
-		          	<option value="apollo">Soup Kitchen</option>
-		          	<option value="apollo">SHARE Food Site</option>
-		          	<option value="apollo">WIC Office</option>
+		    	<select name='food-resource-type'>
+		    		{% for resource_info in resources_info %}
+						<option value="{{ resource_info.id }}-option">
+							{{ resource_info.name }}
+						</option>
+					{% endfor %}
 		    	</select>
 	      	</label>
 	    </div>
   	</div>
+
+  	{% set field = form.address_line1 %}
     <div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-	      	<label>Address Line 1
-	        	<input type="text" placeholder="1000 Chestnut Street" />
+	      	<label>{{ form.address_line1.label }}
+	        	<dd class="error">{{ form.address_line1()|safe }}
+	        	{% if field.errors %}
+	                {% for e in field.errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
 			</label>
 		</div>
 	</div>
+
+	{% set field = form.address_line2 %}
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-	      	<label>Address Line 2
-	        	<input type="text" placeholder="1000 Chestnut Street" />
+	      	<label>{{ form.address_line2.label }}
+	        	<dd class="error">{{ form.address_line2()|safe }}
+	        	{% if field.errors %}
+	                {% for e in field.errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
 			</label>
 		</div>
 	</div>
+
+	{% set field = form.address_city %}
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-	      	<label>City
-	        	<input type="text" placeholder="Philadelphia" />
+	      	<label>{{ form.address_city.label }}
+	        	<dd class="error">{{ form.address_city()|safe }}
+	        	{% if field.errors %}
+	                {% for e in field.errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
 			</label>
 		</div>
 	</div>
+
+	{% set field = form.address_state %}
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-	      	<label>State
-	        	<input type="text" placeholder="PA" />
+	      	<label>{{ form.address_state.label }}
+	        	<dd class="error">{{ form.address_state()|safe }}
+	        	{% if field.errors %}
+	                {% for e in field.errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
 			</label>
 		</div>
 	</div>
+
+	{% set field = form.address_zip_code %}
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-	      	<label>Zip Code
-	        	<input type="text" placeholder="19104" />
+	      	<label>{{ form.address_zip_code.label }}
+	        	<dd class="error">{{ form.address_zip_code()|safe }}
+	        	{% if field.errors %}
+	                {% for e in field.errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
 			</label>
 		</div>
 	</div>
+
+	{% set field = form.phone_number %}
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-	      	<label>Phone Number
-	        	<input type="text" placeholder="19104" />
+	      	<label>{{ form.phone_number.label }}
+	        	<dd class="error">{{ form.phone_number()|safe }}
+	        	{% if field.errors %}
+	                {% for e in field.errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
 			</label>
 		</div>
 	</div>
+
+	{% set field = form.website %}
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-	      	<label>Website
-	        	<input type="text" placeholder="19104" />
+	      	<label>{{ form.website.label }}
+	        	<dd class="error">{{ form.website()|safe }}
+	        	{% if field.errors %}
+	                {% for e in field.errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
 			</label>
 		</div>
 	</div>
@@ -99,37 +184,37 @@
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
       		<div class="large-4 small-4 columns">
-      			<label>{{ day_of_week }}
-			    	<select>
-						<option value="husker">Open</option>
-						<option value="hotdog">Closed</option>
+      			<label>{{ day_of_week.name }}
+			    	<select name='{{ day_of_week.id }}-open-or-closed' class='open-or-closed'>
+			    		<option value="closed">Closed</option>
+						<option value="open">Open</option>
 			    	</select>
       			</label>
       		</div>
-      		<div class="large-4 small-4 columns">
+      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker">
       			<label>Opens at
-			    	<select>
+			    	<select name='{{ day_of_week.id }}-opening-time'>
 			    		{% for hour in [8, 9, 10, 11, 12, 1, 2, 3, 4, 5] %}
 			    			{% for minute in ["00", 15, 30, 45] %}
 			    				{% if hour >= 8 and hour <= 11 %}
-									<option value="husker">{{ hour }}:{{ minute }} AM</option>
+									<option value="{{ hour }}-{{ minute }}-am">{{ hour }}:{{ minute }} AM</option>
 								{% else %}
-									<option value="husker">{{ hour }}:{{ minute }} PM</option>
+									<option value="{{ hour }}-{{ minute }}-pm">{{ hour }}:{{ minute }} PM</option>
 								{% endif %}
 							{% endfor %}
 						{% endfor %}
 			    	</select>
       			</label>
       		</div>
-      		<div class="large-4 small-4 columns">
+      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker">
       			<label>Closes at
-			    	<select>
+			    	<select name='{{ day_of_week.id }}-closing-time'>
 			    		{% for hour in [11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
 			    			{% for minute in ["00", 15, 30, 45] %}
 			    				{% if hour == 11 %}
-									<option value="husker">{{ hour }}:{{ minute }} AM</option>
+									<option value="{{ hour }}-{{ minute }}-am">{{ hour }}:{{ minute }} AM</option>
 								{% else %}
-									<option value="husker">{{ hour }}:{{ minute }} PM</option>
+									<option value="{{ hour }}-{{ minute }}-pm">{{ hour }}:{{ minute }} PM</option>
 								{% endif %}
 							{% endfor %}
 						{% endfor %}
@@ -141,11 +226,19 @@
 
 	{% endfor %}
 
+	{% set field = form.additional_information %}
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-	      	<label>Additional Information
-	        	<textarea placeholder="Exceptions, eligibility information, etc."></textarea>
+	      	<label>{{ form.additional_information.label }}
+	        	<dd class="error">{{ form.additional_information()|safe }}
+	        	{% if field.errors %}
+	                {% for e in field.errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
 	      	</label>
 	    </div>
 	</div>
