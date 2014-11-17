@@ -6,6 +6,7 @@
 <form action="" method="POST" role="form" name="submit_food_resource">
     {{ form.hidden_tag() }}
 
+    <!-- Food Resource Name -->
     <div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
@@ -20,6 +21,7 @@
 	    </div>
 	</div>
 
+   <!-- Food Resource Type -->
     {% set field = form.name %}
     <div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
@@ -40,9 +42,9 @@
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
 	    	<label>Food Resource Type
-		    	<select name='food-resource-type'>
+		    	<select name='food-resource-type' id="option-title">
 		    		{% for resource_info in resources_info %}
-						<option value="{{ resource_info.id }}-option">
+					 	<option value="{{ resource_info.id }}-option">
 							{{ resource_info.name }}
 						</option>
 					{% endfor %}
@@ -51,7 +53,9 @@
 	    </div>
   	</div>
 
-  	{% set field = form.address_line1 %}
+
+	<!-- Address Line 1 -->
+	{% set field = form.address_line1 %}
     <div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
@@ -68,6 +72,8 @@
 		</div>
 	</div>
 
+
+  <!-- Address Line 2 -->
 	{% set field = form.address_line2 %}
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
@@ -183,17 +189,17 @@
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-      		<div class="large-4 small-4 columns">
+      		<div class="large-4 small-4 columns" id="middle-padding-section">
       			<label>{{ day_of_week.name }}
-			    	<select name='{{ day_of_week.id }}-open-or-closed' class='open-or-closed'>
+			    	<select name='{{ day_of_week.id }}-open-or-closed' class='open-or-closed' id="option-title">
 			    		<option value="closed">Closed</option>
 						<option value="open">Open</option>
 			    	</select>
       			</label>
       		</div>
-      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker">
+      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker" id="middle-padding-section">
       			<label>Opens at
-			    	<select name='{{ day_of_week.id }}-opening-time'>
+			    	<select name='{{ day_of_week.id }}-opening-time' id="option-title">
 			    		{% for hour in [8, 9, 10, 11, 12, 1, 2, 3, 4, 5] %}
 			    			{% for minute in ["00", 15, 30, 45] %}
 			    				{% if hour >= 8 and hour <= 11 %}
@@ -206,9 +212,9 @@
 			    	</select>
       			</label>
       		</div>
-      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker">
+      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker" id="middle-padding-section">
       			<label>Closes at
-			    	<select name='{{ day_of_week.id }}-closing-time'>
+			    	<select name='{{ day_of_week.id }}-closing-time' id="option-title">
 			    		{% for hour in [11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
 			    			{% for minute in ["00", 15, 30, 45] %}
 			    				{% if hour == 11 %}
@@ -221,7 +227,7 @@
 			    	</select>
       			</label>
       		</div>
-      	</div>
+   	  </div>
 	</div>
 
 	{% endfor %}
@@ -229,7 +235,7 @@
 	{% set field = form.additional_information %}
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
+	    	medium-centered" id="top-padding-section">
 	      	<label>{{ form.additional_information.label }}
 	        	<dd class="error">{{ form.additional_information()|safe }}
 	        	{% if field.errors %}
@@ -245,7 +251,7 @@
 
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
+	    	medium-centered" id="bottom-padding-section">
 	      	<input type="submit" value="Submit">
 	    </div>
 	</div>

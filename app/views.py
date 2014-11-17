@@ -16,7 +16,7 @@ from flask_login import current_user, login_user, logout_user
 
 @app.route('/')
 def index():
-    return "Hello World!"
+    return render_template('base.html')
 
 @app.route('/map')
 def map():
@@ -225,4 +225,3 @@ def address_food_resources():
 @app.route('/admin/edit')
 def edit_content():
 	return render_template('edit_content.html')
-

@@ -83,7 +83,7 @@ class FoodResource(db.Model):
 		return {
 			'id': self.id,
 			'name': self.name,
-			'phone_number': '999999999', #self.phone_numbers[0].number,
+			'phone_number': '999999999', #self.phone_number,
 			'description': self.description,
 			'location_type': self.location_type,
 			'address': self.address.serialize_address()

@@ -1,3 +1,168 @@
+<<<<<<< HEAD
+=======
+body {
+  background: #fdd800;
+}
+
+/* Food Resource Form */
+h1 {
+  margin: 0.67em 50;
+  font-size: 1.875rem;
+}
+
+label {
+  font-size: 1rem;
+  color: #343434;
+  font-weight: 400;
+}
+
+.row {
+  margin-top: 10px;
+}
+
+/* placeholder text */
+input:-ms-input-placeholder {
+  font-weight: 200;
+  
+}
+
+input::-webkit-input-placeholder {
+  font-weight: 200;
+  letter-spacing: .2px;
+}
+
+input:-moz-placeholder {
+  font-weight: 200;
+}
+
+/* firefox 19+ */
+input::-moz-placeholder {
+  font-weight: 200;
+}
+
+/* Option boxes */
+#option-header {
+  font-weight: 200;
+}
+
+#option-title {
+  font-size: .875rem;
+  font-weight: 200;
+  letter-spacing: .2px;
+
+}
+
+#food-resources {
+  font-size: .875rem;
+}
+
+/* padding above 'Additional Information'  */
+#top-padding-section {
+  margin-top: 20px;
+}
+
+/* padding for day/time form */
+#middle-padding-section {
+  margin-top: 10px;
+}
+
+/* padding around submit button */
+#bottom-padding-section {
+  margin-bottom: 50px;
+  margin-top: 10px;
+}
+
+button, .select {
+  padding-bottom: 100px;
+  height: 2.4rem;
+  font-size: .875rem;
+}
+
+/* HEADER */
+.top-bar {
+  background: #FFF;
+  height: 70px;
+  opacity: 0.8;
+}
+
+.top-bar .name {
+  height: 70px;
+}
+
+.title-area {
+  background-color: #FFF;
+}
+
+.top-bar .name h1 {
+  padding: 10px;
+  font-weight: normal;
+  color: #2D4FA0;
+  background-color: #FFF;
+}
+
+.top-bar-section ul li>a {
+  display: inline-block;
+  width: 100%;
+  color: #2D4FA0;
+  font-size: 2rem;
+  font-weight: 200;
+  text-transform: none;
+  letter-spacing: 4px;
+  text-align: center;
+  padding-right: 15px;
+}
+
+/* buttons - not hover */
+.top-bar-section li:not(.has-form) a:not(.button) {
+  padding: 15 15;
+  line-height: 40px;  /* bar height */
+  background-color: #FFF;
+}
+
+.top-bar-section li:not(.has-form) a:not(.button):hover {
+  background-color: #FFF;
+}
+
+.top-bar .toggle-topbar.menu-icon a {
+  color: #2D4FA0;
+}
+
+/* 3 lines for menu icon */
+.top-bar .toggle-topbar.menu-icon a span::after {
+  box-shadow: 0 0px  0 1px #2D4FA0,
+              0 7px  0 1px #2D4FA0,
+              0 14px 0 1px #2D4FA0;
+}
+
+/* each of the buttons*/
+#l_map:hover {
+  color: #0585C7;
+}
+
+#l_faq:hover {
+  color: #09ab4b;
+}
+
+#l_about:hover {
+  color: #f8a11d;
+}
+
+#l_contact:hover {
+  color: #fdd800;
+}
+
+img {
+  height: 50;
+}
+
+#map {
+    display: block;
+    width: 100%;
+    height: 70%;
+    margin-bottom: 4em;
+}
+
+>>>>>>> 9ab54dd2beef3b37929ed1260a248feeca268edb
 /* #ef3d23 - red */
 /* #f8a11d - orange */
 /* #fdd800 - yellow */

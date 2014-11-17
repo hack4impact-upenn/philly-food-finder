@@ -45,7 +45,7 @@ f0.timeslots = timeslots_list_0
 db.session.add(f0)
 db.session.add(a0)
 for timeslot in timeslots_list_0:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create a Meals On Wheels FoodResource.
@@ -83,7 +83,7 @@ f1.timeslots = timeslots_list_1
 db.session.add(f1)
 db.session.add(a1)
 for timeslot in timeslots_list_1:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create a Food Cupboard FoodResource.
@@ -121,7 +121,7 @@ f2.timeslots = timeslots_list_2
 db.session.add(f2)
 db.session.add(a2)
 for timeslot in timeslots_list_2:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create a SHARE Food Site FoodResource.
@@ -159,7 +159,7 @@ f3.timeslots = timeslots_list_3
 db.session.add(f3)
 db.session.add(a3)
 for timeslot in timeslots_list_3:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create a Soup Kitchen FoodResource.
@@ -197,7 +197,7 @@ f4.timeslots = timeslots_list_4
 db.session.add(f4)
 db.session.add(a4)
 for timeslot in timeslots_list_4:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create a WIC Office FoodResource.
@@ -235,7 +235,7 @@ f5.timeslots = timeslots_list_5
 db.session.add(f5)
 db.session.add(a5)
 for timeslot in timeslots_list_5:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create 3 admin users
