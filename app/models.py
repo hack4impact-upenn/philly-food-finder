@@ -1,7 +1,6 @@
-from app import db
-from werkzeug.security import generate_password_hash, \
-     check_password_hash
+from app import app, db
 from flask_user import UserMixin
+from datetime import datetime
 
 class Address(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -11,6 +10,15 @@ class Address(db.Model):
 	state = db.Column(db.String(2))
 	zip_code = db.Column(db.String(5))
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+	def serialize_address(self):
+		return {
+		'id': self.id,
+		'line1': self.line1,
+		'line2': self.line2,
+		'city': self.city,
+		'state': self.state,
+		'zip_code': self.zip_code
+		}
 
 class TimeSlot(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -18,14 +26,37 @@ class TimeSlot(db.Model):
 	start_time = db.Column(db.Time)
 	end_time = db.Column(db.Time)
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+	def serialize_timeslot(self):
+		return {
+		'id': self.id,
+		'day_of_week': self.day_of_week,
+		'start_time': self.start_time,
+		'end_time': self.end_time
+		}
+
+# Represents a start and end month for a resource. 
+# For example OpenMonthPair(3,5) means the resource is open from March to May.
+class OpenMonthPair(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	start_month = db.Column(db.Integer)
+	end_month = db.Column(db.Integer)
+	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+
+class PhoneNumber(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	number = db.Column(db.String(35))
+	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
 class FoodResource(db.Model):
 	food_resource_type_enums = ('FARMERS_MARKET','MEALS_ON_WHEELS',
 		'FOOD_CUPBOARD','SHARE','SOUP_KITCHEN','WIC_OFFICE')
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50))
-	phone_number = db.Column(db.String(35))
-	description = db.Column(db.String(500))
+	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', lazy='select', uselist=True)
+	url = db.Column(db.Text)
+	openmonthpairs = db.relationship('OpenMonthPair', backref='food_resource', lazy='select', uselist=True)
+	exceptions = db.Column(db.Text)
+	description = db.Column(db.Text)
 	location_type = db.Column(db.Enum(*food_resource_type_enums))
 	timeslots = db.relationship(
 		'TimeSlot', # One-to-many relationship (one Address with many TimeSlots).
@@ -47,12 +78,33 @@ class FoodResource(db.Model):
 			'phone_number': self.phone_number, 
 			'description': self.description
 		}
+class Role(db.Model):
+	role_type_enums = ('User','Admin')
+	id = db.Column(db.Integer(), primary_key=True)
+	name = db.Column(db.Enum(*role_type_enums))
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+class UserRoles(db.Model):
+	id = db.Column(db.Integer(), primary_key=True)
+	user_id = db.Column(db.Integer(), db.ForeignKey('user.id', 
+		ondelete='CASCADE'))
+	role_id = db.Column(db.Integer(), db.ForeignKey('role.id', 
+		ondelete='CASCADE'))
+
+	def serialize_map_list(self):
+		return {
+			'id': self.id,
+			'name': self.name,
+			'phone_number': self.phone_number,
+			'description': self.description,
+			'location_type': self.location_type,
+			'address': self.address.serialize_address()
+		}
 
 class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True)
 
 	# User Authentication information
-	username = db.Column(db.String(50), nullable=False, unique=True)
 	password = db.Column(db.String(255), nullable=False, default='')
 	reset_password_token = db.Column(db.String(100), nullable=False, default='')
 
@@ -71,26 +123,18 @@ class User(db.Model, UserMixin):
 	def is_active(self):
 		return self.is_enabled
 
-	def verify_password(self, candidate):
-		return check_password_hash(self.password, candidate)
+	def verify_password(self, attept):
+		return app.user_manager.verify_password(attept, self.password)
 
-	def __init__(self, username, password, email, first_name, last_name, roles):
-		self.username = username
-		self.password = generate_password_hash(password)
+	# This function is only for the tests in tests.py
+	def confirm_and_enable_debug(self):
+		self.confirmed_at = datetime.now()
+		self.is_enabled = True
+
+	def __init__(self, email, password, is_enabled, first_name = '', last_name = '', roles = [Role(name = 'Admin')]):
 		self.email = email
+		self.password = app.user_manager.hash_password(password = password)
 		self.first_name = first_name
 		self.last_name = last_name
 		self.roles = roles
-
-class Role(db.Model):
-	role_type_enums = ('User','Admin')
-	id = db.Column(db.Integer(), primary_key=True)
-	name = db.Column(db.Enum(*role_type_enums))
-	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
-class UserRoles(db.Model):
-	id = db.Column(db.Integer(), primary_key=True)
-	user_id = db.Column(db.Integer(), db.ForeignKey('user.id', 
-		ondelete='CASCADE'))
-	role_id = db.Column(db.Integer(), db.ForeignKey('role.id', 
-		ondelete='CASCADE'))
+		self.is_enabled = is_enabled
