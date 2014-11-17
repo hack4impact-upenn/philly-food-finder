@@ -6,10 +6,7 @@
 <form action="" method="POST" role="form" name="submit_food_resource">
     {{ form.hidden_tag() }}
 
-<<<<<<< HEAD
-=======
     <!-- Food Resource Name -->
->>>>>>> nancy
     <div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
@@ -24,11 +21,7 @@
 	    </div>
 	</div>
 
-<<<<<<< HEAD
-=======
    <!-- Food Resource Type -->
-
->>>>>>> nancy
     {% set field = form.name %}
     <div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
@@ -49,15 +42,9 @@
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
 	    	<label>Food Resource Type
-<<<<<<< HEAD
-		    	<select name='food-resource-type'>
-		    		{% for resource_info in resources_info %}
-						<option value="{{ resource_info.id }}-option">
-=======
 		    	<select name='food-resource-type' id="option-title">
 		    		{% for resource_info in resources_info %}
 					 	<option value="{{ resource_info.id }}-option">
->>>>>>> nancy
 							{{ resource_info.name }}
 						</option>
 					{% endfor %}
@@ -66,20 +53,12 @@
 	    </div>
   	</div>
 
-<<<<<<< HEAD
-=======
 
-  <!-- Address Line 1 -->
-
->>>>>>> nancy
-  	{% set field = form.address_line1 %}
+	<!-- Address Line 1 -->
+	{% set field = form.address_line1 %}
     <div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-<<<<<<< HEAD
-=======
-
->>>>>>> nancy
 	      	<label>{{ form.address_line1.label }}
 	        	<dd class="error">{{ form.address_line1()|safe }}
 	        	{% if field.errors %}
@@ -88,22 +67,13 @@
 	                        <small class="error">{{ e }}</small>
 	                    {% endif %}
 	                {% endfor %}
-<<<<<<< HEAD
 	            {% endif %}
 			</label>
 		</div>
 	</div>
 
-=======
-	          {% endif %}
-		    	</label>
-		</div>
-	</div>
-
 
   <!-- Address Line 2 -->
-
->>>>>>> nancy
 	{% set field = form.address_line2 %}
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
@@ -176,15 +146,9 @@
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-<<<<<<< HEAD
 	      	<label>{{ form.phone_number.label }}
 	        	<dd class="error">{{ form.phone_number()|safe }}
 	        	{% if field.errors %}
-=======
-		      	<label>{{ form.phone_number.label }}
-	        	<dd class="error">{{ form.phone_number()|safe }}
-	          	{% if field.errors %}
->>>>>>> nancy
 	                {% for e in field.errors %}
 	                    {% if e %}
 	                        <small class="error">{{ e }}</small>
@@ -199,10 +163,6 @@
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-<<<<<<< HEAD
-=======
-
->>>>>>> nancy
 	      	<label>{{ form.website.label }}
 	        	<dd class="error">{{ form.website()|safe }}
 	        	{% if field.errors %}
@@ -229,18 +189,17 @@
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
-<<<<<<< HEAD
-      		<div class="large-4 small-4 columns">
+      		<div class="large-4 small-4 columns" id="middle-padding-section">
       			<label>{{ day_of_week.name }}
-			    	<select name='{{ day_of_week.id }}-open-or-closed' class='open-or-closed'>
+			    	<select name='{{ day_of_week.id }}-open-or-closed' class='open-or-closed' id="option-title">
 			    		<option value="closed">Closed</option>
 						<option value="open">Open</option>
 			    	</select>
       			</label>
       		</div>
-      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker">
+      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker" id="middle-padding-section">
       			<label>Opens at
-			    	<select name='{{ day_of_week.id }}-opening-time'>
+			    	<select name='{{ day_of_week.id }}-opening-time' id="option-title">
 			    		{% for hour in [8, 9, 10, 11, 12, 1, 2, 3, 4, 5] %}
 			    			{% for minute in ["00", 15, 30, 45] %}
 			    				{% if hour >= 8 and hour <= 11 %}
@@ -253,9 +212,9 @@
 			    	</select>
       			</label>
       		</div>
-      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker">
+      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker" id="middle-padding-section">
       			<label>Closes at
-			    	<select name='{{ day_of_week.id }}-closing-time'>
+			    	<select name='{{ day_of_week.id }}-closing-time' id="option-title">
 			    		{% for hour in [11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
 			    			{% for minute in ["00", 15, 30, 45] %}
 			    				{% if hour == 11 %}
@@ -265,48 +224,6 @@
 								{% endif %}
 							{% endfor %}
 						{% endfor %}
-=======
-
-          <div class="large-4 small-4 columns" id="middle-padding-section">
-      			<label id="option-header">{{ day_of_week.name }}
-			    	<select name='{{ day_of_week.id }}-open-or-closed' class='open-or-closed'
-                    id="option-title">
-			    		<option value="closed">Closed</option>
-					  	<option value="open">Open</option>
-			    	</select>
-      			</label>
-      		</div>
-
-      		<div class="large-4 small-4 columns" id="middle-padding-section">
-      			<label id="option-header">Opens at
-			    	<select id="option-title">
-			    		{% for hour in [8, 9, 10, 11, 12, 1, 2, 3, 4, 5] %}
-			    			{% for minute in ["00", 15, 30, 45] %}
-			     				{% if hour >= 8 and hour <= 11 %}
-		    						<option value="AM">{{ hour }}:{{ minute }} AM</option>
-    								{% else %}
-									  <option value="PM">{{ hour }}:{{ minute }} PM</option>
-                  {% endif %}
-							  {% endfor %}
-  						{% endfor %}
-			    	</select>
-      			</label>
-      		</div>
-     		<div class="large-4 small-4 columns" id="middle-padding-section">
-      			<label id="option-header">Closes at
-			    	<select id="option-title">
-			    		{% for hour in [11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
-			    			{% for minute in ["00", 15, 30, 45] %}
-			    				{% if hour == 11 %}
-							  		<option value="{{ hour }}-{{ minute }}-am">
-                                   {{ hour }}:{{ minute }} AM</option>
-                	{% else %}
-									  <option value="{{ hour }}-{{ minute }}-pm">
-                                   {{ hour }}:{{ minute }} PM</option>
-                  {% endif %}
-	  						{% endfor %}
-		  				{% endfor %}
->>>>>>> nancy
 			    	</select>
       			</label>
       		</div>
@@ -318,29 +235,17 @@
 	{% set field = form.additional_information %}
 	<div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
-<<<<<<< HEAD
-	    	medium-centered">
+	    	medium-centered" id="top-padding-section">
 	      	<label>{{ form.additional_information.label }}
 	        	<dd class="error">{{ form.additional_information()|safe }}
 	        	{% if field.errors %}
-=======
-	    	medium-centered" id="top-padding-section">
-	        	<label>{{ form.additional_information.label }}
-	          	<dd class="error">{{ form.additional_information()|safe }}
-	            	{% if field.errors %}
->>>>>>> nancy
 	                {% for e in field.errors %}
 	                    {% if e %}
 	                        <small class="error">{{ e }}</small>
 	                    {% endif %}
 	                {% endfor %}
-<<<<<<< HEAD
 	            {% endif %}
 	      	</label>
-=======
-	             {% endif %}
-	        	</label>
->>>>>>> nancy
 	    </div>
 	</div>
 
