@@ -14,6 +14,10 @@ label {
   font-weight: 400;
 }
 
+.row {
+  margin-top: 15px;
+}
+
 /* placeholder text */
 input:-ms-input-placeholder {
   font-weight: 200;
@@ -34,12 +38,14 @@ input::-moz-placeholder {
   font-weight: 200;
 }
 
+/* Option boxes */
 #option-header {
   font-weight: 200;
 }
 
 #option-title {
   font-size: .875rem;
+  font-weight: 200;
 }
 
 #food-resources {
@@ -59,11 +65,7 @@ input::-moz-placeholder {
 /* padding around submit button */
 #bottom-padding-section {
   margin-bottom: 50px;
-  margin-top: 5px;
-}
-
-#food-resources {
-  margin-bottom: 15px;
+  margin-top: 10px;
 }
 
 .select {
