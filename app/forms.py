@@ -2,6 +2,10 @@ from app import app
 from flask import current_app
 from flask.ext.wtf import Form
 from wtforms.validators import InputRequired, Length, URL, Email
+<<<<<<< HEAD
+=======
+from variables import opening_times
+>>>>>>> nancy
 from wtforms import TextField, TextAreaField, validators, PasswordField, \
     StringField, BooleanField, SubmitField, HiddenField, SelectField
 from flask_user.forms import RegisterForm, unique_email_validator
