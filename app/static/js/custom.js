@@ -33,15 +33,24 @@ $(document).ready(function() {
 	})
 
     $("#start_edit").click(function() {
+    	console.log("here1");
 		CKEDITOR.disableAutoInline = true;
-    	CKEDITOR.inline( 'editor1' );
-    	$( "div.start_edit" ).replaceWith( "<div class=\"button round\" id=\"end_edit\">Save</div>" );
-    	$("#editor1").attr("contenteditable")=true;
+    	var editor1 = CKEDITOR.inline("editor1");
+    	$("#start_edit").hide();
+    	$("#end_edit").show();
+    	$("#editor1").attr("contenteditable","true");
     });
 
     $("#end_edit").click(function() {
-		var data = CKEDITOR.instances.editor1.getData();
-    	console.log(data);
+    	console.log("here2");
+    	if ( editor1 ){
+    		var data = CKEDITOR.instances.editor1.getData();
+    		console.log(data);
+			CKEDITOR.instances.editor1.destroy();
+		}
+    	$("#end_edit").hide();
+    	$("#start_edit").show();
+    	$("#editor1").attr("contenteditable","false");
       	});
 
 		// DISPLAY CURRENT COURSES AT TOP OF PAGE
