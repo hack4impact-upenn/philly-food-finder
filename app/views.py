@@ -22,10 +22,6 @@ def index():
 def map():
     return render_template('newmaps.html')
 
-@app.route('/map')
-def map():
-    return render_template('newmaps.html')
-
 @app.route('/new_food_resource', methods=['GET', 'POST'])
 def new_food_resource():
     form = AddNewFoodResourceForm(request.form)
@@ -224,13 +220,7 @@ def get_food_resource_data():
 def address_food_resources():
     addresses = FoodResource.query.all()
     return jsonify(addresses=[i.serialize_map_list() for i in addresses])
-    #jsonify(data="asdf")
-    #jsonify(addresses=[i.serialize_map_list() for i in addresses])
 
 @app.route('/admin/edit')
 def edit_content():
 	return render_template('edit_content.html')
-<<<<<<< HEAD
-
-=======
->>>>>>> nancy
