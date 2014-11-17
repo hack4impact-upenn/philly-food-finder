@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 body {
   background: #fdd800;
 }
@@ -155,26 +153,13 @@ img {
   height: 50;
 }
 
-/** Color Codes
-
-#ef3d23 - red 
-#f8a11d - orange 
-#fdd800 - yellow 
-#09ab4b - green 
-#0585C7 - blue 
-#84459b - purple 
-#666666 - grey
-#343434 - black 
-#2D4FA0 - navy
-
-**/
->>>>>>> nancy
 #map {
     display: block;
-    width: 1000px;
-    height: 1000px;
+    width: 100%;
+    height: 70%;
+    margin-bottom: 4em;
 }
-<<<<<<< HEAD
+
 /* #ef3d23 - red */
 /* #f8a11d - orange */
 /* #fdd800 - yellow */
@@ -182,8 +167,6 @@ img {
 /* #0f85c7 - blue */
 /* #84459b - purple */
 /* #343434 - black */
-=======
->>>>>>> nancy
 
 .block-header, 
 .block-header table {
