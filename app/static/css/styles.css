@@ -15,7 +15,7 @@ label {
 }
 
 .row {
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 /* placeholder text */
@@ -46,6 +46,8 @@ input::-moz-placeholder {
 #option-title {
   font-size: .875rem;
   font-weight: 200;
+  letter-spacing: .2px;
+
 }
 
 #food-resources {
@@ -68,7 +70,7 @@ input::-moz-placeholder {
   margin-top: 10px;
 }
 
-.select {
+button, .select {
   padding-bottom: 100px;
   height: 2.4rem;
   font-size: .875rem;

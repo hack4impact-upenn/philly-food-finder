@@ -6,6 +6,7 @@
 <form action="" method="POST" role="form" name="submit_food_resource">
     {{ form.hidden_tag() }}
 
+    <!-- Food Resource Name -->
     <div class="row">
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
@@ -19,6 +20,8 @@
 	      	</label>
 	    </div>
 	</div>
+
+   <!-- Food Resource Type -->
 
     {% set field = form.name %}
     <div class="row">
@@ -40,7 +43,7 @@
 	    <div class="large-8 medium-8 small-12 columns large-centered 
 	    	medium-centered">
 	    	<label>Food Resource Type
-		    	<select name='food-resource-type'>
+		    	<select name='food-resource-type' id="option-title">
 		    		{% for resource_info in resources_info %}
 					 	<option value="{{ resource_info.id }}-option">
 							{{ resource_info.name }}
@@ -50,6 +53,9 @@
 	      	</label>
 	    </div>
   	</div>
+
+
+  <!-- Address Line 1 -->
 
   	{% set field = form.address_line1 %}
     <div class="row">
@@ -68,6 +74,9 @@
 		    	</label>
 		</div>
 	</div>
+
+
+  <!-- Address Line 2 -->
 
 	{% set field = form.address_line2 %}
 	<div class="row">
