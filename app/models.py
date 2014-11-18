@@ -112,3 +112,7 @@ class User(db.Model, UserMixin):
 		self.last_name = last_name
 		self.roles = roles
 		self.is_enabled = is_enabled
+
+class HTML(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	value = db.Column(db.Test)
