@@ -115,4 +115,4 @@ class User(db.Model, UserMixin):
 
 class HTML(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
-	value = db.Column(db.Test)
+	value = db.Column(db.Text)
