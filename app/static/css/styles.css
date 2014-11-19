@@ -2,6 +2,15 @@ body {
   background: #fdd800;
 }
 
+/* template: line */
+hr {
+  border: #343434;
+  background: #343434;
+  width: 75%;
+  height: 0.5px; 
+  margin: 0.67em 50;
+}
+
 /* Food Resource Form */
 h1 {
   margin: 0.67em 50;
@@ -76,7 +85,8 @@ button, .select {
   font-size: .875rem;
 }
 
-/* HEADER */
+/* HEADER - top-bar */
+
 .top-bar {
   background: #FFF;
   height: 70px;
@@ -98,6 +108,10 @@ button, .select {
   background-color: #FFF;
 }
 
+.top-bar-section ul li {
+  background: #FFF;
+}
+
 .top-bar-section ul li>a {
   display: inline-block;
   width: 100%;
@@ -107,7 +121,8 @@ button, .select {
   text-transform: none;
   letter-spacing: 4px;
   text-align: center;
-  padding-right: 15px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 /* buttons - not hover */
@@ -123,6 +138,10 @@ button, .select {
 
 .top-bar .toggle-topbar.menu-icon a {
   color: #2D4FA0;
+}
+
+.top-bar.expanded {
+  background: #FFFFFF;
 }
 
 /* 3 lines for menu icon */
@@ -149,6 +168,10 @@ button, .select {
   color: #fdd800;
 }
 
+#l_login:hover {
+  color: #ef3d23;
+}
+
 img {
   height: 50;
 }
@@ -170,51 +193,51 @@ img {
 
 .block-header, 
 .block-header table {
-	color: #343434	; /* black */
-	margin: 0.6em 0.3em;
-	padding: 0 0.3em;
+  color: #343434  ; /* black */
+  margin: 0.6em 0.3em;
+  padding: 0 0.3em;
 }
 
 #farmers-markets-header table thead, 
 #farmers-markets-header table {
-	background-color: #fdd800; /* yellow */
-	border: none; 
+  background-color: #fdd800; /* yellow */
+  border: none; 
 }
 
 #food-cupboards-header table thead, 
 #food-cupboards-header table {
-	background-color: #09ab4b; /* green */
-	border: none;
+  background-color: #09ab4b; /* green */
+  border: none;
 }
 
 #meals-on-wheels-header table thead, 
 #meals-on-wheels-header table {
-	background-color: #0f85c7; /* blue */
-	border: none; 
+  background-color: #0f85c7; /* blue */
+  border: none; 
 }
 
 #share-host-sites-header table thead, 
 #share-host-sites-header table {
-	background-color: #ef3d23; /* red */
-	border: none; 
+  background-color: #ef3d23; /* red */
+  border: none; 
 }
 
 #soup-kitchens-header table thead, 
 #soup-kitchens-header table {
-	background-color: #f8a11d; /* orange */
-	border: none; 
+  background-color: #f8a11d; /* orange */
+  border: none; 
 }
 
 #wic-offices-header table thead, 
 #wic-offices-header table {
-	background-color: #84459b; /* purple */
-	border: none; 
+  background-color: #84459b; /* purple */
+  border: none; 
 }
 
 .expand {
-	cursor: pointer; 
+  cursor: pointer; 
 }
 
 .error {
-	text-transform:none;
+  text-transform:none;
 }
