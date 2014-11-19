@@ -220,8 +220,6 @@ def get_food_resource_data():
 def address_food_resources():
     addresses = FoodResource.query.all()
     return jsonify(addresses=[i.serialize_map_list() for i in addresses])
-    #jsonify(data="asdf")
-    #jsonify(addresses=[i.serialize_map_list() for i in addresses])
 
 @app.route('/admin/edit')
 def edit_content():
