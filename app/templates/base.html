@@ -2,13 +2,14 @@
   <head>
 
     <!-- CSS -->
-    <link href="../static/css/foundation.css" rel="stylesheet" type="text/css">
     <link href="../static/css/foundation.min.css" rel="stylesheet" type="text/css">
     <link href="../static/css/normalize.css" rel="stylesheet" type="text/css">
+    <link href="../static/css/foundation.css" rel="stylesheet" type="text/css">
     <link href="../static/css/styles.css" rel="stylesheet" type="text/css">
     <script src="../static/js/vendor/jquery.js"></script>
     <script src="../static/js/foundation.min.js"></script>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script type="text/javascript" 
+            src="http://maps.google.com/maps/api/js?sensor=true"></script>
     <script src="../static/js/gmaps.js"></script>
     <script src="../static/js/custom.js"></script>
    
@@ -61,10 +62,12 @@
          <!-- Right Nav Section -->
          <ul class="right">
             {% if current_user.is_authenticated() %}
-              <li><a href=" {{ url_for('user.logout') }} "> logout </a></li>
+              <li><a href=" {{ url_for('user.logout') }} " id="l_login">
+                           logout </a></li>
             {% endif %}
             {% if not current_user.is_authenticated() %}
-              <li><a href=" {{ url_for('user.login') }} "> login </a></li>
+              <li><a href=" {{ url_for('user.login') }} " id="l_login">
+                           login </a></li>
             {% endif %}
           </ul>
 
@@ -95,6 +98,13 @@
     {% block content %}
 
     {% endblock %}
+
+
+    {% block content_faq %}
+
+    {% endblock %}
+
+
 
     <!-- sections of stuff
     <a name="map"></a>
