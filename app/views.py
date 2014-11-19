@@ -222,14 +222,15 @@ def address_food_resources():
     addresses = FoodResource.query.all()
     return jsonify(addresses=[i.serialize_map_list() for i in addresses])
 
-@app.route('/_edit', methods=['POST'])
+@app.route('/_edit', methods=['GET', 'POST'])
 def save_page():
-    data = request.query_string
+    data = request.form.get('edit_page')
     print data
     if(data):
-    	db.session.add(HTML(value = data))
+    	page = HTML.query.filter_by(page = 'edit').first()
+    	page.value = data
     	db.session.commit()
-    return "Thanks!"
+    return 'Added' + data + 'to database.'
 
 @app.route('/admin/edit')
 def edit_content():

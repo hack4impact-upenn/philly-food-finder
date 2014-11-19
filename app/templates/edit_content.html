@@ -8,7 +8,7 @@
 <div class="row">
     <div class="large-12 columns">
     <div id="editor1" contenteditable="false">
-    {{ html_string.value }}
+    {{ html_string.value|safe }}
 </div>
 {% if current_user.is_authenticated() %}
 <div class="row">
