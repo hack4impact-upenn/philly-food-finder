@@ -2,6 +2,15 @@ body {
   background: #fdd800;
 }
 
+/* template: line */
+hr {
+  border: #343434;
+  background: #343434;
+  width: 75%;
+  height: 0.5px; 
+  margin: 0.67em 50;
+}
+
 /* Food Resource Form */
 h1 {
   margin: 0.67em 50;
@@ -76,7 +85,13 @@ button, .select {
   font-size: .875rem;
 }
 
-/* HEADER */
+/* HEADER - top-bar */
+
+/* top-bar toggle breakpoint */
+
+
+/***/
+
 .top-bar {
   background: #FFF;
   height: 70px;
@@ -98,6 +113,10 @@ button, .select {
   background-color: #FFF;
 }
 
+.top-bar-section ul li {
+  background: #FFF;
+}
+
 .top-bar-section ul li>a {
   display: inline-block;
   width: 100%;
@@ -107,7 +126,8 @@ button, .select {
   text-transform: none;
   letter-spacing: 4px;
   text-align: center;
-  padding-right: 15px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 /* buttons - not hover */
@@ -147,6 +167,10 @@ button, .select {
 
 #l_contact:hover {
   color: #fdd800;
+}
+
+#l_login:hover {
+  color: #ef3d23;
 }
 
 img {
