@@ -16,7 +16,11 @@ from flask_login import current_user, login_user, logout_user
 
 @app.route('/')
 def index():
-    return "Hello World!"
+    return render_template('base.html')
+
+@app.route('/map')
+def map():
+    return render_template('newmaps.html')
 
 @app.route('/new_food_resource', methods=['GET', 'POST'])
 def new_food_resource():
@@ -209,8 +213,13 @@ def invite_sent():
 
 @app.route('/_admin')
 def get_food_resource_data():
-	names = FoodResource.query.all()
-	return jsonify(names=[i.serialize_name_only() for i in names])
+    names = FoodResource.query.all()
+    return jsonify(names=[i.serialize_name_only() for i in names])
+
+@app.route('/_map')
+def address_food_resources():
+    addresses = FoodResource.query.all()
+    return jsonify(addresses=[i.serialize_map_list() for i in addresses])
 
 @app.route('/admin/edit')
 def edit_content():
