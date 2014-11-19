@@ -23,6 +23,7 @@ def map():
     return render_template('newmaps.html')
 
 @app.route('/new_food_resource', methods=['GET', 'POST'])
+@login_required
 def new_food_resource():
     form = AddNewFoodResourceForm(request.form)
     additional_errors = []
