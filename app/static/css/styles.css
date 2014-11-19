@@ -87,11 +87,6 @@ button, .select {
 
 /* HEADER - top-bar */
 
-/* top-bar toggle breakpoint */
-
-
-/***/
-
 .top-bar {
   background: #FFF;
   height: 70px;
@@ -143,6 +138,10 @@ button, .select {
 
 .top-bar .toggle-topbar.menu-icon a {
   color: #2D4FA0;
+}
+
+.top-bar.expanded {
+  background: #FFFFFF;
 }
 
 /* 3 lines for menu icon */

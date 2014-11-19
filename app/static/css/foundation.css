@@ -81,7 +81,7 @@ img {
   clear: both; }
 
 .hide {
-  display: none !important;
+  display: none;
   visibility: hidden; }
 
 .invisible {
