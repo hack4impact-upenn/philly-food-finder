@@ -43,9 +43,9 @@ $(document).ready(function() {
 
     $("#end_edit").click(function() {
     	if ( editor1 ){
-    		var str = CKEDITOR.instances.editor1.getData();
-    		console.log(str);
-    		$.post(url = $SCRIPT_ROOT + '/_edit', data = str);
+    		var json_data = {edit_page: CKEDITOR.instances.editor1.getData()};
+    		console.log(json_data);
+    		$.post(url = $SCRIPT_ROOT + '/_edit', data = json_data);
 			CKEDITOR.instances.editor1.destroy();
 		}
     	$("#end_edit").hide();

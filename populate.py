@@ -259,3 +259,10 @@ db.session.add(u1)
 db.session.add(u2)
 db.session.add(u3)
 db.session.commit()
+
+# Create HTML objects
+p1 = HTML(page='edit', value = '')
+
+# Add each new object to session and commit session. 
+db.session.add(p1)
+db.session.commit()
