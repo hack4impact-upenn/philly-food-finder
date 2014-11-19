@@ -10,6 +10,15 @@ class Address(db.Model):
 	state = db.Column(db.String(2))
 	zip_code = db.Column(db.String(5))
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+	def serialize_address(self):
+		return {
+		'id': self.id,
+		'line1': self.line1,
+		'line2': self.line2,
+		'city': self.city,
+		'state': self.state,
+		'zip_code': self.zip_code
+		}
 
 class TimeSlot(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -17,6 +26,13 @@ class TimeSlot(db.Model):
 	start_time = db.Column(db.Time)
 	end_time = db.Column(db.Time)
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+	def serialize_timeslot(self):
+		return {
+		'id': self.id,
+		'day_of_week': self.day_of_week,
+		'start_time': self.start_time,
+		'end_time': self.end_time
+		}
 
 # Represents a start and end month for a resource. 
 # For example OpenMonthPair(3,5) means the resource is open from March to May.
@@ -62,6 +78,17 @@ class FoodResource(db.Model):
 			'phone_number': self.phone_number, 
 			'description': self.description
 		}
+
+	def serialize_map_list(self):
+		return {
+			'id': self.id,
+			'name': self.name,
+			'phone_number': '999999999', #self.phone_number,
+			'description': self.description,
+			'location_type': self.location_type,
+			'address': self.address.serialize_address()
+		}
+
 class Role(db.Model):
 	role_type_enums = ('User','Admin')
 	id = db.Column(db.Integer(), primary_key=True)

@@ -1,6 +1,6 @@
 # Necessary set-up.
 from app import db
-from app.models import Address, User, TimeSlot, FoodResource, Role
+from app.models import *
 from datetime import time
 
 # Drop all database tables.
@@ -12,6 +12,9 @@ db.create_all()
 # Create a Farmers' Market FoodResource.
 f0 = FoodResource() 
 f0.name = "Clark Park"
+num0 = PhoneNumber(number = "123-456-7890")
+f0.phone_numbers.append(num0)
+db.session.add(num0)
 f0.phone_number = "123-456-7890"
 f0.description = "Open year round"
 f0.location_type = "FARMERS_MARKET"
@@ -42,13 +45,15 @@ f0.timeslots = timeslots_list_0
 db.session.add(f0)
 db.session.add(a0)
 for timeslot in timeslots_list_0:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create a Meals On Wheels FoodResource.
 f1 = FoodResource() 
 f1.name = "Northeast Meals On Wheels"
-f1.phone_number = "888-888-8888"
+num1 = PhoneNumber(number = "123-456-7890")
+f1.phone_numbers.append(num1)
+db.session.add(num1)
 f1.description = "Fresh fruit and veggies!"
 f1.location_type = "MEALS_ON_WHEELS"
 a1 = Address()
@@ -78,13 +83,15 @@ f1.timeslots = timeslots_list_1
 db.session.add(f1)
 db.session.add(a1)
 for timeslot in timeslots_list_1:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create a Food Cupboard FoodResource.
 f2 = FoodResource() 
 f2.name = "Sample Food Cupboard"
-f2.phone_number = "777-777-7777"
+num2 = PhoneNumber(number = "123-456-7890")
+f2.phone_numbers.append(num2)
+db.session.add(num2)
 f2.description = "Food cupboard description"
 f2.location_type = "FOOD_CUPBOARD"
 a2 = Address()
@@ -114,13 +121,15 @@ f2.timeslots = timeslots_list_2
 db.session.add(f2)
 db.session.add(a2)
 for timeslot in timeslots_list_2:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create a SHARE Food Site FoodResource.
 f3 = FoodResource() 
 f3.name = "Sample SHARE Food Site"
-f3.phone_number = "193-538-2842"
+num3 = PhoneNumber(number = "123-456-7890")
+f3.phone_numbers.append(num3)
+db.session.add(num3)
 f3.description = "A description"
 f3.location_type = "SHARE"
 a3 = Address()
@@ -150,13 +159,15 @@ f3.timeslots = timeslots_list_3
 db.session.add(f3)
 db.session.add(a3)
 for timeslot in timeslots_list_3:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create a Soup Kitchen FoodResource.
 f4 = FoodResource() 
 f4.name = "Sample Soup Kitchen"
-f4.phone_number = "739-492-9359"
+num4 = PhoneNumber(number = "123-456-7890")
+f4.phone_numbers.append(num4)
+db.session.add(num4)
 f4.description = "Another description"
 f4.location_type = "SOUP_KITCHEN"
 a4 = Address()
@@ -186,13 +197,15 @@ f4.timeslots = timeslots_list_4
 db.session.add(f4)
 db.session.add(a4)
 for timeslot in timeslots_list_4:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create a WIC Office FoodResource.
 f5 = FoodResource() 
 f5.name = "North Philadelphia WIC Office"
-f5.phone_number = "573-910-5830"
+num5 = PhoneNumber(number = "123-456-7890")
+f5.phone_numbers.append(num5)
+db.session.add(num5)
 f5.description = "Another another description"
 f5.location_type = "WIC_OFFICE"
 a5 = Address()
@@ -222,7 +235,7 @@ f5.timeslots = timeslots_list_5
 db.session.add(f5)
 db.session.add(a5)
 for timeslot in timeslots_list_5:
-	db.session.add(timeslot)
+    db.session.add(timeslot)
 db.session.commit()
 
 # Create 3 admin users
