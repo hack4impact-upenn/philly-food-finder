@@ -34,7 +34,6 @@ $(document).ready(function() {
 	})
 
     $("#start_edit").click(function() {
-    	console.log("here1");
 		CKEDITOR.disableAutoInline = true;
     	var editor1 = CKEDITOR.inline("editor1");
     	$("#start_edit").hide();
@@ -43,10 +42,10 @@ $(document).ready(function() {
     });
 
     $("#end_edit").click(function() {
-    	console.log("here2");
     	if ( editor1 ){
-    		var data = CKEDITOR.instances.editor1.getData();
-    		console.log(data);
+    		var str = CKEDITOR.instances.editor1.getData();
+    		console.log(str);
+    		$.post(url = $SCRIPT_ROOT + '/_edit', data = str);
 			CKEDITOR.instances.editor1.destroy();
 		}
     	$("#end_edit").hide();

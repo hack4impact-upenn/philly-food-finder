@@ -8,8 +8,7 @@
 <div class="row">
     <div class="large-12 columns">
     <div id="editor1" contenteditable="false">
-    <h1>Inline Editing in Action!</h1>
-    <p>The "div" element that contains this text is now editable.
+    {{ html_string.value }}
 </div>
 {% if current_user.is_authenticated() %}
 <div class="row">
