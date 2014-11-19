@@ -221,6 +221,15 @@ def address_food_resources():
     addresses = FoodResource.query.all()
     return jsonify(addresses=[i.serialize_map_list() for i in addresses])
 
+@app.route('/_edit', methods=['POST'])
+def save_page():
+    data = request.query_string
+    print data
+    if(data):
+    	db.session.add(HTML(value = data))
+    	db.session.commit()
+    return "Thanks!"
+
 @app.route('/admin/edit')
 def edit_content():
-	return render_template('edit_content.html')
+	return render_template('edit_content.html', html_string = HTML.query.first())
