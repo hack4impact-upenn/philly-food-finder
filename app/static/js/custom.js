@@ -33,41 +33,30 @@ $(document).ready(function() {
 		}
 	})
 
-    $("#start_edit").click(function() {
+    $(".start-edit").click(function() {
 		CKEDITOR.disableAutoInline = true;
-    	var editor1 = CKEDITOR.inline("editor1");
-    	$("#start_edit").hide();
-    	$("#end_edit").show();
+    	var editor1 = CKEDITOR.inline("editor1", {
+    		startupFocus: true,
+    		autoGrow_onStartup: true
+    	});
+    	$(".start-edit").hide();
+    	$(".end-edit").show();
     	$("#editor1").attr("contenteditable","true");
     });
 
-    $("#end_edit").click(function() {
+    $(".end-edit").click(function() {
     	if ( editor1 ){
-    		var json_data = {edit_page: CKEDITOR.instances.editor1.getData()};
-    		console.log(json_data);
+    		var json_data = {
+    			page_name: $(".end-edit").attr("id"),
+    			edit_data: CKEDITOR.instances.editor1.getData()
+    		};
     		$.post(url = $SCRIPT_ROOT + '/_edit', data = json_data);
 			CKEDITOR.instances.editor1.destroy();
 		}
-    	$("#end_edit").hide();
-    	$("#start_edit").show();
+    	$(".end-edit").hide();
+    	$(".start-edit").show();
     	$("#editor1").attr("contenteditable","false");
       	});
-
-		// DISPLAY CURRENT COURSES AT TOP OF PAGE
-        /*$.ajax({
-            url: '/_admin', 
-            type: 'POST', 
-            dataType: 'json',
-            data: { step: 1 },
-            success: function(response) {
-            
-                // save Timestamp
-                current_timestamp = response.current_timestamp;
-                
-                // display agenda
-                updateAgenda(response, current_timestamp);
-            } 
-        });*/
 
 	// Hide all time-selectors iniially.
 	$("[class$='-time-picker']").hide(); 

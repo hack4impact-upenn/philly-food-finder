@@ -224,14 +224,19 @@ def address_food_resources():
 
 @app.route('/_edit', methods=['GET', 'POST'])
 def save_page():
-    data = request.form.get('edit_page')
-    print data
+    data = request.form.get('edit_data')
+    name = request.form.get('page_name')
     if(data):
-    	page = HTML.query.filter_by(page = 'edit').first()
+    	page = HTML.query.filter_by(page = name).first()
     	page.value = data
     	db.session.commit()
     return 'Added' + data + 'to database.'
 
+#TODO: Remove this edit demo page once editing works on all others.
 @app.route('/admin/edit')
 def edit_content():
-	return render_template('edit_content.html', html_string = HTML.query.first())
+	return render_template('edit_content.html', html_string = HTML.query.filter_by(page = 'edit-page').first())
+
+@app.route('/about')
+def about():
+	return render_template('about.html', html_string = HTML.query.filter_by(page = 'about-page').first())

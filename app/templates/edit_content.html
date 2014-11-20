@@ -7,20 +7,21 @@
 </div>
 <div class="row">
     <div class="large-12 columns">
-    <div id="editor1" contenteditable="false">
-    {{ html_string.value|safe }}
+        <div id="editor1" contenteditable="false">
+            {{ html_string.value|safe }}
+        </div>
+    </div>
 </div>
 {% if current_user.is_authenticated() %}
 <div class="row">
-   <div class="button round" id="start_edit">Edit</div>
-   <div class="button round" id="end_edit">Save</div>  
+   <div class="button round start-edit" id="edit-page">Edit</div>
+   <div class="button round end-edit" id="edit-page" >Save</div>  
 </div>
 {% endif %}
-</div>
-</div>
+
 {% if current_user.is_authenticated() %}
 <script>
-    $("#end_edit").hide();
+    $(".end-edit").hide();
 </script>
 {% endif %}
 {% endblock %}
