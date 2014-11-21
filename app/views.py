@@ -240,3 +240,11 @@ def edit_content():
 @app.route('/about')
 def about():
 	return render_template('about.html', html_string = HTML.query.filter_by(page = 'about-page').first())
+
+@app.route('/faq')
+def faq():
+	return render_template('faq.html', html_string = HTML.query.filter_by(page = 'faq-page').first())
+
+@app.route('/contact')
+def contact():
+	return render_template('contact.html', html_string = HTML.query.filter_by(page = 'contact-page').first())

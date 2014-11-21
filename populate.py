@@ -264,7 +264,7 @@ db.session.commit()
 p1 = HTML(page = 'edit-page', value = 'Hello world!')
 p2 = HTML(page = 'about-page', value = 'Hello about!')
 p3 = HTML(page = 'faq-page', value = 'Hello faq!')
-p4 = HTML(page = 'contact-page', value = 'Hello faq!')
+p4 = HTML(page = 'contact-page', value = 'Hello contact!')
 
 # Add each new object to session and commit session. 
 db.session.add(p1)
