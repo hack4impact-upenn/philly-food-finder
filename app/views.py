@@ -16,13 +16,14 @@ from flask_login import current_user, login_user, logout_user
 
 @app.route('/')
 def index():
-    return "Hello World!"
+    return render_template('base.html')
 
 @app.route('/map')
 def map():
     return render_template('newmaps.html')
 
 @app.route('/new_food_resource', methods=['GET', 'POST'])
+@login_required
 def new_food_resource():
     form = AddNewFoodResourceForm(request.form)
     additional_errors = []
@@ -220,10 +221,30 @@ def get_food_resource_data():
 def address_food_resources():
     addresses = FoodResource.query.all()
     return jsonify(addresses=[i.serialize_map_list() for i in addresses])
-    #jsonify(data="asdf")
-    #jsonify(addresses=[i.serialize_map_list() for i in addresses])
 
+@app.route('/_edit', methods=['GET', 'POST'])
+def save_page():
+    data = request.form.get('edit_data')
+    name = request.form.get('page_name')
+    if(data):
+    	page = HTML.query.filter_by(page = name).first()
+    	page.value = data
+    	db.session.commit()
+    return 'Added' + data + 'to database.'
+
+#TODO: Remove this edit demo page once editing works on all others.
 @app.route('/admin/edit')
 def edit_content():
-	return render_template('edit_content.html')
+	return render_template('edit_content.html', html_string = HTML.query.filter_by(page = 'edit-page').first())
 
+@app.route('/about')
+def about():
+	return render_template('about.html', html_string = HTML.query.filter_by(page = 'about-page').first())
+
+@app.route('/faq')
+def faq():
+	return render_template('faq.html', html_string = HTML.query.filter_by(page = 'faq-page').first())
+
+@app.route('/contact')
+def contact():
+	return render_template('contact.html', html_string = HTML.query.filter_by(page = 'contact-page').first())

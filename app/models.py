@@ -83,12 +83,12 @@ class FoodResource(db.Model):
 		return {
 			'id': self.id,
 			'name': self.name,
-			'phone_number': self.phone_numbers,
+			'phone_number': '999999999', #self.phone_number,
 			'description': self.description,
 			'location_type': self.location_type,
 			'address': self.address.serialize_address()
-		}		
-		
+		}
+
 class Role(db.Model):
 	role_type_enums = ('User','Admin')
 	id = db.Column(db.Integer(), primary_key=True)
@@ -101,9 +101,7 @@ class UserRoles(db.Model):
 		ondelete='CASCADE'))
 	role_id = db.Column(db.Integer(), db.ForeignKey('role.id', 
 		ondelete='CASCADE'))
-
-
-
+	
 class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True)
 
@@ -141,3 +139,8 @@ class User(db.Model, UserMixin):
 		self.last_name = last_name
 		self.roles = roles
 		self.is_enabled = is_enabled
+
+class HTML(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	page = db.Column(db.String(100), unique=True)
+	value = db.Column(db.Text)

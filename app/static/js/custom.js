@@ -20,8 +20,7 @@ $(document).ready(function() {
         	console.log(data); 
         	// create table entries with data in them
       	});
-
-		// If the table is currently hidden, show the table.
+      			// If the table is currently hidden, show the table.
 		if ($("#"+table_to_expand).is(":hidden")) {
 			$("#"+table_to_expand).slideDown("medium", function() {
 				$(this).show(); 
@@ -33,6 +32,31 @@ $(document).ready(function() {
 			});
 		}
 	})
+
+    $(".start-edit").click(function() {
+		CKEDITOR.disableAutoInline = true;
+    	var editor1 = CKEDITOR.inline("editor1", {
+    		startupFocus: true,
+    		autoGrow_onStartup: true
+    	});
+    	$(".start-edit").hide();
+    	$(".end-edit").show();
+    	$("#editor1").attr("contenteditable","true");
+    });
+
+    $(".end-edit").click(function() {
+    	if ( editor1 ){
+    		var json_data = {
+    			page_name: $(".end-edit").attr("id"),
+    			edit_data: CKEDITOR.instances.editor1.getData()
+    		};
+    		$.post(url = $SCRIPT_ROOT + '/_edit', data = json_data);
+			CKEDITOR.instances.editor1.destroy();
+		}
+    	$(".end-edit").hide();
+    	$(".start-edit").show();
+    	$("#editor1").attr("contenteditable","false");
+      	});
 
 	// Hide all time-selectors iniially.
 	$("[class$='-time-picker']").hide(); 
@@ -50,4 +74,5 @@ $(document).ready(function() {
 	    }
 	});
 });
+
 
