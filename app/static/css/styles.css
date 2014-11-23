@@ -11,11 +11,13 @@ hr {
   margin: 0.67em 50;
 }
 
-/* Food Resource Form */
+/* Food Resource Form 
 h1 {
   margin: 0.67em 50;
   font-size: 1.875rem;
-}
+}*/
+
+
 
 label {
   font-size: 1rem;
@@ -24,7 +26,7 @@ label {
 }
 
 .row {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 /* placeholder text */
@@ -56,21 +58,10 @@ input::-moz-placeholder {
   font-size: .875rem;
   font-weight: 200;
   letter-spacing: .2px;
-
 }
 
 #food-resources {
   font-size: .875rem;
-}
-
-/* padding above 'Additional Information'  */
-#top-padding-section {
-  margin-top: 20px;
-}
-
-/* padding for day/time form */
-#middle-padding-section {
-  margin-top: 10px;
 }
 
 /* padding around submit button */
@@ -79,10 +70,18 @@ input::-moz-placeholder {
   margin-top: 10px;
 }
 
-button, .select {
-  padding-bottom: 100px;
-  height: 2.4rem;
-  font-size: .875rem;
+/* button styling */
+button, .button{
+  background-color: #FFF;
+  border-color: #666666;
+  color: #000;
+  opacity: 0.8;
+  
+}
+
+button:hover, button:focus, .button:hover, .button:focus {
+  background-color: #000;
+  color: #FFF;
 }
 
 /* HEADER - top-bar */
@@ -122,7 +121,7 @@ button, .select {
   letter-spacing: 4px;
   text-align: center;
   margin-right: 10px;
-  margin-left: 10px;
+/*  margin-left: 10px;*/
 }
 
 /* buttons - not hover */
@@ -133,6 +132,11 @@ button, .select {
 }
 
 .top-bar-section li:not(.has-form) a:not(.button):hover {
+  background-color: #FFF;
+  color: #FFF;
+}
+
+.top-bar-section ul li>a:hover {
   background-color: #FFF;
 }
 
@@ -172,6 +176,10 @@ button, .select {
   color: #ef3d23;
 }
 
+#l_admin:hover {
+  color: #ef3d23;
+}
+
 img {
   height: 50;
 }
@@ -190,6 +198,7 @@ img {
 /* #0f85c7 - blue */
 /* #84459b - purple */
 /* #343434 - black */
+/* #2D4FA0 - navy */ 
 
 .block-header, 
 .block-header table {
