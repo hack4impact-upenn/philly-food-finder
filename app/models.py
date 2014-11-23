@@ -75,9 +75,20 @@ class FoodResource(db.Model):
 		return {
 			'id': self.id, 
 			'name': self.name, 
-			'phone_number': self.phone_number, 
-			'description': self.description
+			'phone_number': self.phone_numbers, 
+			'description': self.description,
 		}
+
+	def serialize_map_list(self):
+		return {
+			'id': self.id,
+			'name': self.name,
+			'phone_number': self.phone_numbers,
+			'description': self.description,
+			'location_type': self.location_type,
+			'address': self.address.serialize_address()
+		}		
+		
 class Role(db.Model):
 	role_type_enums = ('User','Admin')
 	id = db.Column(db.Integer(), primary_key=True)
@@ -91,15 +102,7 @@ class UserRoles(db.Model):
 	role_id = db.Column(db.Integer(), db.ForeignKey('role.id', 
 		ondelete='CASCADE'))
 
-	def serialize_map_list(self):
-		return {
-			'id': self.id,
-			'name': self.name,
-			'phone_number': self.phone_number,
-			'description': self.description,
-			'location_type': self.location_type,
-			'address': self.address.serialize_address()
-		}
+
 
 class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True)

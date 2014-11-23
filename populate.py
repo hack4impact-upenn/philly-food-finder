@@ -52,10 +52,10 @@ f1.phone_number = "888-888-8888"
 f1.description = "Fresh fruit and veggies!"
 f1.location_type = "MEALS_ON_WHEELS"
 a1 = Address()
-a1.line1 = "6500 Tabor Ave"
+a1.line1 = "3160 Chestnut Street"
 a1.city = "Philadelphia"
 a1.state = "PA"
-a1.zip_code = "19111"
+a1.zip_code = "19104"
 f1.address = a1
 timeslots_list_1 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
