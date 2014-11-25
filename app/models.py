@@ -54,7 +54,7 @@ class FoodResource(db.Model):
 	name = db.Column(db.String(50))
 	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', lazy='select', uselist=True)
 	url = db.Column(db.Text)
-	openmonthpairs = db.relationship('OpenMonthPair', backref='food_resource', lazy='select', uselist=True)
+	open_month_pairs = db.relationship('OpenMonthPair', backref='food_resource', lazy='select', uselist=True)
 	exceptions = db.Column(db.Text)
 	description = db.Column(db.Text)
 	location_type = db.Column(db.Enum(*food_resource_type_enums))
@@ -64,6 +64,8 @@ class FoodResource(db.Model):
 		lazy='select', uselist=True)
 	address = db.relationship('Address', backref='food_resource', 
 		lazy='select', uselist=False)
+	family_children = db.Column(db.Boolean)
+	elderly = db.Column(db.Boolean)
 
 	def serialize_name_only(self):
 		return {

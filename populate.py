@@ -18,6 +18,8 @@ db.session.add(num0)
 f0.phone_number = "123-456-7890"
 f0.description = "Open year round"
 f0.location_type = "FARMERS_MARKET"
+f0.family_children = True
+f0.elderly = False
 a0 = Address()
 a0.line1 = "43rd Street and Baltimore Avenue"
 a0.city = "Philadelphia"
@@ -56,6 +58,8 @@ f1.phone_numbers.append(num1)
 db.session.add(num1)
 f1.description = "Fresh fruit and veggies!"
 f1.location_type = "MEALS_ON_WHEELS"
+f1.family_children = False
+f1.elderly = True
 a1 = Address()
 a1.line1 = "6500 Tabor Ave"
 a1.city = "Philadelphia"
@@ -72,7 +76,7 @@ timeslots_list_1 = \
     TimeSlot(day_of_week = 3, start_time = time(8,0), 
         end_time = time(19,30)),
     TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(5,30)),
+        end_time = time(15,30)),
     TimeSlot(day_of_week = 5, start_time = time(8,15), 
         end_time = time(18,45)),
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
@@ -94,6 +98,8 @@ f2.phone_numbers.append(num2)
 db.session.add(num2)
 f2.description = "Food cupboard description"
 f2.location_type = "FOOD_CUPBOARD"
+f2.family_children = True
+f2.elderly = True
 a2 = Address()
 a2.line1 = "1000 Locust St"
 a2.city = "Philadelphia"
@@ -132,6 +138,8 @@ f3.phone_numbers.append(num3)
 db.session.add(num3)
 f3.description = "A description"
 f3.location_type = "SHARE"
+f3.family_children = False
+f3.elderly = False
 a3 = Address()
 a3.line1 = "1610 Sansom St"
 a3.city = "Philadelphia"
@@ -170,6 +178,8 @@ f4.phone_numbers.append(num4)
 db.session.add(num4)
 f4.description = "Another description"
 f4.location_type = "SOUP_KITCHEN"
+f4.family_children = True
+f4.elderly = True
 a4 = Address()
 a4.line1 = "2146 E Susquehanna Ave"
 a4.city = "Philadelphia"
@@ -208,6 +218,8 @@ f5.phone_numbers.append(num5)
 db.session.add(num5)
 f5.description = "Another another description"
 f5.location_type = "WIC_OFFICE"
+f5.family_children = False
+f5.elderly = True
 a5 = Address()
 a5.line1 = "1300 W Lehigh Ave"
 a5.city = "Philadelphia"
@@ -224,7 +236,7 @@ timeslots_list_5 = \
     TimeSlot(day_of_week = 3, start_time = time(8,0), 
         end_time = time(19,30)),
     TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(5,30)),
+        end_time = time(15,30)),
     TimeSlot(day_of_week = 5, start_time = time(8,15), 
         end_time = time(18,45)),
     TimeSlot(day_of_week = 6, start_time = time(9,0), 

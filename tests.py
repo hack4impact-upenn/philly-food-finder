@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from app import app, db
 from config import basedir
 from app.models import Address, FoodResource, TimeSlot, User, Role, PhoneNumber
+from app.utils import *
 
 class TestCase(unittest.TestCase):
 
@@ -41,7 +42,21 @@ class TestCase(unittest.TestCase):
             TimeSlot(day_of_week = 3, start_time = time(8,0), 
                 end_time = time(19,30)),
             TimeSlot(day_of_week = 4, start_time = time(10,0), 
-                end_time = time(5,30)),
+                end_time = time(15,30)),
+            TimeSlot(day_of_week = 5, start_time = time(8,15), 
+                end_time = time(18,45)),
+            TimeSlot(day_of_week = 6, start_time = time(9,0), 
+                end_time = time(20,45))]
+
+        self.timeslots_list2 = \
+            [TimeSlot(day_of_week = 0, start_time = time(8,0), 
+                end_time = time(18,30)),
+            TimeSlot(day_of_week = 1, start_time = time(7,0), 
+                end_time = time(19,30)),
+            TimeSlot(day_of_week = 3, start_time = time(8,0), 
+                end_time = time(19,30)),
+            TimeSlot(day_of_week = 4, start_time = time(10,0), 
+                end_time = time(15,30)),
             TimeSlot(day_of_week = 5, start_time = time(8,15), 
                 end_time = time(18,45)),
             TimeSlot(day_of_week = 6, start_time = time(9,0), 
@@ -61,14 +76,14 @@ class TestCase(unittest.TestCase):
 
         self.u1 = User(email='ben@ben.com', password = 'pass123', 
             first_name = 'Ben', last_name = 'Sandler', 
-            roles=[Role(name = 'User')])
+            roles=[Role(name = 'User')], is_enabled = True)
         self.u2 = User(email = 'steve@gmail.com', password = 'p@$$w0rd', 
-            first_name = 'Steve', 
-            last_name = 'Smith', roles = [Role(name = 'User')])
+            first_name = 'Steve', last_name = 'Smith', 
+            roles = [Role(name = 'User')], is_enabled = True)
         self.u3 = User(email = 'sarah@gmail.com',
             password = '139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#', 
             first_name = 'Sarah', last_name = 'Smith', 
-            roles = [Role(name = 'Admin')])
+            roles = [Role(name = 'Admin')], is_enabled = True)
 
         self.p1 = PhoneNumber(number = '1234567898')
         self.p2 = PhoneNumber(number = '9876543215')
@@ -126,6 +141,50 @@ class TestCase(unittest.TestCase):
         u = User.query.filter_by(email = 'sarah@gmail.com').first()
         assert u.verify_password('139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#')
         assert not(u.verify_password('239rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#'))
+
+    def test_is_open(self):
+        open_pairs = \
+            [OpenMonthPair(start_month = 1, end_month = 3), 
+             OpenMonthPair(start_month = 5, end_month = 7),
+             OpenMonthPair(start_month = 10, end_month = 11)]
+
+        r1 = FoodResource(name = 'Test Food Resource 1', address = self.a1, 
+            phone_numbers=[self.p2], timeslots = self.timeslots_list,
+            description = self.desc, location_type = 'FARMERS_MARKET'
+            )
+        r2 = FoodResource(name = 'Test Food Resource 1', address = self.a1, 
+            phone_numbers=[self.p2], timeslots = self.timeslots_list2,
+            description = self.desc, location_type = 'FARMERS_MARKET'
+            )
+
+        r1.open_month_pairs.append(OpenMonthPair(start_month = 1, end_month = 3))
+        r1.open_month_pairs.append(OpenMonthPair(start_month = 5, end_month = 7))
+        r1.open_month_pairs.append(OpenMonthPair(start_month = 10, end_month = 11))
+        r2.open_month_pairs.append(OpenMonthPair(start_month = 1, end_month = 3))
+        r2.open_month_pairs.append(OpenMonthPair(start_month = 5, end_month = 7))
+        r2.open_month_pairs.append(OpenMonthPair(start_month = 10, end_month = 11))
+
+        # Right month right time
+        assert is_open(resource = r1, 
+            current_date = datetime(year = 2014, month = 11, day = 24, hour = 12, minute = 30))
+        assert is_open(resource = r1, 
+            current_date = datetime(year = 2014, month = 2, day = 24, hour = 10, minute = 31))
+
+        # Wrong month wrong time
+        assert not is_open(resource = r1, 
+            current_date = datetime(year = 2014, month = 9, day = 13, hour = 21, minute = 30))
+
+        # Wrong month right time
+        assert not is_open(resource = r1, 
+            current_date = datetime(year = 2014, month = 9, day = 13, hour = 10, minute = 22))
+
+        # Right month wrong time
+        assert not is_open(resource = r1, 
+            current_date = datetime(year = 2014, month = 2, day = 13, hour = 21, minute = 30))
+
+        # Right month, closed on Tuesdays
+        assert not is_open(resource = r2, 
+            current_date = datetime(year = 2014, month = 11, day = 25, hour = 10, minute = 30))
 
 if __name__ == '__main__':
     unittest.main()
