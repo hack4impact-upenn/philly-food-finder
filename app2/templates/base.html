@@ -1,0 +1,120 @@
+<html>
+  <head>
+
+    <!-- CSS -->
+    <link href="../static/css/foundation.min.css" rel="stylesheet" type="text/css">
+    <link href="../static/css/normalize.css" rel="stylesheet" type="text/css">
+    <link href="../static/css/foundation.css" rel="stylesheet" type="text/css">
+    <link href="../static/css/styles.css" rel="stylesheet" type="text/css">
+    <script src="../static/js/vendor/jquery.js"></script>
+    <script src="../static/js/foundation.min.js"></script>
+    <script type="text/javascript" 
+            src="http://maps.google.com/maps/api/js?sensor=true"></script>
+    <script src="../static/js/gmaps.js"></script>
+    <script src="../static/js/custom.js"></script>
+    <script src="../static/js/ckeditor/ckeditor.js"></script>
+   
+    <!-- JavaScript -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Don't launch the Foundation JS until the DOM has loaded -->
+    <script>
+        $(document).ready(function() {
+            $(document).foundation();
+        });  
+    </script>
+
+    <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    
+    <script type=text/javascript>
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    
+    {% if title %}
+    <title>{{title}} - GPCAH</title>
+    {% else %}
+    <title>GPCAH</title>
+    {% endif %}
+
+  </head>
+  <body>
+    <div class="fixed sticky">
+      <nav class="top-bar" data-topbar role="navigation" 
+           data-options="sticky_on: large">
+        <ul class="title-area">
+          <li class="name">
+            <h1><a href="#"><img src="../static/img/FPAC_logo.svg"/></a></h1>
+          </li>
+          <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a>
+          </li>
+        </ul>
+
+        <section class="top-bar-section">
+          <ul class="left">
+            <li><a href="#" id="l_map">map</a></li>
+            <li><a href="{{ url_for('faq') }}" id="l_faq">faq</a></li>
+            <li><a href="{{ url_for('about') }}" id="l_about">about</a></li>
+            <li><a href="{{ url_for('contact') }}" id="l_contact">contact</a></li>
+            
+          </ul>
+
+         <!-- Right Nav Section -->
+         <ul class="right">
+            {% if current_user.is_authenticated() %}
+              <li><a href=" {{ url_for('user.logout') }} " id="l_login">
+                           logout </a></li>
+            {% endif %}
+            {% if not current_user.is_authenticated() %}
+              <li><a href=" {{ url_for('user.login') }} " id="l_login">
+                           login </a></li>
+            {% endif %}
+          </ul>
+
+<!--<<<<<<< HEAD
+  <section class="top-bar-section"> 
+    <ul class="right">
+      {% if current_user.is_authenticated() %}
+        <li><a href=" {{ url_for('user.logout') }} "> Logout </a></li>
+      {% endif %}
+      {% if not current_user.is_authenticated() %}
+        <li><a href=" {{ url_for('user.login') }} "> Login </a></li>
+      {% endif %}
+      <li class="has-dropdown">
+        <a href="#">Right Button Dropdown</a>
+        <ul class="dropdown">
+          <li><a href="#">First link in dropdown</a></li>
+          <li class="active"><a href="#">Active link in dropdown</a></li>
+        </ul>
+      </li>
+    </ul>
+=======
+>>>>>>> nancy-->
+
+        </section>
+      </nav>
+    </div>
+
+    {% block content %}
+
+    {% endblock %}
+
+
+    {% block content_faq %}
+
+    {% endblock %}
+
+
+
+    <!-- sections of stuff
+    <a name="map"></a>
+    <h3 data-magellan-destination="map">map</h3>
+
+    <a name="faq"></a>
+    <h3 data-magellan-destination="faq">faq</h3>
+    -->
+
+
+  </body>
+</html>

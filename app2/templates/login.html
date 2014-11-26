@@ -1,0 +1,26 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class = "row">
+<h1>Sign In</h1>
+</div>
+<form action="" method=post name="login">
+  {{ form.hidden_tag() }}
+  <div class="row">
+    <div class="large-6 columns">
+      <dt>{{ form.email.label }}
+      <dd>{{ form.email()|safe }}
+    </div>
+  </div>
+    <div class="row">
+      <div class="large-6 columns">
+        <dt>{{ form.password.label }}
+        <dd>{{ form.password()|safe }}
+    </div>
+  </div>
+  <div class="row">
+    <p><input type="submit" class="button round" value="Sign In"></p>
+  </div>
+</form>
+{% endblock %}
