@@ -1,4 +1,3 @@
-from werkzeug.contrib.fixers import ProxyFix
 from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 import os
@@ -57,7 +56,6 @@ class ConfigClass(object):
     USER_AFTER_CONFIRM_ENDPOINT = 'user.change_password'
 
 app = Flask(__name__)
-app.wsgi_app = ProxyFix(app.wsgi_app)
 app.config.from_object(__name__+'.ConfigClass')
 app.config.from_object('config')
 
