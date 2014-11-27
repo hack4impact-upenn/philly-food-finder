@@ -18,8 +18,7 @@ class ConfigClass(object):
         'phillyhungercoalition@gmail.com')
     MAIL_PASSWORD =           os.getenv('MAIL_PASSWORD',        
         'Q8qrHeTH')
-
-    MAIL_DEFAULT_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',  
+    DEFAULT_MAIL_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',  
         '"Foodle" <phillyhungercoalition@gmail.com>')
     MAIL_SERVER =             os.getenv('MAIL_SERVER',          
         'smtp.gmail.com')
