@@ -57,7 +57,7 @@ class ConfigClass(object):
 
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')
-app.config.from_object('config')
+#app.config.from_object('config')
 
 db = SQLAlchemy(app) 	# Initialize Flask-SQLAlchemy
 mail = Mail(app)		# Initialize Flask-Mail
