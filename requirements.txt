@@ -25,6 +25,7 @@ itsdangerous==0.24
 passlib==1.6.2
 pathlib==1.0.1
 pbr==0.10.0
+psycopg2==2.5.4
 py-bcrypt==0.4
 pycrypto==2.6.1
 python-openid==2.2.5
