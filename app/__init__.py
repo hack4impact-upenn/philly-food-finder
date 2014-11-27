@@ -8,7 +8,6 @@ from flask_mail import Mail
 class ConfigClass(object):
     # Flask settings
     SECRET_KEY =              os.getenv('SECRET_KEY',       '')
-
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',     
         'sqlite:///basic_app.sqlite')
     CSRF_ENABLED = True
@@ -73,9 +72,6 @@ from flask_user import SQLAlchemyAdapter, UserManager
 db_adapter = SQLAlchemyAdapter(db, User)        # Register the User model
 user_manager = UserManager(db_adapter, app, register_form = InviteForm, 
     register_view_function = invite)     # Initialize Flask-User
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
 
 from app import views, models, forms
 from forms import InviteForm
