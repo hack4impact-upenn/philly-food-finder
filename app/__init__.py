@@ -1,7 +1,6 @@
 from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 import os
-from config import basedir
 from flask_mail import Mail
 
 # Use a Class-based config to config flask and extensions
