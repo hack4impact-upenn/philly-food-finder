@@ -57,7 +57,7 @@ class FoodResource(db.Model):
 	open_month_pairs = db.relationship('OpenMonthPair', backref='food_resource', lazy='select', uselist=True)
 	exceptions = db.Column(db.Text)
 	description = db.Column(db.Text)
-	location_type = db.Column(db.Enum(*food_resource_type_enums))
+	location_type = db.Column('location_type', db.Enum(*food_resource_type_enums))
 	timeslots = db.relationship(
 		'TimeSlot', # One-to-many relationship (one Address with many TimeSlots).
 		backref='food_resource', # Declare a new property of the TimeSlot class.
@@ -94,7 +94,7 @@ class FoodResource(db.Model):
 class Role(db.Model):
 	role_type_enums = ('User','Admin')
 	id = db.Column(db.Integer(), primary_key=True)
-	name = db.Column(db.Enum(*role_type_enums))
+	name = db.Column('role_type', db.Enum(*role_type_enums))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class UserRoles(db.Model):

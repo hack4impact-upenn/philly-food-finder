@@ -3,12 +3,14 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import os
 from flask_mail import Mail
 
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 # Use a Class-based config to config flask and extensions
 class ConfigClass(object):
     # Flask settings
     SECRET_KEY =              os.getenv('SECRET_KEY',       '\x86\xc8\xa9Z\tN\xb2\n\xce\x83\x0f\xef\x80\xd56\x948a\x92\xe5\xc5\xb1\xc5j')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',     
-        'sqlite:///basic_app.sqlite')
+        'sqlite:///' + os.path.join(basedir, 'app.db'))
     CSRF_ENABLED = True
 
     # Flask-Mail settings
