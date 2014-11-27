@@ -2,6 +2,8 @@ import os, random, string, datetime
 from datetime import time
 from pytz import timezone
 from models import *
+import os, random, string
+from datetime import time
 
 # Function to generate a random password of given length 
 def generate_password(length):
