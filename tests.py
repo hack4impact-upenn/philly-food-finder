@@ -1,114 +1,190 @@
 #!flask/bin/python
-import os
 import unittest
-from datetime, import datetime, timedelta
-from config import basedir
+import os
+from datetime import time
+from sqlalchemy.exc import IntegrityError
 from app import app, db
-from app.models import User, Post
+from config import basedir
+from app.models import Address, FoodResource, TimeSlot, User, Role, PhoneNumber
+from app.utils import *
 
 class TestCase(unittest.TestCase):
+
+    # Run at the beginning of every test.
     def setUp(self):
         app.config['TESTING'] = True
         app.config['CSRF_ENABLED'] = False
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'test.db')
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+            os.path.join(basedir, 'test.db')
         self.app = app.test_client()
         db.create_all()
+        self.create_vars()
 
+    # Run at the end of every test.
     def tearDown(self):
         db.session.remove()
         db.drop_all()
 
-    def test_avatar(self):
-        u = User(nickname = 'john', email = 'john@example.com')
-        avatar = u.avatar(128)
-        expected = 'http://www.gravatar.com/avatar/d4c74594d841139328695756648b6bd6'
-        assert avatar[0:len(expected)] == expected
+    # Sets up global variables that will be used in several tests.
+    def create_vars(self):
+        self.a1 = Address(line1 = '1234 MB 1234', line2 = '3700 Spruce St', 
+            city = 'Philadelphia', state = 'PA', zip_code = '14109')
+        self.a2 = Address(line1 = '4567 MB 1234', line2 = '3600 Spruce St', 
+            city = 'Philadelphia', state = 'PA', zip_code = '14109')
 
-    def test_make_unique_nickname(self):
-        u = User(nickname = 'john', email = 'john@example.com')
-        db.session.add(u)
-        db.session.commit()
-        nickname = User.make_unique_nickname('john')
-        assert nickname != 'john'
-        u = User(nickname = nickname, email = 'susan@example.com')
-        db.session.add(u)
-        db.session.commit()
-        nickname2 = User.make_unique_nickname('john')
-        assert nickname2 != 'john'
-        assert nickname2 != nickname
+        self.timeslots_list = \
+            [TimeSlot(day_of_week = 0, start_time = time(8,0), 
+                end_time = time(18,30)),
+            TimeSlot(day_of_week = 1, start_time = time(7,0), 
+                end_time = time(19,30)),
+            TimeSlot(day_of_week = 2, start_time = time(7,30), 
+                end_time = time(18,30)),
+            TimeSlot(day_of_week = 3, start_time = time(8,0), 
+                end_time = time(19,30)),
+            TimeSlot(day_of_week = 4, start_time = time(10,0), 
+                end_time = time(15,30)),
+            TimeSlot(day_of_week = 5, start_time = time(8,15), 
+                end_time = time(18,45)),
+            TimeSlot(day_of_week = 6, start_time = time(9,0), 
+                end_time = time(20,45))]
 
-    def test_follow(self):
-        u1 = User(nickname = 'john', email = 'john@example.com')
-        u2 = User(nickname = 'susan', email = 'susan@example.com')
-        db.session.add(u1)
-        db.session.add(u2)
-        db.session.commit()
-        assert u1.unfollow(u2) == None
-        u = u1.follow(u2)
-        db.session.add(u)
-        db.session.commit()
-        assert u1.follow(u2) == None
-        assert u1.is_following(u2)
-        assert u1.followed.count() == 1
-        assert u1.followed.first().nickname == 'susan'
-        assert u2.followers.count() == 1
-        assert u2.followers.first().nickname == 'john'
-        u = u1.unfollow(u2)
-        assert u != None
-        db.session.add(u)
-        db.session.commit()
-        assert u1.is_following(u2) == False
-        assert u1.followed.count() == 0
-        assert u2.followers.count() == 0
+        self.timeslots_list2 = \
+            [TimeSlot(day_of_week = 0, start_time = time(8,0), 
+                end_time = time(18,30)),
+            TimeSlot(day_of_week = 1, start_time = time(7,0), 
+                end_time = time(19,30)),
+            TimeSlot(day_of_week = 3, start_time = time(8,0), 
+                end_time = time(19,30)),
+            TimeSlot(day_of_week = 4, start_time = time(10,0), 
+                end_time = time(15,30)),
+            TimeSlot(day_of_week = 5, start_time = time(8,15), 
+                end_time = time(18,45)),
+            TimeSlot(day_of_week = 6, start_time = time(9,0), 
+                end_time = time(20,45))]
 
-    def test_follow_posts(self):
-        # make four users
-        u1 = User(nickname = 'john', email = 'john@example.com')
-        u2 = User(nickname = 'susan', email = 'susan@example.com')
-        u3 = User(nickname = 'mary', email = 'mary@example.com')
-        u4 = User(nickname = 'david', email = 'david@example.com')
-        db.session.add(u1)
-        db.session.add(u2)
-        db.session.add(u3)
-        db.session.add(u4)
-        # make four posts
-        utcnow = datetime.utcnow()
-        p1 = Post(body = "post from john", author = u1, timestamp = utcnow + timedelta(seconds = 1))
-        p2 = Post(body = "post from susan", author = u2, timestamp = utcnow + timedelta(seconds = 2))
-        p3 = Post(body = "post from mary", author = u3, timestamp = utcnow + timedelta(seconds = 3))
-        p4 = Post(body = "post from david", author = u4, timestamp = utcnow + timedelta(seconds = 4))
-        db.session.add(p1)
-        db.session.add(p2)
-        db.session.add(p3)
-        db.session.add(p4)
+        self.desc = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+            Donec sem neque, vehicula ac nisl at, porta porttitor enim. 
+            Suspendisse nibh eros, pulvinar nec risus a, dignissim efficitur 
+            diam. Phasellus vestibulum posuere ex, vel hendrerit turpis molestie 
+            sit amet. Nullam ornare magna quis urna sodales, vel iaculis purus 
+            consequat. Mauris laoreet enim ipsum. Cum sociis natoque penatibus 
+            et magnis dis parturient montes, nascetur ridiculus mus. Nulla 
+            facilisi. In et dui ante. Morbi elementum dolor ligula, et mollis 
+            magna interdum non. Mauris ligula mi, mattis at ex ut, pellentesque 
+            porttitor elit. Integer volutpat elementum tristique. Ut interdum, 
+            mauris a feugiat euismod, tortor."""
+
+        self.u1 = User(email='ben@ben.com', password = 'pass123', 
+            first_name = 'Ben', last_name = 'Sandler', 
+            roles=[Role(name = 'User')], is_enabled = True)
+        self.u2 = User(email = 'steve@gmail.com', password = 'p@$$w0rd', 
+            first_name = 'Steve', last_name = 'Smith', 
+            roles = [Role(name = 'User')], is_enabled = True)
+        self.u3 = User(email = 'sarah@gmail.com',
+            password = '139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#', 
+            first_name = 'Sarah', last_name = 'Smith', 
+            roles = [Role(name = 'Admin')], is_enabled = True)
+
+        self.p1 = PhoneNumber(number = '1234567898')
+        self.p2 = PhoneNumber(number = '9876543215')
+
+    # Adds two valid addresses to the database and then checks that both can be 
+    # retrieved and that a bad query returns no results.
+    def test_writing_reading_address(self):
+    	db.session.add(self.a1)
+    	db.session.add(self.a2)
+    	db.session.commit()
+    	assert len(Address.query.filter_by(zip_code = '14109').all()) == 2
+    	assert len(Address.query.filter_by(zip_code = '14109', city = 'New York').all()) == 0
+
+    # Adds a valid Address to the database and then makes sure it can be 
+    # retrieved by name and address.
+    def test_create_valid_food_resource(self):
+
+        r1 = FoodResource(name = 'Test Food Resource 1', address = self.a1, 
+            phone_numbers=[self.p2], timeslots = self.timeslots_list,
+            description = self.desc, location_type = 'FARMERS_MARKET')
+        db.session.add(r1)
         db.session.commit()
-        # setup the followers
-        u1.follow(u1) # john follows himself
-        u1.follow(u2) # john follows susan
-        u1.follow(u4) # john follows david
-        u2.follow(u2) # susan follows herself
-        u2.follow(u3) # susan follows mary
-        u3.follow(u3) # mary follows herself
-        u3.follow(u4) # mary follows david
-        u4.follow(u4) # david follows himself
-        db.session.add(u1)
-        db.session.add(u2)
-        db.session.add(u3)
-        db.session.add(u4)
+        assert len(FoodResource.query.filter_by(name = 'Test Food Resource 1')
+            .all()) == 1
+        assert len(FoodResource.query.filter_by(address = self.a1)
+            .all()) == 1
+        assert len(FoodResource.query.filter_by(name = 'Test Food Resource 1')
+            .first().timeslots) == 7
+
+    # Tries to add an invalid Address to the database (does not use a proper 
+    # location_type enum) and ensures IntegrityError is raised.
+    def test_create_invalid_food_resource_enum_resource(self):
+      self.assertRaises(IntegrityError, 
+        r1 = FoodResource(name = 'Test Food Resource 1', address = self.a2,
+            phone_numbers = [self.p2], timeslots = self.timeslots_list, 
+            description = self.desc, location_type = 'WRONG_ENUM!!!!!!!!!!!!!'))
+
+    def test_create_user(self):
+        db.session.add(self.u1)
         db.session.commit()
-        # check the followed posts of each user
-        f1 = u1.followed_posts().all()
-        f2 = u2.followed_posts().all()
-        f3 = u3.followed_posts().all()
-        f4 = u4.followed_posts().all()
-        assert len(f1) == 3
-        assert len(f2) == 2
-        assert len(f3) == 2
-        assert len(f4) == 1
-        assert f1 == [p4, p2, p1]
-        assert f2 == [p3, p2]
-        assert f3 == [p4, p3]
-        assert f4 == [p4]
+        assert len(Role.query.filter_by(name = 'User').all()) == 1
+        u = User.query.filter_by(email = 'ben@ben.com').first()
+        assert u
+        assert u.verify_password('pass123')
+        assert not(u.verify_password('pass124'))
+
+    def test_create_multiple_users(self):
+        db.session.add(self.u1)
+        db.session.add(self.u2)
+        db.session.add(self.u3)
+        db.session.commit()
+        assert len(Role.query.filter_by(name = 'User').all()) == 2
+        assert len(Role.query.filter_by(name = 'Admin').all()) == 1
+        assert len(Role.query.filter_by(name = 'N/A').all()) == 0
+        u = User.query.filter_by(email = 'sarah@gmail.com').first()
+        assert u.verify_password('139rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#')
+        assert not(u.verify_password('239rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#'))
+
+    def test_is_open(self):
+        open_pairs = \
+            [OpenMonthPair(start_month = 1, end_month = 3), 
+             OpenMonthPair(start_month = 5, end_month = 7),
+             OpenMonthPair(start_month = 10, end_month = 11)]
+
+        r1 = FoodResource(name = 'Test Food Resource 1', address = self.a1, 
+            phone_numbers=[self.p2], timeslots = self.timeslots_list,
+            description = self.desc, location_type = 'FARMERS_MARKET'
+            )
+        r2 = FoodResource(name = 'Test Food Resource 1', address = self.a1, 
+            phone_numbers=[self.p2], timeslots = self.timeslots_list2,
+            description = self.desc, location_type = 'FARMERS_MARKET'
+            )
+
+        r1.open_month_pairs.append(OpenMonthPair(start_month = 1, end_month = 3))
+        r1.open_month_pairs.append(OpenMonthPair(start_month = 5, end_month = 7))
+        r1.open_month_pairs.append(OpenMonthPair(start_month = 10, end_month = 11))
+        r2.open_month_pairs.append(OpenMonthPair(start_month = 1, end_month = 3))
+        r2.open_month_pairs.append(OpenMonthPair(start_month = 5, end_month = 7))
+        r2.open_month_pairs.append(OpenMonthPair(start_month = 10, end_month = 11))
+
+        # Right month right time
+        assert is_open(resource = r1, 
+            current_date = datetime(year = 2014, month = 11, day = 24, hour = 12, minute = 30))
+        assert is_open(resource = r1, 
+            current_date = datetime(year = 2014, month = 2, day = 24, hour = 10, minute = 31))
+
+        # Wrong month wrong time
+        assert not is_open(resource = r1, 
+            current_date = datetime(year = 2014, month = 9, day = 13, hour = 21, minute = 30))
+
+        # Wrong month right time
+        assert not is_open(resource = r1, 
+            current_date = datetime(year = 2014, month = 9, day = 13, hour = 10, minute = 22))
+
+        # Right month wrong time
+        assert not is_open(resource = r1, 
+            current_date = datetime(year = 2014, month = 2, day = 13, hour = 21, minute = 30))
+
+        # Right month, closed on Tuesdays
+        assert not is_open(resource = r2, 
+            current_date = datetime(year = 2014, month = 11, day = 25, hour = 10, minute = 30))
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,81 +1,147 @@
-from app import db
-from hashlib import md5
+from app import app, db
+from flask_user import UserMixin
+from datetime import datetime
 
-ROLE_USER = 0
-ROLE_ADMIN = 1
+class Address(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	line1 = db.Column(db.String(100))
+	line2 = db.Column(db.String(100))
+	city = db.Column(db.String(35))
+	state = db.Column(db.String(2))
+	zip_code = db.Column(db.String(5))
+	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+	def serialize_address(self):
+		return {
+		'id': self.id,
+		'line1': self.line1,
+		'line2': self.line2,
+		'city': self.city,
+		'state': self.state,
+		'zip_code': self.zip_code
+		}
 
-followers = db.Table('followers',
-    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
-)
+class TimeSlot(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	day_of_week = db.Column(db.Integer)
+	start_time = db.Column(db.Time)
+	end_time = db.Column(db.Time)
+	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+	def serialize_timeslot(self):
+		return {
+		'id': self.id,
+		'day_of_week': self.day_of_week,
+		'start_time': self.start_time,
+		'end_time': self.end_time
+		}
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    nickname = db.Column(db.String(64), unique = True)
-    email = db.Column(db.String(120), unique = True)
-    role = db.Column(db.SmallInteger, default = ROLE_USER)
-    posts = db.relationship('Post', backref = 'author', lazy = 'dynamic')
-    about_me = db.Column(db.String(140))
-    last_seen = db.Column(db.DateTime)
-    followed = db.relationship('User',
-        secondary = followers,
-        primaryjoin = (followers.c.follower_id == id),
-        secondaryjoin = (followers.c.followed_id == id),
-        backref = db.backref('followers', lazy = 'dynamic'),
-        lazy = 'dynamic')
+# Represents a start and end month for a resource. 
+# For example OpenMonthPair(3,5) means the resource is open from March to May.
+class OpenMonthPair(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	start_month = db.Column(db.Integer)
+	end_month = db.Column(db.Integer)
+	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
-    def is_authenticated(self):
-        return True
+class PhoneNumber(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	number = db.Column(db.String(35))
+	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
-    def is_active(self):
-        return True
+class FoodResource(db.Model):
+	# food_resource_type_enums = ('FARMERS_MARKET','MEALS_ON_WHEELS',
+	# 	'FOOD_CUPBOARD','SHARE','SOUP_KITCHEN','WIC_OFFICE')
+	id = db.Column(db.Integer, primary_key = True)
+	name = db.Column(db.String(50))
+	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', lazy='select', uselist=True)
+	url = db.Column(db.Text)
+	open_month_pairs = db.relationship('OpenMonthPair', backref='food_resource', lazy='select', uselist=True)
+	exceptions = db.Column(db.Text)
+	description = db.Column(db.Text)
+	location_type = db.Column(db.String(100))
+	timeslots = db.relationship(
+		'TimeSlot', # One-to-many relationship (one Address with many TimeSlots).
+		backref='food_resource', # Declare a new property of the TimeSlot class.
+		lazy='select', uselist=True)
+	address = db.relationship('Address', backref='food_resource', 
+		lazy='select', uselist=False)
+	family_children = db.Column(db.Boolean)
+	elderly = db.Column(db.Boolean)
 
-    def is_anonymous(self):
-        return False
+	def serialize_name_only(self):
+		return {
+			'id': self.id, 
+			'name': self.name
+		}
 
-    def get_id(self):
-        return unicode(self.id)
+	def serialize_all_data(self):
+		return {
+			'id': self.id, 
+			'name': self.name, 
+			'phone_number': self.phone_number, 
+			'description': self.description
+		}
 
-    def __repr__(self):
-        return '<User %r>' % (self.nickname)
+	def serialize_map_list(self):
+		return {
+			'id': self.id,
+			'name': self.name,
+			'phone_number': '999999999', #self.phone_number,
+			'description': self.description,
+			'location_type': self.location_type,
+			'address': self.address.serialize_address()
+		}
 
-    def avatar(self, size):
-        return 'http://www.gravatar.com/avatar/' + md5(self.email).hexdigest() + '?d=mm&s=' + str(size)
+class Role(db.Model):
+	id = db.Column(db.Integer(), primary_key=True)
+	name = db.Column(db.String(100))
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    @staticmethod
-    def make_unique_nickname(nickname):
-        if User.query.filter_by(nickname = nickname).first() == None:
-            return nickname
-        version = 2
-        while True:
-            new_nickname = nickname + str(version)
-            if User.query.filter_by(nickname = new_nickname).first() == None:
-                break
-            version += 1
-        return new_nickname
+class UserRoles(db.Model):
+	id = db.Column(db.Integer(), primary_key=True)
+	user_id = db.Column(db.Integer(), db.ForeignKey('user.id', 
+		ondelete='CASCADE'))
+	role_id = db.Column(db.Integer(), db.ForeignKey('role.id', 
+		ondelete='CASCADE'))
 
-    def follow(self, user):
-        if not self.is_following(user):
-            self.followed.append(user)
-            return self
+class User(db.Model, UserMixin):
+	id = db.Column(db.Integer, primary_key=True)
 
-    def unfollow(self, user):
-        if self.is_following(user):
-            self.followed.remove(user)
-            return self
+	# User Authentication information
+	password = db.Column(db.String(255), nullable=False, default='')
+	reset_password_token = db.Column(db.String(100), nullable=False, default='')
 
-    def is_following(self, user):
-        return self.followed.filter(followers.c.followed_id == user.id).count() > 0
+	# User Email information
+	email = db.Column(db.String(255), nullable=False, unique=True)
+	confirmed_at = db.Column(db.DateTime())
 
-    def followed_posts(self):
-        return Post.query.join(followers, (followers.c.followed_id == Post.user_id)).filter(followers.c.follower_id == self.id).order_by(Post.timestamp.desc())
+	# User information
+	is_enabled = db.Column(db.Boolean(), nullable=False, default=False)
+	first_name = db.Column(db.String(50), nullable=False, default='')
+	last_name = db.Column(db.String(50), nullable=False, default='')
 
-class Post(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    body = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	roles = db.relationship('Role', secondary='user_roles',
+			backref=db.backref('users', lazy='dynamic'))
 
-    def __repr__(self):
-        return '<Post %r>' % (self.body)
+	def is_active(self):
+		return self.is_enabled
 
+	def verify_password(self, attept):
+		return app.user_manager.verify_password(attept, self.password)
+
+	# This function is only for the tests in tests.py
+	def confirm_and_enable_debug(self):
+		self.confirmed_at = datetime.now()
+		self.is_enabled = True
+
+	def __init__(self, email, password, is_enabled, first_name = '', last_name = '', roles = [Role(name = 'Admin')]):
+		self.email = email
+		self.password = app.user_manager.hash_password(password = password)
+		self.first_name = first_name
+		self.last_name = last_name
+		self.roles = roles
+		self.is_enabled = is_enabled
+
+class HTML(db.Model):
+	id = db.Column(db.Integer, primary_key = True)
+	page = db.Column(db.String(100), unique=True)
+	value = db.Column(db.Text)

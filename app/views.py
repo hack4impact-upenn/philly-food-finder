@@ -1,159 +1,250 @@
-from flask import render_template, flash, redirect, session, url_for, request, g
-from flask.ext.login import login_user, logout_user, current_user, login_required
-from app import app, db, lm, oid
-from forms import LoginForm, EditForm, PostForm
-from models import User, ROLE_USER, ROLE_ADMIN, Post
-from datetime import datetime
-from config import POSTS_PER_PAGE
+from app import app, db, utils
+from utils import get_time
+from models import *
+from forms import AddNewFoodResourceForm, RequestNewFoodResourceForm
+from flask import render_template, flash, redirect, session, url_for, request, \
+    g, jsonify, current_app
+from flask.ext.login import login_user, logout_user, current_user, \
+    login_required
+from variables import resources_info_singular, resources_info_plural, \
+    days_of_week
+from datetime import time
+from utils import generate_password
+from flask_user import login_required, signals
+from flask_user.views import _endpoint_url, _send_registered_email
+from flask_login import current_user, login_user, logout_user
 
-@lm.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+@app.route('/')
+def index():
+    return render_template('base.html')
 
-@app.before_request
-def before_request():
-    g.user = current_user
-    if g.user.is_authenticated():
-        g.user.last_seen = datetime.utcnow()
-        db.session.add(g.user)
-        db.session.commit()
+@app.route('/map')
+def map():
+    return render_template('newmaps.html')
 
-@app.route('/', methods = ['GET', 'POST'])
-@app.route('/index', methods = ['GET', 'POST'])
-@app.route('/index/<int:page>', methods = ['GET', 'POST'])
+@app.route('/new_food_resource', methods=['GET', 'POST'])
 @login_required
-def index(page = 1):
-    form = PostForm()
-    if form.validate_on_submit():
-        post = Post(body = form.post.data, timestamp = datetime.utcnow(), author = g.user)
-        db.session.add(post)
-        db.session.commit()
-        flash('Your post is now live!')
-        return redirect(url_for('index'))
-    posts = g.user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
-    return render_template('index.html',
-        title = 'Home',
-        form = form,
-        posts = posts)
+def new_food_resource():
+    form = AddNewFoodResourceForm(request.form)
+    additional_errors = []
+    if request.method == 'POST' and form.validate(): 
+        # Create food resource's timeslots.
+        timeslots = []
+        is_timeslot_valid = True
+        for i, day_of_week in enumerate(days_of_week): 
+            if (request.form[day_of_week['id'] + '-open-or-closed'] == "open"):
+                opening_time = request.form[day_of_week['id'] + '-opening-time']
+                start_time = get_time(opening_time)
+                closing_time = request.form[day_of_week['id'] + '-closing-time']
+                end_time = get_time(closing_time)
+                if start_time >= end_time: 
+                    is_timeslot_valid = False
+                    additional_errors.append("Opening time must be before closing time.")
+                if is_timeslot_valid:
+                    timeslot = TimeSlot(day_of_week = i, start_time = start_time, 
+                        end_time = end_time)
+                    db.session.add(timeslot)
+                    timeslots.append(timeslot)
+        # Create food resource's address.
+        if is_timeslot_valid:
+            address = Address(
+                line1 = form.address_line1.data, 
+                line2 = form.address_line2.data, 
+                city = form.address_city.data, 
+                state = form.address_state.data, 
+                zip_code = form.address_zip_code.data)
+            db.session.add(address)
+            # Create food resource's phone number.
+            phone_numbers = []
+            phone_number = PhoneNumber(number = form.phone_number.data)
+            db.session.add(phone_number)
+            phone_numbers.append(phone_number)
+            # Create food resource and store all data in it.
+            food_resource = FoodResource(
+                name = form.name.data, 
+                phone_numbers = phone_numbers,
+                description = form.additional_information.data,
+                timeslots = timeslots,
+                address = address)
+            for resource_info in resources_info_singular:
+                if (request.form['food-resource-type'] == resource_info['id']+'-option'):
+                    food_resource.location_type = resource_info['enum']
+            db.session.add(food_resource)
+            db.session.commit()
+            return redirect(url_for('index'))
+    return render_template('add_resource.html', form=form, 
+        days_of_week=days_of_week, resources_info=resources_info_singular, 
+        additional_errors=additional_errors)
 
-@app.route('/login', methods = ['GET', 'POST'])
-@oid.loginhandler
-def login():
-    if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        session['remember_me'] = form.remember_me.data
-        return oid.try_login(form.openid.data, ask_for = ['nickname', 'email'])
-    return render_template('login.html',
-        title = 'Sign In',
-        form = form,
-        providers = app.config['OPENID_PROVIDERS'])
-
-@oid.after_login
-def after_login(resp):
-    if resp.email is None or resp.email == "":
-        flash('Invalid login. Please try again.')
-        redirect(url_for('login'))
-    user = User.query.filter_by(email = resp.email).first()
-    if user is None:
-        nickname = resp.nickname
-        if nickname is None or nickname == "":
-            nickname = resp.email.split('@')[0]
-        nickname = User.make_unique_nickname(nickname)
-        user = User(nickname = nickname, email = resp.email, role = ROLE_USER)
-        db.session.add(user)
-        db.session.commit()
-        # make the user follow him/herself
-        db.session.add(user.follow(user))
-        db.session.commit()
-    remember_me = False
-    if 'remember_me' in session:
-        remember_me = session['remember_me']
-        session.pop('remember_me', None)
-    login_user(user, remember = remember_me)
-    return redirect(request.args.get('next') or url_for('index'))
-
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
-
-@app.route('/user/<nickname>')
-@app.route('/user/<nickname>/<int:page>')
+@app.route('/admin')
 @login_required
-def user(nickname, page = 1):
-    user = User.query.filter_by(nickname = nickname).first()
-    if user == None:
-        flash('User ' + nickname + ' not found.')
-        return redirect(url_for('index'))
-    posts = user.posts.paginate(page, POSTS_PER_PAGE, False)
-    return render_template('user.html',
-        user = user,
-        posts = posts)
+def admin():
+    resources = FoodResource.query.all()
+    return render_template('admin.html', resources=resources, 
+        resources_info=resources_info_plural)
 
-@app.route('/edit', methods = ['GET', 'POST'])
 @login_required
-def edit():
-    form = EditForm(g.user.nickname)
-    if form.validate_on_submit():
-        g.user.nickname = form.nickname.data
-        g.user.about_me = form.about_me.data
-        db.session.add(g.user)
-        db.session.commit()
-        flash('Your changes have been saved.')
-        return redirect(url_for('edit'))
-    else:
-        form.nickname.data = g.user.nickname
-        form.about_me.data = g.user.about_me
-    return render_template('edit.html',
-        form = form)
+def invite():
+	""" Display invite form and create new User."""
+	user_manager =  current_app.user_manager
+	db_adapter = user_manager.db_adapter
 
-@app.errorhandler(404)
-def not_found_error(error):
-    return render_template('404.html'), 404
+	next = request.args.get('next', _endpoint_url(user_manager.after_login_endpoint))
+	reg_next = request.args.get('reg_next', _endpoint_url(user_manager.after_register_endpoint))
 
-@app.errorhandler(500)
-def internal_error(error):
-    db.session.rollback()
-    return render_template('500.html'), 500
+	login_form = user_manager.login_form()                      
+	register_form = user_manager.register_form(request.form)   
 
-@app.route('/follow/<nickname>')
-@login_required
-def follow(nickname):
-    user = User.query.filter_by(nickname = nickname).first()
-    if user == None:
-        flash('User ' + nickname + ' not found.')
-        return redirect(url_for('index'))
-    if user == g.user:
-        flash('You can\'t follow yourself!')
-        return redirect(url_for('user', nickname = nickname))
-    u = g.user.follow(user)
-    if u is None:
-        flash('Cannot follow ' + nickname + '.')
-        return redirect(url_for('user', nickname = nickname))
-    db.session.add(u)
-    db.session.commit()
-    flash('You are now following ' + nickname + '!')
-    return redirect(url_for('user', nickname = nickname))
+	if request.method!='POST':
+		login_form.next.data     = register_form.next.data     = next
+		login_form.reg_next.data = register_form.reg_next.data = reg_next
 
-@app.route('/unfollow/<nickname>')
-@login_required
-def unfollow(nickname):
-    user = User.query.filter_by(nickname = nickname).first()
-    if user == None:
-        flash('User ' + nickname + ' not found.')
-        return redirect(url_for('index'))
-    if user == g.user:
-        flash('You can\'t unfollow yourself!')
-        return redirect(url_for('user', nickname = nickname))
-    u = g.user.unfollow(user)
-    if u is None:
-        flash('Cannot unfollow ' + nickname + '.')
-        return redirect(url_for('user', nickname = nickname))
-    db.session.add(u)
-    db.session.commit()
-    flash('You have stopped following ' + nickname + '.')
-    return redirect(url_for('user', nickname = nickname))
+	# Process valid POST
+	if request.method=='POST' and register_form.validate():
 
+		User = db_adapter.UserClass
+		user_class_fields = User.__dict__
+		user_fields = {}
 
+		if db_adapter.UserEmailClass:
+			UserEmail = db_adapter.UserEmailClass
+			user_email_class_fields = UserEmail.__dict__
+			user_email_fields = {}
+
+		if db_adapter.UserAuthClass:
+			UserAuth = db_adapter.UserAuthClass
+			user_auth_class_fields = UserAuth.__dict__
+			user_auth_fields = {}
+
+		# Enable user account
+		if db_adapter.UserProfileClass:
+			if hasattr(db_adapter.UserProfileClass, 'active'):
+				user_auth_fields['active'] = True
+			elif hasattr(db_adapter.UserProfileClass, 'is_enabled'):
+				user_auth_fields['is_enabled'] = True
+			else:
+				user_auth_fields['is_active'] = True
+		else:
+			if hasattr(db_adapter.UserClass, 'active'):
+				user_fields['active'] = True
+			elif hasattr(db_adapter.UserClass, 'is_enabled'):
+				user_fields['is_enabled'] = True
+			else:
+				user_fields['is_active'] = True
+
+		# For all form fields
+		for field_name, field_value in register_form.data.items():	
+			# Store corresponding Form fields into the User object and/or UserProfile object
+			if field_name in user_class_fields:
+				user_fields[field_name] = field_value
+			if db_adapter.UserEmailClass:
+				if field_name in user_email_class_fields:
+					user_email_fields[field_name] = field_value
+			if db_adapter.UserAuthClass:
+				if field_name in user_auth_class_fields:
+					user_auth_fields[field_name] = field_value
+
+		# Generates temporary password
+		password = generate_password(9)
+		if db_adapter.UserAuthClass:
+			user_auth_fields['password'] = password
+		else:
+			user_fields['password'] = password
+
+		g.temp_password = password
+
+		# Add User record using named arguments 'user_fields'
+		user = db_adapter.add_object(User, **user_fields)
+		if db_adapter.UserProfileClass:
+			user_profile = user
+
+		# Add UserEmail record using named arguments 'user_email_fields'
+		if db_adapter.UserEmailClass:
+			user_email = db_adapter.add_object(UserEmail,
+					user=user,
+					is_primary=True,
+					**user_email_fields)
+		else:
+			user_email = None
+
+		# Add UserAuth record using named arguments 'user_auth_fields'
+		if db_adapter.UserAuthClass:
+			user_auth = db_adapter.add_object(UserAuth, **user_auth_fields)
+			if db_adapter.UserProfileClass:
+				user = user_auth
+			else:
+				user.user_auth = user_auth
+		db_adapter.commit()
+
+		# Send 'invite' email and delete new User object if send fails
+		if user_manager.send_registered_email:
+			try:
+				# Send 'invite' email
+				_send_registered_email(user, user_email)
+			except Exception as e:
+				# delete new User object if send  fails
+				db_adapter.delete_object(user)
+				db_adapter.commit()
+				raise e
+
+		# Send user_registered signal
+		signals.user_registered.send(current_app._get_current_object(), user=user)
+
+		# Redirect if USER_ENABLE_CONFIRM_EMAIL is set
+		if user_manager.enable_confirm_email:
+			next = request.args.get('next', _endpoint_url(user_manager.after_register_endpoint))
+			return redirect(next)
+
+		# Auto-login after register or redirect to login page
+		next = request.args.get('next', _endpoint_url(user_manager.after_confirm_endpoint))
+		if user_manager.auto_login_after_register:
+			return _do_login_user(user, reg_next)                     # auto-login
+		else:
+			return redirect(url_for('user.login')+'?next='+reg_next)  # redirect to login page
+
+	# Process GET or invalid POST
+	return render_template(user_manager.register_template,
+			form=register_form,
+			login_form=login_form,
+			register_form=register_form)
+
+@app.route('/_invite_sent')
+def invite_sent():
+	return render_template('invite_sent.html')
+
+@app.route('/_admin')
+def get_food_resource_data():
+    names = FoodResource.query.all()
+    return jsonify(names=[i.serialize_name_only() for i in names])
+
+@app.route('/_map')
+def address_food_resources():
+    addresses = FoodResource.query.all()
+    return jsonify(addresses=[i.serialize_map_list() for i in addresses])
+
+@app.route('/_edit', methods=['GET', 'POST'])
+def save_page():
+    data = request.form.get('edit_data')
+    name = request.form.get('page_name')
+    if(data):
+    	page = HTML.query.filter_by(page = name).first()
+    	page.value = data
+    	db.session.commit()
+    return 'Added' + data + 'to database.'
+
+#TODO: Remove this edit demo page once editing works on all others.
+@app.route('/admin/edit')
+def edit_content():
+	return render_template('edit_content.html', html_string = HTML.query.filter_by(page = 'edit-page').first())
+
+@app.route('/about')
+def about():
+	return render_template('about.html', html_string = HTML.query.filter_by(page = 'about-page').first())
+
+@app.route('/faq')
+def faq():
+	return render_template('faq.html', html_string = HTML.query.filter_by(page = 'faq-page').first())
+
+@app.route('/contact')
+def contact():
+	return render_template('contact.html', html_string = HTML.query.filter_by(page = 'contact-page').first())

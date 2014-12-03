@@ -1,0 +1,41 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<h1>All Food Resources</h1>
+
+{% for resource in resources %}
+
+{{ resource.name }} <br>
+
+{{ resource.address.line1 }} <br>
+
+{% if resource.address %}
+	address! <br>
+{% endif %}
+
+{% endfor %}
+
+<h1>All Food Locations</h1>
+
+{% for resource_info in resources_info %}
+
+<div id="{{ resource_info.id }}">
+	<div class="block-header" id="{{ resource_info.id }}-header">
+		<table>
+		  <thead>
+		    <tr>
+		      <th width="200" class="expand" id="{{ resource_info.id }}-expand">+</th>
+		      <th width="100%">{{ resource_info.name }}</th>	
+		    </tr>
+		  </thead>
+		</table>
+	</div>
+	<div id="{{ resource_info.id }}-table">
+		hello!
+	</div>
+</div>
+
+{% endfor %}
+
+{% endblock %}
