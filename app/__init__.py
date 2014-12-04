@@ -8,9 +8,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Use a Class-based config to config flask and extensions
 class ConfigClass(object):
     # Flask settings
-    SECRET_KEY =              os.getenv('SECRET_KEY',       '')
+    SECRET_KEY =              os.getenv('SECRET_KEY',       'not a secret')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',     
         'sqlite:///' + os.path.join(basedir, 'app.db'))
+
     CSRF_ENABLED = True
 
     # Flask-Mail settings
@@ -58,7 +59,6 @@ class ConfigClass(object):
 
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')
-#app.config.from_object('config')
 
 db = SQLAlchemy(app) 	# Initialize Flask-SQLAlchemy
 mail = Mail(app)		# Initialize Flask-Mail

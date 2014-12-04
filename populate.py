@@ -20,6 +20,7 @@ f0.description = "Open year round"
 f0.location_type = "FARMERS_MARKET"
 f0.family_children = True
 f0.elderly = False
+
 a0 = Address()
 a0.line1 = "43rd Street and Baltimore Avenue"
 a0.city = "Philadelphia"
@@ -60,6 +61,7 @@ f1.description = "Fresh fruit and veggies!"
 f1.location_type = "MEALS_ON_WHEELS"
 f1.family_children = False
 f1.elderly = True
+
 a1 = Address()
 a1.line1 = "6500 Tabor Ave"
 a1.city = "Philadelphia"
@@ -100,6 +102,7 @@ f2.description = "Food cupboard description"
 f2.location_type = "FOOD_CUPBOARD"
 f2.family_children = True
 f2.elderly = True
+
 a2 = Address()
 a2.line1 = "1000 Locust St"
 a2.city = "Philadelphia"
@@ -140,6 +143,7 @@ f3.description = "A description"
 f3.location_type = "SHARE"
 f3.family_children = False
 f3.elderly = False
+
 a3 = Address()
 a3.line1 = "1610 Sansom St"
 a3.city = "Philadelphia"
@@ -180,6 +184,7 @@ f4.description = "Another description"
 f4.location_type = "SOUP_KITCHEN"
 f4.family_children = True
 f4.elderly = True
+
 a4 = Address()
 a4.line1 = "2146 E Susquehanna Ave"
 a4.city = "Philadelphia"
@@ -220,6 +225,7 @@ f5.description = "Another another description"
 f5.location_type = "WIC_OFFICE"
 f5.family_children = False
 f5.elderly = True
+
 a5 = Address()
 a5.line1 = "1300 W Lehigh Ave"
 a5.city = "Philadelphia"

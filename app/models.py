@@ -94,6 +94,9 @@ class FoodResource(db.Model):
 class Role(db.Model):
 	id = db.Column(db.Integer(), primary_key=True)
 	name = db.Column(db.String(100))
+	role_type_enums = ('User','Admin')
+	id = db.Column(db.Integer(), primary_key=True)
+	name = db.Column(db.Enum(*role_type_enums))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class UserRoles(db.Model):
