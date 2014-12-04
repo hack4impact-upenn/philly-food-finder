@@ -1,15 +1,17 @@
 from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 import os
-from config import basedir
 from flask_mail import Mail
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Use a Class-based config to config flask and extensions
 class ConfigClass(object):
     # Flask settings
-    SECRET_KEY =              os.getenv('SECRET_KEY',       'development key')
+    SECRET_KEY =              os.getenv('SECRET_KEY',       'not a secret')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',     
-        'sqlite:///basic_app.sqlite')
+        'sqlite:///' + os.path.join(basedir, 'app.db'))
+
     CSRF_ENABLED = True
 
     # Flask-Mail settings
@@ -17,7 +19,7 @@ class ConfigClass(object):
         'phillyhungercoalition@gmail.com')
     MAIL_PASSWORD =           os.getenv('MAIL_PASSWORD',        
         '')
-    MAIL_DEFAULT_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',  
+    DEFAULT_MAIL_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',  
         '"Foodle" <phillyhungercoalition@gmail.com>')
     MAIL_SERVER =             os.getenv('MAIL_SERVER',          
         'smtp.gmail.com')
@@ -57,7 +59,6 @@ class ConfigClass(object):
 
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')
-app.config.from_object('config')
 
 db = SQLAlchemy(app) 	# Initialize Flask-SQLAlchemy
 mail = Mail(app)		# Initialize Flask-Mail
@@ -65,7 +66,7 @@ mail = Mail(app)		# Initialize Flask-Mail
 from app import views, models, forms
 from forms import InviteForm
 from app.models import User
-from app.views import invite
+from app.views import *
 from flask_user import SQLAlchemyAdapter, UserManager
 
 db_adapter = SQLAlchemyAdapter(db, User)        # Register the User model
