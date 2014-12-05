@@ -1,23 +1,57 @@
-body {
-  background: #fdd800;
+
+/* #ef3d23 - red */
+/* #f8a11d - orange */
+/* #fdd800 - yellow */
+/* #009933 - green */
+/* #0f85c7 - blue */
+/* #84459b - purple */
+/* #343434 - black */
+/* #2D4FA0 - navy */ 
+
+/* background colors */
+body#map_p {
+  background-color: #FFF;
+}
+
+body#faq_p {
+  background-color: #009933;
+  color: #FFF;
+}
+
+body#about_p {
+  background-color: #f8a11d;
+}
+
+body#contact_p {
+  background-color: #fdd800;
+}
+
+#FAQ-header {
+  color: #FFF;
+}
+
+#FAQ-line {
+  border: #FFF;
+  background: #FFF;
 }
 
 /* template: line */
 hr {
   border: #343434;
   background: #343434;
-  width: 75%;
   height: 0.5px; 
   margin: 0.67em 50;
 }
 
-/* Food Resource Form 
-h1 {
+/* Food Resource Form */
+.page-header {
   margin: 0.67em 50;
   font-size: 1.875rem;
-}*/
+} /* TODO add margin to content */
 
-
+.content {
+  margin: 0.67em 50;
+}
 
 label {
   font-size: 1rem;
@@ -190,15 +224,6 @@ img {
     height: 70%;
     margin-bottom: 4em;
 }
-
-/* #ef3d23 - red */
-/* #f8a11d - orange */
-/* #fdd800 - yellow */
-/* #09ab4b - green */
-/* #0f85c7 - blue */
-/* #84459b - purple */
-/* #343434 - black */
-/* #2D4FA0 - navy */ 
 
 .block-header, 
 .block-header table {
