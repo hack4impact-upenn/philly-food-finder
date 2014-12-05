@@ -268,10 +268,15 @@ img {
   border: none; 
 }
 
-.expand {
+.expand-food-resource-type
+.expand-food-resource {
   cursor: pointer; 
 }
 
 .error {
   text-transform:none;
+}
+
+.admin-food-resource {
+  background-color: #ff0000;
 }

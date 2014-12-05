@@ -20,10 +20,18 @@ blinker==1.3
 decorator==3.4.0
 enum34==1.0.3
 flup==1.0.2
+<<<<<<< HEAD
+gunicorn==19.1.1
+=======
+>>>>>>> 16c5b34e35c15b7aa65b0550a9735186470ed4b2
 itsdangerous==0.24
 passlib==1.6.2
 pathlib==1.0.1
 pbr==0.10.0
+<<<<<<< HEAD
+psycopg2==2.5.4
+=======
+>>>>>>> 16c5b34e35c15b7aa65b0550a9735186470ed4b2
 py-bcrypt==0.4
 pycrypto==2.6.1
 python-openid==2.2.5

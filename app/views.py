@@ -79,9 +79,15 @@ def new_food_resource():
 @app.route('/admin')
 @login_required
 def admin():
-    resources = FoodResource.query.all()
-    return render_template('admin.html', resources=resources, 
-        resources_info=resources_info_plural)
+	resources = {}
+	resources['farmers-markets'] = FoodResource.query.filter_by(location_type="FARMERS_MARKET")
+	resources['meals-on-wheels'] = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS")  
+	resources['food-cupboards'] = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD")
+	resources['share-host-sites'] = FoodResource.query.filter_by(location_type="SHARE")
+	resources['soup-kitchens'] = FoodResource.query.filter_by(location_type="SOUP_KITCHEN")
+	resources['wic-offices'] = FoodResource.query.filter_by(location_type="WIC_OFFICE")
+	return render_template('admin_resources.html', resources_info=resources_info_plural, 
+	    resources=resources, days_of_week=days_of_week)
 
 @login_required
 def invite():
@@ -214,8 +220,19 @@ def invite_sent():
 
 @app.route('/_admin')
 def get_food_resource_data():
-    names = FoodResource.query.all()
-    return jsonify(names=[i.serialize_name_only() for i in names])
+	farmers_markets = FoodResource.query.filter_by(location_type="FARMERS_MARKET")
+	meals_on_wheels = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS")  
+	food_cupboards = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD")
+	share_host_sites = FoodResource.query.filter_by(location_type="SHARE")
+	soup_kitchens = FoodResource.query.filter_by(location_type="SOUP_KITCHEN")
+	wic_offices = FoodResource.query.filter_by(location_type="WIC_OFFICE")
+	names = FoodResource.query.all()
+	return jsonify(farmers_markets=[i.serialize_name_only() for i in farmers_markets],
+		meals_on_wheels=[i.serialize_name_only() for i in meals_on_wheels],
+		food_cupboards=[i.serialize_name_only() for i in food_cupboards],
+		share_host_sites=[i.serialize_name_only() for i in share_host_sites],
+		soup_kitchens=[i.serialize_name_only() for i in soup_kitchens],
+		wic_offices=[i.serialize_name_only() for i in wic_offices])
 
 @app.route('/_map')
 def address_food_resources():
