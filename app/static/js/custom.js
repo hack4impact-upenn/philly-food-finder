@@ -18,7 +18,6 @@ $(document).ready(function() {
 
 	$(".expand-food-resource").click(function() {
 		var id = $(this).attr('id');  
-		console.log("asdf!");
 		var prefix = "food-resource-expand-"; 
 		var start_index = prefix.length; 
 		var resource_type = id.substring(start_index); 
