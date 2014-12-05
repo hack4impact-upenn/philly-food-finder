@@ -7,10 +7,11 @@
 /* #84459b - purple */
 /* #343434 - black */
 /* #2D4FA0 - navy */ 
+/* #F7F9F9 - off white */
 
 /* background colors */
 body#map_p {
-  background-color: #FFF;
+  background-color: #F7F9F9;
 }
 
 body#faq_p {
@@ -47,7 +48,7 @@ hr {
 .page-header {
   margin: 0.67em 50;
   font-size: 1.875rem;
-} /* TODO add margin to content */
+}
 
 .content {
   margin: 0.67em 50;
