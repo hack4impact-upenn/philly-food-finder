@@ -12,7 +12,8 @@
 
     {% set field = form.username if user_manager.enable_username else form.email %}
         <div class="row">
-            <div class="large-6 columns">
+            <div class="large-6 medium-6 small-6 columns large-centered 
+	                    	medium-centered">
                 <dt>{{ form.email.label }}
                 <dd class="error">{{ form.email()|safe }}
                 {% if field.errors %}
@@ -25,7 +26,8 @@
 
     {% set field = form.password %}
         <div class="row">
-            <div class="large-6 columns">
+            <div class="large-6 medium-6 small-6 columns large-centered 
+	                    	medium-centered">
                 <dt>{{ form.password.label }}
                 <dd class="error">{{ form.password()|safe }}
                     {% if field.errors %}
@@ -46,9 +48,13 @@
     </div>
 
     <div class = "row">
+      <div class = "large-6 medium-6 small-6 columns large-centered 
+	                    	medium-centered" >
         {# Submit button #}
         {{ render_submit_field(form.submit, tabindex=180) }}
-        <a href="{{ url_for('user.forgot_password') }}" class="button round">Forgot Password</a>
+        <a href="{{ url_for('user.forgot_password') }}" 
+           class="button radius small">Forgot Password</a>
+      </div>
     </div>
 </form>
 
