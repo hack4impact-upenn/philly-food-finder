@@ -42,7 +42,7 @@
 					<a href="{{ url_for('new', id=resource.id) }}">Edit</a>
 				</div>
 				<div class="small-2 columns">
-					Remove
+					<a href="{{ url_for('remove', id=resource.id) }}">Remove</a>
 				</div>
 			<!-- Resource content --> 
 			<div class="row admin-food-resource" id="food-resource-{{ resource.id }}-table">

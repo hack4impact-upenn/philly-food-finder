@@ -22,6 +22,13 @@ def index():
 def map():
     return render_template('newmaps.html')
 
+@app.route('/remove/<id>')
+def remove(id):
+	fr = FoodResource.query.filter_by(id=id).first()
+	db.session.delete(fr)
+	db.session.commit()
+	return redirect(url_for('admin'))
+
 @app.route('/new', methods=['GET', 'POST'])
 @app.route('/edit/<id>', methods=['GET', 'POST'])
 @login_required
