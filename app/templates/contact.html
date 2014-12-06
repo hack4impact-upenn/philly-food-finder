@@ -8,7 +8,9 @@
         <hr align="center">
     </div>
     <div class="row">
-        <div class="large-12 columns content">
+        <div class="large-centered 
+                  large-10 medium-centered medium-8 small-8 small-centered
+                  columns content content">
             <div id="editor1" contenteditable="false">
                 {{ html_string.value|safe }}
             </div>
@@ -16,7 +18,9 @@
     </div>
     {% if current_user.is_authenticated() %}
     <div class="row">
-        <div class = "content">
+        <div class = "large-centered 
+                  large-10 medium-centered medium-8 small-8 small-centered
+                  columns content">
             <div class="button radius tiny start-edit">Edit</div>
             <div class="button radius tiny end-edit" id="contact-page" >Save</div>  
         </div> 

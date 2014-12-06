@@ -4,13 +4,12 @@
 {% block content %}
 <body id = "resource_p">
 	<div class="row">
-    <h1 class="page-header">All Food Resources</h1>
+    <h1 class="page-header" id="edit-resources-header">Edit Food Resources</h1>
     <hr align="center">
   </div>
-
-	<div class="row"> <div class="content">
-  <div class="large-12 columns resources">
-
+  <div class="large-centered 
+                  large-8 medium-centered medium-8 small-8 small-centered
+                  columns resources">
 	{% for resource_info in resources_info %}
 
 	<div id="{{ resource_info.id }}">
@@ -29,9 +28,11 @@
 				There are no {{ resources[resource_info.name] }} in the database.
 			{% endif %}
 			{% for resource in resources[resource_info.id] %}
-			
+
 			<div class="resource"> 
+
 			<!-- Resource header --> 
+			  <div class= "row">
 				<div class="small-1 columns expand-food-resource" id="food-resource-expand-{{ resource.id }}">
 					+
 				</div>
@@ -44,6 +45,7 @@
 				<div class="small-2 columns">
 					<a href="{{ url_for('remove', id=resource.id) }}">Remove</a>
 				</div>
+			</div>
 			<!-- Resource content --> 
 			<div class="row admin-food-resource" id="food-resource-{{ resource.id }}-table">
 				<div class="large-6 small-12 columns">
