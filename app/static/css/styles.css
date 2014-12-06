@@ -11,6 +11,12 @@
 
 
 /* background colors */
+/* some defaults */
+body {
+  background-color: #F7F9F9;
+  letter-spacing: .3px;
+}
+
 body#map_p {
   background-color: #F7F9F9;
 }
@@ -36,7 +42,6 @@ body#add_p {
   background-color: #F7F9F9;
 }
 
-
 /* template: line */
 hr {
   border: #343434;
@@ -45,18 +50,26 @@ hr {
   margin: 0.67em 50;
 }
 
-/* Food Resource Form */
-.page-header {
-  margin: 0.67em 50;
-  font-size: 2rem;
-  font-weight: 200;
-  text-transform: none;
-  letter-spacing: 4px;
-
+#editor1 {
+  font-weight: 300;
+  letter-spacing: .4px;
+  font-size: 1.275rem;
 }
 
-.content {
+/* Food Resource Form */
+.page-header {
+  margin: 0.4em 50;
+  font-weight: 200;
+  text-transform: lowercase;
+  letter-spacing: 4px;
+  font-size: 1.875rem;
+}
+
+.content .p {
   margin: 0.67em 50;
+  font-weight: 300;
+  letter-spacing: .4px;
+  font-size: 1.275rem;
 }
 
 label {
@@ -72,7 +85,6 @@ label {
 /* placeholder text */
 input:-ms-input-placeholder {
   font-weight: 200;
-  
 }
 
 input::-webkit-input-placeholder {
@@ -122,6 +134,10 @@ button, .button{
 button:hover, button:focus, .button:hover, .button:focus {
   background-color: #000;
   color: #FFF;
+}
+
+button.radius, .button.radius {
+  margin-bottom: 100px;
 }
 
 /* HEADER - top-bar */
