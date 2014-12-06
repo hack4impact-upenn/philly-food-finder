@@ -1,5 +1,5 @@
 import os, random, string, datetime
-from datetime import time
+from datetime import time, datetime, timedelta
 from pytz import timezone
 from models import *
 import os, random, string
@@ -15,13 +15,13 @@ def generate_password(length):
 
 # Takes strings of the form '8-00-am' or '1-15-pm' and returns an equivalent 
 # time object
-def get_time(time_string):
+def get_time_from_string(time_string):
 	first_dash = time_string.index("-")
 	second_dash = time_string.index("-", first_dash+1)
 	time_hour = int(time_string[:first_dash])
 	time_minute = int(time_string[first_dash+1:second_dash])
 	am_or_pm = time_string[second_dash+1:]
-	if (am_or_pm == "pm" and time_hour != 12):
+	if (am_or_pm == "PM" and time_hour != 12):
 		time_hour += 12
 	return time(time_hour, time_minute)
 
@@ -67,3 +67,43 @@ def is_open(resource, current_date = None):
 			return False
 
 	return True
+
+def get_possible_opening_times():
+	opening_times = []
+	# year, month, and day are arbitrary
+	opening_time = datetime( 
+		year=2014, 	# arbitrary
+		month=1, 	# arbitrary
+		day=1,		# arbitrary
+		hour=8, 
+		minute=0)
+	final_opening_time = datetime( 
+		year=2014,	# arbitrary
+		month=1, 	# arbitrary
+		day=1,		# arbitrary
+		hour=17,
+		minute=0)
+	while opening_time != final_opening_time:
+		opening_times.append(opening_time.time())
+		opening_time += timedelta(0, 15*60) 
+	return opening_times
+
+def get_possible_closing_times():
+	closing_times = []
+	# year, month, and day are arbitrary
+	closing_time = datetime( 
+		year=2014, 	# arbitrary
+		month=1, 	# arbitrary
+		day=1,		# arbitrary
+		hour=11, 
+		minute=0)
+	final_closing_time = datetime( 
+		year=2014,	# arbitrary
+		month=1, 	# arbitrary
+		day=1,		# arbitrary
+		hour=21,
+		minute=0)
+	while closing_time != final_closing_time:
+		closing_times.append(closing_time.time())
+		closing_time += timedelta(0, 15*60) 
+	return closing_times

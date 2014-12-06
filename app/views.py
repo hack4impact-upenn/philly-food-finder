@@ -1,5 +1,5 @@
 from app import app, db, utils
-from utils import get_time
+from utils import *
 from models import *
 from forms import AddNewFoodResourceForm, RequestNewFoodResourceForm
 from flask import render_template, flash, redirect, session, url_for, request, \
@@ -27,6 +27,23 @@ def map():
 @login_required
 def new(id=None):
     form = AddNewFoodResourceForm(request.form)
+    if request.method == 'GET':
+	    if id is None:
+	    	title = "Add New Food Resource"
+	    else:
+	    	title = "Edit Food Resource"
+	    	fr = FoodResource.query.filter_by(id=id).first()
+	    	if fr is None:
+	    		return render_template('404.html')
+	    	form.name.data = fr.name
+	    	form.address_line1.data = fr.address.line1
+	    	form.address_line2.data = fr.address.line2
+	    	form.address_city.data = fr.address.city
+	    	form.address_state.data = fr.address.state
+	    	form.address_zip_code.data = fr.address.zip_code
+	    	form.phone_number.data = fr.phone_numbers[0].number
+	    	form.website.data = fr.url
+	    	form.additional_information.data = fr.description
     additional_errors = []
     if request.method == 'POST' and form.validate(): 
         # Create food resource's timeslots.
@@ -35,9 +52,9 @@ def new(id=None):
         for i, day_of_week in enumerate(days_of_week): 
             if (request.form[day_of_week['id'] + '-open-or-closed'] == "open"):
                 opening_time = request.form[day_of_week['id'] + '-opening-time']
-                start_time = get_time(opening_time)
+                start_time = get_time_from_string(opening_time)
                 closing_time = request.form[day_of_week['id'] + '-closing-time']
-                end_time = get_time(closing_time)
+                end_time = get_time_from_string(closing_time)
                 if start_time >= end_time: 
                     is_timeslot_valid = False
                     additional_errors.append("Opening time must be before closing time.")
@@ -48,34 +65,40 @@ def new(id=None):
                     timeslots.append(timeslot)
         # Create food resource's address.
         if is_timeslot_valid:
-            address = Address(
-                line1 = form.address_line1.data, 
+        	if id is not None:
+        		fr = FoodResource.query.filter_by(id=id).first()
+        		#fr.delete_from_database()
+        		db.session.delete(fr)
+        		db.session.commit()
+			address = Address(line1 = form.address_line1.data, 
                 line2 = form.address_line2.data, 
                 city = form.address_city.data, 
                 state = form.address_state.data, 
                 zip_code = form.address_zip_code.data)
-            db.session.add(address)
+			db.session.add(address)
             # Create food resource's phone number.
-            phone_numbers = []
-            phone_number = PhoneNumber(number = form.phone_number.data)
-            db.session.add(phone_number)
-            phone_numbers.append(phone_number)
+			phone_numbers = []
+			home_number = PhoneNumber(number = form.phone_number.data)
+			db.session.add(home_number)
+			phone_numbers.append(home_number)
             # Create food resource and store all data in it.
-            food_resource = FoodResource(
-                name = form.name.data, 
-                phone_numbers = phone_numbers,
-                description = form.additional_information.data,
-                timeslots = timeslots,
-                address = address)
-            for resource_info in resources_info_singular:
-                if (request.form['food-resource-type'] == resource_info['id']+'-option'):
-                    food_resource.location_type = resource_info['enum']
-            db.session.add(food_resource)
-            db.session.commit()
-            return redirect(url_for('index'))
+			food_resource = FoodResource(
+				name = form.name.data, 
+				phone_numbers = phone_numbers,
+				description = form.additional_information.data,
+				timeslots = timeslots,
+				address = address)
+			for resource_info in resources_info_singular:
+				if (request.form['food-resource-type'] == resource_info['id']+'-option'):
+					food_resource.location_type = resource_info['enum']
+			db.session.add(food_resource)
+			db.session.commit()
+			return redirect(url_for('admin'))
     return render_template('add_resource.html', form=form, 
         days_of_week=days_of_week, resources_info=resources_info_singular, 
-        additional_errors=additional_errors)
+        additional_errors=additional_errors, title=title, 
+        possible_opening_times=get_possible_opening_times(), 
+        possible_closing_times=get_possible_closing_times())
 
 @app.route('/admin')
 @login_required
@@ -87,8 +110,9 @@ def admin():
 	resources['share-host-sites'] = FoodResource.query.filter_by(location_type="SHARE")
 	resources['soup-kitchens'] = FoodResource.query.filter_by(location_type="SOUP_KITCHEN")
 	resources['wic-offices'] = FoodResource.query.filter_by(location_type="WIC_OFFICE")
-	return render_template('admin_resources.html', resources_info=resources_info_plural, 
-	    resources=resources, days_of_week=days_of_week)
+	return render_template('admin_resources.html', 
+		resources_info=resources_info_plural, resources=resources, 
+		days_of_week=days_of_week)
 
 @login_required
 def invite():
@@ -221,12 +245,12 @@ def invite_sent():
 
 @app.route('/_admin')
 def get_food_resource_data():
-	farmers_markets = FoodResource.query.filter_by(location_type="FARMERS_MARKET")
-	meals_on_wheels = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS")  
-	food_cupboards = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD")
-	share_host_sites = FoodResource.query.filter_by(location_type="SHARE")
-	soup_kitchens = FoodResource.query.filter_by(location_type="SOUP_KITCHEN")
-	wic_offices = FoodResource.query.filter_by(location_type="WIC_OFFICE")
+	farmers_markets = FoodResource.query.filter_by(location_type="FARMERS_MARKET").order_by(FoodResource.name)
+	meals_on_wheels = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS").order_by(FoodResource.name) 
+	food_cupboards = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD").order_by(FoodResource.name)
+	share_host_sites = FoodResource.query.filter_by(location_type="SHARE").order_by(FoodResource.name)
+	soup_kitchens = FoodResource.query.filter_by(location_type="SOUP_KITCHEN").order_by(FoodResource.name)
+	wic_offices = FoodResource.query.filter_by(location_type="WIC_OFFICE").order_by(FoodResource.name)
 	names = FoodResource.query.all()
 	return jsonify(farmers_markets=[i.serialize_name_only() for i in farmers_markets],
 		meals_on_wheels=[i.serialize_name_only() for i in meals_on_wheels],

@@ -4,7 +4,7 @@
 {% block content %}
 <body id = "add_p">
   <div class="row">
-      <h1 class="page-header">Add New Food Resource</h1>
+      <h1 class="page-header">{{ title }}</h1>
       <hr align="center">
   </div>
 
@@ -205,30 +205,22 @@
 	      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker" id="middle-padding-section">
 	      			<label>Opens at
 				    	<select name='{{ day_of_week.id }}-opening-time' id="option-title">
-				    		{% for hour in [8, 9, 10, 11, 12, 1, 2, 3, 4, 5] %}
-				    			{% for minute in ["00", 15, 30, 45] %}
-				    				{% if hour >= 8 and hour <= 11 %}
-										<option value="{{ hour }}-{{ minute }}-am">{{ hour }}:{{ minute }} AM</option>
-									{% else %}
-										<option value="{{ hour }}-{{ minute }}-pm">{{ hour }}:{{ minute }} PM</option>
-									{% endif %}
-								{% endfor %}
-							{% endfor %}
+				    		{% for time in possible_opening_times %}
+				    			<option value="{{ time.strftime('%I') }}-{{ time.strftime('%M') }}-time.strftime('%p')">
+				    				{{ time.strftime('%I') }}:{{ time.strftime('%M') }} {{ time.strftime('%p') }}
+				    			</option>
+				    		{% endfor %}
 				    	</select>
 	      			</label>
 	      		</div>
 	      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker" id="middle-padding-section">
 	      			<label>Closes at
 				    	<select name='{{ day_of_week.id }}-closing-time' id="option-title">
-				    		{% for hour in [11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
-				    			{% for minute in ["00", 15, 30, 45] %}
-				    				{% if hour == 11 %}
-										<option value="{{ hour }}-{{ minute }}-am">{{ hour }}:{{ minute }} AM</option>
-									{% else %}
-										<option value="{{ hour }}-{{ minute }}-pm">{{ hour }}:{{ minute }} PM</option>
-									{% endif %}
-								{% endfor %}
-							{% endfor %}
+				    		{% for time in possible_closing_times %}
+				    			<option value="{{ time.strftime('%I') }}-{{ time.strftime('%M') }}-time.strftime('%p')">
+				    				{{ time.strftime('%I') }}:{{ time.strftime('%M') }} {{ time.strftime('%p') }}
+				    			</option>
+				    		{% endfor %}
 				    	</select>
 	      			</label>
 	      		</div>
@@ -257,10 +249,9 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered" id="bottom-padding-section">
-	          <a href="#" class="button radius small">Submit</a>
+	          <input type=submit class="button radius small" value=Submit>
 		    </div>
 		</div>
-	    
 	</form>
 </body>
 

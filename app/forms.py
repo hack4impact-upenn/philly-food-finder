@@ -1,7 +1,7 @@
 from app import app
 from flask import current_app
 from flask.ext.wtf import Form
-from wtforms.validators import InputRequired, Length, URL, Email
+from wtforms.validators import InputRequired, Length, URL, Email, Optional
 from wtforms import TextField, TextAreaField, validators, PasswordField, \
     StringField, BooleanField, SubmitField, HiddenField, SelectField
 from flask_user.forms import RegisterForm, unique_email_validator
@@ -13,7 +13,8 @@ class AddNewFoodResourceForm(Form):
     website = TextField(
         label = 'Food Resource Website', 
         validators = [
-            URL(True, "Invalid website URL.")
+            #Optional(),
+            #URL(True, "Invalid website URL.")
         ])
     name = TextField(
         label = 'Food Resource Name',

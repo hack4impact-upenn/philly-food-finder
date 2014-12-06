@@ -67,9 +67,13 @@ class FoodResource(db.Model):
 	family_children = db.Column(db.Boolean)
 	elderly = db.Column(db.Boolean)
 
+	def delete_from_database(self):
+		db.session.delete(self)
+		db.session.commit()
+
 	def serialize_name_only(self):
 		return {
-			'id': self.id, 
+			'id': self.id,
 			'name': self.name
 		}
 
@@ -77,7 +81,7 @@ class FoodResource(db.Model):
 		return {
 			'id': self.id, 
 			'name': self.name, 
-			'phone_number': self.phone_number, 
+			#'phone_number': self.phone_number, 
 			'description': self.description
 		}
 
