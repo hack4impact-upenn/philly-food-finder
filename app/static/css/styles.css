@@ -27,6 +27,14 @@ body#contact_p {
   background-color: #fdd800;
 }
 
+body#resources_p {
+  background-color: #F7F9F9;
+}
+
+body#add_p {
+  background-color: #F7F9F9;
+}
+
 #FAQ-header {
   color: #FFF;
 }
@@ -226,11 +234,32 @@ img {
     margin-bottom: 4em;
 }
 
+/* All Food Resources */
+.resource {
+
+}
+
+.row .row {
+  margin: 10;
+}
+
+.resources {
+  background-color: #EEEEEE;
+  padding: 0;
+}
+
+table thead tr th, table thead tr td {
+  font-size: 0.875rem;
+  font-weight: 200;
+  color: #222222;
+  letter-spacing: .5px;
+}
+
 .block-header, 
 .block-header table {
   color: #343434  ; /* black */
-  margin: 0.6em 0.3em;
-  padding: 0 0.3em;
+  margin: 0em;
+  padding: 0em;
 }
 
 #farmers-markets-header table thead, 
@@ -279,5 +308,5 @@ img {
 }
 
 .admin-food-resource {
-  background-color: #ff0000;
+  background-color: #CCCCCC;
 }
