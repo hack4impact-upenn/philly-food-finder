@@ -2,139 +2,149 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>All Food Resources</h1>
+<body id = "resource_p">
+	<div class="row">
+    <h1 class="page-header">All Food Resources</h1>
+    <hr align="center">
+  </div>
 
-{% for resource_info in resources_info %}
+	<div class="row"> <div class="content">
+  <div class="large-12 columns resources">
 
-<div id="{{ resource_info.id }}">
-	<div class="block-header" id="{{ resource_info.id }}-header">
-		<table>
-		  <thead>
-		    <tr>
-		      <th width="200" class="expand-food-resource-type" id="food-resource-type-expand-{{ resource_info.id }}">+</th>
-		      <th width="100%">{{ resource_info.name }}</th>	
-		    </tr>
-		  </thead>
-		</table>
-	</div>
-	<div id="{{ resource_info.id }}-table" class="admin-food-resource-type">
-		{% if not resources[resource_info.id] %}
-			There are no {{ resources[resource_info.name] }} in the database.
-		{% endif %}
-		{% for resource in resources[resource_info.id] %}
-		<!-- Resource header --> 
-		<div class="row">
-			<div class="small-1 columns expand-food-resource" id="food-resource-expand-{{ resource.id }}">
-				+
-			</div>
-			<div class="small-7 columns">
-				{{ resource.name }}
-			</div>
-			<div class="small-2 columns">
-				<a href="{{ url_for('new', id=resource.id) }}">Edit</a>
-			</div>
-			<div class="small-2 columns">
-				Remove
-			</div>
+	{% for resource_info in resources_info %}
+
+	<div id="{{ resource_info.id }}">
+		<div class="block-header" id="{{ resource_info.id }}-header">
+			<table>
+			  <thead>
+			    <tr>
+			      <th width="200" class="expand-food-resource-type" id="food-resource-type-expand-{{ resource_info.id }}">+</th>
+			      <th width="100%">{{ resource_info.name }}</th>	
+			    </tr>
+			  </thead>
+			</table>
 		</div>
-		<!-- Resource content --> 
-		<div class="row admin-food-resource" id="food-resource-{{ resource.id }}-table">
-			<div class="large-6 small-12 columns">
-				<div class="row">
-					<div class="small-3 columns">
-						Name:
-					</div>
-					<div class="small-9 columns">
-						{{ resource.name }}
-					</div>
+		<div id="{{ resource_info.id }}-table" class="admin-food-resource-type">
+			{% if not resources[resource_info.id] %}
+				There are no {{ resources[resource_info.name] }} in the database.
+			{% endif %}
+			{% for resource in resources[resource_info.id] %}
+			
+			<div class="resource"> 
+			<!-- Resource header --> 
+				<div class="small-1 columns expand-food-resource" id="food-resource-expand-{{ resource.id }}">
+					+
 				</div>
-				<div class="row">
-					<div class="small-3 columns">
-						Address:
+				<div class="small-7 columns">
+					{{ resource.name }}
+				</div>
+				<div class="small-2 columns">
+					<a href="{{ url_for('new', id=resource.id) }}">Edit</a>
+				</div>
+				<div class="small-2 columns">
+					Remove
+				</div>
+			<!-- Resource content --> 
+			<div class="row admin-food-resource" id="food-resource-{{ resource.id }}-table">
+				<div class="large-6 small-12 columns">
+					<div class="row">
+						<div class="small-3 columns">
+							Name:
+						</div>
+						<div class="small-9 columns">
+							{{ resource.name }}
+						</div>
 					</div>
-					<div class="small-9 columns">
-						{% if resource.address.line1 %}
-							{{ resource.address.line1 }}
-						{% endif %}
-						{% if resource.address.line2 %}
+					<div class="row">
+						<div class="small-3 columns">
+							Address:
+						</div>
+						<div class="small-9 columns">
+							{% if resource.address.line1 %}
+								{{ resource.address.line1 }}
+							{% endif %}
+							{% if resource.address.line2 %}
+								<br>
+								{{ resource.address.line2 }}
+							{% endif %}	
 							<br>
-							{{ resource.address.line2 }}
-						{% endif %}	
-						<br>
-						{{ resource.address.city }}, 
-						{{ resource.address.state }} 
-						{{ resource.address.zip_code }}
+							{{ resource.address.city }}, 
+							{{ resource.address.state }} 
+							{{ resource.address.zip_code }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Zip Code:
+						</div>
+						<div class="small-9 columns">
+							{{ resource.address.zip_code }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Phone Number:
+						</div>
+						<div class="small-9 columns">
+							{{ resource.phone_numbers[0].number }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Website:
+						</div>
+						<div class="small-9 columns">
+							{% if resource.url %}
+								<a href="{{ resource.url }}">{{ resource.url }}</a>
+							{% else %}
+								None listed.
+							{% endif %}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Description:
+						</div>
+						<div class="small-9 columns">
+							{% if resource.description %}
+								{{ resource.description }}
+							{% else %}
+								No description.
+							{% endif %}
+						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="small-3 columns">
-						Zip Code:
-					</div>
-					<div class="small-9 columns">
-						{{ resource.address.zip_code }}
-					</div>
-				</div>
-				<div class="row">
-					<div class="small-3 columns">
-						Phone Number:
-					</div>
-					<div class="small-9 columns">
-						{{ resource.phone_numbers[0].number }}
-					</div>
-				</div>
-				<div class="row">
-					<div class="small-3 columns">
-						Website:
-					</div>
-					<div class="small-9 columns">
-						{% if resource.url %}
-							<a href="{{ resource.url }}">{{ resource.url }}</a>
-						{% else %}
-							None listed.
-						{% endif %}
-					</div>
-				</div>
-				<div class="row">
-					<div class="small-3 columns">
-						Description:
-					</div>
-					<div class="small-9 columns">
-						{% if resource.description %}
-							{{ resource.description }}
-						{% else %}
-							No description.
-						{% endif %}
-					</div>
-				</div>
-			</div>
-			<div class="large-6 small-12 columns">
-				<div class="row">
-					<div class="small-3 columns">
-						Hours: <!--{{ resource.timeslots }}-->
-					</div>
-					<div class="small-9 columns">
-						{% for day in days_of_week %}
-							<div class="row">
-								<div class="small-6 columns">
-									{{day['name']}}
+				<div class="large-6 small-12 columns">
+					<div class="row">
+						<div class="small-3 columns">
+							Hours: <!--{{ resource.timeslots }}-->
+						</div>
+						<div class="small-9 columns">
+							{% for day in days_of_week %}
+								<div class="row">
+									<div class="small-6 columns">
+										{{day['name']}}
+									</div>
+									<div class="small-6 columns">
+										{% for timeslot in resource.timeslots %}
+											{% if timeslot.day_of_week == day['index'] %}
+												{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
+											{% endif %}
+										{% endfor %}
+									</div>
 								</div>
-								<div class="small-6 columns">
-									{% for timeslot in resource.timeslots %}
-										{% if timeslot.day_of_week == day['index'] %}
-											{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
-										{% endif %}
-									{% endfor %}
-								</div>
-							</div>
-						{% endfor %}
-					</div> 
+							{% endfor %}
+						</div> 
+					</div>
 				</div>
 			</div>
 		</div>
-		{% endfor %}
+			{% endfor %}
+		</div>
 	</div>
-</div>
-
 {% endfor %}
+</div> </div>
+</body>
+
 
 {% endblock %}

@@ -1,23 +1,66 @@
-body {
-  background: #fdd800;
+
+/* #ef3d23 - red */
+/* #f8a11d - orange */
+/* #fdd800 - yellow */
+/* #009933 - green */
+/* #0f85c7 - blue */
+/* #84459b - purple */
+/* #343434 - black */
+/* #2D4FA0 - navy */ 
+/* #F7F9F9 - off white */
+
+/* background colors */
+body#map_p {
+  background-color: #F7F9F9;
+}
+
+body#faq_p {
+  background-color: #009933;
+  color: #FFF;
+}
+
+body#about_p {
+  background-color: #f8a11d;
+}
+
+body#contact_p {
+  background-color: #fdd800;
+}
+
+body#resources_p {
+  background-color: #F7F9F9;
+}
+
+body#add_p {
+  background-color: #F7F9F9;
+}
+
+#FAQ-header {
+  color: #FFF;
+}
+
+#FAQ-line {
+  border: #FFF;
+  background: #FFF;
 }
 
 /* template: line */
 hr {
   border: #343434;
   background: #343434;
-  width: 75%;
   height: 0.5px; 
   margin: 0.67em 50;
 }
 
-/* Food Resource Form 
-h1 {
+/* Food Resource Form */
+.page-header {
   margin: 0.67em 50;
   font-size: 1.875rem;
-}*/
+}
 
-
+.content {
+  margin: 0.67em 50;
+}
 
 label {
   font-size: 1rem;
@@ -191,20 +234,32 @@ img {
     margin-bottom: 4em;
 }
 
-/* #ef3d23 - red */
-/* #f8a11d - orange */
-/* #fdd800 - yellow */
-/* #09ab4b - green */
-/* #0f85c7 - blue */
-/* #84459b - purple */
-/* #343434 - black */
-/* #2D4FA0 - navy */ 
+/* All Food Resources */
+.resource {
+
+}
+
+.row .row {
+  margin: 10;
+}
+
+.resources {
+  background-color: #EEEEEE;
+  padding: 0;
+}
+
+table thead tr th, table thead tr td {
+  font-size: 0.875rem;
+  font-weight: 200;
+  color: #222222;
+  letter-spacing: .5px;
+}
 
 .block-header, 
 .block-header table {
   color: #343434  ; /* black */
-  margin: 0.6em 0.3em;
-  padding: 0 0.3em;
+  margin: 0em;
+  padding: 0em;
 }
 
 #farmers-markets-header table thead, 
@@ -253,5 +308,5 @@ img {
 }
 
 .admin-food-resource {
-  background-color: #ff0000;
+  background-color: #CCCCCC;
 }
