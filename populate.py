@@ -95,10 +95,10 @@ db.session.add(num2)
 f2.description = "Food cupboard description"
 f2.location_type = "FOOD_CUPBOARD"
 a2 = Address()
-a2.line1 = "1000 Locust St"
+a2.line1 = "3560 Spruce St"
 a2.city = "Philadelphia"
 a2.state = "PA"
-a2.zip_code = "19107"
+a2.zip_code = "19104"
 f2.address = a2
 timeslots_list_2 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -235,6 +235,235 @@ f5.timeslots = timeslots_list_5
 db.session.add(f5)
 db.session.add(a5)
 for timeslot in timeslots_list_5:
+    db.session.add(timeslot)
+db.session.commit()
+
+# Create a Farmers' Market FoodResource.
+f6 = FoodResource() 
+f6.name = "Food Trust"
+num6 = PhoneNumber(number = "215-575-0444")
+f6.phone_numbers.append(num6)
+db.session.add(num6)
+f6.phone_number = "215-575-0444"
+f6.description = "Everyone deserves healthy food"
+f6.location_type = "FARMERS_MARKET"
+a6 = Address()
+a6.line1 = "1617 John F. Kennedy Blvd."
+a6.city = "Philadelphia"
+a6.state = "PA"
+a6.zip_code = "19103"
+f6.address = a6
+timeslots_list_6 = \
+    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = time(7,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = time(7,30), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = time(8,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = time(10,0), 
+        end_time = time(5,30)),
+    TimeSlot(day_of_week = 5, start_time = time(8,15), 
+        end_time = time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = time(9,0), 
+        end_time = time(20,45))]
+f6.timeslots = timeslots_list_6
+
+# Add each new object to session and commit session. 
+db.session.add(f6)
+db.session.add(a6)
+for timeslot in timeslots_list_6:
+    db.session.add(timeslot)
+db.session.commit()
+
+# Create a Meals On Wheels FoodResource.
+f7 = FoodResource() 
+f7.name = "Meals On Wheels Association of America"
+num7 = PhoneNumber(number = "888-998-6325")
+f7.phone_numbers.append(num7)
+db.session.add(num7)
+f7.description = "Fresh foods!"
+f7.location_type = "MEALS_ON_WHEELS"
+a7 = Address()
+a7.line1 = "8446 Bayard Street"
+a7.city = "Philadelphia"
+a7.state = "PA"
+a7.zip_code = "19150"
+f7.address = a7
+timeslots_list_7 = \
+    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = time(7,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = time(7,30), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = time(8,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = time(10,0), 
+        end_time = time(5,30)),
+    TimeSlot(day_of_week = 5, start_time = time(8,15), 
+        end_time = time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = time(9,0), 
+        end_time = time(20,45))]
+f7.timeslots = timeslots_list_7
+
+# Add each new object to session and commit session. 
+db.session.add(f7)
+db.session.add(a7)
+for timeslot in timeslots_list_7:
+    db.session.add(timeslot)
+db.session.commit()
+
+# Create a Food Cupboard FoodResource.
+f8 = FoodResource() 
+f8.name = "St. Francis Inn Ministries"
+num8 = PhoneNumber(number = "215-925-4584")
+f8.phone_numbers.append(num8)
+db.session.add(num8)
+f8.description = "Food cupboard description"
+f8.location_type = "FOOD_CUPBOARD"
+a8 = Address()
+a8.line1 = "2441 Kensington Avenue"
+a8.city = "Philadelphia"
+a8.state = "PA"
+a8.zip_code = "19125"
+f8.address = a8
+timeslots_list_8 = \
+    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = time(7,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = time(7,30), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = time(8,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = time(10,0), 
+        end_time = time(5,30)),
+    TimeSlot(day_of_week = 5, start_time = time(8,15), 
+        end_time = time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = time(9,0), 
+        end_time = time(20,45))]
+f8.timeslots = timeslots_list_8
+
+# Add each new object to session and commit session. 
+db.session.add(f8)
+db.session.add(a8)
+for timeslot in timeslots_list_8:
+    db.session.add(timeslot)
+db.session.commit()
+
+# Create a SHARE Food Site FoodResource.
+f9 = FoodResource() 
+f9.name = "Sample SHARE Food Site"
+num9 = PhoneNumber(number = "123-456-7890")
+f9.phone_numbers.append(num9)
+db.session.add(num9)
+f9.description = "A description"
+f9.location_type = "SHARE"
+a9 = Address()
+a9.line1 = "2901 Hunting Park Avenue"
+a9.city = "Philadelphia"
+a9.state = "PA"
+a9.zip_code = "19129"
+f9.address = a9
+timeslots_list_9 = \
+    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = time(7,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = time(7,30), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = time(8,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = time(10,0), 
+        end_time = time(5,30)),
+    TimeSlot(day_of_week = 5, start_time = time(8,15), 
+        end_time = time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = time(9,0), 
+        end_time = time(20,45))]
+f9.timeslots = timeslots_list_9
+
+# Add each new object to session and commit session. 
+db.session.add(f9)
+db.session.add(a9)
+for timeslot in timeslots_list_9:
+    db.session.add(timeslot)
+db.session.commit()
+
+# Create a Soup Kitchen FoodResource.
+f10 = FoodResource() 
+f10.name = "Philabundance"
+num10 = PhoneNumber(number = "215-739-7394")
+f10.phone_numbers.append(num10)
+db.session.add(num10)
+f10.description = "Another description"
+f10.location_type = "SOUP_KITCHEN"
+a10 = Address()
+a10.line1 = "3616 S Galloway St"
+a10.city = "Philadelphia"
+a10.state = "PA"
+a10.zip_code = "19148"
+f10.address = a10
+timeslots_list_10 = \
+    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = time(7,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = time(7,30), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = time(8,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = time(10,0), 
+        end_time = time(5,30)),
+    TimeSlot(day_of_week = 5, start_time = time(8,15), 
+        end_time = time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = time(9,0), 
+        end_time = time(20,45))]
+f10.timeslots = timeslots_list_10
+
+# Add each new object to session and commit session. 
+db.session.add(f10)
+db.session.add(a10)
+for timeslot in timeslots_list_10:
+    db.session.add(timeslot)
+db.session.commit()
+
+# Create a WIC Office FoodResource.
+f11 = FoodResource() 
+f11.name = "Mitzvah Food Project"
+num11 = PhoneNumber(number = "215-832-0831")
+f11.phone_numbers.append(num11)
+db.session.add(num11)
+f11.description = "Another another description"
+f11.location_type = "WIC_OFFICE"
+a11 = Address()
+a11.line1 = "2100 Arch Street"
+a11.city = "Philadelphia"
+a11.state = "PA"
+a11.zip_code = "19103"
+f11.address = a11
+timeslots_list_11 = \
+    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = time(7,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = time(7,30), 
+        end_time = time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = time(8,0), 
+        end_time = time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = time(10,0), 
+        end_time = time(5,30)),
+    TimeSlot(day_of_week = 5, start_time = time(8,15), 
+        end_time = time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = time(9,0), 
+        end_time = time(20,45))]
+f11.timeslots = timeslots_list_11
+
+# Add each new object to session and commit session. 
+db.session.add(f11)
+db.session.add(a11)
+for timeslot in timeslots_list_11:
     db.session.add(timeslot)
 db.session.commit()
 

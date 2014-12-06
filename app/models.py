@@ -17,7 +17,8 @@ class Address(db.Model):
 		'line2': self.line2,
 		'city': self.city,
 		'state': self.state,
-		'zip_code': self.zip_code
+		'zip_code': self.zip_code,
+		'food_resource_id': self.food_resource_id
 		}
 
 class TimeSlot(db.Model):
@@ -47,6 +48,13 @@ class PhoneNumber(db.Model):
 	number = db.Column(db.String(35))
 	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
+	def serialize_phone_numbers(self):
+		return {
+			'id': self.id,
+			'number': self.number,
+			'reource_id': self.resource_id
+		}
+
 class FoodResource(db.Model):
 	food_resource_type_enums = ('FARMERS_MARKET','MEALS_ON_WHEELS',
 		'FOOD_CUPBOARD','SHARE','SOUP_KITCHEN','WIC_OFFICE')
@@ -75,7 +83,8 @@ class FoodResource(db.Model):
 		return {
 			'id': self.id, 
 			'name': self.name, 
-			'phone_number': self.phone_numbers, 
+			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
+			# self.phone_numbers, 
 			'description': self.description,
 		}
 
@@ -83,7 +92,7 @@ class FoodResource(db.Model):
 		return {
 			'id': self.id,
 			'name': self.name,
-			'phone_number': '999999999', #self.phone_number,
+			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
 			'description': self.description,
 			'location_type': self.location_type,
 			'address': self.address.serialize_address()

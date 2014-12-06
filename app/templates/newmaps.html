@@ -5,12 +5,11 @@
   <div class = "large-8 medium-8 small-12 columns">
 <script type="text/javascript">
     var map;
-//    var markers = [];
     $(document).ready(function(){
       map = new GMaps({
         el: 'map',
-        lat: -12.043333,
-        lng: -77.028333
+        lat: 39.9500,
+        lng: -75.1667
       });
       $('#geocoding_form').submit(function(e){
         e.preventDefault();
@@ -20,29 +19,33 @@
             if(status=='OK'){
               map.removeMarkers();
               var markers = [];
-              console.log(markers);
               var latlng = results[0].geometry.location;
+              map.setCenter(latlng.lat(), latlng.lng());
+              var zipCode = results[0].address_components[0].short_name;
                   var minLat = latlng.lat();
                   var maxLat = latlng.lat();
                   var minLng = latlng.lng();
                   var maxLng = latlng.lng();              
-            $.getJSON($SCRIPT_ROOT + '/_map', 
+            $.getJSON($SCRIPT_ROOT + '/_map', {
+          zipcode: zipCode
+        },
             function(data) {
               for (var i = 0; i < data["addresses"].length; i++)
               {
-                var newAddress = data["addresses"][i]["address"]["line1"];
+                var newAddress = data["addresses"][i]["address"]["line1"] + ', ' + data["addresses"][i]["address"]["city"] + ', ' + data["addresses"][i]["address"]["state"] ;
 
                 (function(){
                     var newTitle = data["addresses"][i]["name"];
                     var newDescription = newTitle + "<br>" + data["addresses"][i]["description"] + "<br>" 
-                    + "Contact Information: " + data["addresses"][i]["phone_number"];
+                    + "Contact Information: " + data["addresses"][i]["phone_number"]["number"];
+                    console.log(data["addresses"][i]["phone_number"])          
                     var newType = data["addresses"][i]["location_type"];
-                if (newType == 'FARMERS_MARKET') { var image = "../static/img/m_yellow.png" }
-                else if (newType == 'FOOD_CUPBOARD') { var image = "../static/img/m_blue.png" }
-                else if (newType == 'MEALS_ON_WHEELS') { var image = "../static/img/m_green.png" }
-                else if (newType == 'SHARE') { var image = "../static/img/m_red.png" }
-                else if (newType == 'SOUP_KITCHEN') { var image = "../static/img/m_orange.png" }
-                else if (newType == 'WIC_OFFICE') { var image = "../static/img/m_purple.png" }
+                if (newType == 'FARMERS_MARKET') { var image = "../static/img/mb_yellow.png" }
+                else if (newType == 'FOOD_CUPBOARD') { var image = "../static/img/mb_blue.png" }
+                else if (newType == 'MEALS_ON_WHEELS') { var image = "../static/img/mb_green.png" }
+                else if (newType == 'SHARE') { var image = "../static/img/mb_red.png" }
+                else if (newType == 'SOUP_KITCHEN') { var image = "../static/img/mb_orange.png" }
+                else if (newType == 'WIC_OFFICE') { var image = "../static/img/mb_purple.png" }
                 else                   { var image = "../static/img/FPAC_LOGO.png"}
 
                 GMaps.geocode({
@@ -86,11 +89,10 @@
     });
     </script>
   </div>
-  <h1>GMaps.js &mdash; Markers</h1>
   <div class="row">
     <div class="span11">
       <form method="post" id="geocoding_form">
-        <label for="address">Address:</label>
+        <label for="address">Zip Code:</label>
         <div class="input large-8 medium-8 small-12 columns">
           <input type="text" id="address" name="address" />
           <input type="submit" class="btn" value="Search" />

@@ -3,11 +3,11 @@ from utils import get_time
 from models import *
 from forms import AddNewFoodResourceForm, RequestNewFoodResourceForm
 from flask import render_template, flash, redirect, session, url_for, request, \
-    g, jsonify, current_app
+	g, jsonify, current_app
 from flask.ext.login import login_user, logout_user, current_user, \
-    login_required
+	login_required
 from variables import resources_info_singular, resources_info_plural, \
-    days_of_week
+	days_of_week
 from datetime import time
 from utils import generate_password
 from flask_user import login_required, signals
@@ -16,72 +16,72 @@ from flask_login import current_user, login_user, logout_user
 
 @app.route('/')
 def index():
-    return render_template('base.html')
+	return render_template('base.html')
 
 @app.route('/map')
 def map():
-    return render_template('newmaps.html')
+	return render_template('newmaps.html')
 
 @app.route('/new_food_resource', methods=['GET', 'POST'])
 @login_required
 def new_food_resource():
-    form = AddNewFoodResourceForm(request.form)
-    additional_errors = []
-    if request.method == 'POST' and form.validate(): 
-        # Create food resource's timeslots.
-        timeslots = []
-        is_timeslot_valid = True
-        for i, day_of_week in enumerate(days_of_week): 
-            if (request.form[day_of_week['id'] + '-open-or-closed'] == "open"):
-                opening_time = request.form[day_of_week['id'] + '-opening-time']
-                start_time = get_time(opening_time)
-                closing_time = request.form[day_of_week['id'] + '-closing-time']
-                end_time = get_time(closing_time)
-                if start_time >= end_time: 
-                    is_timeslot_valid = False
-                    additional_errors.append("Opening time must be before closing time.")
-                if is_timeslot_valid:
-                    timeslot = TimeSlot(day_of_week = i, start_time = start_time, 
-                        end_time = end_time)
-                    db.session.add(timeslot)
-                    timeslots.append(timeslot)
-        # Create food resource's address.
-        if is_timeslot_valid:
-            address = Address(
-                line1 = form.address_line1.data, 
-                line2 = form.address_line2.data, 
-                city = form.address_city.data, 
-                state = form.address_state.data, 
-                zip_code = form.address_zip_code.data)
-            db.session.add(address)
-            # Create food resource's phone number.
-            phone_numbers = []
-            phone_number = PhoneNumber(number = form.phone_number.data)
-            db.session.add(phone_number)
-            phone_numbers.append(phone_number)
-            # Create food resource and store all data in it.
-            food_resource = FoodResource(
-                name = form.name.data, 
-                phone_numbers = phone_numbers,
-                description = form.additional_information.data,
-                timeslots = timeslots,
-                address = address)
-            for resource_info in resources_info_singular:
-                if (request.form['food-resource-type'] == resource_info['id']+'-option'):
-                    food_resource.location_type = resource_info['enum']
-            db.session.add(food_resource)
-            db.session.commit()
-            return redirect(url_for('index'))
-    return render_template('add_resource.html', form=form, 
-        days_of_week=days_of_week, resources_info=resources_info_singular, 
-        additional_errors=additional_errors)
+	form = AddNewFoodResourceForm(request.form)
+	additional_errors = []
+	if request.method == 'POST' and form.validate(): 
+		# Create food resource's timeslots.
+		timeslots = []
+		is_timeslot_valid = True
+		for i, day_of_week in enumerate(days_of_week): 
+			if (request.form[day_of_week['id'] + '-open-or-closed'] == "open"):
+				opening_time = request.form[day_of_week['id'] + '-opening-time']
+				start_time = get_time(opening_time)
+				closing_time = request.form[day_of_week['id'] + '-closing-time']
+				end_time = get_time(closing_time)
+				if start_time >= end_time: 
+					is_timeslot_valid = False
+					additional_errors.append("Opening time must be before closing time.")
+				if is_timeslot_valid:
+					timeslot = TimeSlot(day_of_week = i, start_time = start_time, 
+						end_time = end_time)
+					db.session.add(timeslot)
+					timeslots.append(timeslot)
+		# Create food resource's address.
+		if is_timeslot_valid:
+			address = Address(
+				line1 = form.address_line1.data, 
+				line2 = form.address_line2.data, 
+				city = form.address_city.data, 
+				state = form.address_state.data, 
+				zip_code = form.address_zip_code.data)
+			db.session.add(address)
+			# Create food resource's phone number.
+			phone_numbers = []
+			phone_number = PhoneNumber(number = form.phone_number.data)
+			db.session.add(phone_number)
+			phone_numbers.append(phone_number)
+			# Create food resource and store all data in it.
+			food_resource = FoodResource(
+				name = form.name.data, 
+				phone_numbers = phone_numbers,
+				description = form.additional_information.data,
+				timeslots = timeslots,
+				address = address)
+			for resource_info in resources_info_singular:
+				if (request.form['food-resource-type'] == resource_info['id']+'-option'):
+					food_resource.location_type = resource_info['enum']
+			db.session.add(food_resource)
+			db.session.commit()
+			return redirect(url_for('index'))
+	return render_template('add_resource.html', form=form, 
+		days_of_week=days_of_week, resources_info=resources_info_singular, 
+		additional_errors=additional_errors)
 
 @app.route('/admin')
 @login_required
 def admin():
-    resources = FoodResource.query.all()
-    return render_template('admin.html', resources=resources, 
-        resources_info=resources_info_plural)
+	resources = FoodResource.query.all()
+	return render_template('admin.html', resources=resources, 
+		resources_info=resources_info_plural)
 
 @login_required
 def invite():
@@ -214,23 +214,27 @@ def invite_sent():
 
 @app.route('/_admin')
 def get_food_resource_data():
-    names = FoodResource.query.all()
-    return jsonify(names=[i.serialize_name_only() for i in names])
+	names = FoodResource.query.all()
+	return jsonify(names=[i.serialize_name_only() for i in names])
 
 @app.route('/_map')
 def address_food_resources():
-    addresses = FoodResource.query.all()
-    return jsonify(addresses=[i.serialize_map_list() for i in addresses])
+	address = Address.query.filter_by(zip_code = request.args.get('zipcode')).all()
+	addresses = []
+	for x in address:
+		currentResource = FoodResource.query.filter_by(id = x.food_resource_id).first()
+		addresses.append(currentResource)
+	return jsonify(addresses=[i.serialize_map_list() for i in addresses])
 
 @app.route('/_edit', methods=['GET', 'POST'])
 def save_page():
-    data = request.form.get('edit_data')
-    name = request.form.get('page_name')
-    if(data):
-    	page = HTML.query.filter_by(page = name).first()
-    	page.value = data
-    	db.session.commit()
-    return 'Added' + data + 'to database.'
+	data = request.form.get('edit_data')
+	name = request.form.get('page_name')
+	if(data):
+		page = HTML.query.filter_by(page = name).first()
+		page.value = data
+		db.session.commit()
+	return 'Added' + data + 'to database.'
 
 #TODO: Remove this edit demo page once editing works on all others.
 @app.route('/admin/edit')
