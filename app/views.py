@@ -22,9 +22,10 @@ def index():
 def map():
     return render_template('newmaps.html')
 
-@app.route('/new_food_resource', methods=['GET', 'POST'])
+@app.route('/new', methods=['GET', 'POST'])
+@app.route('/edit/<id>', methods=['GET', 'POST'])
 @login_required
-def new_food_resource():
+def new(id=None):
     form = AddNewFoodResourceForm(request.form)
     additional_errors = []
     if request.method == 'POST' and form.validate(): 

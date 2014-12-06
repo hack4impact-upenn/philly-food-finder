@@ -9,6 +9,7 @@ from flask_user.translations import lazy_gettext as _
 
 # Information about a new food resource. 
 class AddNewFoodResourceForm(Form):
+    food_resource_id = TextField() # Invisible to user
     website = TextField(
         label = 'Food Resource Website', 
         validators = [

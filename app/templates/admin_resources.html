@@ -31,7 +31,7 @@
 				{{ resource.name }}
 			</div>
 			<div class="small-2 columns">
-				Edit
+				<a href="{{ url_for('new', id=resource.id) }}">Edit</a>
 			</div>
 			<div class="small-2 columns">
 				Remove
