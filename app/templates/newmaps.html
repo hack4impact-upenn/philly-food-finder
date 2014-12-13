@@ -5,7 +5,7 @@
 <div class="large-centered 
                   large-10 medium-centered medium-8 small-8 small-centered
                   columns">
-<script type="text/javascript">
+  <script type="text/javascript">
     var map;
     $(document).ready(function(){
       map = new GMaps({
@@ -94,17 +94,18 @@
 
 <body id = "map_p">
   <div class="row">
-    <h1 class="page-header">Map</h1>
+    <h1 class="page-header" id="map-header">Philly Food Finder</h1>
     <hr align="center">
   </div>
     <div class="row">
-      <div class="content">
+      <div class="large-centered 
+                  large-10 medium-centered medium-8 small-8 small-centered
+                  columns content">
       <form method="post" id="geocoding_form">
         <label for="address">Zip Code:</label>
         <div class="input large-8 medium-8 small-12 columns">
           <input type="text" id="address" name="address" />
           <input type="submit" class="button radius tiny" value="Search" />
-
         </div>
       </form>      
       <div class="large-centered 

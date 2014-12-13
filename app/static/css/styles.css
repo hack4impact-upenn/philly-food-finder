@@ -9,7 +9,14 @@
 /* #2D4FA0 - navy */ 
 /* #F7F9F9 - off white */
 
+
 /* background colors */
+/* some defaults */
+body {
+  background-color: #F7F9F9;
+  letter-spacing: .3px;
+}
+
 body#map_p {
   background-color: #F7F9F9;
 }
@@ -35,15 +42,6 @@ body#add_p {
   background-color: #F7F9F9;
 }
 
-#FAQ-header {
-  color: #FFF;
-}
-
-#FAQ-line {
-  border: #FFF;
-  background: #FFF;
-}
-
 /* template: line */
 hr {
   border: #343434;
@@ -52,14 +50,26 @@ hr {
   margin: 0.67em 50;
 }
 
+#editor1 {
+  font-weight: 300;
+  letter-spacing: .4px;
+  font-size: 1.275rem;
+}
+
 /* Food Resource Form */
 .page-header {
-  margin: 0.67em 50;
+  margin: 0.4em 50;
+  font-weight: 200;
+  text-transform: lowercase;
+  letter-spacing: 4px;
   font-size: 1.875rem;
 }
 
-.content {
+.content .p {
   margin: 0.67em 50;
+  font-weight: 300;
+  letter-spacing: .4px;
+  font-size: 1.275rem;
 }
 
 label {
@@ -75,7 +85,6 @@ label {
 /* placeholder text */
 input:-ms-input-placeholder {
   font-weight: 200;
-  
 }
 
 input::-webkit-input-placeholder {
@@ -125,6 +134,10 @@ button, .button{
 button:hover, button:focus, .button:hover, .button:focus {
   background-color: #000;
   color: #FFF;
+}
+
+button.radius, .button.radius {
+  margin-bottom: 100px;
 }
 
 /* HEADER - top-bar */
@@ -234,9 +247,33 @@ img {
     margin-bottom: 4em;
 }
 
-/* All Food Resources */
-.resource {
 
+/* header page-specific colors */
+#l_admin .page-header .top-bar-section ul li>a{
+  color: #FFF;
+}
+
+#FAQ-header {
+  color: #FFF;
+}
+
+#FAQ-line {
+  border: #FFF;
+  background: #FFF;
+}
+
+#map-header {
+  color: #0f85c7;
+}
+
+/* Edit Food Resources Page */
+ #edit-resources-header {
+  color: #ef3d23;
+}
+
+.resource {
+  font-weight: 200;
+  letter-spacing: .2px;
 }
 
 .row .row {
@@ -249,7 +286,7 @@ img {
 }
 
 table thead tr th, table thead tr td {
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   font-weight: 200;
   color: #222222;
   letter-spacing: .5px;
