@@ -2,35 +2,27 @@
 $(document).ready(function() {
 
 	// Hide all food resource tables initially.
-	$("[id$='-table']").hide(); 
+	$(".admin-food-resource-type").hide(); 
+	$(".admin-food-resource").hide(); 
 
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource table.
-	$(".expand").click(function() {
-		// Get the id of the associated food resource table.
+	$(".expand-food-resource-type").click(function() {
 		var id = $(this).attr('id');  
-		var end_index = id.indexOf("-expand"); 
-		var resource_type = id.substring(0, end_index); 
-		var table_to_expand = resource_type + "-table"; 
+		var prefix = "food-resource-type-expand-"; 
+		var start_index = prefix.length; 
+		var resource_type = id.substring(start_index); 
+		var table_to_expand = resource_type + "-table"; 		
+		expand(table_to_expand); 
+	})
 
-		$.getJSON($SCRIPT_ROOT + '/_admin', {
-        	a: "hello",
-        	b: "goodbye"
-      	}, function(data) {
-        	console.log(data); 
-        	// create table entries with data in them
-      	});
-      			// If the table is currently hidden, show the table.
-		if ($("#"+table_to_expand).is(":hidden")) {
-			$("#"+table_to_expand).slideDown("medium", function() {
-				$(this).show(); 
-			});
-		// Else hide the table.
-		} else {
-			$("#"+table_to_expand).slideUp("medium", function() {
-				$(this).hide(); 
-			});
-		}
+	$(".expand-food-resource").click(function() {
+		var id = $(this).attr('id');  
+		var prefix = "food-resource-expand-"; 
+		var start_index = prefix.length; 
+		var resource_type = id.substring(start_index); 
+		var table_to_expand = "food-resource-" + resource_type + "-table"; 		
+		expand(table_to_expand); 
 	})
 
     $(".start-edit").click(function() {
@@ -75,4 +67,22 @@ $(document).ready(function() {
 	});
 });
 
+function expand(id) {
+	if ($("#"+id).is(":hidden")) {
+		show(id);
+	} else {
+		hide(id);
+	}
+}
 
+function hide(id) {
+	$("#"+id).slideUp("medium", function() {
+		$(this).hide(); 
+	});
+}
+
+function show(id) {
+	$("#"+id).slideDown("medium", function() {
+		$(this).show(); 
+	});
+}
