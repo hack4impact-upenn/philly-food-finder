@@ -27,10 +27,10 @@ resources_info_singular = [
                 'enum' : 'WIC_OFFICE'}]
 
 days_of_week = [
-	{'id' : "sunday", 'name': "Sunday"},
-	{'id' : "monday", 'name': "Monday"},
-	{'id' : "tuesday", 'name': "Tuesday"},
-	{'id' : "wednesday", 'name': "Wednesday"},
-	{'id' : "thursday", 'name': "Thursday"},
-	{'id' : "friday", 'name': "Friday"},
-	{'id' : "saturday", 'name': "Saturday"}]
+	{'id' : "sunday", 'name': "Sunday", 'index' : 0},
+	{'id' : "monday", 'name': "Monday", 'index' : 1},
+	{'id' : "tuesday", 'name': "Tuesday", 'index' : 2},
+	{'id' : "wednesday", 'name': "Wednesday", 'index' : 3},
+	{'id' : "thursday", 'name': "Thursday", 'index' : 4},
+	{'id' : "friday", 'name': "Friday", 'index' : 5},
+	{'id' : "saturday", 'name': "Saturday", 'index' : 6}]

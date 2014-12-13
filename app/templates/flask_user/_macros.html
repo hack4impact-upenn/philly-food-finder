@@ -15,7 +15,8 @@
     
     {% macro render_checkbox_field(field, label=None) -%}
     {% if not label %}{% set label=field.label.text %}{% endif %}
-    <div class="checkbox">
+    <div class="checkbox large-6 medium-6 small-6 columns large-centered 
+	                    	medium-centered">
         <label type="checkbox">
             {{ field(type='checkbox', **kwargs) }} {{ label }}
         </label>
@@ -35,7 +36,7 @@
     {% macro render_submit_field(field, label=None, tabindex=None) -%}
     {% if not label %}{% set label=field.label.text %}{% endif %}
     {#<button type="submit" class="form-control btn btn-default btn-primary">{{label}}</button>#}
-    <input type="submit" value="{{label}}" class="button round"
+    <input type="submit" value="{{label}}" class="button radius small"
     {% if tabindex %}tabindex="{{ tabindex }}"{% endif %}
     >
     {%- endmacro %}

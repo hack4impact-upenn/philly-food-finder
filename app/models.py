@@ -56,22 +56,24 @@ class PhoneNumber(db.Model):
 		}
 
 class FoodResource(db.Model):
-	food_resource_type_enums = ('FARMERS_MARKET','MEALS_ON_WHEELS',
-		'FOOD_CUPBOARD','SHARE','SOUP_KITCHEN','WIC_OFFICE')
+	# food_resource_type_enums = ('FARMERS_MARKET','MEALS_ON_WHEELS',
+	# 	'FOOD_CUPBOARD','SHARE','SOUP_KITCHEN','WIC_OFFICE')
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50))
 	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', lazy='select', uselist=True)
 	url = db.Column(db.Text)
-	openmonthpairs = db.relationship('OpenMonthPair', backref='food_resource', lazy='select', uselist=True)
+	open_month_pairs = db.relationship('OpenMonthPair', backref='food_resource', lazy='select', uselist=True)
 	exceptions = db.Column(db.Text)
 	description = db.Column(db.Text)
-	location_type = db.Column(db.Enum(*food_resource_type_enums))
+	location_type = db.Column(db.String(100))
 	timeslots = db.relationship(
 		'TimeSlot', # One-to-many relationship (one Address with many TimeSlots).
 		backref='food_resource', # Declare a new property of the TimeSlot class.
 		lazy='select', uselist=True)
 	address = db.relationship('Address', backref='food_resource', 
 		lazy='select', uselist=False)
+	family_children = db.Column(db.Boolean)
+	elderly = db.Column(db.Boolean)
 
 	def serialize_name_only(self):
 		return {
@@ -99,6 +101,8 @@ class FoodResource(db.Model):
 		}
 
 class Role(db.Model):
+	id = db.Column(db.Integer(), primary_key=True)
+	name = db.Column(db.String(100))
 	role_type_enums = ('User','Admin')
 	id = db.Column(db.Integer(), primary_key=True)
 	name = db.Column(db.Enum(*role_type_enums))

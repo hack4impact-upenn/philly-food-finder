@@ -2,22 +2,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row">
-    <h1>FAQs</h1>
-    <hr align="center">
-</div>
-<div class="row">
-    <div class="large-12 columns">
-        <div id="editor1" contenteditable="false">
-            {{ html_string.value|safe }}
+<body id = "faq_p">
+    <div class="row">
+        <h1 class="page-header" id="FAQ-header">FAQ</h1>
+        <hr align="center" id="FAQ-line">
+    </div>
+    <div class="row">
+        <div class="large-12 columns content">
+            <div id="editor1" contenteditable="false">
+                {{ html_string.value|safe }}
+            </div>
         </div>
     </div>
-</div>
-{% if current_user.is_authenticated() %}
-<div class="row">
-   <div class="button round start-edit">Edit</div>
-   <div class="button round end-edit" id="faq-page" >Save</div>  
-</div>
+    {% if current_user.is_authenticated() %}
+    <div class="row"><div class = "content">
+       <div class="button radius tiny start-edit">Edit</div>
+       <div class="button radius tiny end-edit" id="faq-page" >Save</div>  
+    </div></div>
+</body>
+
 {% endif %}
 
 {% if current_user.is_authenticated() %}
