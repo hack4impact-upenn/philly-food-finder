@@ -22,7 +22,7 @@ def index():
 def map():
     return render_template('newmaps.html')
 
-@app.route('/new_food_resource', methods=['GET', 'POST'])
+@app.route('/admin/add_resources', methods=['GET', 'POST'])
 @login_required
 def new_food_resource():
     form = AddNewFoodResourceForm(request.form)
@@ -76,12 +76,16 @@ def new_food_resource():
         days_of_week=days_of_week, resources_info=resources_info_singular, 
         additional_errors=additional_errors)
 
-@app.route('/admin')
+@app.route('/admin/manage_resources')
 @login_required
 def admin():
     resources = FoodResource.query.all()
     return render_template('admin.html', resources=resources, 
         resources_info=resources_info_plural)
+
+@app.route('/admin')
+def admin_redirect():
+	return redirect(url_for('admin'))
 
 @login_required
 def invite():
@@ -231,11 +235,6 @@ def save_page():
     	page.value = data
     	db.session.commit()
     return 'Added' + data + 'to database.'
-
-#TODO: Remove this edit demo page once editing works on all others.
-@app.route('/admin/edit')
-def edit_content():
-	return render_template('edit_content.html', html_string = HTML.query.filter_by(page = 'edit-page').first())
 
 @app.route('/about')
 def about():

@@ -59,7 +59,15 @@
             <li><a href="{{ url_for('contact') }}" id="l_contact">contact</a></li>
 
             {% if current_user.is_authenticated() %}
-            <li><a href="{{ url_for('admin') }}" id="l_admin">admin</a></li>
+            <li class="has-dropdown">
+              <a href="{{ url_for('admin') }}" id="l_admin">admin</a>
+                <ul class="dropdown">
+                  <li><a href="{{ url_for('admin') }}">Manage Resources</a></li>
+                  <li class="active"><a href="{{ url_for('new_food_resource') }}">Add Resources</a></li>
+                  <li><a href="{{ url_for('user.register') }}">Invite Admins</a></li>
+                  <li><a href="{{ url_for('user.change_password') }}">Change Password</a></li>
+                </ul>
+            </li>
             {% endif %}
            
           </ul>
