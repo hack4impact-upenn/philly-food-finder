@@ -8,7 +8,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Use a Class-based config to config flask and extensions
 class ConfigClass(object):
     # Flask settings
-    SECRET_KEY =              os.getenv('SECRET_KEY',       'not a secret')
+    SECRET_KEY =              os.getenv('SECRET_KEY',       '')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',     
         'sqlite:///' + os.path.join(basedir, 'app.db'))
 
