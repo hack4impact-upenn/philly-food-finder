@@ -56,8 +56,6 @@ class PhoneNumber(db.Model):
 		}
 
 class FoodResource(db.Model):
-	# food_resource_type_enums = ('FARMERS_MARKET','MEALS_ON_WHEELS',
-	# 	'FOOD_CUPBOARD','SHARE','SOUP_KITCHEN','WIC_OFFICE')
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50))
 	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', lazy='select', uselist=True)
@@ -74,10 +72,6 @@ class FoodResource(db.Model):
 		lazy='select', uselist=False)
 	family_children = db.Column(db.Boolean)
 	elderly = db.Column(db.Boolean)
-
-	def delete_from_database(self):
-		db.session.delete(self)
-		db.session.commit()
 
 	def serialize_name_only(self):
 		return {
