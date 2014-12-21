@@ -34,6 +34,8 @@ def remove(id):
 @login_required
 def new(id=None):
     form = AddNewFoodResourceForm(request.form)
+    timeslots = []
+    food_resource_type = ""
 
     # Create a new food resource. 
     if id is None:
@@ -57,45 +59,58 @@ def new(id=None):
     	form.phone_number.data = food_resource.phone_numbers[0].number
     	form.website.data = food_resource.url
     	form.additional_information.data = food_resource.description
+    	for timeslot in food_resource.timeslots:
+    		timeslots.append(timeslot)
+
 
 	# POST request.
     additional_errors = []
     if request.method == 'POST' and form.validate(): 
-        # Create food resource's timeslots.
-        timeslots = []
-        is_timeslot_valid = True
+
+        # Create the food resource's timeslots.
+        are_timeslots_valid = True
         for i, day_of_week in enumerate(days_of_week): 
-            if (request.form[day_of_week['id'] + '-open-or-closed'] == "open"):
-                opening_time = request.form[day_of_week['id'] + '-opening-time']
+            if (request.form[str(day_of_week['index']) + '-open-or-closed'] == "open"):
+                opening_time = request.form[str(day_of_week['index']) + '-opening-time']
                 start_time = get_time_from_string(opening_time)
-                closing_time = request.form[day_of_week['id'] + '-closing-time']
+                closing_time = request.form[str(day_of_week['index']) + '-closing-time']
                 end_time = get_time_from_string(closing_time)
+                timeslot = TimeSlot(day_of_week=i, start_time=start_time, 
+                    end_time=end_time)
+                timeslots.append(timeslot)
+
+                # Check that timeslot is valid.
                 if start_time >= end_time: 
-                    is_timeslot_valid = False
-                    additional_errors.append("Opening time must be before closing time.")
-                if is_timeslot_valid:
-                    timeslot = TimeSlot(day_of_week=i, start_time=start_time, 
-                        end_time=end_time)
+                    are_timeslots_valid = False
+                    additional_errors.append("Opening time must be before \
+                    	closing time.")
+                else:
                     db.session.add(timeslot)
-                    timeslots.append(timeslot)
-        # Create food resource's address.
-        if is_timeslot_valid:
+
+        # Create the food resource's remaining attributes. 
+        if are_timeslots_valid:
+
+        	# If editing an existing food resource, delete its current record
+        	# from the database. 
         	if id is not None:
         		fr = FoodResource.query.filter_by(id=id).first()
-        		#fr.delete_from_database()
         		db.session.delete(fr)
         		db.session.commit()
+
+        	# Create food resource's address.
 			address = Address(line1 = form.address_line1.data, 
                 line2 = form.address_line2.data, 
                 city = form.address_city.data, 
                 state = form.address_state.data, 
                 zip_code = form.address_zip_code.data)
 			db.session.add(address)
+
             # Create food resource's phone number.
 			phone_numbers = []
 			home_number = PhoneNumber(number = form.phone_number.data)
 			db.session.add(home_number)
 			phone_numbers.append(home_number)
+
             # Create food resource and store all data in it.
 			food_resource = FoodResource(
 				name = form.name.data, 
@@ -103,15 +118,23 @@ def new(id=None):
 				description = form.additional_information.data,
 				timeslots = timeslots,
 				address = address)
+
+			# Assign a type to the food resource. 
 			for resource_info in resources_info_singular:
-				if (request.form['food-resource-type'] == resource_info['id']+'-option'):
+				if (request.form['food-resource-type'] == 
+					resource_info['id']+'-option'):
 					food_resource.location_type = resource_info['enum']
+
+			# Commit all database changes. 
 			db.session.add(food_resource)
 			db.session.commit()
 			return redirect(url_for('admin'))
+
+	# If GET request is received or POST request fails due to invalid timeslots, 
+	# render the page. 
     return render_template('add_resource.html', form=form, 
         days_of_week=days_of_week, resources_info=resources_info_singular, 
-        additional_errors=additional_errors, title=title, 
+        additional_errors=additional_errors, title=title, timeslots=timeslots, 
         possible_opening_times=get_possible_opening_times(), 
         possible_closing_times=get_possible_closing_times())
 
