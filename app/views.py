@@ -3,11 +3,11 @@ from utils import *
 from models import *
 from forms import AddNewFoodResourceForm, RequestNewFoodResourceForm
 from flask import render_template, flash, redirect, session, url_for, request, \
-    g, jsonify, current_app
+	g, jsonify, current_app
 from flask.ext.login import login_user, logout_user, current_user, \
-    login_required
+	login_required
 from variables import resources_info_singular, resources_info_plural, \
-    days_of_week
+	days_of_week
 from datetime import time
 from utils import generate_password
 from flask_user import login_required, signals
@@ -16,11 +16,11 @@ from flask_login import current_user, login_user, logout_user
 
 @app.route('/')
 def index():
-    return render_template('base.html')
+	return render_template('base.html')
 
 @app.route('/map')
 def map():
-    return render_template('newmaps.html')
+	return render_template('newmaps.html')
 
 @app.route('/remove/<id>')
 def remove(id):
@@ -34,6 +34,7 @@ def remove(id):
 @login_required
 def new(id=None):
     form = AddNewFoodResourceForm(request.form)
+    title = "asdf"
     if request.method == 'GET':
 	    if id is None:
 	    	title = "Add New Food Resource"
@@ -71,6 +72,7 @@ def new(id=None):
                     db.session.add(timeslot)
                     timeslots.append(timeslot)
         # Create food resource's address.
+        is_timeslot_valid = True
         if is_timeslot_valid:
         	if id is not None:
         		fr = FoodResource.query.filter_by(id=id).first()
@@ -268,18 +270,22 @@ def get_food_resource_data():
 
 @app.route('/_map')
 def address_food_resources():
-    addresses = FoodResource.query.all()
-    return jsonify(addresses=[i.serialize_map_list() for i in addresses])
+	address = Address.query.filter_by(zip_code = request.args.get('zipcode')).all()
+	addresses = []
+	for x in address:
+		currentResource = FoodResource.query.filter_by(id = x.food_resource_id).first()
+		addresses.append(currentResource)
+	return jsonify(addresses=[i.serialize_map_list() for i in addresses])
 
 @app.route('/_edit', methods=['GET', 'POST'])
 def save_page():
-    data = request.form.get('edit_data')
-    name = request.form.get('page_name')
-    if(data):
-    	page = HTML.query.filter_by(page = name).first()
-    	page.value = data
-    	db.session.commit()
-    return 'Added' + data + 'to database.'
+	data = request.form.get('edit_data')
+	name = request.form.get('page_name')
+	if(data):
+		page = HTML.query.filter_by(page = name).first()
+		page.value = data
+		db.session.commit()
+	return 'Added' + data + 'to database.'
 
 #TODO: Remove this edit demo page once editing works on all others.
 @app.route('/admin/edit')
