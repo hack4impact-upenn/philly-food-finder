@@ -34,24 +34,31 @@ def remove(id):
 @login_required
 def new(id=None):
     form = AddNewFoodResourceForm(request.form)
-    title = "asdf"
-    if request.method == 'GET':
-	    if id is None:
-	    	title = "Add New Food Resource"
-	    else:
-	    	title = "Edit Food Resource"
-	    	fr = FoodResource.query.filter_by(id=id).first()
-	    	if fr is None:
-	    		return render_template('404.html')
-	    	form.name.data = fr.name
-	    	form.address_line1.data = fr.address.line1
-	    	form.address_line2.data = fr.address.line2
-	    	form.address_city.data = fr.address.city
-	    	form.address_state.data = fr.address.state
-	    	form.address_zip_code.data = fr.address.zip_code
-	    	form.phone_number.data = fr.phone_numbers[0].number
-	    	form.website.data = fr.url
-	    	form.additional_information.data = fr.description
+
+    # Create a new food resource. 
+    if id is None:
+    	title = "Add New Food Resource"
+    # Edit an existing food resource.
+    else:
+    	title = "Edit Food Resource"
+
+    # GET request.
+    if request.method == 'GET' and id is not None:
+    	# Populate form with information about existing food resource. 
+    	food_resource = FoodResource.query.filter_by(id=id).first()
+    	if food_resource is None:
+    		return render_template('404.html')
+    	form.name.data = food_resource.name
+    	form.address_line1.data = food_resource.address.line1
+    	form.address_line2.data = food_resource.address.line2
+    	form.address_city.data = food_resource.address.city
+    	form.address_state.data = food_resource.address.state
+    	form.address_zip_code.data = food_resource.address.zip_code
+    	form.phone_number.data = food_resource.phone_numbers[0].number
+    	form.website.data = food_resource.url
+    	form.additional_information.data = food_resource.description
+
+	# POST request.
     additional_errors = []
     if request.method == 'POST' and form.validate(): 
         # Create food resource's timeslots.
@@ -67,12 +74,11 @@ def new(id=None):
                     is_timeslot_valid = False
                     additional_errors.append("Opening time must be before closing time.")
                 if is_timeslot_valid:
-                    timeslot = TimeSlot(day_of_week = i, start_time = start_time, 
-                        end_time = end_time)
+                    timeslot = TimeSlot(day_of_week=i, start_time=start_time, 
+                        end_time=end_time)
                     db.session.add(timeslot)
                     timeslots.append(timeslot)
         # Create food resource's address.
-        is_timeslot_valid = True
         if is_timeslot_valid:
         	if id is not None:
         		fr = FoodResource.query.filter_by(id=id).first()

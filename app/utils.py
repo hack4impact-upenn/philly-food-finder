@@ -13,16 +13,12 @@ def generate_password(length):
 	random.seed = (os.urandom(1024))
 	return ''.join(random.choice(chars) for i in range(length-2)) + '1A'
 
-# Takes strings of the form '8-00-am' or '1-15-pm' and returns an equivalent 
+# Takes strings of the form '08:00' or '17:30' and returns an equivalent 
 # time object
 def get_time_from_string(time_string):
-	first_dash = time_string.index("-")
-	second_dash = time_string.index("-", first_dash+1)
-	time_hour = int(time_string[:first_dash])
-	time_minute = int(time_string[first_dash+1:second_dash])
-	am_or_pm = time_string[second_dash+1:]
-	if (am_or_pm == "PM" and time_hour != 12):
-		time_hour += 12
+	colon_index = time_string.index(":")
+	time_hour = int(time_string[:colon_index])
+	time_minute = int(time_string[colon_index+1:])
 	return time(time_hour, time_minute)
 
 def is_open(resource, current_date = None):

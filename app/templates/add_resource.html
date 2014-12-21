@@ -206,7 +206,7 @@
 	      			<label>Opens at
 				    	<select name='{{ day_of_week.id }}-opening-time' id="option-title">
 				    		{% for time in possible_opening_times %}
-				    			<option value="{{ time.strftime('%I') }}-{{ time.strftime('%M') }}-time.strftime('%p')">
+				    			<option value="{{ time.strftime('%H') }}:{{ time.strftime('%M') }}">
 				    				{{ time.strftime('%I') }}:{{ time.strftime('%M') }} {{ time.strftime('%p') }}
 				    			</option>
 				    		{% endfor %}
@@ -217,7 +217,7 @@
 	      			<label>Closes at
 				    	<select name='{{ day_of_week.id }}-closing-time' id="option-title">
 				    		{% for time in possible_closing_times %}
-				    			<option value="{{ time.strftime('%I') }}-{{ time.strftime('%M') }}-time.strftime('%p')">
+				    			<option value="{{ time.strftime('%H') }}:{{ time.strftime('%M') }}">
 				    				{{ time.strftime('%I') }}:{{ time.strftime('%M') }} {{ time.strftime('%p') }}
 				    			</option>
 				    		{% endfor %}
