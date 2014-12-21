@@ -70,8 +70,12 @@ class FoodResource(db.Model):
 		lazy='select', uselist=True)
 	address = db.relationship('Address', backref='food_resource', 
 		lazy='select', uselist=False)
-	family_children = db.Column(db.Boolean)
-	elderly = db.Column(db.Boolean)
+
+	# Boolean fields
+	family_and_children = db.Column(db.Boolean)
+	seniors = db.Column(db.Boolean)
+	wheelchair_accessible = db.Column(db.Boolean)
+	accepts_snap = db.Column(db.Boolean)
 
 	def serialize_name_only(self):
 		return {
