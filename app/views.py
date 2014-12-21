@@ -33,6 +33,7 @@ def new(id=None):
     # Create a new food resource. 
     if id is None:
     	title = "Add New Food Resource"
+    	food_resource_type = "FARMERS_MARKET"
     # Edit an existing food resource.
     else:
     	title = "Edit Food Resource"
@@ -83,38 +84,43 @@ def new(id=None):
                     	closing time.")
                 else:
                     db.session.add(timeslot)
+                    additional_errors.append("asdfasfd")
 
-        # Create the food resource's remaining attributes. 
-        if are_timeslots_valid:
+		additional_errors.append("asdf")
 
-        	# If editing an existing food resource, delete its current record
-        	# from the database. 
-        	if id is not None:
-        		fr = FoodResource.query.filter_by(id=id).first()
-        		db.session.delete(fr)
-        		db.session.commit()
+		# Create the food resource's remaining attributes. 
+		if are_timeslots_valid:
 
-        	# Create food resource's address.
-			address = Address(line1 = form.address_line1.data, 
-                line2 = form.address_line2.data, 
-                city = form.address_city.data, 
-                state = form.address_state.data, 
-                zip_code = form.address_zip_code.data)
+			# If editing an existing food resource, delete its current record
+			# from the database. 
+			if id is not None:
+				fr = FoodResource.query.filter_by(id=id).first()
+				db.session.delete(fr)
+				db.session.commit()
+
+			# Create food resource's address.
+			address = Address(line1=form.address_line1.data, 
+				line2=form.address_line2.data, 
+				city=form.address_city.data, 
+				state=form.address_state.data, 
+				zip_code=form.address_zip_code.data)
 			db.session.add(address)
 
-            # Create food resource's phone number.
+			additional_errors.append("cat")
+
+			# Create food resource's phone number.
 			phone_numbers = []
-			home_number = PhoneNumber(number = form.phone_number.data)
+			home_number = PhoneNumber(number=form.phone_number.data)
 			db.session.add(home_number)
 			phone_numbers.append(home_number)
 
-            # Create food resource and store all data in it.
+			# Create food resource and store all data in it.
 			food_resource = FoodResource(
-				name = form.name.data, 
-				phone_numbers = phone_numbers,
-				description = form.additional_information.data,
-				timeslots = timeslots,
-				address = address)
+				name=form.name.data, 
+				phone_numbers=phone_numbers,
+				description=form.additional_information.data,
+				timeslots=timeslots,
+				address=address)
 
 			# Assign a type to the food resource. 
 			food_resource.location_type = request.form['food-resource-type']
