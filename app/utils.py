@@ -70,40 +70,42 @@ def is_open(resource, current_date = None):
 
 def get_possible_opening_times():
 	opening_times = []
-	# year, month, and day are arbitrary
+	# Year, month, and day are arbitrary, as only the time is needed.
 	opening_time = datetime( 
-		year=2014, 	# arbitrary
-		month=1, 	# arbitrary
-		day=1,		# arbitrary
-		hour=8, 
+		year=2014, 	# Arbitrary.
+		month=1, 	# Arbitrary.
+		day=1,		# Arbitrary.
+		hour=8, 	# First opening time is 8:00 AM.
 		minute=0)
 	final_opening_time = datetime( 
-		year=2014,	# arbitrary
-		month=1, 	# arbitrary
-		day=1,		# arbitrary
-		hour=17,
+		year=2014,	# Arbitrary.
+		month=1, 	# Arbitrary.
+		day=1,		# Arbitrary.
+		hour=17,	# Final opening time is 5:00 PM.
 		minute=0)
 	while opening_time != final_opening_time:
 		opening_times.append(opening_time.time())
-		opening_time += timedelta(0, 15*60) 
+		# Opening time is incremented in 15-minute intervals.
+		opening_time += timedelta(0, 15*60) # Number of seconds in 15 minutes.
 	return opening_times
 
 def get_possible_closing_times():
 	closing_times = []
-	# year, month, and day are arbitrary
+	# Year, month, and day are arbitrary, as only the time is needed.
 	closing_time = datetime( 
-		year=2014, 	# arbitrary
-		month=1, 	# arbitrary
-		day=1,		# arbitrary
-		hour=11, 
+		year=2014, 	# Arbitrary.
+		month=1, 	# Arbitrary.
+		day=1,		# Arbitrary.
+		hour=11, 	# First closing time is 11:00 AM.
 		minute=0)
 	final_closing_time = datetime( 
-		year=2014,	# arbitrary
-		month=1, 	# arbitrary
-		day=1,		# arbitrary
-		hour=21,
+		year=2014,	# Arbitrary.
+		month=1, 	# Arbitrary.
+		day=1,		# Arbitrary.
+		hour=21,	# Final closing time is 9:00 PM.
 		minute=0)
 	while closing_time != final_closing_time:
 		closing_times.append(closing_time.time())
-		closing_time += timedelta(0, 15*60) 
+		# Closing time is incremented in 15-minute intervals.
+		closing_time += timedelta(0, 15*60) # Number of seconds in 15 minutes.
 	return closing_times
