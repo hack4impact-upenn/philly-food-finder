@@ -50,6 +50,7 @@ def new(id=None):
     	food_resource = FoodResource.query.filter_by(id=id).first()
     	if food_resource is None:
     		return render_template('404.html')
+
     	form.name.data = food_resource.name
     	form.address_line1.data = food_resource.address.line1
     	form.address_line2.data = food_resource.address.line2
@@ -59,13 +60,16 @@ def new(id=None):
     	form.phone_number.data = food_resource.phone_numbers[0].number
     	form.website.data = food_resource.url
     	form.additional_information.data = food_resource.description
+
+    	# Fields that must be dyanamically updated using JavaScript.
     	for timeslot in food_resource.timeslots:
     		timeslots.append(timeslot)
-
+    	food_resource_type = food_resource.location_type
 
 	# POST request.
     additional_errors = []
     if request.method == 'POST' and form.validate(): 
+    	food_resource_type = request.form['food-resource-type']
 
         # Create the food resource's timeslots.
         are_timeslots_valid = True
@@ -120,10 +124,7 @@ def new(id=None):
 				address = address)
 
 			# Assign a type to the food resource. 
-			for resource_info in resources_info_singular:
-				if (request.form['food-resource-type'] == 
-					resource_info['id']+'-option'):
-					food_resource.location_type = resource_info['enum']
+			food_resource.location_type = request.form['food-resource-type']
 
 			# Commit all database changes. 
 			db.session.add(food_resource)
@@ -135,6 +136,7 @@ def new(id=None):
     return render_template('add_resource.html', form=form, 
         days_of_week=days_of_week, resources_info=resources_info_singular, 
         additional_errors=additional_errors, title=title, timeslots=timeslots, 
+        food_resource_type=food_resource_type, 
         possible_opening_times=get_possible_opening_times(), 
         possible_closing_times=get_possible_closing_times())
 

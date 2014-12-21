@@ -71,7 +71,7 @@ def get_possible_opening_times():
 		year=2014, 	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=1,		# Arbitrary.
-		hour=8, 	# First opening time is 8:00 AM.
+		hour=7, 	# First opening time is 7:00 AM.
 		minute=0)
 	final_opening_time = datetime( 
 		year=2014,	# Arbitrary.

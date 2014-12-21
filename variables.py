@@ -26,7 +26,7 @@ resources_info_singular = [
                 'name' : "Food Cupboard",
                 'enum' : 'FOOD_CUPBOARD'},
         {'id' : "meals-on-wheel",       
-                'name' : "Meals On Wheel", 
+                'name' : "Meals On Wheels", 
                 'enum' : 'MEALS_ON_WHEELS'},
         {'id' : "share-host-site",              
                 'name' : "SHARE Host Site", 

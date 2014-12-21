@@ -49,7 +49,7 @@
 		    	<label>Food Resource Type
 			    	<select name='food-resource-type' id="option-title">
 			    		{% for resource_info in resources_info %}
-						 	<option value="{{ resource_info.id }}-option">
+						 	<option value="{{ resource_info.enum }}">
 								{{ resource_info.name }}
 							</option>
 						{% endfor %}
@@ -278,6 +278,9 @@
 			$('[name="' + closingTimeSelectorName + '"]').val(closingTimeString);
 			$("." + dayOfWeekId + "-time-picker").show();
 		{% endfor %}
+
+		var foodResourceTypeString = "{{ food_resource_type }}";
+		$('[name="food-resource-type"]').val(foodResourceTypeString);
 	}); 
 </script>
 
