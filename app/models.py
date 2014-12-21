@@ -72,10 +72,10 @@ class FoodResource(db.Model):
 		lazy='select', uselist=False)
 
 	# Boolean fields
-	family_and_children = db.Column(db.Boolean)
-	seniors = db.Column(db.Boolean)
-	wheelchair_accessible = db.Column(db.Boolean)
-	accepts_snap = db.Column(db.Boolean)
+	is_for_family_and_children = db.Column(db.Boolean, default=False)
+	is_for_seniors = db.Column(db.Boolean, default=False)
+	is_wheelchair_accessible = db.Column(db.Boolean, default=False)
+	is_accepts_snap = db.Column(db.Boolean, default=False)
 
 	def serialize_name_only(self):
 		return {

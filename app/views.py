@@ -54,6 +54,10 @@ def new(id=None):
     	form.phone_number.data = food_resource.phone_numbers[0].number
     	form.website.data = food_resource.url
     	form.additional_information.data = food_resource.description
+    	form.is_for_family_and_children.data = food_resource.is_for_family_and_children
+    	form.is_for_seniors.data = food_resource.is_for_seniors
+    	form.is_wheelchair_accessible.data = food_resource.is_wheelchair_accessible
+    	form.is_accepts_snap.data = food_resource.is_accepts_snap
 
     	# Fields that must be dyanamically updated using JavaScript.
     	for timeslot in food_resource.timeslots:
@@ -120,7 +124,11 @@ def new(id=None):
 				phone_numbers=phone_numbers,
 				description=form.additional_information.data,
 				timeslots=timeslots,
-				address=address)
+				address=address, 
+				is_for_family_and_children = form.is_for_family_and_children.data,
+    			is_for_seniors = form.is_for_seniors.data,
+    			is_wheelchair_accessible = form.is_wheelchair_accessible.data,
+    			is_accepts_snap = form.is_accepts_snap.data)
 
 			# Assign a type to the food resource. 
 			food_resource.location_type = request.form['food-resource-type']
