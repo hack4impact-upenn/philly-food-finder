@@ -32,7 +32,7 @@
 			<div class="resource"> 
 
 			<!-- Resource header --> 
-			  <div class= "row">
+			  <div class= "row" id="food-resource-{{ resource.id }}">
 				<div class="small-1 columns expand-food-resource" id="food-resource-expand-{{ resource.id }}">
 					+
 				</div>
@@ -40,10 +40,10 @@
 					{{ resource.name }}
 				</div>
 				<div class="small-2 columns">
-					<a href="{{ url_for('new', id=resource.id) }}">Edit</a>
+					<a href="{{ url_for('new', id=resource.id) }}" class="food-resource-update-button">Edit</a>
 				</div>
 				<div class="small-2 columns">
-					<a href="{{ url_for('remove', id=resource.id) }}">Remove</a>
+					<div id="{{ resource.id }}-remove" class="food-resource-update-button">Remove</div>
 				</div>
 			</div>
 			<!-- Resource content --> 

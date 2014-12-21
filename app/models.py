@@ -88,7 +88,6 @@ class FoodResource(db.Model):
 			'id': self.id, 
 			'name': self.name, 
 			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
-			# self.phone_numbers, 
 			'description': self.description,
 		}
 

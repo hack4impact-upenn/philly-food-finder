@@ -335,8 +335,8 @@ table thead tr th, table thead tr td {
   border: none; 
 }
 
-.expand-food-resource-type
-.expand-food-resource {
+.expand-food-resource-type:hover,
+.expand-food-resource:hover {
   cursor: pointer; 
 }
 
@@ -346,4 +346,13 @@ table thead tr th, table thead tr td {
 
 .admin-food-resource {
   background-color: #CCCCCC;
+}
+
+.food-resource-update-button {
+  color: #2D4FA0; /* navy */
+}
+
+.food-resource-update-button:hover {
+  cursor: pointer;
+  color: #2D4FA0; /* navy */
 }

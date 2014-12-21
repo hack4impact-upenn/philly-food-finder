@@ -22,13 +22,6 @@ def index():
 def map():
 	return render_template('newmaps.html')
 
-@app.route('/remove/<id>')
-def remove(id):
-	fr = FoodResource.query.filter_by(id=id).first()
-	db.session.delete(fr)
-	db.session.commit()
-	return redirect(url_for('admin'))
-
 @app.route('/new', methods=['GET', 'POST'])
 @app.route('/edit/<id>', methods=['GET', 'POST'])
 @login_required
@@ -317,6 +310,14 @@ def save_page():
 		page.value = data
 		db.session.commit()
 	return 'Added' + data + 'to database.'
+
+@app.route('/_remove')
+def remove():
+	id = request.args.get("id", type=int)
+	food_resource = FoodResource.query.filter_by(id=id).first()
+	db.session.delete(food_resource)
+	db.session.commit()
+	return jsonify(message="success")
 
 #TODO: Remove this edit demo page once editing works on all others.
 @app.route('/admin/edit')
