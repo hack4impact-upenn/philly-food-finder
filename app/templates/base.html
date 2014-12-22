@@ -56,6 +56,16 @@
             <li><a href="{{ url_for('about') }}" id="l_about">about</a></li>
             <li><a href="{{ url_for('contact') }}" id="l_contact">contact</a></li>
 
+            <li class="has-dropdown">
+              <a href="" id="l_resources">resources</a>
+                <ul class="dropdown">
+                  <li><a href="{{ url_for('wic') }}">WIC</a></li>
+                  <li class="active"><a href="{{ url_for('snap') }}">SNAP</a></li>
+                  <li><a href="{{ url_for('summer_meals') }}">Summer Meals</a></li>
+                  <li><a href="{{ url_for('seniors') }}">Seniors</a></li>
+                </ul>
+            </li>
+
             {% if current_user.is_authenticated() %}
             <li class="has-dropdown">
               <a href="{{ url_for('admin') }}" id="l_admin">admin</a>

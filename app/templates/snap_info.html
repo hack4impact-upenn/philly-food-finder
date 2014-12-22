@@ -1,0 +1,34 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<body id = "about_p">
+    <div class="row">
+        <h1 class="page-header">SNAP</h1>
+        <hr align="center">
+    </div>
+    <div class="row">
+        <div class="large-centered 
+                  large-10 medium-centered medium-8 small-8 small-centered
+                  columns content content">
+            <div id="editor1" contenteditable="false">
+                {{ html_string.value|safe }}
+            </div>
+        </div>
+    </div>
+    {% if current_user.is_authenticated() %}
+    <div class="row"> <div class="large-centered 
+                  large-10 medium-centered medium-8 small-8 small-centered
+                  columns contentcontent">
+       <div class="button radius tiny start-edit">Edit</div>
+       <div class="button radius tiny end-edit" id="snap-info-page" >Save</div>  
+    </div> </div>
+</body>
+{% endif %}
+
+{% if current_user.is_authenticated() %}
+<script>
+    $(".end-edit").hide();
+</script>
+{% endif %}
+{% endblock %}
