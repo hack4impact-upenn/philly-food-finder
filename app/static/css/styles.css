@@ -359,7 +359,18 @@ table thead tr th, table thead tr td {
 
 #expand-all-resources-button, 
 #collapse-all-resources-button, 
-#filter-resources-button, 
-#clear-filter-resources-button {
+#apply-filters-resources-button, 
+#clear-filters-resources-button {
   margin-bottom: 10px;
+}
+
+.no-resources-message {
+  font-style: italic;
+  font-size: 0.8em;
+  margin: 0.4em;
+  line-height: 1.2em; 
+}
+
+#filter-error {
+  color: #ef3d23; /* red */
 }

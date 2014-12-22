@@ -4,6 +4,14 @@ $(document).ready(function() {
 	$(".admin-food-resource-type").hide(); 
 	$(".admin-food-resource").hide(); 
 
+	/*$("#apply-filters-resources-button").click(function() {
+		clearTablesOfFoodResources();
+	}); 
+
+	$("#clear-filters-resources-button").click(function() {
+		clearTablesOfFoodResources();
+	}); */
+
 	// Expand all resources on admin resources page.
 	// Triggered when "Expand All" button pressed on admin resources page.
 	$("#expand-all-resources-button").click(function() {
@@ -161,4 +169,9 @@ function showAll(idToShow, classToToggleExpandSymbol) {
 		var id = $(this).attr("id");
 		show(id, classToToggleExpandSymbol);
 	});
+}
+
+function clearTablesOfFoodResources() {
+	$(".admin-food-resource-type").remove(); 
+	$(".expand-food-resource-type").html("+");
 }
