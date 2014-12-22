@@ -54,12 +54,15 @@ class PhoneNumber(db.Model):
 			'number': self.number,
 			'reource_id': self.resource_id
 		}
+
+
 class FoodResourceContact(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(150), nullable=False, default='')
-	email = db.Column(db.String(255), nullable=False, unique=True)
+	name = db.Column(db.String(150))
+	email = db.Column(db.String(255))
 	phone_number = db.Column(db.String(35))
-	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+	food_resource = db.relationship('FoodResource', backref='food_resource_contact', 
+	lazy='select', uselist=True)
 
 class FoodResource(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -85,8 +88,8 @@ class FoodResource(db.Model):
 
 	# Fields for when non-admins submit resources
 	is_approved = db.Column(db.Boolean(), default=True)
-	non_admin_contact = db.relationship('FoodResourceContact', backref='food_resource', 
-		lazy='select', uselist=False)
+	#food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+	food_resource_contact_id = db.Column(db.Integer, db.ForeignKey('food_resource_contact.id'))
 
 	def serialize_name_only(self):
 		return {

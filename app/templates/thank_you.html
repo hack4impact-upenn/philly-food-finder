@@ -1,0 +1,21 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <h1 class="page-header">
+	  {%trans%}Thanks!{%endtrans%}</h1>
+    <hr align="center">
+</div>
+
+<div class="row">
+	<p>An admin will review and approve the request. If you have any questions, please reach out.</p>
+</div>
+<div class = "row">
+        <a href="{{ url_for('guest_new_food_resource') }}" 
+           class="button radius small">Request More</a>
+	</div>
+</div>
+
+{% endblock %}

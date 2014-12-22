@@ -4,14 +4,14 @@
 {% block content %}
 <body id = "add_p">
   <div class="row">
-      <h1 class="page-header">Add New Food Resource</h1>
+      <h1 class="page-header">{{ title }}</h1>
       <hr align="center">
   </div>
 
 	<form action="" method="POST" role="form" name="submit_food_resource">
 	    {{ form.hidden_tag() }}
 
-	    <!-- Guest Name -->
+		<!-- Guest Name -->
 		{% set field = form.your_name %}
 	    <div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -103,7 +103,7 @@
 		    	<label>Food Resource Type
 			    	<select name='food-resource-type' id="option-title">
 			    		{% for resource_info in resources_info %}
-						 	<option value="{{ resource_info.id }}-option">
+						 	<option value="{{ resource_info.enum }}">
 								{{ resource_info.name }}
 							</option>
 						{% endfor %}
@@ -250,39 +250,31 @@
 		     columns large-centered">
 	      		<div class="large-4 small-4 columns" id="middle-padding-section">
 	      			<label>{{ day_of_week.name }}
-				    	<select name='{{ day_of_week.id }}-open-or-closed' class='open-or-closed' id="option-title">
+				    	<select name='{{ day_of_week.index }}-open-or-closed' class='open-or-closed'>
 				    		<option value="closed">Closed</option>
 							<option value="open">Open</option>
 				    	</select>
 	      			</label>
 	      		</div>
-	      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker" id="middle-padding-section">
+	      		<div class="large-4 small-4 columns {{ day_of_week.index }}-time-picker" id="middle-padding-section">
 	      			<label>Opens at
-				    	<select name='{{ day_of_week.id }}-opening-time' id="option-title">
-				    		{% for hour in [8, 9, 10, 11, 12, 1, 2, 3, 4, 5] %}
-				    			{% for minute in ["00", 15, 30, 45] %}
-				    				{% if hour >= 8 and hour <= 11 %}
-										<option value="{{ hour }}-{{ minute }}-am">{{ hour }}:{{ minute }} AM</option>
-									{% else %}
-										<option value="{{ hour }}-{{ minute }}-pm">{{ hour }}:{{ minute }} PM</option>
-									{% endif %}
-								{% endfor %}
-							{% endfor %}
+				    	<select name='{{ day_of_week.index }}-opening-time'>
+				    		{% for time in possible_opening_times %}
+				    			<option value="{{ time.strftime('%H') }}:{{ time.strftime('%M') }}">
+				    				{{ time.strftime('%I') }}:{{ time.strftime('%M') }} {{ time.strftime('%p') }}
+				    			</option>
+				    		{% endfor %}
 				    	</select>
 	      			</label>
 	      		</div>
-	      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker" id="middle-padding-section">
+	      		<div class="large-4 small-4 columns {{ day_of_week.index }}-time-picker" id="middle-padding-section">
 	      			<label>Closes at
-				    	<select name='{{ day_of_week.id }}-closing-time' id="option-title">
-				    		{% for hour in [11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
-				    			{% for minute in ["00", 15, 30, 45] %}
-				    				{% if hour == 11 %}
-										<option value="{{ hour }}-{{ minute }}-am">{{ hour }}:{{ minute }} AM</option>
-									{% else %}
-										<option value="{{ hour }}-{{ minute }}-pm">{{ hour }}:{{ minute }} PM</option>
-									{% endif %}
-								{% endfor %}
-							{% endfor %}
+				    	<select name='{{ day_of_week.index }}-closing-time'>
+				    		{% for time in possible_closing_times %}
+				    			<option value="{{ time.strftime('%H') }}:{{ time.strftime('%M') }}">
+				    				{{ time.strftime('%I') }}:{{ time.strftime('%M') }} {{ time.strftime('%p') }}
+				    			</option>
+				    		{% endfor %}
 				    	</select>
 	      			</label>
 	      		</div>
@@ -311,11 +303,40 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered" id="bottom-padding-section">
-	          <a href="#" class="button radius small">Submit</a>
+	          <input type=submit class="button radius small" value=Submit>
 		    </div>
 		</div>
-	    
 	</form>
 </body>
 
+<script>
+	$(document).ready(function() {
+
+		// Set food resource timeslots.
+		var dayOfWeekId, openOrClosedSelectorName, openingTimeSelectorName, 
+			closingTimeSelectorName; 
+
+		{% for timeslot in timeslots %}
+			dayOfWeekId = {{ timeslot.day_of_week }};
+			openingTimeString = "{{ timeslot.start_time.strftime('%H') }}"
+				+ ":" + "{{ timeslot.start_time.strftime('%M') }}";
+			closingTimeString = "{{ timeslot.end_time.strftime('%H') }}"
+				+ ":" + "{{ timeslot.end_time.strftime('%M') }}";
+
+			openOrClosedSelectorName = dayOfWeekId + "-open-or-closed";
+			openingTimeSelectorName = dayOfWeekId + "-opening-time";
+			closingTimeSelectorName = dayOfWeekId + "-closing-time";
+
+			$('[name="' + openOrClosedSelectorName + '"]').val("open");
+			$('[name="' + openingTimeSelectorName + '"]').val(openingTimeString);
+			$('[name="' + closingTimeSelectorName + '"]').val(closingTimeString);
+			$("." + dayOfWeekId + "-time-picker").show();
+		{% endfor %}
+
+		var foodResourceTypeString = "{{ food_resource_type }}";
+		$('[name="food-resource-type"]').val(foodResourceTypeString);
+	}); 
+</script>
+
 {% endblock %}
+
