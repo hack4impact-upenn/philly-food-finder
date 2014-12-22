@@ -5,6 +5,20 @@ $(document).ready(function() {
 	$(".admin-food-resource-type").hide(); 
 	$(".admin-food-resource").hide(); 
 
+	// Remove a food resource without reloading page.
+	$("[id$='remove']").click(function() {
+		var id = $(this).attr('id');
+		var dashIndex = id.indexOf("-"); 
+		var food_resource_id = id.substring(0, dashIndex); 
+		$.getJSON($SCRIPT_ROOT + '/_remove', {
+        		id: food_resource_id
+        	},
+        	function(data) {
+        		hide("food-resource-" + food_resource_id);
+        		hide("food-resource-" + food_resource_id + "-table");
+        	});  
+	});	
+
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource table.
 	$(".expand-food-resource-type").click(function() {
@@ -14,15 +28,17 @@ $(document).ready(function() {
 		var resource_type = id.substring(start_index); 
 		var table_to_expand = resource_type + "-table"; 		
 		expand(table_to_expand); 
+		toggleExpandSymbol("food-resource-type-expand-" + resource_type);
 	})
 
 	$(".expand-food-resource").click(function() {
 		var id = $(this).attr('id');  
 		var prefix = "food-resource-expand-"; 
 		var start_index = prefix.length; 
-		var resource_type = id.substring(start_index); 
-		var table_to_expand = "food-resource-" + resource_type + "-table"; 		
+		var resource_id = id.substring(start_index); 
+		var table_to_expand = "food-resource-" + resource_id + "-table"; 		
 		expand(table_to_expand); 
+		toggleExpandSymbol("food-resource-expand-" + resource_id);
 	})
 
     $(".start-edit").click(function() {
@@ -85,4 +101,12 @@ function show(id) {
 	$("#"+id).slideDown("medium", function() {
 		$(this).show(); 
 	});
+}
+
+function toggleExpandSymbol(id) {
+	if ($("#"+id).html() == "-") {
+		$("#"+id).html("+");
+	} else {
+		$("#"+id).html("-");
+	}
 }

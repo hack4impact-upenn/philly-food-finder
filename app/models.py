@@ -17,7 +17,8 @@ class Address(db.Model):
 		'line2': self.line2,
 		'city': self.city,
 		'state': self.state,
-		'zip_code': self.zip_code
+		'zip_code': self.zip_code,
+		'food_resource_id': self.food_resource_id
 		}
 
 class TimeSlot(db.Model):
@@ -47,6 +48,12 @@ class PhoneNumber(db.Model):
 	number = db.Column(db.String(35))
 	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
+	def serialize_phone_numbers(self):
+		return {
+			'id': self.id,
+			'number': self.number,
+			'reource_id': self.resource_id
+		}
 class FoodResourceContact(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(150), nullable=False, default='')
@@ -69,8 +76,12 @@ class FoodResource(db.Model):
 		lazy='select', uselist=True)
 	address = db.relationship('Address', backref='food_resource', 
 		lazy='select', uselist=False)
-	family_children = db.Column(db.Boolean)
-	elderly = db.Column(db.Boolean)
+
+	# Boolean fields
+	family_and_children = db.Column(db.Boolean)
+	seniors = db.Column(db.Boolean)
+	wheelchair_accessible = db.Column(db.Boolean)
+	accepts_snap = db.Column(db.Boolean)
 
 	# Fields for when non-admins submit resources
 	is_approved = db.Column(db.Boolean(), default=True)
@@ -79,7 +90,7 @@ class FoodResource(db.Model):
 
 	def serialize_name_only(self):
 		return {
-			'id': self.id, 
+			'id': self.id,
 			'name': self.name
 		}
 
@@ -87,15 +98,15 @@ class FoodResource(db.Model):
 		return {
 			'id': self.id, 
 			'name': self.name, 
-			'phone_number': self.phone_number, 
-			'description': self.description
+			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
+			'description': self.description,
 		}
 
 	def serialize_map_list(self):
 		return {
 			'id': self.id,
 			'name': self.name,
-			'phone_number': '999999999', #self.phone_number,
+			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
 			'description': self.description,
 			'location_type': self.location_type,
 			'address': self.address.serialize_address()
@@ -115,7 +126,7 @@ class UserRoles(db.Model):
 		ondelete='CASCADE'))
 	role_id = db.Column(db.Integer(), db.ForeignKey('role.id', 
 		ondelete='CASCADE'))
-
+	
 class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key=True)
 
