@@ -10,15 +10,16 @@ class Address(db.Model):
 	state = db.Column(db.String(2))
 	zip_code = db.Column(db.String(5))
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+
 	def serialize_address(self):
 		return {
-		'id': self.id,
-		'line1': self.line1,
-		'line2': self.line2,
-		'city': self.city,
-		'state': self.state,
-		'zip_code': self.zip_code,
-		'food_resource_id': self.food_resource_id
+			'id': self.id,
+			'line1': self.line1,
+			'line2': self.line2,
+			'city': self.city,
+			'state': self.state,
+			'zip_code': self.zip_code,
+			'food_resource_id': self.food_resource_id
 		}
 
 class TimeSlot(db.Model):
@@ -27,12 +28,13 @@ class TimeSlot(db.Model):
 	start_time = db.Column(db.Time)
 	end_time = db.Column(db.Time)
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+
 	def serialize_timeslot(self):
 		return {
-		'id': self.id,
-		'day_of_week': self.day_of_week,
-		'start_time': self.start_time,
-		'end_time': self.end_time
+			'id': self.id,
+			'day_of_week': self.day_of_week,
+			'start_time': self.start_time.isoformat(),
+			'end_time': self.end_time.isoformat()
 		}
 
 # Represents a start and end month for a resource. 
@@ -42,6 +44,14 @@ class OpenMonthPair(db.Model):
 	start_month = db.Column(db.Integer)
 	end_month = db.Column(db.Integer)
 	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+
+	def serialize_open_month_pair(self):
+		return {
+			'id': self.id, 
+			'start_month': self.start_month, 
+			'end_month': self.end_month, 
+			'resource_id': self.resource_id
+		}
 
 class PhoneNumber(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -83,12 +93,22 @@ class FoodResource(db.Model):
 			'id': self.id
 		}
 
-	def serialize_all_data(self):
+	def serialize_food_resource(self):
 		return {
 			'id': self.id, 
 			'name': self.name, 
 			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
+			'url': self.url, 
+			'open_month_pairs': [i.serialize_open_month_pair() for i in self.open_month_pairs],
+			'exceptions': self.exceptions, 
 			'description': self.description,
+			'location_type': self.location_type, 
+			'timeslots': [i.serialize_timeslot() for i in self.timeslots], 
+			'address': self.address.serialize_address(),
+			'is_for_family_and_children': self.is_for_family_and_children, 
+			'is_for_seniors': self.is_for_seniors, 
+			'is_wheelchair_accessible': self.is_wheelchair_accessible, 
+			'is_accepts_snap': self.is_accepts_snap
 		}
 
 	def serialize_map_list(self):
