@@ -358,6 +358,8 @@ table thead tr th, table thead tr td {
 }
 
 #expand-all-resources-button, 
-#collapse-all-resources-button {
+#collapse-all-resources-button, 
+#filter-resources-button, 
+#clear-filter-resources-button {
   margin-bottom: 10px;
 }
