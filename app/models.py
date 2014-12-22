@@ -79,8 +79,8 @@ class FoodResource(db.Model):
 
 	def serialize_name_only(self):
 		return {
-			'id': self.id,
-			'name': self.name
+			'name': self.name, 
+			'id': self.id
 		}
 
 	def serialize_all_data(self):

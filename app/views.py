@@ -88,10 +88,7 @@ def new(id=None):
                     	closing time.")
                 else:
                     db.session.add(timeslot)
-                    additional_errors.append("asdfasfd")
-
-		additional_errors.append("asdf")
-
+                    
 		# Create the food resource's remaining attributes. 
 		if are_timeslots_valid:
 
@@ -110,8 +107,6 @@ def new(id=None):
 				zip_code=form.address_zip_code.data)
 			db.session.add(address)
 
-			additional_errors.append("cat")
-
 			# Create food resource's phone number.
 			phone_numbers = []
 			home_number = PhoneNumber(number=form.phone_number.data)
@@ -127,7 +122,7 @@ def new(id=None):
 				address=address, 
 				is_for_family_and_children = form.is_for_family_and_children.data,
     			is_for_seniors = form.is_for_seniors.data,
-    			is_wheelchair_accessible = form.is_wheelchair_accessible.data,
+    			is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
     			is_accepts_snap = form.is_accepts_snap.data)
 
 			# Assign a type to the food resource. 
@@ -292,13 +287,12 @@ def invite_sent():
 
 @app.route('/_admin')
 def get_food_resource_data():
-	farmers_markets = FoodResource.query.filter_by(location_type="FARMERS_MARKET").order_by(FoodResource.name)
-	meals_on_wheels = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS").order_by(FoodResource.name) 
-	food_cupboards = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD").order_by(FoodResource.name)
-	share_host_sites = FoodResource.query.filter_by(location_type="SHARE").order_by(FoodResource.name)
-	soup_kitchens = FoodResource.query.filter_by(location_type="SOUP_KITCHEN").order_by(FoodResource.name)
-	wic_offices = FoodResource.query.filter_by(location_type="WIC_OFFICE").order_by(FoodResource.name)
-	names = FoodResource.query.all()
+	farmers_markets = FoodResource.query.filter_by(location_type="FARMERS_MARKET").order_by(FoodResource.name).all()
+	meals_on_wheels = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS").order_by(FoodResource.name).all()
+	food_cupboards = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD").order_by(FoodResource.name).all()
+	share_host_sites = FoodResource.query.filter_by(location_type="SHARE").order_by(FoodResource.name).all()
+	soup_kitchens = FoodResource.query.filter_by(location_type="SOUP_KITCHEN").order_by(FoodResource.name).all()
+	wic_offices = FoodResource.query.filter_by(location_type="WIC_OFFICE").order_by(FoodResource.name).all()
 	return jsonify(farmers_markets=[i.serialize_name_only() for i in farmers_markets],
 		meals_on_wheels=[i.serialize_name_only() for i in meals_on_wheels],
 		food_cupboards=[i.serialize_name_only() for i in food_cupboards],

@@ -356,3 +356,8 @@ table thead tr th, table thead tr td {
   cursor: pointer;
   color: #2D4FA0; /* navy */
 }
+
+#expand-all-resources-button, 
+#collapse-all-resources-button {
+  margin-bottom: 10px;
+}
