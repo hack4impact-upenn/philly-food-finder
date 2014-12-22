@@ -355,12 +355,13 @@ def get_filtered_food_resource_data():
 
 @app.route('/_map')
 def address_food_resources():
-	address = Address.query.filter_by(zip_code = request.args.get('zipcode')).all()
-	addresses = []
-	for x in address:
-		currentResource = FoodResource.query.filter_by(id = x.food_resource_id).first()
-		addresses.append(currentResource)
-	return jsonify(addresses=[i.serialize_map_list() for i in addresses])
+	zip_code = request.args.get('zipcode', 0, type=int)
+	addresses = Address.query.filter(Address.zip_code==zip_code).all()
+	food_resources = []
+	for address in addresses:
+		current_resource = FoodResource.query.filter_by(id=address.food_resource_id).first()
+		food_resources.append(current_resource)
+	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources[1:]])
 
 @app.route('/_edit', methods=['GET', 'POST'])
 def save_page():
