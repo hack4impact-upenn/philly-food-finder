@@ -143,6 +143,54 @@
 							{% endif %}
 						</div>
 					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Family and children?
+						</div>
+						<div class="small-9 columns">
+							{% if resource.is_for_family_and_children %}
+								Yes
+							{% else %}
+								No
+							{% endif %}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Seniors?
+						</div>
+						<div class="small-9 columns">
+							{% if resource.is_for_seniors %}
+								Yes
+							{% else %}
+								No
+							{% endif %}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Wheelchair accessible?
+						</div>
+						<div class="small-9 columns">
+							{% if resource.is_wheelchair_accessible %}
+								Yes
+							{% else %}
+								No
+							{% endif %}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Accepts SNAP?
+						</div>
+						<div class="small-9 columns">
+							{% if resource.is_accepts_snap %}
+								Yes
+							{% else %}
+								No
+							{% endif %}
+						</div>
+					</div>
 				</div>
 				<div class="large-6 small-12 columns">
 					<div class="row">
