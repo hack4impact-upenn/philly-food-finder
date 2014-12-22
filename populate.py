@@ -18,7 +18,7 @@ db.session.add(num0)
 f0.phone_number = "123-456-7890"
 f0.description = "Open year round"
 f0.location_type = "FARMERS_MARKET"
-f0.is_for_family_and_children = False
+f0.is_for_family_and_children = True
 f0.is_for_seniors = True
 
 a0 = Address()

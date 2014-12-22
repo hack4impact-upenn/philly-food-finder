@@ -52,11 +52,11 @@
 			</table>
 		</div>
 		<div id="{{ resource_info.id }}-table" class="admin-food-resource-type">
-			{% if resources[resource_info.id].count() == 0 %}
+			{% if not resources[resource_info.id] %}
 				<div class="no-resources-message">There are no {{ resource_info.lowercase_name }} in the database.</div>
 			{% endif %}
-			{% for resource in resources[resource_info.id] %}
 
+			{% for resource in resources[resource_info.id] %}
 			<div class="resource"> 
 
 			<!-- Resource header --> 
@@ -180,20 +180,20 @@
 	$(document).ready(function() {
 
 		$("#apply-filters-resources-button").click(function() {
-			var has_zip_code_filter = false;
-			var has_families_and_children_filter = false;
-			var has_seniors_filter = false;
-			var has_wheelchair_accessible_filter = false;
-			var has_accepts_snap_filter = false; 
+			var hasZipCodeFilter = 0;
+			var hasFamiliesAndChildrenFilter = 0;
+			var hasSeniorsFilter = 0;
+			var hasWheelchairAccessibleFilter = 0;
+			var hasAcceptsSnapFilter = 0; 
 
 			//clearTablesOfFoodResources();
 			// Check that zip code is properly formed.
 			var regex = /^(\d{5})?$/; // 5-digit number or an empty string
-			var zip_code = $("#zip-code").val().trim(); 
-			if (regex.test(zip_code)) {
+			var zipCode = $("#zip-code").val().trim(); 
+			if (regex.test(zipCode)) {
 				$("#filter-error").html("");
-				if (zip_code.length > 0) {
-					has_zip_code_filter = true; 
+				if (zipCode.length > 0) {
+					hasZipCodeFilter = 1; 
 				}
 			} else {
 				$("#filter-error").html("Zip code consist of exactly 5 digits (0-9).");
@@ -202,17 +202,34 @@
 
 			// Determine which checkboxes are checked.
 			if ($('[id="filter-by-families-and-children"]:checked').length > 0) {
-				has_families_and_children_filter = true; 
+				hasFamiliesAndChildrenFilter = 1; 
 			}
 			if ($('[id="filter-by-seniors"]:checked').length > 0) {
-				has_seniors_filter = true; 
+				hasSeniorsFilter = 1; 
 			}
 			if ($('[id="filter-by-wheelchair-accessible"]:checked').length > 0) {
-				has_wheelchair_accessible_filter = true; 
+				hasWheelchairAccessibleFilter = 1; 
 			}
 			if ($('[id="filter-by-accepts-snap"]:checked').length > 0) {
-				has_accepts_snap_filter = true; 
+				hasAcceptsSnapFilter = 1; 
 			}
+
+			$.getJSON($SCRIPT_ROOT + '/_admin_apply_filters', {
+        		has_zip_code_filter: hasZipCodeFilter,
+        		zip_code: zipCode,
+        		has_families_and_children_filter: hasFamiliesAndChildrenFilter, 
+        		has_seniors_filter: hasSeniorsFilter, 
+        		has_wheelchair_accessible_filter: hasWheelchairAccessibleFilter, 
+        		has_accepts_snap_filter: hasAcceptsSnapFilter
+        	},
+        	function(data) {
+        		console.log(data["farmers_markets"]); 
+        		console.log(data["meals_on_wheels"]); 
+        		console.log(data["food_cupboards"]); 
+        		console.log(data["share_host_sites"]); 
+        		console.log(data["soup_kitchens"]);
+        		console.log(data["wic_offices"]); 
+        	});  
 		}); 
 
 		$("#clear-filters-resources-button").click(function() {
