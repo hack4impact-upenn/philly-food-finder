@@ -69,14 +69,14 @@ class NonAdminAddNewFoodResourceForm(AddNewFoodResourceForm):
         label = 'Your Name', 
         validators = [
             InputRequired("Please provide your name."),
-            Length(0, 150)
+            Length(1, 150)
         ])
     your_email_address = TextField(
         label = 'Your Email Address', 
         validators = [
             InputRequired("Please provide an email address at which we can contact you."), 
             Email("Invalid email address."),
-            Length(0, 255)
+            Length(1, 255)
         ])
     your_phone_number = TextField(
         label = 'Your Phone Number', 
