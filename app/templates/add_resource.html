@@ -347,8 +347,10 @@
 			$("." + dayOfWeekId + "-time-picker").show();
 		{% endfor %}
 
-		var foodResourceTypeString = "{{ food_resource_type }}";
-		$('[name="food-resource-type"]').val(foodResourceTypeString);
+		{% if food_resource_type %}
+			var foodResourceTypeString = "{{ food_resource_type }}";
+			$('[name="food-resource-type"]').val(foodResourceTypeString);
+		{% endif %}
 	}); 
 </script>
 
