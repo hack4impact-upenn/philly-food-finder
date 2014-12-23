@@ -397,10 +397,12 @@ def get_filtered_food_resource_data():
 			has_seniors_filter, has_wheelchair_accessible_filter,
 			has_accepts_snap_filter)
 
-	return jsonify(farmers_markets=[i.serialize_food_resource() for i in farmers_markets],
+	return jsonify(farmers_markets=[i.serialize_food_resource() for i in 
+			farmers_markets],
 		meals_on_wheels=[i.serialize_food_resource() for i in meals_on_wheels],
 		food_cupboards=[i.serialize_food_resource() for i in food_cupboards],
-		share_host_sites=[i.serialize_food_resource() for i in share_host_sites],
+		share_host_sites=[i.serialize_food_resource() for i in 
+			share_host_sites],
 		soup_kitchens=[i.serialize_food_resource() for i in soup_kitchens],
 		wic_offices=[i.serialize_food_resource() for i in wic_offices], 
 		zip_code=zip_code)

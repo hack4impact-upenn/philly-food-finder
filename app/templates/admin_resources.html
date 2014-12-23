@@ -228,38 +228,40 @@
 	$(document).ready(function() {
 
 		$("#apply-filters-resources-button").click(function() {
-			var hasZipCodeFilter = 0;
-			var hasFamiliesAndChildrenFilter = 0;
-			var hasSeniorsFilter = 0;
-			var hasWheelchairAccessibleFilter = 0;
-			var hasAcceptsSnapFilter = 0; 
+			var hasZipCodeFilter = 0; // FALSE
+			var hasFamiliesAndChildrenFilter = 0; // FALSE
+			var hasSeniorsFilter = 0; // FALSE
+			var hasWheelchairAccessibleFilter = 0; // FALSE
+			var hasAcceptsSnapFilter = 0; // FALSE
 
 			//clearTablesOfFoodResources();
 			// Check that zip code is properly formed.
-			var regex = /^(\d{5})?$/; // 5-digit number or an empty string
+			var regex = /^(\d{5})?$/; // 5-digit number or an empty string.
 			var zipCode = $("#zip-code").val().trim(); 
 			if (regex.test(zipCode)) {
+				// Clear any errors.
 				$("#filter-error").html("");
 				if (zipCode.length > 0) {
-					hasZipCodeFilter = 1; 
+					hasZipCodeFilter = 1; // TRUE 
 				}
 			} else {
+				// Provide helpful error message to user.
 				$("#filter-error").html("Zip code consist of exactly 5 digits (0-9).");
 				return; 
 			}
 
 			// Determine which checkboxes are checked.
 			if ($('[id="filter-by-families-and-children"]:checked').length > 0) {
-				hasFamiliesAndChildrenFilter = 1; 
+				hasFamiliesAndChildrenFilter = 1; // TRUE 
 			}
 			if ($('[id="filter-by-seniors"]:checked').length > 0) {
-				hasSeniorsFilter = 1; 
+				hasSeniorsFilter = 1; // TRUE 
 			}
 			if ($('[id="filter-by-wheelchair-accessible"]:checked').length > 0) {
-				hasWheelchairAccessibleFilter = 1; 
+				hasWheelchairAccessibleFilter = 1; // TRUE 
 			}
 			if ($('[id="filter-by-accepts-snap"]:checked').length > 0) {
-				hasAcceptsSnapFilter = 1; 
+				hasAcceptsSnapFilter = 1; // TRUE 
 			}
 
 			$.getJSON($SCRIPT_ROOT + '/_admin_apply_filters', {
@@ -284,6 +286,13 @@
 
 		$("#clear-filters-resources-button").click(function() {
 			clearTablesOfFoodResources();
+
+			// Clear checkboxes and text box.
+			$('#filter-by-families-and-children').attr('checked', false);
+			$('#filter-by-seniors').attr('checked', false);
+			$('#filter-by-wheelchair-accessible').attr('checked', false);
+			$('#filter-by-accepts-snap').attr('checked', false);
+			$("#zip-code").val("");
 		}); 
 	}); 
 </script>
