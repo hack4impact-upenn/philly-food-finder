@@ -303,47 +303,63 @@ def get_filtered_food_resource_data():
 	soup_kitchens = []
 	wic_offices = []
 
-	#if has_zip_code_filter is True:
-		#zip_code = request.args.get('zip_code', type=int)
 	for farmers_market in FoodResource.query \
 		.filter(
 			FoodResource.location_type=="FARMERS_MARKET", 
-			FoodResource.is_for_family_and_children==has_families_and_children_filter) \
+			FoodResource.is_for_family_and_children==has_families_and_children_filter,
+			FoodResource.is_for_seniors==has_seniors_filter,
+			FoodResource.is_wheelchair_accessible==has_wheelchair_accessible_filter, 
+			FoodResource.is_accepts_snap==has_accepts_snap_filter)  \
 		.order_by(FoodResource.name).all(): 
 		farmers_markets.append(farmers_market)
 
 	for meal_on_wheels in FoodResource.query \
 		.filter(
 			FoodResource.location_type=="MEALS_ON_WHEELS", 
-			FoodResource.is_for_family_and_children==has_families_and_children_filter) \
+			FoodResource.is_for_family_and_children==has_families_and_children_filter,
+			FoodResource.is_for_seniors==has_seniors_filter,
+			FoodResource.is_wheelchair_accessible==has_wheelchair_accessible_filter, 
+			FoodResource.is_accepts_snap==has_accepts_snap_filter) \
 		.order_by(FoodResource.name).all():
 		meals_on_wheels.append(meal_on_wheels)
 
 	for food_cupboard in FoodResource.query \
 		.filter(
 			FoodResource.location_type=="FOOD_CUPBOARD", 
-			FoodResource.is_for_family_and_children==has_families_and_children_filter) \
+			FoodResource.is_for_family_and_children==has_families_and_children_filter,
+			FoodResource.is_for_seniors==has_seniors_filter,
+			FoodResource.is_wheelchair_accessible==has_wheelchair_accessible_filter, 
+			FoodResource.is_accepts_snap==has_accepts_snap_filter) \
 		.order_by(FoodResource.name).all():
 		food_cupboards.append(food_cupboard)
 
 	for share_host_site in FoodResource.query \
 		.filter(
 			FoodResource.location_type=="SHARE", 
-			FoodResource.is_for_family_and_children==has_families_and_children_filter) \
+			FoodResource.is_for_family_and_children==has_families_and_children_filter,
+			FoodResource.is_for_seniors==has_seniors_filter,
+			FoodResource.is_wheelchair_accessible==has_wheelchair_accessible_filter, 
+			FoodResource.is_accepts_snap==has_accepts_snap_filter) \
 		.order_by(FoodResource.name).all():
 		share_host_sites.append(share_host_site)
 
 	for soup_kitchen in FoodResource.query \
 		.filter(
 			FoodResource.location_type=="SOUP_KITCHEN", 
-			FoodResource.is_for_family_and_children==has_families_and_children_filter) \
+			FoodResource.is_for_family_and_children==has_families_and_children_filter,
+			FoodResource.is_for_seniors==has_seniors_filter,
+			FoodResource.is_wheelchair_accessible==has_wheelchair_accessible_filter, 
+			FoodResource.is_accepts_snap==has_accepts_snap_filter) \
 		.order_by(FoodResource.name).all():
 		soup_kitchens.append(soup_kitchen)
 
 	for wic_office in FoodResource.query \
 		.filter(
 			FoodResource.location_type=="WIC_OFFICE", 
-			FoodResource.is_for_family_and_children==has_families_and_children_filter) \
+			FoodResource.is_for_family_and_children==has_families_and_children_filter,
+			FoodResource.is_for_seniors==has_seniors_filter,
+			FoodResource.is_wheelchair_accessible==has_wheelchair_accessible_filter, 
+			FoodResource.is_accepts_snap==has_accepts_snap_filter) \
 		.order_by(FoodResource.name).all():
 		wic_offices.append(wic_office)
 	return jsonify(farmers_markets=[i.serialize_food_resource() for i in farmers_markets],
