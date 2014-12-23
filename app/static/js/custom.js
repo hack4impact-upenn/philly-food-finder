@@ -9,28 +9,27 @@ $(document).ready(function() {
 	$("[id$='remove']").click(function() {
 		var id = $(this).attr('id');
 		var dashIndex = id.indexOf("-"); 
-		var food_resource_id = id.substring(0, dashIndex); 
+		var foodResourceID = id.substring(0, dashIndex); 
 		$.getJSON($SCRIPT_ROOT + '/_remove', {
-        		id: food_resource_id
+        		id: foodResourceID
         	},
         	function(data) {
-        		hide("food-resource-" + food_resource_id);
-        		hide("food-resource-" + food_resource_id + "-table");
+        		hide("food-resource-" + foodResourceID);
+        		hide("food-resource-" + foodResourceID + "-table");
         	});  
 	});	
 
 	// Approves a food resource without reloading page.
 	$("[id$='approve']").click(function() {
-		console.log('here1');
 		var id = $(this).attr('id');
 		var dashIndex = id.indexOf("-"); 
-		var food_resource_id = id.substring(0, dashIndex); 
+		var foodResourceID = id.substring(0, dashIndex); 
 		$.getJSON($SCRIPT_ROOT + '/_approve', {
-        		id: food_resource_id
+        		id: foodResourceID
         	},
         	function(data) {
-        		hide("food-resource-" + food_resource_id);
-        		hide("food-resource-" + food_resource_id + "-table");
+        		hide("food-resource-" + foodResourceID);
+        		hide("food-resource-" + foodResourceID + "-table");
         	});  
 	});	
 

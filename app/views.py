@@ -433,7 +433,7 @@ def approve():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
 	contact = food_resource.food_resource_contact
-	
+
 	if len(contact.food_resource) <= 1:
 		db.session.delete(contact)
 	else:
@@ -442,11 +442,6 @@ def approve():
 	food_resource.is_approved = True
 	db.session.commit()
 	return jsonify(message="success")
-
-#TODO: Remove this edit demo page once editing works on all others.
-@app.route('/admin/edit')
-def edit_content():
-	return render_template('edit_content.html', html_string = HTML.query.filter_by(page = 'edit-page').first())
 
 @app.route('/about')
 def about():
@@ -460,18 +455,18 @@ def faq():
 def contact():
 	return render_template('contact.html', html_string = HTML.query.filter_by(page = 'contact-page').first())
 
-@app.route('/about/wic')
+@app.route('/resources/wic')
 def wic():
 	return render_template('wic_info.html', html_string = HTML.query.filter_by(page = 'wic-info-page').first())
 
-@app.route('/about/snap')
+@app.route('/resources/snap')
 def snap():
 	return render_template('snap_info.html', html_string = HTML.query.filter_by(page = 'snap-info-page').first())
 
-@app.route('/about/summer-meals')
+@app.route('/resources/summer-meals')
 def summer_meals():
 	return render_template('summer_meals.html', html_string = HTML.query.filter_by(page = 'summer-info-page').first())
 
-@app.route('/about/seniors')
+@app.route('/resources/seniors')
 def seniors():
 	return render_template('seniors_info.html', html_string = HTML.query.filter_by(page = 'seniors-info-page').first())

@@ -88,7 +88,6 @@ class FoodResource(db.Model):
 
 	# Fields for when non-admins submit resources
 	is_approved = db.Column(db.Boolean(), default=True)
-	#food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 	food_resource_contact_id = db.Column(db.Integer, db.ForeignKey('food_resource_contact.id'))
 
 	def serialize_name_only(self):
