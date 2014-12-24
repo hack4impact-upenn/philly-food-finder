@@ -18,10 +18,6 @@ from flask_login import current_user, login_user, logout_user
 def index():
 	return render_template('base.html')
 
-@app.route('/map')
-def map():
-	return render_template('newmaps.html')
-
 @app.route('/new', methods=['GET', 'POST'])
 @app.route('/edit/<id>', methods=['GET', 'POST'])
 @login_required
@@ -407,15 +403,18 @@ def get_filtered_food_resource_data():
 		wic_offices=[i.serialize_food_resource() for i in wic_offices], 
 		zip_code=zip_code)
 
+@app.route('/map')
+def map():
+	return render_template('newmaps.html')
+
 @app.route('/_map')
 def address_food_resources():
-	zip_code = request.args.get('zipcode', 0, type=int)
-	addresses = Address.query.filter(Address.zip_code==zip_code).all()
-	food_resources = []
-	for address in addresses:
-		current_resource = FoodResource.query.filter_by(id=address.food_resource_id).first()
-		food_resources.append(current_resource)
-	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources[1:]])
+	zip_code = request.args.get('zip_code', 0, type=int)
+	food_resources = db.session.query(FoodResource) \
+		.join(FoodResource.address) \
+		.filter(Address.zip_code==zip_code) \
+		.order_by(FoodResource.name).all()
+	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
 
 @app.route('/_edit', methods=['GET', 'POST'])
 def save_page():
