@@ -12,25 +12,14 @@ $(document).ready(function() {
 	}); 
 
 	// Collapse all resources on admin resources page.
-	// "Collapse All" button pressed on admin resources page.
+	// Triggered when "Collapse All" button pressed on admin resources page.
 	$("#collapse-all-resources-button").click(function() {
 		hideAll("-table", "expand-food-resource-type");
 		hideAll("-table", "expand-food-resource");
 	}); 
 
 	// Remove a food resource without reloading page.
-	$("[id$='remove']").click(function() {
-		var id = $(this).attr('id');
-		var dashIndex = id.indexOf("-"); 
-		var foodResourceID = id.substring(0, dashIndex); 
-		$.getJSON($SCRIPT_ROOT + '/_remove', {
-        		id: foodResourceID
-        	},
-        	function(data) {
-        		hide("food-resource-" + foodResourceID);
-        		hide("food-resource-" + foodResourceID + "-table");
-        	});  
-	});	
+	removeFoodResource(); 
 
 	// Approves a food resource without reloading page.
 	$("[id$='approve']").click(function() {
@@ -48,25 +37,11 @@ $(document).ready(function() {
 
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource table.
-	$(".expand-food-resource-type").click(function() {
-		var id = $(this).attr('id');  
-		var prefix = "food-resource-type-expand-"; 
-		var start_index = prefix.length; 
-		var resource_type = id.substring(start_index); 
-		var table_to_expand = resource_type + "-table"; 		
-		toggleExpansion(table_to_expand, "expand-food-resource-type"); 
-	})
+	toggleAdminFoodResourceTypeVisibility(); 
 
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource information. 
-	$(".expand-food-resource").click(function() {
-		var id = $(this).attr('id');  
-		var prefix = "food-resource-expand-"; 
-		var start_index = prefix.length; 
-		var resource_id = id.substring(start_index); 
-		var table_to_expand = "food-resource-" + resource_id + "-table"; 		
-		toggleExpansion(table_to_expand, "expand-food-resource"); 
-	})
+	toggleAdminFoodResourceVisibility(); 
 
     $(".start-edit").click(function() {
 		CKEDITOR.disableAutoInline = true;
@@ -177,6 +152,48 @@ function showAll(idToShow, classToToggleExpandSymbol) {
 	});
 }
 
+// If an "Expand" button is pressed, either show or hide the associated
+// food resource table.
+function toggleAdminFoodResourceTypeVisibility() {
+	$(".expand-food-resource-type").click(function() {
+		var id = $(this).attr('id');  
+		var prefix = "food-resource-type-expand-"; 
+		var start_index = prefix.length; 
+		var resource_type = id.substring(start_index); 
+		var table_to_expand = resource_type + "-table"; 		
+		toggleExpansion(table_to_expand, "expand-food-resource-type"); 
+	})
+}
+
+// If an "Expand" button is pressed, either show or hide the associated
+// food resource information.
+function toggleAdminFoodResourceVisibility() {
+	$(".expand-food-resource").click(function() {
+		console.log("asdf!");
+		var id = $(this).attr('id');  
+		var prefix = "food-resource-expand-"; 
+		var start_index = prefix.length; 
+		var resource_id = id.substring(start_index); 
+		var table_to_expand = "food-resource-" + resource_id + "-table"; 		
+		toggleExpansion(table_to_expand, "expand-food-resource"); 
+	}) 
+}
+
+function removeFoodResource() {
+	$("[id$='remove']").click(function() {
+		var id = $(this).attr('id');
+		var dashIndex = id.indexOf("-"); 
+		var foodResourceID = id.substring(0, dashIndex); 
+		$.getJSON($SCRIPT_ROOT + '/_remove', {
+        		id: foodResourceID
+        	},
+        	function(data) {
+        		hide("food-resource-" + foodResourceID);
+        		hide("food-resource-" + foodResourceID + "-table");
+        	});  
+	});	
+}
+
 function clearTablesOfFoodResources() {
 	$(".admin-food-resource-type").remove(); 
 	$(".expand-food-resource-type").html("+");
@@ -186,7 +203,215 @@ function getNoResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural) {
 	var html = 
 	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">' +
 	'		<div class="no-resources-message">There are no ' 
-			+ resourceInfoLowercaseNamePlural + ' in the database.</div>' +
+			+ resourceInfoLowercaseNamePlural + ' to display.</div>' +
 	'</div>';
+	return html;
+}
+
+function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural, resourcesArray, daysOfWeek) {
+	var html = 
+	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">'; 
+
+	for (var i = 0; i < resourcesArray.length; i++) {
+		var resource = resourcesArray[i]; 
+		html += 
+		'		<div class="resource">' +
+
+		'			<!-- Resource header -->' + 
+		'			<div class= "row" id="food-resource-' + resource["id"] + '">' + 
+		'				<div class="small-1 columns expand-food-resource" id="food-resource-expand-' + resource["id"] + '">' + 
+		'					+' + 
+		'				</div>' + 
+		'				<div class="small-7 columns">' + 
+			 				resource["name"] + 
+		'				</div>' + 
+		'				<div class="small-2 columns">' + 
+		'					<a href="/edit/' + resource["id"] + '" class="food-resource-update-button">Edit</a>' + 
+		'				</div>' + 
+		'				<div class="small-2 columns">' + 
+		'					<div id="' + resource["id"] + '-remove" class="food-resource-update-button">Remove</div>' + 
+		'				</div>' + 
+		'			</div>' + 
+		'			<!-- Resource content -->' +  
+		'			<div class="row admin-food-resource" id="food-resource-' + resource["id"] + '-table">' + 
+		'				<div class="large-6 small-12 columns">' + 
+		'					<div class="row">' + 
+		'						<div class="small-3 columns">' + 
+		'							Name:' + 
+		'						</div>' + 
+		'						<div class="small-9 columns">' + 
+									resource["name"] + 
+		'						</div>' + 
+		'					</div>' + 
+		'					<div class="row">' + 
+		'						<div class="small-3 columns">' + 
+		'							Address:' + 
+		'						</div>' + 
+		'						<div class="small-9 columns">' + 
+									resource["address"]["line1"] +  
+		'							<br>'; 
+
+		if (resource["address"]["line2"]) {
+			html += 
+									resource["address"]["line2"] +  
+		'							<br>'; 
+		}
+
+		html += 
+									resource["address"]["city"] + ", " +
+									resource["address"]["state"] +  " " +
+									resource["address"]["zip_code"] +  
+		'						</div>' + 
+		'					</div>' + 
+		'					<div class="row">' + 
+		'						<div class="small-3 columns">' + 
+		'							Zip Code:' + 
+		'						</div>' + 
+		'						<div class="small-9 columns">' + 
+									resource["address"]["zip_code"] +  
+		'						</div>' + 
+		'					</div>' + 
+		'					<div class="row">' + 
+		'						<div class="small-3 columns">' + 
+		'							Phone Number:' + 
+		'						</div>' + 
+		'						<div class="small-9 columns">' + 
+									resource["phone_number"]["number"] +  
+		'						</div>' + 
+		'					</div>' + 
+		'					<div class="row">' + 
+		'						<div class="small-3 columns">' + 
+		'							Website:' + 
+		'						</div>' + 
+		'						<div class="small-9 columns">'; 
+		if (resource["url"]) {
+			html += 
+		'								<a href="' + resource["url"] + '">' + 
+			resource["url"] + '</a>'; 
+		} 
+		else {
+			html +=
+		'								None listed.'; 
+		}
+
+		html += 
+		'						</div>' + 
+		'					</div>' + 
+		'					<div class="row">' + 
+		'						<div class="small-3 columns">' + 
+		'							Description:' + 
+		'						</div>' + 
+		'						<div class="small-9 columns">' + 
+									resource["description"] + 
+		'						</div>' + 
+		'					</div>' + 
+		'					<div class="row">' + 
+		'						<div class="small-3 columns">' + 
+		'							Family and children?' + 
+		'						</div>' + 
+		'						<div class="small-9 columns">'; 
+
+		if (resource["is_for_family_and_children"] == true) {
+			html += 
+		'								Yes'; 
+		}
+		else {
+			html += 
+		'								No'; 
+		}
+
+		html += 
+		'						</div>' + 
+		'					</div>' + 
+		'					<div class="row">' + 
+		'						<div class="small-3 columns">' + 
+		'							Seniors?' + 
+		'						</div>' + 
+		'						<div class="small-9 columns">'; 
+
+		if (resource["is_for_seniors"] == true) {
+			html += 
+		'								Yes'; 
+		}
+		else {
+			html += 
+		'								No'; 
+		}
+		
+		html +=  
+		'						</div>' + 
+		'					</div>' + 
+		'					<div class="row">' + 
+		'						<div class="small-3 columns">' + 
+		'							Wheelchair accessible?' + 
+		'						</div>' + 
+		'						<div class="small-9 columns">'; 
+
+		if (resource["is_wheelchair_accessible"] == true) {
+			html += 
+		'								Yes'; 
+		}
+		else {
+			html += 
+		'								No';  
+		}
+		
+		html += 
+		'						</div>' + 
+		'					</div>' + 
+		'					<div class="row">' + 
+		'						<div class="small-3 columns">' + 
+		'							Accepts SNAP?' + 
+		'						</div>' + 
+		'						<div class="small-9 columns">'; 
+
+		if (resource["is_accepts_snap"] == true) {
+			html += 
+		'								Yes';  
+		}
+		else {
+			html += 
+		'								No'; 
+		}
+
+		html += 
+		'						</div>' + 
+		'					</div>' + 
+		'				</div>' + 
+		'				<div class="large-6 small-12 columns">' + 
+		'					<div class="row">' + 
+		'						<div class="small-3 columns">' + 
+		'							Hours:' + 
+		'						</div>' + 
+		'						<div class="small-9 columns">'; 
+
+		for (var j = 0; j < daysOfWeek.length; j++) {
+			var day = daysOfWeek[j];
+			html += 
+			'								<div class="row">' + 
+			'									<div class="small-6 columns">' + 
+													day["name"] + 
+			'									</div>' + 
+			'									<div class="small-6 columns">';  
+			for (var k = 0; k < resource["timeslots"].length; k++) {
+				var timeslot = resource["timeslots"][k]; 
+				if (timeslot["day_of_week"] == day["index"]) {
+					html += timeslot["start_time"] + " - " + timeslot["end_time"];
+				}
+			}
+			html += 
+			'									</div>' + 
+			'								</div>'; 
+		} 
+
+		html += 
+		'						</div>' + 
+		'					</div>' + 
+		'				</div>' + 
+		'			</div>' + 
+		'		</div>'; // resource
+	}
+
+	html += '</div>';
 	return html;
 }

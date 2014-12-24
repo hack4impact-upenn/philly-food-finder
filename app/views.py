@@ -383,6 +383,25 @@ def invite():
 def invite_sent():
 	return render_template('invite_sent.html')
 
+@app.route("/_admin_remove_filters")
+def get_all_food_resource_data():
+	farmers_markets = FoodResource.query.filter_by(location_type="FARMERS_MARKET", is_approved=True).order_by(FoodResource.name).all()
+	meals_on_wheels = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS", is_approved=True).order_by(FoodResource.name).all()
+	food_cupboards = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD", is_approved=True).order_by(FoodResource.name).all()
+	share_host_sites = FoodResource.query.filter_by(location_type="SHARE", is_approved=True).order_by(FoodResource.name).all()
+	soup_kitchens = FoodResource.query.filter_by(location_type="SOUP_KITCHEN", is_approved=True).order_by(FoodResource.name).all()
+	wic_offices = FoodResource.query.filter_by(location_type="WIC_OFFICE", is_approved=True).order_by(FoodResource.name).all()
+
+	return jsonify(farmers_markets=[i.serialize_food_resource() for i in 
+			farmers_markets],
+		meals_on_wheels=[i.serialize_food_resource() for i in meals_on_wheels],
+		food_cupboards=[i.serialize_food_resource() for i in food_cupboards],
+		share_host_sites=[i.serialize_food_resource() for i in 
+			share_host_sites],
+		soup_kitchens=[i.serialize_food_resource() for i in soup_kitchens],
+		wic_offices=[i.serialize_food_resource() for i in wic_offices], 
+		days_of_week=days_of_week)
+
 @app.route('/_admin_apply_filters')
 def get_filtered_food_resource_data():
 	# Collect boolean paramaters passed via JSON.
@@ -503,7 +522,7 @@ def get_filtered_food_resource_data():
 			share_host_sites],
 		soup_kitchens=[i.serialize_food_resource() for i in soup_kitchens],
 		wic_offices=[i.serialize_food_resource() for i in wic_offices], 
-		zip_code=zip_code)
+		days_of_week=days_of_week)
 
 @app.route('/map')
 def map():

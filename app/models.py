@@ -29,13 +29,18 @@ class TimeSlot(db.Model):
 	end_time = db.Column(db.Time)
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
-	def serialize_timeslot(self):
-		return {
+	def serialize_timeslot(self, is_military_time=True):
+		data = {
 			'id': self.id,
 			'day_of_week': self.day_of_week,
-			'start_time': self.start_time.isoformat(),
-			'end_time': self.end_time.isoformat()
 		}
+		if is_military_time:
+			data["start_time"] = self.start_time.isoformat()
+			data["end_time"] = self.end_time.isoformat()
+		else:
+			data["start_time"] = self.start_time.strftime('%I:%M %p')
+			data["end_time"] = self.end_time.strftime('%I:%M %p')
+		return data
 
 # Represents a start and end month for a resource. 
 # For example OpenMonthPair(3,5) means the resource is open from March to May.
@@ -116,7 +121,7 @@ class FoodResource(db.Model):
 			'exceptions': self.exceptions, 
 			'description': self.description,
 			'location_type': self.location_type, 
-			'timeslots': [i.serialize_timeslot() for i in self.timeslots], 
+			'timeslots': [i.serialize_timeslot(False) for i in self.timeslots], 
 			'address': self.address.serialize_address(),
 			'is_for_family_and_children': self.is_for_family_and_children, 
 			'is_for_seniors': self.is_for_seniors, 

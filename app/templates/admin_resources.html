@@ -151,7 +151,7 @@
 				<div class="large-6 small-12 columns">
 					<div class="row">
 						<div class="small-3 columns">
-							Hours: <!--{{ resource.timeslots }}-->
+							Hours: 
 						</div>
 						<div class="small-9 columns">
 							{% for day in days_of_week %}
@@ -225,7 +225,7 @@
 		</div>
 		<div id="{{ resource_info.id }}-table" class="admin-food-resource-type">
 			{% if not resources[resource_info.id] %}
-				<div class="no-resources-message">There are no {{ resource_info.lowercase_name }} in the database.</div>
+				<div class="no-resources-message">There are no {{ resource_info.lowercase_name }} to display.</div>
 			{% endif %}
 
 			{% for resource in resources[resource_info.id] %}
@@ -446,39 +446,82 @@
         		has_accepts_snap_filter: hasAcceptsSnapFilter
         	},
         	function(data) {
-        		console.log(data["farmers_markets"]); 
-        		console.log(data["meals_on_wheels"]); 
-        		console.log(data["food_cupboards"]); 
-        		console.log(data["share_host_sites"]); 
-        		console.log(data["soup_kitchens"]);
-        		console.log(data["wic_offices"]); 
-        		console.log(data); 
         		clearTablesOfFoodResources();
 
         		{% for resource_info in resources_info %}
         			if (data["{{ resource_info.underscore_id }}"].length == 0) {
-        				var html = getNoResourcesHtml("{{ resource_info.id }}", "{{ resource_info.lowercase_name }}"); 
+        				var html = getNoResourcesHtml(
+        					"{{ resource_info.id }}", 
+        					"{{ resource_info.lowercase_name }}"); 
+        				$("#{{ resource_info.id }}-header").after(html);
+        			}
+        			else {
+        				var html = getResourcesHtml(
+        					"{{ resource_info.id }}", 
+        					"{{ resource_info.lowercase_name }}", 
+        					data["{{ resource_info.underscore_id }}"], 
+        					data["days_of_week"]);
         				$("#{{ resource_info.id }}-header").after(html);
         			}
         		{% endfor %}
 
         		// Hide all food resource tables initially.
 				$(".admin-food-resource-type").hide(); 
-				$(".admin-food-resource").hide(); 
+				$(".admin-food-resource").hide();
 
+				// If an "Expand" button is pressed, either show or hide the associated
+				// food resource information.
+				toggleAdminFoodResourceVisibility();
+
+				// Remove a food resource without reloading page.
+				removeFoodResource();  
         	});  
 		}); 
 
 		$("#clear-filters-resources-button").click(function() {
-			clearTablesOfFoodResources();
+			$.getJSON($SCRIPT_ROOT + '/_admin_remove_filters', {
+        	},
+        	function(data) {
+        		clearTablesOfFoodResources();
 
-			// Clear checkboxes and text box.
-			$('#filter-by-families-and-children').attr('checked', false);
-			$('#filter-by-seniors').attr('checked', false);
-			$('#filter-by-wheelchair-accessible').attr('checked', false);
-			$('#filter-by-accepts-snap').attr('checked', false);
-			$("#zip-code").val("");
+        		{% for resource_info in resources_info %}
+        			if (data["{{ resource_info.underscore_id }}"].length == 0) {
+        				var html = getNoResourcesHtml(
+        					"{{ resource_info.id }}", 
+        					"{{ resource_info.lowercase_name }}"); 
+        				$("#{{ resource_info.id }}-header").after(html);
+        			}
+        			else {
+        				var html = getResourcesHtml(
+        					"{{ resource_info.id }}", 
+        					"{{ resource_info.lowercase_name }}", 
+        					data["{{ resource_info.underscore_id }}"], 
+        					data["days_of_week"]);
+        				$("#{{ resource_info.id }}-header").after(html);
+        			}
+        		{% endfor %}
+
+        		// Clear checkboxes and text box.
+				$('#filter-by-families-and-children').attr('checked', false);
+				$('#filter-by-seniors').attr('checked', false);
+				$('#filter-by-wheelchair-accessible').attr('checked', false);
+				$('#filter-by-accepts-snap').attr('checked', false);
+				$("#zip-code").val("");
+
+        		// Hide all food resource tables initially.
+				$(".admin-food-resource-type").hide(); 
+				$(".admin-food-resource").hide();
+
+				// If an "Expand" button is pressed, either show or hide the associated
+				// food resource information.
+				toggleAdminFoodResourceVisibility(); 
+
+				// Remove a food resource without reloading page.
+				removeFoodResource(); 
+        	});
 		}); 
+
+
 	}); 
 </script>
 
