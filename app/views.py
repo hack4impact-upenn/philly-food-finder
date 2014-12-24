@@ -134,10 +134,8 @@ def new(id = None):
 		possible_closing_times=get_possible_closing_times())
 
 #Allows non-admins to add food resources
-@app.route('/guest/add-resources', methods=['GET', 'POST'])
+@app.route('/propose-resource', methods=['GET', 'POST'])
 def guest_new_food_resource():
-	if current_user.is_authenticated():
-		return redirect(url_for('new'))
 	form = NonAdminAddNewFoodResourceForm(request.form)
 	timeslots = []
 	food_resource_type = ""
