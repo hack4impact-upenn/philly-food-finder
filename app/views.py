@@ -1,7 +1,7 @@
 from app import app, db, utils
 from utils import *
 from models import *
-from forms import AddNewFoodResourceForm, RequestNewFoodResourceForm
+from forms import AddNewFoodResourceForm, NonAdminAddNewFoodResourceForm
 from flask import render_template, flash, redirect, session, url_for, request, \
 	g, jsonify, current_app
 from flask.ext.login import login_user, logout_user, current_user, \
@@ -131,26 +131,128 @@ def new(id=None):
 
 	# If GET request is received or POST request fails due to invalid timeslots, 
 	# render the page. 
-    return render_template('add_resource.html', form=form, 
-        days_of_week=days_of_week, resources_info=resources_info_singular, 
-        additional_errors=additional_errors, title=title, timeslots=timeslots, 
-        food_resource_type=food_resource_type, 
-        possible_opening_times=get_possible_opening_times(), 
-        possible_closing_times=get_possible_closing_times())
+	return render_template('add_resource.html', form=form, 
+		days_of_week=days_of_week, resources_info=resources_info_singular, 
+		additional_errors=additional_errors, title=title, timeslots=timeslots, 
+		food_resource_type=food_resource_type, 
+		possible_opening_times=get_possible_opening_times(), 
+		possible_closing_times=get_possible_closing_times())
 
-@app.route('/admin')
+#Allows non-admins to add food resources
+@app.route('/propose-resource', methods=['GET', 'POST'])
+def guest_new_food_resource():
+	form = NonAdminAddNewFoodResourceForm(request.form)
+	timeslots = []
+	food_resource_type = ""
+
+	additional_errors = []
+	if request.method == 'POST' and form.validate(): 
+		# Checks if this guest has add resources in the past. If not,
+		# creates a new FoodResourceContact
+		guest_name = form.your_name.data
+		guest_email = form.your_email_address.data
+		guest_phone_number = form.your_phone_number.data
+
+		#Checks to see if this contact exists
+		contact = FoodResourceContact.query.filter_by(
+			email = guest_email, name = guest_name).first()
+
+		if(contact is None):
+			contact = FoodResourceContact(name = guest_name, email = guest_email,
+				phone_number = guest_phone_number)
+			db.session.add(contact)
+			db.session.commit()
+
+		food_resource_type = request.form['food-resource-type']
+
+		# Create the food resource's timeslots.
+		are_timeslots_valid = True
+		for i, day_of_week in enumerate(days_of_week): 
+			if (request.form[str(day_of_week['index']) + '-open-or-closed'] == "open"):
+				opening_time = request.form[str(day_of_week['index']) + '-opening-time']
+				start_time = get_time_from_string(opening_time)
+				closing_time = request.form[str(day_of_week['index']) + '-closing-time']
+				end_time = get_time_from_string(closing_time)
+				timeslot = TimeSlot(day_of_week=i, start_time=start_time, 
+					end_time=end_time)
+				timeslots.append(timeslot)
+
+				# Check that timeslot is valid.
+				if start_time >= end_time: 
+					are_timeslots_valid = False
+					additional_errors.append("Opening time must be before \
+						closing time.")
+				else:
+					db.session.add(timeslot)
+
+		# Create the food resource's remaining attributes. 
+		if are_timeslots_valid:
+
+			# Create food resource's address.
+			address = Address(line1 = form.address_line1.data, 
+				line2 = form.address_line2.data, 
+				city = form.address_city.data, 
+				state = form.address_state.data, 
+				zip_code = form.address_zip_code.data)
+			db.session.add(address)
+
+			# Create food resource's phone number.
+			phone_numbers = []
+			home_number = PhoneNumber(number = form.phone_number.data)
+			db.session.add(home_number)
+			phone_numbers.append(home_number)
+
+			# Create food resource and store all data in it.
+			food_resource = FoodResource(
+				name = form.name.data, 
+				phone_numbers = phone_numbers,
+				description = form.additional_information.data,
+				timeslots = timeslots,
+				address = address,
+				is_approved = False,
+				food_resource_contact = contact)
+
+			# Assign a type to the food resource. 
+			food_resource.location_type = request.form['food-resource-type']
+
+			# Commit all database changes. 
+			db.session.add(food_resource)
+			db.session.commit()
+			return redirect(url_for('post_guest_add'))
+
+	# If GET request is received or POST request fails due to invalid timeslots, 
+	# render the page. 
+	return render_template('guest_add_resource.html', form=form, 
+		days_of_week=days_of_week, resources_info=resources_info_singular, 
+		additional_errors=additional_errors, timeslots=timeslots, 
+		food_resource_type=food_resource_type, 
+		possible_opening_times=get_possible_opening_times(), 
+		possible_closing_times=get_possible_closing_times())
+
+@app.route('/_thank-you')
+def post_guest_add():
+	return render_template('thank_you.html')
+
+@app.route('/admin/manage-resources')
 @login_required
 def admin():
 	resources = {}
-	resources['farmers-markets'] = FoodResource.query.filter_by(location_type="FARMERS_MARKET").order_by(FoodResource.name).all()
-	resources['meals-on-wheels'] = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS").order_by(FoodResource.name).all()
-	resources['food-cupboards'] = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD")
-	resources['share-host-sites'] = FoodResource.query.filter_by(location_type="SHARE").order_by(FoodResource.name).all()
-	resources['soup-kitchens'] = FoodResource.query.filter_by(location_type="SOUP_KITCHEN").order_by(FoodResource.name).all()
-	resources['wic-offices'] = FoodResource.query.filter_by(location_type="WIC_OFFICE").order_by(FoodResource.name).all()
-	return render_template('admin_resources.html', 
+	resources['farmers-markets'] = FoodResource.query.filter_by(location_type="FARMERS_MARKET", is_approved=True).order_by(FoodResource.name).all()
+	resources['meals-on-wheels'] = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS", is_approved=True).order_by(FoodResource.name).all()
+	resources['food-cupboards'] = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD", is_approved=True).order_by(FoodResource.name).all()
+	resources['share-host-sites'] = FoodResource.query.filter_by(location_type="SHARE", is_approved=True).order_by(FoodResource.name).all()
+	resources['soup-kitchens'] = FoodResource.query.filter_by(location_type="SOUP_KITCHEN", is_approved=True).order_by(FoodResource.name).all()
+	resources['wic-offices'] = FoodResource.query.filter_by(location_type="WIC_OFFICE", is_approved=True).order_by(FoodResource.name).all()
+
+	contacts = FoodResourceContact.query.all()
+
+	return render_template('admin_resources.html', food_resource_contacts = contacts,
 		resources_info=resources_info_plural, resources=resources, 
 		days_of_week=days_of_week)
+
+@app.route('/admin')
+def admin_redirect():
+	return redirect(url_for('admin'))
 
 @login_required
 def invite():
@@ -430,14 +532,29 @@ def save_page():
 def remove():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
+	contact = food_resource.food_resource_contact
+
+	if contact and len(contact.food_resource) <= 1:
+		db.session.delete(contact)
+
 	db.session.delete(food_resource)
 	db.session.commit()
 	return jsonify(message="success")
 
-#TODO: Remove this edit demo page once editing works on all others.
-@app.route('/admin/edit')
-def edit_content():
-	return render_template('edit_content.html', html_string = HTML.query.filter_by(page = 'edit-page').first())
+@app.route('/_approve')
+def approve():
+	id = request.args.get("id", type=int)
+	food_resource = FoodResource.query.filter_by(id=id).first()
+	contact = food_resource.food_resource_contact
+
+	if len(contact.food_resource) <= 1:
+		db.session.delete(contact)
+	else:
+		contact.food_resource.remove(food_resource)
+
+	food_resource.is_approved = True
+	db.session.commit()
+	return jsonify(message="success")
 
 @app.route('/about')
 def about():
@@ -450,3 +567,19 @@ def faq():
 @app.route('/contact')
 def contact():
 	return render_template('contact.html', html_string = HTML.query.filter_by(page = 'contact-page').first())
+
+@app.route('/resources/wic')
+def wic():
+	return render_template('wic_info.html', html_string = HTML.query.filter_by(page = 'wic-info-page').first())
+
+@app.route('/resources/snap')
+def snap():
+	return render_template('snap_info.html', html_string = HTML.query.filter_by(page = 'snap-info-page').first())
+
+@app.route('/resources/summer-meals')
+def summer_meals():
+	return render_template('summer_meals.html', html_string = HTML.query.filter_by(page = 'summer-info-page').first())
+
+@app.route('/resources/seniors')
+def seniors():
+	return render_template('seniors_info.html', html_string = HTML.query.filter_by(page = 'seniors-info-page').first())

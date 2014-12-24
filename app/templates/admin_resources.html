@@ -4,9 +4,181 @@
 {% block content %}
 <body id = "resource_p">
 	<div class="row">
-	    <h1 class="page-header" id="edit-resources-header">All Food Resources</h1>
-	    <hr align="center">
-  	</div>
+		<h1 class="page-header" id="edit-resources-header">All Food Resources</h1>
+    <hr align="center">
+  </div>
+
+  {% if food_resource_contacts|count > 0 %}
+
+  <div class="row">
+    <h2>Pending Food Resources</h2>
+    <hr align="center">
+  </div>
+  <div class="large-centered 
+                  large-8 medium-centered medium-8 small-8 small-centered
+                  columns resources">
+	{% for contact in food_resource_contacts %}
+	{% set name_without_spaces = contact.name.replace(" ", "-") %}
+	<div id="{{ name_without_spaces }}">
+		<div class="block-header" id="{{ name_without_spaces }}-header">
+			<table>
+			  <thead>
+			    <tr>
+			      <th width="200" class="expand-food-resource-type" id="food-resource-type-expand-{{ name_without_spaces }}">+</th>
+			      <th width="100%">{{ contact.name }}</th>	
+			    </tr>
+			  </thead>
+			</table>
+		</div>
+		<div id="{{ name_without_spaces }}-table" class="admin-food-resource-type">
+			{% for resource in contact.food_resource %}
+
+			<div class="resource"> 
+
+			<!-- Resource header --> 
+			  <div class= "row" id="food-resource-{{ resource.id }}">
+				<div class="small-1 columns expand-food-resource" id="food-resource-expand-{{ resource.id }}">
+					+
+				</div>
+				<div class="small-7 columns">
+					{{ resource.name }}
+				</div>
+				<div class="small-2 columns">
+					<div id="{{ resource.id }}-approve" class="food-resource-update-button">Approve</div>
+				</div>
+				<div class="small-2 columns">
+					<div id="{{ resource.id }}-remove" class="food-resource-update-button">Reject</div>
+				</div>
+			</div>
+			<!-- Resource content --> 
+			<div class="row admin-food-resource" id="food-resource-{{ resource.id }}-table">
+				<div class="large-6 small-12 columns">
+					<div class="row">
+						<div class="small-3 columns">
+							Name:
+						</div>
+						<div class="small-9 columns">
+							{{ resource.name }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Resource Type:
+						</div>
+						<div class="small-9 columns">
+							{{ resource.location_type }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Submitted By:
+						</div>
+						<div class="small-9 columns">
+							{% if contact.name %}
+									{{ contact.name }}
+								{% endif %}
+								{% if contact.name %}
+									<br>
+									{{ contact.email }}
+								{% endif %}
+								{% if contact.phone_number %}
+									<br>
+									{{ contact.phone_number }}
+								{% endif %}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Address:
+						</div>
+						<div class="small-9 columns">
+							{% if resource.address.line1 %}
+								{{ resource.address.line1 }}
+							{% endif %}
+							{% if resource.address.line2 %}
+								<br>
+								{{ resource.address.line2 }}
+							{% endif %}	
+							<br>
+							{{ resource.address.city }}, 
+							{{ resource.address.state }} 
+							{{ resource.address.zip_code }}
+						</div>
+					</div>
+
+
+					<div class="row">
+						<div class="small-3 columns">
+							Zip Code:
+						</div>
+						<div class="small-9 columns">
+							{{ resource.address.zip_code }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Phone Number:
+						</div>
+						<div class="small-9 columns">
+							{{ resource.phone_numbers[0].number }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Website:
+						</div>
+						<div class="small-9 columns">
+							{% if resource.url %}
+								<a href="{{ resource.url }}">{{ resource.url }}</a>
+							{% else %}
+								None listed.
+							{% endif %}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Description:
+						</div>
+						<div class="small-9 columns">
+							{% if resource.description %}
+								{{ resource.description }}
+							{% else %}
+								No description.
+							{% endif %}
+						</div>
+					</div>
+				</div>
+				<div class="large-6 small-12 columns">
+					<div class="row">
+						<div class="small-3 columns">
+							Hours: <!--{{ resource.timeslots }}-->
+						</div>
+						<div class="small-9 columns">
+							{% for day in days_of_week %}
+								<div class="row">
+									<div class="small-6 columns">
+										{{day['name']}}
+									</div>
+									<div class="small-6 columns">
+										{% for timeslot in resource.timeslots %}
+											{% if timeslot.day_of_week == day['index'] %}
+												{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
+											{% endif %}
+										{% endfor %}
+									</div>
+								</div>
+							{% endfor %}
+						</div> 
+					</div>
+				</div>
+			</div>
+		</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endfor %}
+</div> </div>
+{% endif %}
 
   	<!-- Filter admin resources by certain criteria -->
   	<div class="row">
