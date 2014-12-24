@@ -396,6 +396,7 @@
 </div> </div>
 </body>
 
+<script src="../static/js/variables.js"></script>
 <script>
 	$(document).ready(function() {
 
@@ -453,9 +454,17 @@
         		console.log(data["wic_offices"]); 
         		console.log(data); 
         		clearTablesOfFoodResources();
+
         		{% for resource_info in resources_info %}
-        			$("#{{ resource_info.id }}-header").after("Hello!");
+        			if (data["{{ resource_info.underscore_id }}"].length == 0) {
+        				var html = getNoResourcesHtml("{{ resource_info.id }}", "{{ resource_info.lowercase_name }}"); 
+        				$("#{{ resource_info.id }}-header").after(html);
+        			}
         		{% endfor %}
+
+        		// Hide all food resource tables initially.
+				$(".admin-food-resource-type").hide(); 
+				$(".admin-food-resource").hide(); 
 
         	});  
 		}); 

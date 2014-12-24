@@ -181,3 +181,12 @@ function clearTablesOfFoodResources() {
 	$(".admin-food-resource-type").remove(); 
 	$(".expand-food-resource-type").html("+");
 }
+
+function getNoResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural) {
+	var html = 
+	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">' +
+	'		<div class="no-resources-message">There are no ' 
+			+ resourceInfoLowercaseNamePlural + ' in the database.</div>' +
+	'</div>';
+	return html;
+}
