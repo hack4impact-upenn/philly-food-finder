@@ -90,35 +90,63 @@
 </div>
 
 <body id = "map_p">
-  <div class="row">
-    <h1 class="page-header" id="map-header">Philly Food Finder</h1>
-    <hr align="center">
-  </div>
     <div class="row">
-      <div class="large-centered 
-                  large-10 medium-centered medium-8 small-8 small-centered
-                  columns content">
-      <form method="post" id="geocoding_form">
-        <label for="address">Zip Code:</label>
-        <div class="input large-8 medium-8 small-12 columns">
-          <input type="text" id="address" name="address" />
-          <input type="submit" class="button radius tiny" value="Search" />
+        <h1 class="page-header" id="map-header">Philly Food Finder</h1>
+        <hr align="center">
+    </div>
+    <div class="row">
+        <div class="large-centered large-10 medium-centered medium-8 small-8 small-centered columns content">
+            <form method="post" id="geocoding_form">
+                <div class="small-12 columns">
+                    <label for="address">Zip Code:</label>
+                    <input type="text" id="address" name="address" />
+                </div>
+                <div class="small-12 columns">
+                    <input type="checkbox" id="map-filter-by-open-now"> Open now
+                    <input type="checkbox" id="map-filter-by-families-and-children"> Families and children
+                    <input type="checkbox" id="map-filter-by-seniors"> Seniors
+                </div>
+                <div class="small-12 columns">
+                    <input type="submit" class="button radius small" value="Search" id="map-search-button" />
+                    <input type="submit" class="button radius small" value="Clear Filters" id="map-filter-button" />
+                </div>
+            </form>      
+            <div id="map-container">
+                <div id="map"></div>
+            </div> 
+            <div id="map-key">
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mb_yellow.png" alt="Yellow Pin"/>
+                    Farmers' Markets
+                </div>
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mbb_blue.png" alt="Blue Pin"/>
+                    Food Cupboards
+                </div>
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mbb_green.png" alt="Green Pin"/>
+                    Meals on Wheels
+                </div>
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mbb_red.png" alt="Red Pin"/>
+                    SHARE Host Sites
+                </div>
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mbb_orange.png" alt="Orange Pin"/>
+                    Soup Kitchens
+                </div>
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mbb_purple.png" alt="Yellow Pin"/>
+                    WIC Offices
+                </div>
+            </div>
         </div>
-      </form>      
-      <div class="large-centered 
-                  large-10 medium-centered medium-8 small-8 small-centered
-                  columns">
-          <div id="map"></div>
-      </div> </div>
     </div> 
-  </div>
 </body>
-  {% endblock %}
+{% endblock %}
 
 
 <!-- FAQ -->
-  {% block content_faq %}
+{% block content_faq %}
 
-
-
-  {% endblock %}
+{% endblock %}

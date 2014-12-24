@@ -280,6 +280,10 @@
         		console.log(data["soup_kitchens"]);
         		console.log(data["wic_offices"]); 
         		console.log(data); 
+        		clearTablesOfFoodResources();
+        		{% for resource_info in resources_info %}
+        			$("#{{ resource_info.id }}-header").after("Hello!");
+        		{% endfor %}
 
         	});  
 		}); 
