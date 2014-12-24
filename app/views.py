@@ -22,68 +22,68 @@ def index():
 @app.route('/edit/<id>', methods=['GET', 'POST'])
 @login_required
 def new(id=None):
-    form = AddNewFoodResourceForm(request.form)
-    timeslots = []
-    food_resource_type = ""
+	form = AddNewFoodResourceForm(request.form)
+	timeslots = []
+	food_resource_type = ""
 
-    # Create a new food resource. 
-    if id is None:
-    	title = "Add New Food Resource"
-    	food_resource_type = "FARMERS_MARKET"
-    # Edit an existing food resource.
-    else:
-    	title = "Edit Food Resource"
+	# Create a new food resource. 
+	if id is None:
+		title = "Add New Food Resource"
+		food_resource_type = "FARMERS_MARKET"
+	# Edit an existing food resource.
+	else:
+		title = "Edit Food Resource"
 
-    # GET request.
-    if request.method == 'GET' and id is not None:
-    	# Populate form with information about existing food resource. 
-    	food_resource = FoodResource.query.filter_by(id=id).first()
-    	if food_resource is None:
-    		return render_template('404.html')
+	# GET request.
+	if request.method == 'GET' and id is not None:
+		# Populate form with information about existing food resource. 
+		food_resource = FoodResource.query.filter_by(id=id).first()
+		if food_resource is None:
+			return render_template('404.html')
 
-    	form.name.data = food_resource.name
-    	form.address_line1.data = food_resource.address.line1
-    	form.address_line2.data = food_resource.address.line2
-    	form.address_city.data = food_resource.address.city
-    	form.address_state.data = food_resource.address.state
-    	form.address_zip_code.data = food_resource.address.zip_code
-    	form.phone_number.data = food_resource.phone_numbers[0].number
-    	form.website.data = food_resource.url
-    	form.additional_information.data = food_resource.description
-    	form.is_for_family_and_children.data = food_resource.is_for_family_and_children
-    	form.is_for_seniors.data = food_resource.is_for_seniors
-    	form.is_wheelchair_accessible.data = food_resource.is_wheelchair_accessible
-    	form.is_accepts_snap.data = food_resource.is_accepts_snap
+		form.name.data = food_resource.name
+		form.address_line1.data = food_resource.address.line1
+		form.address_line2.data = food_resource.address.line2
+		form.address_city.data = food_resource.address.city
+		form.address_state.data = food_resource.address.state
+		form.address_zip_code.data = food_resource.address.zip_code
+		form.phone_number.data = food_resource.phone_numbers[0].number
+		form.website.data = food_resource.url
+		form.additional_information.data = food_resource.description
+		form.is_for_family_and_children.data = food_resource.is_for_family_and_children
+		form.is_for_seniors.data = food_resource.is_for_seniors
+		form.is_wheelchair_accessible.data = food_resource.is_wheelchair_accessible
+		form.is_accepts_snap.data = food_resource.is_accepts_snap
 
-    	# Fields that must be dyanamically updated using JavaScript.
-    	for timeslot in food_resource.timeslots:
-    		timeslots.append(timeslot)
-    	food_resource_type = food_resource.location_type
+		# Fields that must be dyanamically updated using JavaScript.
+		for timeslot in food_resource.timeslots:
+			timeslots.append(timeslot)
+		food_resource_type = food_resource.location_type
 
 	# POST request.
-    additional_errors = []
-    if request.method == 'POST' and form.validate(): 
-    	food_resource_type = request.form['food-resource-type']
+	additional_errors = []
+	if request.method == 'POST' and form.validate(): 
+		food_resource_type = request.form['food-resource-type']
 
-        # Create the food resource's timeslots.
-        are_timeslots_valid = True
-        for i, day_of_week in enumerate(days_of_week): 
-            if (request.form[str(day_of_week['index']) + '-open-or-closed'] == "open"):
-                opening_time = request.form[str(day_of_week['index']) + '-opening-time']
-                start_time = get_time_from_string(opening_time)
-                closing_time = request.form[str(day_of_week['index']) + '-closing-time']
-                end_time = get_time_from_string(closing_time)
-                timeslot = TimeSlot(day_of_week=i, start_time=start_time, 
-                    end_time=end_time)
-                timeslots.append(timeslot)
+		# Create the food resource's timeslots.
+		are_timeslots_valid = True
+		for i, day_of_week in enumerate(days_of_week): 
+			if (request.form[str(day_of_week['index']) + '-open-or-closed'] == "open"):
+				opening_time = request.form[str(day_of_week['index']) + '-opening-time']
+				start_time = get_time_from_string(opening_time)
+				closing_time = request.form[str(day_of_week['index']) + '-closing-time']
+				end_time = get_time_from_string(closing_time)
+				timeslot = TimeSlot(day_of_week=i, start_time=start_time, 
+					end_time=end_time)
+				timeslots.append(timeslot)
 
-                # Check that timeslot is valid.
-                if start_time >= end_time: 
-                    are_timeslots_valid = False
-                    additional_errors.append("Opening time must be before \
-                    	closing time.")
-                else:
-                    db.session.add(timeslot)
+				# Check that timeslot is valid.
+				if start_time >= end_time: 
+					are_timeslots_valid = False
+					additional_errors.append("Opening time must be before \
+						closing time.")
+				else:
+					db.session.add(timeslot)
 
 		# Create the food resource's remaining attributes. 
 		if are_timeslots_valid:
@@ -117,9 +117,9 @@ def new(id=None):
 				timeslots=timeslots,
 				address=address, 
 				is_for_family_and_children = form.is_for_family_and_children.data,
-    			is_for_seniors = form.is_for_seniors.data,
-    			is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
-    			is_accepts_snap = form.is_accepts_snap.data)
+				is_for_seniors = form.is_for_seniors.data,
+				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
+				is_accepts_snap = form.is_accepts_snap.data)
 
 			# Assign a type to the food resource. 
 			food_resource.location_type = request.form['food-resource-type']
