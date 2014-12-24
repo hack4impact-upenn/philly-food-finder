@@ -1,0 +1,342 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+<body id = "add_p">
+  <div class="row">
+      <h1 class="page-header">{{ title }}</h1>
+      <hr align="center">
+  </div>
+
+	<form action="" method="POST" role="form" name="submit_food_resource">
+	    {{ form.hidden_tag() }}
+
+		<!-- Guest Name -->
+		{% set field = form.your_name %}
+	    <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ field.label }}
+		        	<dd class="error">{{ field()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		<!-- Guest Email -->
+		{% set field = form.your_email_address %}
+	    <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ field.label }}
+		        	<dd class="error">{{ field()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		<!-- Guest Phone -->
+		{% set field = form.your_phone_number %}
+	    <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ field.label }}
+		        	<dd class="error">{{ field()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+	    <!-- Food Resource Name -->
+	    <div class="row">
+		    <div class="large-8 medium-6 medium-centered small-12 columns large-centered 
+		    	medium-centered">
+		        	{% if additional_errors %}
+		                {% for e in additional_errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+		      	</label>
+		    </div>
+		</div>
+
+	   <!-- Food Resource Type -->
+	    {% set field = form.name %}
+	    <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ form.name.label }}
+		      		<dd class="error">{{ form.name()|safe }}
+		            {% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+	            </label>
+			</div>
+		</div>
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		    	<label>Food Resource Type
+			    	<select name='food-resource-type' id="option-title">
+			    		{% for resource_info in resources_info %}
+						 	<option value="{{ resource_info.enum }}">
+								{{ resource_info.name }}
+							</option>
+						{% endfor %}
+			    	</select>
+		      	</label>
+		    </div>
+	  	</div>
+
+
+		<!-- Address Line 1 -->
+		{% set field = form.address_line1 %}
+	    <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ form.address_line1.label }}
+		        	<dd class="error">{{ form.address_line1()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+
+	  <!-- Address Line 2 -->
+		{% set field = form.address_line2 %}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ form.address_line2.label }}
+		        	<dd class="error">{{ form.address_line2()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		{% set field = form.address_city %}
+		<div class="row">
+			<div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ form.address_city.label }}
+		        	<dd class="error">{{ form.address_city()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		{% set field = form.address_state %}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ form.address_state.label }}
+		        	<dd class="error">{{ form.address_state()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		{% set field = form.address_zip_code %}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ form.address_zip_code.label }}
+		        	<dd class="error">{{ form.address_zip_code()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		{% set field = form.phone_number %}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ form.phone_number.label }}
+		        	<dd class="error">{{ form.phone_number()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		{% set field = form.website %}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ form.website.label }}
+		        	<dd class="error">{{ form.website()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>Days/Hours of Operation
+				</label>
+			</div>
+		</div>
+
+		{% for day_of_week in days_of_week %}
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+	      		<div class="large-4 small-4 columns" id="middle-padding-section">
+	      			<label>{{ day_of_week.name }}
+				    	<select name='{{ day_of_week.index }}-open-or-closed' class='open-or-closed'>
+				    		<option value="closed">Closed</option>
+							<option value="open">Open</option>
+				    	</select>
+	      			</label>
+	      		</div>
+	      		<div class="large-4 small-4 columns {{ day_of_week.index }}-time-picker" id="middle-padding-section">
+	      			<label>Opens at
+				    	<select name='{{ day_of_week.index }}-opening-time'>
+				    		{% for time in possible_opening_times %}
+				    			<option value="{{ time.strftime('%H') }}:{{ time.strftime('%M') }}">
+				    				{{ time.strftime('%I') }}:{{ time.strftime('%M') }} {{ time.strftime('%p') }}
+				    			</option>
+				    		{% endfor %}
+				    	</select>
+	      			</label>
+	      		</div>
+	      		<div class="large-4 small-4 columns {{ day_of_week.index }}-time-picker" id="middle-padding-section">
+	      			<label>Closes at
+				    	<select name='{{ day_of_week.index }}-closing-time'>
+				    		{% for time in possible_closing_times %}
+				    			<option value="{{ time.strftime('%H') }}:{{ time.strftime('%M') }}">
+				    				{{ time.strftime('%I') }}:{{ time.strftime('%M') }} {{ time.strftime('%p') }}
+				    			</option>
+				    		{% endfor %}
+				    	</select>
+	      			</label>
+	      		</div>
+	   	  </div>
+		</div>
+
+		{% endfor %}
+
+		{% set field = form.additional_information %}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered" id="top-padding-section">
+		      	<label>{{ form.additional_information.label }}
+		        	<dd class="error">{{ form.additional_information()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+		      	</label>
+		    </div>
+		</div>
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered" id="bottom-padding-section">
+	          <input type=submit class="button radius small" value=Submit>
+		    </div>
+		</div>
+	</form>
+</body>
+
+<script>
+	$(document).ready(function() {
+
+		// Set food resource timeslots.
+		var dayOfWeekId, openOrClosedSelectorName, openingTimeSelectorName, 
+			closingTimeSelectorName; 
+
+		{% for timeslot in timeslots %}
+			dayOfWeekId = {{ timeslot.day_of_week }};
+			openingTimeString = "{{ timeslot.start_time.strftime('%H') }}"
+				+ ":" + "{{ timeslot.start_time.strftime('%M') }}";
+			closingTimeString = "{{ timeslot.end_time.strftime('%H') }}"
+				+ ":" + "{{ timeslot.end_time.strftime('%M') }}";
+
+			openOrClosedSelectorName = dayOfWeekId + "-open-or-closed";
+			openingTimeSelectorName = dayOfWeekId + "-opening-time";
+			closingTimeSelectorName = dayOfWeekId + "-closing-time";
+
+			$('[name="' + openOrClosedSelectorName + '"]').val("open");
+			$('[name="' + openingTimeSelectorName + '"]').val(openingTimeString);
+			$('[name="' + closingTimeSelectorName + '"]').val(closingTimeString);
+			$("." + dayOfWeekId + "-time-picker").show();
+		{% endfor %}
+
+		var foodResourceTypeString = "{{ food_resource_type }}";
+		$('[name="food-resource-type"]').val(foodResourceTypeString);
+	}); 
+</script>
+
+{% endblock %}
+

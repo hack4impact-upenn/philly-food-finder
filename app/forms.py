@@ -61,27 +61,22 @@ class AddNewFoodResourceForm(Form):
     def validate(self):
         return super(Form, self).validate()
 
-# Information about the person submitting the food resource for evaluation. 
+# All information from AddNewFoodResourceForm plus information 
+# about the person submitting the food resource for evaluation. 
 # Subclassed from 'AddNewFoodResourceForm'
-class RequestNewFoodResourceForm(AddNewFoodResourceForm):
-    your_first_name = TextField(
-        label = 'Your First Name', 
+class NonAdminAddNewFoodResourceForm(AddNewFoodResourceForm):
+    your_name = TextField(
+        label = 'Your Name', 
         validators = [
-            InputRequired("Please provide your first name."),
-            Length(0, 35)
-        ])
-    your_last_name = TextField(
-        label = 'Your Last Name', 
-        validators = [
-            InputRequired("Please provide your last name."),
-            Length(0, 35)
+            InputRequired("Please provide your name."),
+            Length(1, 150)
         ])
     your_email_address = TextField(
         label = 'Your Email Address', 
         validators = [
             InputRequired("Please provide an email address at which we can contact you."), 
             Email("Invalid email address."),
-            Length(1, 35)
+            Length(1, 255)
         ])
     your_phone_number = TextField(
         label = 'Your Phone Number', 
