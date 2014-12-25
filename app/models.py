@@ -88,12 +88,15 @@ class FoodResource(db.Model):
 	exceptions = db.Column(db.Text)
 	description = db.Column(db.Text)
 	location_type = db.Column(db.String(100))
+	address = db.relationship('Address', backref='food_resource', 
+		lazy='select', uselist=False)
+
+	# Hours of operation.
+	are_hours_available = db.Column(db.Boolean, default=False)
 	timeslots = db.relationship(
 		'TimeSlot', # One-to-many relationship (one Address with many TimeSlots).
 		backref='food_resource', # Declare a new property of the TimeSlot class.
 		lazy='select', uselist=True)
-	address = db.relationship('Address', backref='food_resource', 
-		lazy='select', uselist=False)
 
 	# Boolean fields
 	is_for_family_and_children = db.Column(db.Boolean, default=False)
@@ -120,13 +123,14 @@ class FoodResource(db.Model):
 			'open_month_pairs': [i.serialize_open_month_pair() for i in self.open_month_pairs],
 			'exceptions': self.exceptions, 
 			'description': self.description,
-			'location_type': self.location_type, 
-			'timeslots': [i.serialize_timeslot(False) for i in self.timeslots], 
+			'location_type': self.location_type,
 			'address': self.address.serialize_address(),
+			'are_hours_available': self.are_hours_available, 
+			'timeslots': [i.serialize_timeslot(False) for i in self.timeslots], 
 			'is_for_family_and_children': self.is_for_family_and_children, 
 			'is_for_seniors': self.is_for_seniors, 
 			'is_wheelchair_accessible': self.is_wheelchair_accessible, 
-			'is_accepts_snap': self.is_accepts_snap
+			'is_accepts_snap': self.is_accepts_snap 
 		}
 
 	def serialize_map_list(self):

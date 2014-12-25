@@ -68,9 +68,13 @@ $(document).ready(function() {
     	$("#editor1").attr("contenteditable","false");
       	});
 
-	// Hide all time-selectors iniially.
+	// Hide all open-and-close and time selectors iniially.
+	// Used on "Add New / Edit Resource" page.
 	$("[class$='-time-picker']").hide(); 
+	$(".open-or-closed-container").hide(); 
 
+	// Toggle visibility of time selectors.
+	// Used on "Add New / Edit Resource" page.
 	$('select.open-or-closed').on('change', function (e) {
 	    var optionSelected = $("option:selected", this);
 	    var valueSelected = this.value;
@@ -83,6 +87,18 @@ $(document).ready(function() {
 	    	$("." + dayOfWeek + "-time-picker").hide();
 	    }
 	});
+
+	// Toggle visibility of open-and-close selectors. 
+	// Used on "Add New / Edit Resource" page.
+	$('select#are-hours-available-picker').on('change', function (e) {
+	    var optionSelected = $("option:selected", this);
+	    var valueSelected = this.value;
+	    if (valueSelected == "yes") {
+	    	$(".open-or-closed-container").show();
+	    } else if (valueSelected == "no") {
+	    	$(".open-or-closed-container").hide();
+	    }
+	});	
 });
 
 /**
@@ -431,28 +447,36 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 							'Hours:' + 
 						'</div>' + 
 						'<div class="small-9 columns">'; 
-
-		// Display the food resource's hours of operation. 
-		for (var j = 0; j < daysOfWeek.length; j++) {
-			var day = daysOfWeek[j];
-			html += 
+						
+		// If available, display the food resource's hours of operation.			
+		if (resource["are_hours_available"] == true) {	 
+			for (var j = 0; j < daysOfWeek.length; j++) {
+				var day = daysOfWeek[j];
+				html += 
 							'<div class="row">' + 
 								'<div class="small-6 columns">' + 
 									day["name"] + 
 								'</div>' + 
-								'<div class="small-6 columns">';  
-			for (var k = 0; k < resource["timeslots"].length; k++) {
-				var timeslot = resource["timeslots"][k]; 
-				if (timeslot["day_of_week"] == day["index"]) {
-					html += 
+								'<div class="small-6 columns">';
+
+				for (var k = 0; k < resource["timeslots"].length; k++) {
+					var timeslot = resource["timeslots"][k]; 
+					if (timeslot["day_of_week"] == day["index"]) {
+						html += 
 									timeslot["start_time"] + " - " 
 										+ timeslot["end_time"];
+					}
 				}
-			}
-			html += 
+
+				html += 
 								'</div>' + 
 							'</div>'; 
-		} 
+			} 
+		}
+		else {
+			html += 
+							'No hours available.';
+		}
 
 		html += 
 						'</div>' + 
