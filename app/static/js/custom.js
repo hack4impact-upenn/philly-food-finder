@@ -169,7 +169,6 @@ function toggleAdminFoodResourceTypeVisibility() {
 // food resource information.
 function toggleAdminFoodResourceVisibility() {
 	$(".expand-food-resource").click(function() {
-		console.log("asdf!");
 		var id = $(this).attr('id');  
 		var prefix = "food-resource-expand-"; 
 		var start_index = prefix.length; 
@@ -196,8 +195,9 @@ function removeFoodResource() {
         		$("#all-num-resources").html(currentNumResources);
 
         		// Reduce individual number of food resources.
-        		var individualNumResources = $("#food-resource-" + foodResourceId)
-        			.parent().parent().parent().find(".total-num-resources").html();
+        		var individualNumResources = $("#food-resource-" 
+        			+ foodResourceId).parent().parent().parent()
+        			.find(".total-num-resources").html();
         		individualNumResources--; 
         		$("#food-resource-" + foodResourceId).parent().parent().parent()
         			.find(".total-num-resources").html(individualNumResources); 
@@ -210,7 +210,6 @@ function removeFoodResource() {
         			var foodResourceType = header.attr("id")
         				.substring(0, headerIndex);
         			var html = getNoResourcesHtml(foodResourceType);
-        			console.log(html); 
         			header.after(html);
         		}
         	});  
@@ -242,7 +241,8 @@ function getNoResourcesHtml(resourceInfoId) {
 	return html;
 }
 
-function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural, resourcesArray, daysOfWeek) {
+function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural, 
+	resourcesArray, daysOfWeek) {
 	var html = 
 	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">';
 
@@ -252,22 +252,27 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural, resou
 		'		<div class="resource">' +
 
 		'			<!-- Resource header -->' + 
-		'			<div class= "row" id="food-resource-' + resource["id"] + '">' + 
-		'				<div class="small-1 columns expand-food-resource" id="food-resource-expand-' + resource["id"] + '">' + 
+		'			<div class= "row" id="food-resource-' + resource["id"] + 
+			'">' + 
+		'				<div class="small-1 columns expand-food-resource" ' + 
+			"id="food-resource-expand-' + resource["id"] + '">' + 
 		'					+' + 
 		'				</div>' + 
 		'				<div class="small-7 columns">' + 
 			 				resource["name"] + 
 		'				</div>' + 
 		'				<div class="small-2 columns">' + 
-		'					<a href="/edit/' + resource["id"] + '" class="food-resource-update-button">Edit</a>' + 
+		'					<a href="/edit/' + resource["id"] + '" ' + "
+			'class="food-resource-update-button">Edit</a>' + 
 		'				</div>' + 
 		'				<div class="small-2 columns">' + 
-		'					<div id="' + resource["id"] + '-remove" class="food-resource-update-button">Remove</div>' + 
+		'					<div id="' + resource["id"] + '-remove" ' + 
+			'class="food-resource-update-button">Remove</div>' + 
 		'				</div>' + 
 		'			</div>' + 
 		'			<!-- Resource content -->' +  
-		'			<div class="row admin-food-resource" id="food-resource-' + resource["id"] + '-table">' + 
+		'			<div class="row admin-food-resource" id="food-resource-'
+			+ resource["id"] + '-table">' + 
 		'				<div class="large-6 small-12 columns">' + 
 		'					<div class="row">' + 
 		'						<div class="small-3 columns">' + 
@@ -423,14 +428,15 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural, resou
 			var day = daysOfWeek[j];
 			html += 
 			'								<div class="row">' + 
-			'									<div class="small-6 columns">' + 
-													day["name"] + 
+			'									<div class="small-6 columns">' 
+													+ day["name"] + 
 			'									</div>' + 
 			'									<div class="small-6 columns">';  
 			for (var k = 0; k < resource["timeslots"].length; k++) {
 				var timeslot = resource["timeslots"][k]; 
 				if (timeslot["day_of_week"] == day["index"]) {
-					html += timeslot["start_time"] + " - " + timeslot["end_time"];
+					html += timeslot["start_time"] + " - " 
+					+ timeslot["end_time"];
 				}
 			}
 			html += 

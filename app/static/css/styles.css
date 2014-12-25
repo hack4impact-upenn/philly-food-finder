@@ -397,7 +397,7 @@ input[type=checkbox] {
 }
 
 .pin-definition img {
-  width: 20px; /* you can use % */
+  width: 20px;
   height: auto;
 }
 
