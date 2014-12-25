@@ -183,17 +183,36 @@ function removeFoodResource() {
 	$("[id$='remove']").click(function() {
 		var id = $(this).attr('id');
 		var dashIndex = id.indexOf("-"); 
-		var foodResourceID = id.substring(0, dashIndex); 
+		var foodResourceId = id.substring(0, dashIndex); 
 		$.getJSON($SCRIPT_ROOT + '/_remove', {
-        		id: foodResourceID
+        		id: foodResourceId
         	},
         	function(data) {
-        		hide("food-resource-" + foodResourceID);
-        		hide("food-resource-" + foodResourceID + "-table");
+        		hide("food-resource-" + foodResourceId);
+        		hide("food-resource-" + foodResourceId + "-table");
 
-        		// Reduce number of food resources.
+        		// Reduce total number of food resources.
         		var currentNumResources = $("#all-num-resources").html() - 1;
-        		$("#all-num-resources").html(currentNumResources); 
+        		$("#all-num-resources").html(currentNumResources);
+
+        		// Reduce individual number of food resources.
+        		var individualNumResources = $("#food-resource-" + foodResourceId)
+        			.parent().parent().parent().find(".total-num-resources").html();
+        		individualNumResources--; 
+        		$("#food-resource-" + foodResourceId).parent().parent().parent()
+        			.find(".total-num-resources").html(individualNumResources); 
+
+        		if (individualNumResources == 0) {
+        			var header = $("#food-resource-" + foodResourceId)
+        				.parent().parent().parent()
+        				.find(".admin-food-resource-type-header");
+        			var headerIndex = header.attr("id").indexOf("-header"); 
+        			var foodResourceType = header.attr("id")
+        				.substring(0, headerIndex);
+        			var html = getNoResourcesHtml(foodResourceType);
+        			console.log(html); 
+        			header.after(html);
+        		}
         	});  
 	});	
 }
@@ -202,16 +221,23 @@ function setTotalNumResources(num) {
 	$("#all-num-resources").html(num);
 }
 
+function getIndividualNumResources(resourceType) {
+	return $("#" + resourceType + "-num-resources").html();
+}
+
+function setIndividualNumResources(num, resourceType) {
+	$("#" + resourceType + "-num-resources").html(num);
+}
+
 function clearTablesOfFoodResources() {
 	$(".admin-food-resource-type").remove(); 
 	$(".expand-food-resource-type").html("+");
 }
 
-function getNoResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural) {
+function getNoResourcesHtml(resourceInfoId) {
 	var html = 
 	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">' +
-	'		<div class="no-resources-message">There are no ' 
-			+ resourceInfoLowercaseNamePlural + ' to display.</div>' +
+	'		<div class="no-resources-message">None to display.</div>' +
 	'</div>';
 	return html;
 }

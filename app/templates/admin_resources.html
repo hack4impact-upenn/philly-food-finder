@@ -223,19 +223,20 @@
 
 	{% for resource_info in resources_info %}
 	<div id="{{ resource_info.id }}">
-		<div class="block-header" id="{{ resource_info.id }}-header">
+		<div class="block-header admin-food-resource-type-header" id="{{ resource_info.id }}-header">
 			<table>
-			  <thead>
-			    <tr>
-			      <th width="200" class="expand-food-resource-type" id="food-resource-type-expand-{{ resource_info.id }}">+</th>
-			      <th width="100%">{{ resource_info.name }}</th>	
-			    </tr>
-			  </thead>
+			  	<thead>
+			    	<tr>
+			    		{% set total_num_resources = resources[resource_info.id]|count %}
+			      		<th width="200" class="expand-food-resource-type" id="food-resource-type-expand-{{ resource_info.id }}">+</th>
+			      		<th width="100%">{{ resource_info.name }} (<div class="total-num-resources" id="{{ resource_info.id }}-num-resources">{{ total_num_resources}}</div>) </th>	
+			    	</tr>
+			  	</thead>
 			</table>
 		</div>
 		<div id="{{ resource_info.id }}-table" class="admin-food-resource-type">
 			{% if not resources[resource_info.id] %}
-				<div class="no-resources-message">There are no {{ resource_info.lowercase_name }} to display.</div>
+				<div class="no-resources-message">None to display.</div>
 			{% endif %}
 
 			{% for resource in resources[resource_info.id] %}
@@ -247,7 +248,7 @@
 					+
 				</div>
 				<div class="small-7 columns">
-					{{ resource.name }} 
+					{{ resource.name }}
 				</div>
 				<div class="small-2 columns">
 					<a href="{{ url_for('new', id=resource.id) }}" class="food-resource-update-button">Edit</a>
@@ -406,7 +407,6 @@
 </div> </div>
 </body>
 
-<script src="../static/js/variables.js"></script>
 <script>
 	$(document).ready(function() {
 
@@ -417,7 +417,6 @@
 			var hasWheelchairAccessibleFilter = 0; // FALSE
 			var hasAcceptsSnapFilter = 0; // FALSE
 
-			//clearTablesOfFoodResources();
 			// Check that zip code is properly formed.
 			var regex = /^(\d{5})?$/; // 5-digit number or an empty string.
 			var zipCode = $("#zip-code").val().trim(); 
@@ -462,18 +461,24 @@
         		{% for resource_info in resources_info %}
         			if (data["{{ resource_info.underscore_id }}"].length == 0) {
         				var html = getNoResourcesHtml(
-        					"{{ resource_info.id }}", 
-        					"{{ resource_info.lowercase_name }}"); 
+        					"{{ resource_info.id }}"); 
         				$("#{{ resource_info.id }}-header").after(html);
+
+        				// Set number of filtered resources to be 0.
+        				setIndividualNumResources(0, "{{ resource_info.id }}");
         			}
         			else {
-        				totalNumResources += data["{{ resource_info.underscore_id }}"].length; 
+        				totalNumResources += data["{{ resource_info.underscore_id }}"].length;
         				var html = getResourcesHtml(
         					"{{ resource_info.id }}", 
         					"{{ resource_info.lowercase_name }}", 
         					data["{{ resource_info.underscore_id }}"], 
         					data["days_of_week"]);
         				$("#{{ resource_info.id }}-header").after(html);
+
+        				// Update number of filtered resources. 
+        				var individualNumResources = data["{{ resource_info.underscore_id }}"].length;
+        				setIndividualNumResources(individualNumResources, "{{ resource_info.id }}"); 
         			}
         		{% endfor %}
 
@@ -503,9 +508,11 @@
         		{% for resource_info in resources_info %}
         			if (data["{{ resource_info.underscore_id }}"].length == 0) {
         				var html = getNoResourcesHtml(
-        					"{{ resource_info.id }}", 
-        					"{{ resource_info.lowercase_name }}"); 
+        					"{{ resource_info.id }}"); 
         				$("#{{ resource_info.id }}-header").after(html);
+
+        				// Set number of filtered resources to be 0.
+        				setIndividualNumResources(0, "{{ resource_info.id }}");
         			}
         			else {
         				totalNumResources += data["{{ resource_info.underscore_id }}"].length; 
@@ -515,6 +522,10 @@
         					data["{{ resource_info.underscore_id }}"], 
         					data["days_of_week"]);
         				$("#{{ resource_info.id }}-header").after(html);
+
+        				// Update number of filtered resources. 
+        				var individualNumResources = data["{{ resource_info.underscore_id }}"].length;
+        				setIndividualNumResources(individualNumResources, "{{ resource_info.id }}"); 
         			}
         		{% endfor %}
 
