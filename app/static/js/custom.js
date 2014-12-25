@@ -246,210 +246,220 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 	var html = 
 	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">';
 
+	// Iterate through all food resources in the array.
 	for (var i = 0; i < resourcesArray.length; i++) {
 		var resource = resourcesArray[i]; 
 		html += 
-		'		<div class="resource">' +
+		'<div class="resource">' +
 
-		'			<!-- Resource header -->' + 
-		'			<div class= "row" id="food-resource-' + resource["id"] + 
-			'">' + 
-		'				<div class="small-1 columns expand-food-resource" ' + 
-			"id="food-resource-expand-' + resource["id"] + '">' + 
-		'					+' + 
-		'				</div>' + 
-		'				<div class="small-7 columns">' + 
-			 				resource["name"] + 
-		'				</div>' + 
-		'				<div class="small-2 columns">' + 
-		'					<a href="/edit/' + resource["id"] + '" ' + "
-			'class="food-resource-update-button">Edit</a>' + 
-		'				</div>' + 
-		'				<div class="small-2 columns">' + 
-		'					<div id="' + resource["id"] + '-remove" ' + 
-			'class="food-resource-update-button">Remove</div>' + 
-		'				</div>' + 
-		'			</div>' + 
-		'			<!-- Resource content -->' +  
-		'			<div class="row admin-food-resource" id="food-resource-'
-			+ resource["id"] + '-table">' + 
-		'				<div class="large-6 small-12 columns">' + 
-		'					<div class="row">' + 
-		'						<div class="small-3 columns">' + 
-		'							Name:' + 
-		'						</div>' + 
-		'						<div class="small-9 columns">' + 
-									resource["name"] + 
-		'						</div>' + 
-		'					</div>' + 
-		'					<div class="row">' + 
-		'						<div class="small-3 columns">' + 
-		'							Address:' + 
-		'						</div>' + 
-		'						<div class="small-9 columns">' + 
-									resource["address"]["line1"] +  
-		'							<br>'; 
+			'<!-- Resource header -->' + 
+			'<div class= "row" id="food-resource-' + resource["id"] + '">' + 
+				'<div class="small-1 columns expand-food-resource" ' + 
+					'id="food-resource-expand-' + resource["id"] + '">' + 
+					'+' + 
+				'</div>' + 
+				'<div class="small-7 columns">' + 
+					resource["name"] + 
+				'</div>' + 
+				'<div class="small-2 columns">' + 
+					'<a href="/edit/' + resource["id"] + '" ' + 
+						'class="food-resource-update-button">Edit</a>' + 
+				'</div>' + 
+				'<div class="small-2 columns">' + 
+					'<div id="' + resource["id"] + '-remove" ' + 
+						'class="food-resource-update-button">Remove</div>' + 
+					'</div>' + 
+			'</div>' + 
+			'<!-- Resource content -->' +  
+			'<div class="row admin-food-resource" id="food-resource-'
+				+ resource["id"] + '-table">' + 
+				'<div class="large-6 small-12 columns">' + 
+					'<div class="row">' + 
+						'<div class="small-3 columns">' + 
+							'Name:' + 
+						'</div>' + 
+						'<div class="small-9 columns">' + 
+							resource["name"] + 
+						'</div>' + 
+					'</div>' + 
+					'<div class="row">' + 
+						'<div class="small-3 columns">' + 
+							'Address:' + 
+						'</div>' + 
+						'<div class="small-9 columns">' + 
+							resource["address"]["line1"] +  
+							'<br>'; 
 
+		// Append line #2 of the food resource's address if it exists. 
 		if (resource["address"]["line2"]) {
 			html += 
-									resource["address"]["line2"] +  
-		'							<br>'; 
+							resource["address"]["line2"] +  
+							'<br>'; 
 		}
 
 		html += 
-									resource["address"]["city"] + ", " +
-									resource["address"]["state"] +  " " +
-									resource["address"]["zip_code"] +  
-		'						</div>' + 
-		'					</div>' + 
-		'					<div class="row">' + 
-		'						<div class="small-3 columns">' + 
-		'							Zip Code:' + 
-		'						</div>' + 
-		'						<div class="small-9 columns">' + 
-									resource["address"]["zip_code"] +  
-		'						</div>' + 
-		'					</div>' + 
-		'					<div class="row">' + 
-		'						<div class="small-3 columns">' + 
-		'							Phone Number:' + 
-		'						</div>' + 
-		'						<div class="small-9 columns">' + 
-									resource["phone_number"]["number"] +  
-		'						</div>' + 
-		'					</div>' + 
-		'					<div class="row">' + 
-		'						<div class="small-3 columns">' + 
-		'							Website:' + 
-		'						</div>' + 
-		'						<div class="small-9 columns">'; 
+							resource["address"]["city"] + ", " +
+							resource["address"]["state"] +  " " +
+							resource["address"]["zip_code"] +  
+						'</div>' + 
+					'</div>' + 
+					'<div class="row">' + 
+						'<div class="small-3 columns">' + 
+							'Zip Code:' + 
+						'</div>' + 
+						'<div class="small-9 columns">' + 
+							resource["address"]["zip_code"] +  
+						'</div>' + 
+					'</div>' + 
+					'<div class="row">' + 
+						'<div class="small-3 columns">' + 
+							'Phone Number:' + 
+						'</div>' + 
+						'<div class="small-9 columns">' + 
+							resource["phone_number"]["number"] +  
+						'</div>' + 
+					'</div>' + 
+					'<div class="row">' + 
+						'<div class="small-3 columns">' + 
+							'Website:' + 
+						'</div>' + 
+						'<div class="small-9 columns">';
+
+		// Append URL of the food resource if it exists. 
 		if (resource["url"]) {
 			html += 
-		'								<a href="' + resource["url"] + '">' + 
-			resource["url"] + '</a>'; 
+							'<a href="' + resource["url"] + '">' + 
+								resource["url"] + '</a>'; 
 		} 
 		else {
 			html +=
-		'								None listed.'; 
+							'None listed.'; 
 		}
 
 		html += 
-		'						</div>' + 
-		'					</div>' + 
-		'					<div class="row">' + 
-		'						<div class="small-3 columns">' + 
-		'							Description:' + 
-		'						</div>' + 
-		'						<div class="small-9 columns">' + 
-									resource["description"] + 
-		'						</div>' + 
-		'					</div>' + 
-		'					<div class="row">' + 
-		'						<div class="small-3 columns">' + 
-		'							Family and children?' + 
-		'						</div>' + 
-		'						<div class="small-9 columns">'; 
+						'</div>' + 
+					'</div>' + 
+					'<div class="row">' + 
+						'<div class="small-3 columns">' + 
+							'Description:' + 
+						'</div>' + 
+						'<div class="small-9 columns">' + 
+							resource["description"] + 
+						'</div>' + 
+					'</div>' + 
+					'<div class="row">' + 
+						'<div class="small-3 columns">' + 
+							'Family and children?' + 
+						'</div>' + 
+						'<div class="small-9 columns">'; 
 
+		// Display whether the food resource is suitable for family and 
+		// children. 
 		if (resource["is_for_family_and_children"] == true) {
 			html += 
-		'								Yes'; 
+							'Yes'; 
 		}
 		else {
 			html += 
-		'								No'; 
+							'No'; 
 		}
 
 		html += 
-		'						</div>' + 
-		'					</div>' + 
-		'					<div class="row">' + 
-		'						<div class="small-3 columns">' + 
-		'							Seniors?' + 
-		'						</div>' + 
-		'						<div class="small-9 columns">'; 
+						'</div>' + 
+					'</div>' + 
+					'<div class="row">' + 
+						'<div class="small-3 columns">' + 
+							'Seniors?' + 
+						'</div>' + 
+						'<div class="small-9 columns">'; 
 
+		// Display whether the food resource is suitable for seniors. 
 		if (resource["is_for_seniors"] == true) {
 			html += 
-		'								Yes'; 
+							'Yes'; 
 		}
 		else {
 			html += 
-		'								No'; 
+							'No'; 
 		}
 		
 		html +=  
-		'						</div>' + 
-		'					</div>' + 
-		'					<div class="row">' + 
-		'						<div class="small-3 columns">' + 
-		'							Wheelchair accessible?' + 
-		'						</div>' + 
-		'						<div class="small-9 columns">'; 
+						'</div>' + 
+					'</div>' + 
+					'<div class="row">' + 
+						'<div class="small-3 columns">' + 
+							'Wheelchair accessible?' + 
+						'</div>' + 
+						'<div class="small-9 columns">'; 
 
+		// Display whether the food resource is wheelchair accessible.
 		if (resource["is_wheelchair_accessible"] == true) {
 			html += 
-		'								Yes'; 
+							'Yes'; 
 		}
 		else {
 			html += 
-		'								No';  
+							'No';  
 		}
 		
 		html += 
-		'						</div>' + 
-		'					</div>' + 
-		'					<div class="row">' + 
-		'						<div class="small-3 columns">' + 
-		'							Accepts SNAP?' + 
-		'						</div>' + 
-		'						<div class="small-9 columns">'; 
+						'</div>' + 
+					'</div>' + 
+					'<div class="row">' + 
+						'<div class="small-3 columns">' + 
+							'Accepts SNAP?' + 
+						'</div>' + 
+						'<div class="small-9 columns">'; 
 
+		// Display whether the food resource accepts SNAP.
 		if (resource["is_accepts_snap"] == true) {
 			html += 
-		'								Yes';  
+							'Yes';  
 		}
 		else {
 			html += 
-		'								No'; 
+							'No'; 
 		}
 
 		html += 
-		'						</div>' + 
-		'					</div>' + 
-		'				</div>' + 
-		'				<div class="large-6 small-12 columns">' + 
-		'					<div class="row">' + 
-		'						<div class="small-3 columns">' + 
-		'							Hours:' + 
-		'						</div>' + 
-		'						<div class="small-9 columns">'; 
+						'</div>' + 
+					'</div>' + 
+				'</div>' + 
+				'<div class="large-6 small-12 columns">' + 
+					'<div class="row">' + 
+						'<div class="small-3 columns">' + 
+							'Hours:' + 
+						'</div>' + 
+						'<div class="small-9 columns">'; 
 
+		// Display the food resource's hours of operation. 
 		for (var j = 0; j < daysOfWeek.length; j++) {
 			var day = daysOfWeek[j];
 			html += 
-			'								<div class="row">' + 
-			'									<div class="small-6 columns">' 
-													+ day["name"] + 
-			'									</div>' + 
-			'									<div class="small-6 columns">';  
+							'<div class="row">' + 
+								'<div class="small-6 columns">' + 
+									day["name"] + 
+								'</div>' + 
+								'<div class="small-6 columns">';  
 			for (var k = 0; k < resource["timeslots"].length; k++) {
 				var timeslot = resource["timeslots"][k]; 
 				if (timeslot["day_of_week"] == day["index"]) {
-					html += timeslot["start_time"] + " - " 
-					+ timeslot["end_time"];
+					html += 
+									timeslot["start_time"] + " - " 
+										+ timeslot["end_time"];
 				}
 			}
 			html += 
-			'									</div>' + 
-			'								</div>'; 
+								'</div>' + 
+							'</div>'; 
 		} 
 
 		html += 
-		'						</div>' + 
-		'					</div>' + 
-		'				</div>' + 
-		'			</div>' + 
-		'		</div>'; // resource
+						'</div>' + 
+					'</div>' + 
+				'</div>' + 
+			'</div>' + 
+		'</div>'; // resource
 	}
 
 	html += '</div>';
