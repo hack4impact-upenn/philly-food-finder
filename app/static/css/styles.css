@@ -400,3 +400,8 @@ input[type=checkbox] {
   width: 20px; /* you can use % */
   height: auto;
 }
+
+.total-num-resources {
+  display: inline;
+  font-weight: bold; 
+}

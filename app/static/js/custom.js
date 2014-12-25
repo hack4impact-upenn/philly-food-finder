@@ -190,8 +190,16 @@ function removeFoodResource() {
         	function(data) {
         		hide("food-resource-" + foodResourceID);
         		hide("food-resource-" + foodResourceID + "-table");
+
+        		// Reduce number of food resources.
+        		var currentNumResources = $("#all-num-resources").html() - 1;
+        		$("#all-num-resources").html(currentNumResources); 
         	});  
 	});	
+}
+
+function setTotalNumResources(num) {
+	$("#all-num-resources").html(num);
 }
 
 function clearTablesOfFoodResources() {
@@ -210,7 +218,7 @@ function getNoResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural) {
 
 function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural, resourcesArray, daysOfWeek) {
 	var html = 
-	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">'; 
+	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">';
 
 	for (var i = 0; i < resourcesArray.length; i++) {
 		var resource = resourcesArray[i]; 

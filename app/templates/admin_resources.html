@@ -207,6 +207,16 @@
           <div class="button radius small" id="collapse-all-resources-button">Collapse All</div>
 	    </div>
 	</div>
+
+	<!-- Total number of food resources in the database. --> 
+	<div class="row">
+		<div class="small-12 columns">
+			{% set total_num_resources = resources["farmers-markets"]|count + resources["meals-on-wheels"]|count + resources["food-cupboards"]|count + resources["farmers-markets"]|count + resources["share-host-sites"]|count + resources["soup-kitchens"]|count + resources["wic-offices"]|count %}
+			Displaying <div id="all-num-resources" class="total-num-resources">{{ total_num_resources }}</div> food resource(s).
+		</div>
+	</div>
+
+	<!-- Display all resources in database. -->
   	<div class="large-centered 
                   large-8 medium-centered medium-8 small-8 small-centered
                   columns resources">
@@ -237,7 +247,7 @@
 					+
 				</div>
 				<div class="small-7 columns">
-					{{ resource.name }}
+					{{ resource.name }} 
 				</div>
 				<div class="small-2 columns">
 					<a href="{{ url_for('new', id=resource.id) }}" class="food-resource-update-button">Edit</a>
@@ -448,6 +458,7 @@
         	function(data) {
         		clearTablesOfFoodResources();
 
+        		var totalNumResources = 0; 
         		{% for resource_info in resources_info %}
         			if (data["{{ resource_info.underscore_id }}"].length == 0) {
         				var html = getNoResourcesHtml(
@@ -456,6 +467,7 @@
         				$("#{{ resource_info.id }}-header").after(html);
         			}
         			else {
+        				totalNumResources += data["{{ resource_info.underscore_id }}"].length; 
         				var html = getResourcesHtml(
         					"{{ resource_info.id }}", 
         					"{{ resource_info.lowercase_name }}", 
@@ -464,6 +476,9 @@
         				$("#{{ resource_info.id }}-header").after(html);
         			}
         		{% endfor %}
+
+        		// Reset the total number of resources count to reflect the applied filters. 
+        		setTotalNumResources(totalNumResources); 
 
         		// Hide all food resource tables initially.
 				$(".admin-food-resource-type").hide(); 
@@ -484,6 +499,7 @@
         	function(data) {
         		clearTablesOfFoodResources();
 
+        		var totalNumResources = 0; 
         		{% for resource_info in resources_info %}
         			if (data["{{ resource_info.underscore_id }}"].length == 0) {
         				var html = getNoResourcesHtml(
@@ -492,6 +508,7 @@
         				$("#{{ resource_info.id }}-header").after(html);
         			}
         			else {
+        				totalNumResources += data["{{ resource_info.underscore_id }}"].length; 
         				var html = getResourcesHtml(
         					"{{ resource_info.id }}", 
         					"{{ resource_info.lowercase_name }}", 
@@ -500,6 +517,9 @@
         				$("#{{ resource_info.id }}-header").after(html);
         			}
         		{% endfor %}
+
+        		// Reset the total number of resources count to reflect the cleared filters. 
+        		setTotalNumResources(totalNumResources); 
 
         		// Clear checkboxes and text box.
 				$('#filter-by-families-and-children').attr('checked', false);
