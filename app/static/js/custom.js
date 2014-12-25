@@ -23,21 +23,7 @@ $(document).ready(function() {
 	}); 
 
 	// Remove a food resource without reloading page.
-	removeFoodResource(); 
-
-	// Approves a food resource without reloading page.
-	$("[id$='approve']").click(function() {
-		var id = $(this).attr('id');
-		var dashIndex = id.indexOf("-"); 
-		var foodResourceId = id.substring(0, dashIndex); 
-		$.getJSON($SCRIPT_ROOT + '/_approve', {
-        		id: foodResourceId
-        	},
-        	function(data) {
-        		hide("food-resource-pending-" + foodResourceId);
-        		hide("food-resource-" + foodResourceId + "-table-pending");
-        	});  
-	});	
+	removeFoodResource(); 	
 
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource table.
@@ -143,9 +129,7 @@ symbol should be toggled (e.g., "+" to "-" if expanding an element).
 */
 function show(idToShow, classToToggleExpandSymbol) {
 	$("#"+idToShow).slideDown("medium", function() {
-		$(this).show();
-		//console.log(classToToggleExpandSymbol);
-		//console.log((this).parent().find("." + classToToggleExpandSymbol)); 
+		$(this).show(); 
 		$(this).parent().find("." + classToToggleExpandSymbol).html("-"); 
 	});
 }
@@ -238,6 +222,12 @@ function removeFoodResource() {
         		}
         	});  
 	});	
+}
+
+function incrementTotalNumResourcesByOne() {
+	var num = $("#all-num-resources").html(num);
+	num++; 
+	$("#all-num-resources").html(num); 
 }
 
 function setTotalNumResources(num) {
