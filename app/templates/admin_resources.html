@@ -24,20 +24,20 @@
 			<table>
 			  <thead>
 			    <tr>
-			      <th width="200" class="expand-food-resource-type" id="food-resource-type-expand-{{ name_without_spaces }}">+</th>
+			      <th width="200" class="expand-food-resource-type-pending" id="food-resource-type-expand-pending-{{ name_without_spaces }}">+</th>
 			      <th width="100%">{{ contact.name }}</th>	
 			    </tr>
 			  </thead>
 			</table>
 		</div>
-		<div id="{{ name_without_spaces }}-table" class="admin-food-resource-type">
+		<div class="admin-food-resource-type-pending" id="{{ name_without_spaces }}-table-pending">
 			{% for resource in contact.food_resource %}
 
 			<div class="resource"> 
 
 			<!-- Resource header --> 
-			  <div class= "row" id="food-resource-{{ resource.id }}">
-				<div class="small-1 columns expand-food-resource" id="food-resource-expand-{{ resource.id }}">
+			  <div class= "row" id="food-resource-pending-{{ resource.id }}">
+				<div class="small-1 columns expand-food-resource-pending" id="food-resource-expand-pending-{{ resource.id }}">
 					+
 				</div>
 				<div class="small-7 columns">
@@ -51,7 +51,7 @@
 				</div>
 			</div>
 			<!-- Resource content --> 
-			<div class="row admin-food-resource" id="food-resource-{{ resource.id }}-table">
+			<div class="row admin-food-resource-pending" id="food-resource-{{ resource.id }}-table-pending">
 				<div class="large-6 small-12 columns">
 					<div class="row">
 						<div class="small-3 columns">

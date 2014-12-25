@@ -343,7 +343,9 @@ table thead tr th, table thead tr td {
 }
 
 .expand-food-resource-type:hover,
-.expand-food-resource:hover {
+.expand-food-resource:hover,
+.expand-food-resource-type-pending:hover,
+.expand-food-resource-pending:hover  {
   cursor: pointer; 
 }
 
@@ -397,7 +399,7 @@ input[type=checkbox] {
 }
 
 .pin-definition img {
-  width: 20px;
+  width: 20px;  
   height: auto;
 }
 

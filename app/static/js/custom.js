@@ -2,7 +2,11 @@ $(document).ready(function() {
 
 	// Hide all food resource tables initially.
 	$(".admin-food-resource-type").hide(); 
-	$(".admin-food-resource").hide(); 
+	$(".admin-food-resource").hide();
+
+	// Also hide pending food resource tables. 
+	$(".admin-food-resource-type-pending").hide(); 
+	$(".admin-food-resource-pending").hide(); 
 
 	// Expand all resources on admin resources page.
 	// Triggered when "Expand All" button pressed on admin resources page.
@@ -25,13 +29,13 @@ $(document).ready(function() {
 	$("[id$='approve']").click(function() {
 		var id = $(this).attr('id');
 		var dashIndex = id.indexOf("-"); 
-		var foodResourceID = id.substring(0, dashIndex); 
+		var foodResourceId = id.substring(0, dashIndex); 
 		$.getJSON($SCRIPT_ROOT + '/_approve', {
-        		id: foodResourceID
+        		id: foodResourceId
         	},
         	function(data) {
-        		hide("food-resource-" + foodResourceID);
-        		hide("food-resource-" + foodResourceID + "-table");
+        		hide("food-resource-pending-" + foodResourceId);
+        		hide("food-resource-" + foodResourceId + "-table-pending");
         	});  
 	});	
 
@@ -41,7 +45,25 @@ $(document).ready(function() {
 
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource information. 
-	toggleAdminFoodResourceVisibility(); 
+	toggleAdminFoodResourceVisibility();
+
+	$(".expand-food-resource-type-pending").click(function() {
+		var id = $(this).attr('id');  
+		var prefix = "food-resource-type-expand-pending-"; 
+		var start_index = prefix.length; 
+		var resource_type = id.substring(start_index); 
+		var table_to_expand = resource_type + "-table-pending"; 		
+		toggleExpansion(table_to_expand, "expand-food-resource-type-pending"); 
+	}) 
+
+	$(".expand-food-resource-pending").click(function() {
+		var id = $(this).attr('id');  
+		var prefix = "food-resource-expand-pending-"; 
+		var start_index = prefix.length; 
+		var resource_id = id.substring(start_index); 
+		var table_to_expand = "food-resource-" + resource_id + "-table-pending"; 		
+		toggleExpansion(table_to_expand, "expand-food-resource-pending"); 
+	}) 
 
     $(".start-edit").click(function() {
 		CKEDITOR.disableAutoInline = true;
@@ -122,6 +144,8 @@ symbol should be toggled (e.g., "+" to "-" if expanding an element).
 function show(idToShow, classToToggleExpandSymbol) {
 	$("#"+idToShow).slideDown("medium", function() {
 		$(this).show();
+		//console.log(classToToggleExpandSymbol);
+		//console.log((this).parent().find("." + classToToggleExpandSymbol)); 
 		$(this).parent().find("." + classToToggleExpandSymbol).html("-"); 
 	});
 }
@@ -236,7 +260,7 @@ function clearTablesOfFoodResources() {
 function getNoResourcesHtml(resourceInfoId) {
 	var html = 
 	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">' +
-	'		<div class="no-resources-message">None to display.</div>' +
+		'<div class="no-resources-message">None to display.</div>' +
 	'</div>';
 	return html;
 }
