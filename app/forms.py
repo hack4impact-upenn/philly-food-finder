@@ -57,8 +57,8 @@ class AddNewFoodResourceForm(Form):
         validators = [
             Length(0, 300)
         ])
-    is_for_family_and_children = BooleanField('Check off if this food resource aimed towards family and children')
-    is_for_seniors = BooleanField('Check off if this food resource aimed towards seniors')
+    is_for_family_and_children = BooleanField('Check off if this food resource is aimed towards family and children')
+    is_for_seniors = BooleanField('Check off if this food resource is aimed towards seniors')
     is_wheelchair_accessible = BooleanField('Check off if this food resource is wheelchair accessible')
     is_accepts_snap = BooleanField('Check off if this food resource is accepts SNAP')
 
