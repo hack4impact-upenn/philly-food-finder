@@ -51,14 +51,14 @@ for timeslot in timeslots_list_0:
     db.session.add(timeslot)
 db.session.commit()
 
-# Create a Meals On Wheels FoodResource.
+# Create a Senior Meals FoodResource.
 f1 = FoodResource() 
-f1.name = "Northeast Meals On Wheels"
+f1.name = "Senior Meal #1"
 num1 = PhoneNumber(number = "123-456-7890")
 f1.phone_numbers.append(num1)
 db.session.add(num1)
 f1.description = "Fresh fruit and veggies!"
-f1.location_type = "MEALS_ON_WHEELS"
+f1.location_type = "SENIOR_MEAL"
 f1.is_for_family_and_children = False
 f1.is_for_seniors = True
 
@@ -295,14 +295,14 @@ for timeslot in timeslots_list_6:
     db.session.add(timeslot)
 db.session.commit()
 
-# Create a Meals On Wheels FoodResource.
+# Create a Senior Meals FoodResource.
 f7 = FoodResource() 
-f7.name = "Meals On Wheels Association of America"
+f7.name = "Senior Meal #2"
 num7 = PhoneNumber(number = "888-998-6325")
 f7.phone_numbers.append(num7)
 db.session.add(num7)
 f7.description = "Fresh foods!"
-f7.location_type = "MEALS_ON_WHEELS"
+f7.location_type = "SENIOR_MEAL"
 a7 = Address()
 a7.line1 = "8446 Bayard Street"
 a7.city = "Philadelphia"
