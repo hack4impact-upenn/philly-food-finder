@@ -195,14 +195,14 @@ function removeFoodResource() {
         		id: foodResourceId
         	},
         	function(data) {
-        		console.log(data);
         		if (data["is_approved"]) {
         			// Hide corresponding approved resource table.
 	        		hide("food-resource-" + foodResourceId);
 	        		hide("food-resource-" + foodResourceId + "-table");
 	        		
 	        		// Reduce total number of food resources.
-	        		var currentNumResources = $("#all-num-resources").html() - 1;
+	        		var currentNumResources = 
+	        			$("#all-num-resources").html() - 1;
 	        		$("#all-num-resources").html(currentNumResources);
 
 	        		// Reduce individual number of food resources.
@@ -210,8 +210,9 @@ function removeFoodResource() {
 	        			+ foodResourceId).parent().parent().parent()
 	        			.find(".total-num-resources").html();
 	        		individualNumResources--; 
-	        		$("#food-resource-" + foodResourceId).parent().parent().parent()
-	        			.find(".total-num-resources").html(individualNumResources); 
+	        		$("#food-resource-" + foodResourceId).parent().parent()
+	        			.parent().find(".total-num-resources")
+	        			.html(individualNumResources); 
 
 	        		if (individualNumResources == 0) {
 	        			var header = $("#food-resource-" + foodResourceId)

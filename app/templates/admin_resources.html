@@ -574,117 +574,72 @@
 	        		hide("food-resource-pending-" + foodResourceId);
 	        		hide("food-resource-" + foodResourceId + "-table-pending");
 
-	        		$.getJSON($SCRIPT_ROOT + '/_admin_remove_filters', {
-			        	},
-			        	function(data) {
-			        		clearTablesOfFoodResources();
-
-			        		var totalNumResources = 0; 
-			        		{% for resource_info in resources_info %}
-			        			if (data["{{ resource_info.underscore_id }}"].length == 0) {
-			        				var html = getNoResourcesHtml(
-			        					"{{ resource_info.id }}"); 
-			        				$("#{{ resource_info.id }}-header").after(html);
-
-			        				// Set number of filtered resources to be 0.
-			        				setIndividualNumResources(0, "{{ resource_info.id }}");
-			        			}
-			        			else {
-			        				totalNumResources += data["{{ resource_info.underscore_id }}"].length; 
-			        				var html = getResourcesHtml(
-			        					"{{ resource_info.id }}", 
-			        					"{{ resource_info.lowercase_name }}", 
-			        					data["{{ resource_info.underscore_id }}"], 
-			        					data["days_of_week"]);
-			        				$("#{{ resource_info.id }}-header").after(html);
-
-			        				// Update number of filtered resources. 
-			        				var individualNumResources = data["{{ resource_info.underscore_id }}"].length;
-			        				setIndividualNumResources(individualNumResources, "{{ resource_info.id }}"); 
-			        			}
-			        		{% endfor %}
-
-			        		// Reset the total number of resources count to reflect the cleared filters. 
-			        		setTotalNumResources(totalNumResources); 
-
-			        		// Clear checkboxes and text box.
-							$('#filter-by-families-and-children').attr('checked', false);
-							$('#filter-by-seniors').attr('checked', false);
-							$('#filter-by-wheelchair-accessible').attr('checked', false);
-							$('#filter-by-accepts-snap').attr('checked', false);
-							$("#zip-code").val("");
-
-			        		// Hide all food resource tables initially.
-							$(".admin-food-resource-type").hide(); 
-							$(".admin-food-resource").hide();
-
-							// If an "Expand" button is pressed, either show or hide the associated
-							// food resource information.
-							toggleAdminFoodResourceVisibility(); 
-
-							// Remove a food resource without reloading page.
-							removeFoodResource(); 
-			        	});
-
+	        		reloadFoodResourcesTables();
 	        	});  
 		});
 
 		$("#clear-filters-resources-button").click(function() {
-			$.getJSON($SCRIPT_ROOT + '/_admin_remove_filters', {
-        	},
-        	function(data) {
-        		clearTablesOfFoodResources();
-
-        		var totalNumResources = 0; 
-        		{% for resource_info in resources_info %}
-        			if (data["{{ resource_info.underscore_id }}"].length == 0) {
-        				var html = getNoResourcesHtml(
-        					"{{ resource_info.id }}"); 
-        				$("#{{ resource_info.id }}-header").after(html);
-
-        				// Set number of filtered resources to be 0.
-        				setIndividualNumResources(0, "{{ resource_info.id }}");
-        			}
-        			else {
-        				totalNumResources += data["{{ resource_info.underscore_id }}"].length; 
-        				var html = getResourcesHtml(
-        					"{{ resource_info.id }}", 
-        					"{{ resource_info.lowercase_name }}", 
-        					data["{{ resource_info.underscore_id }}"], 
-        					data["days_of_week"]);
-        				$("#{{ resource_info.id }}-header").after(html);
-
-        				// Update number of filtered resources. 
-        				var individualNumResources = data["{{ resource_info.underscore_id }}"].length;
-        				setIndividualNumResources(individualNumResources, "{{ resource_info.id }}"); 
-        			}
-        		{% endfor %}
-
-        		// Reset the total number of resources count to reflect the cleared filters. 
-        		setTotalNumResources(totalNumResources); 
-
-        		// Clear checkboxes and text box.
-				$('#filter-by-families-and-children').attr('checked', false);
-				$('#filter-by-seniors').attr('checked', false);
-				$('#filter-by-wheelchair-accessible').attr('checked', false);
-				$('#filter-by-accepts-snap').attr('checked', false);
-				$("#zip-code").val("");
-
-        		// Hide all food resource tables initially.
-				$(".admin-food-resource-type").hide(); 
-				$(".admin-food-resource").hide();
-
-				// If an "Expand" button is pressed, either show or hide the associated
-				// food resource information.
-				toggleAdminFoodResourceVisibility(); 
-
-				// Remove a food resource without reloading page.
-				removeFoodResource(); 
-        	});
+			reloadFoodResourcesTables();
 		}); 
-
-
 	}); 
+
+	function reloadFoodResourcesTables()) {
+		$.getJSON($SCRIPT_ROOT + '/_admin_remove_filters', {
+    	},
+    	function(data) {
+    		clearTablesOfFoodResources();
+
+    		var totalNumResources = 0; 
+    		{% for resource_info in resources_info %}
+    			if (data["{{ resource_info.underscore_id }}"].length == 0) {
+    				var html = getNoResourcesHtml(
+    					"{{ resource_info.id }}"); 
+    				$("#{{ resource_info.id }}-header").after(html);
+
+    				// Set number of filtered resources to be 0.
+    				setIndividualNumResources(0, "{{ resource_info.id }}");
+    			}
+    			else {
+    				totalNumResources += 
+    					data["{{ resource_info.underscore_id }}"].length; 
+    				var html = getResourcesHtml(
+    					"{{ resource_info.id }}", 
+    					"{{ resource_info.lowercase_name }}", 
+    					data["{{ resource_info.underscore_id }}"], 
+    					data["days_of_week"]);
+    				$("#{{ resource_info.id }}-header").after(html);
+
+    				// Update number of filtered resources. 
+    				var individualNumResources = 
+    					data["{{ resource_info.underscore_id }}"].length;
+    				setIndividualNumResources(individualNumResources, 
+						"{{ resource_info.id }}"); 
+    			}
+    		{% endfor %}
+
+    		// Reset the total number of resources count to reflect the cleared 
+    		// filters. 
+    		setTotalNumResources(totalNumResources); 
+
+    		// Clear checkboxes and text box.
+			$('#filter-by-families-and-children').attr('checked', false);
+			$('#filter-by-seniors').attr('checked', false);
+			$('#filter-by-wheelchair-accessible').attr('checked', false);
+			$('#filter-by-accepts-snap').attr('checked', false);
+			$("#zip-code").val("");
+
+    		// Hide all food resource tables initially.
+			$(".admin-food-resource-type").hide(); 
+			$(".admin-food-resource").hide();
+
+			// If an "Expand" button is pressed, either show or hide the 
+			// associated food resource information.
+			toggleAdminFoodResourceVisibility(); 
+
+			// Remove a food resource without reloading page.
+			removeFoodResource(); 
+    	});
+	}
 </script>
 
 
