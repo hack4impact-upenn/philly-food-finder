@@ -555,14 +555,23 @@ def save_page():
 def remove():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
-	contact = food_resource.food_resource_contact
 
+	# Determine whether the food resource being removed is approved or pending.
+	# Needed for front-end update after food resource is removed.
+	is_approved = False
+	if (food_resource.is_approved):
+		is_approved = True
+
+	# If the food resource has a contact and its contact has submitted no other 
+	# food resources to the database, remove him/her from the database.
+	contact = food_resource.food_resource_contact
 	if contact and len(contact.food_resource) <= 1:
 		db.session.delete(contact)
 
+	# Remove the food resource from the database.
 	db.session.delete(food_resource)
 	db.session.commit()
-	return jsonify(message="success")
+	return jsonify(is_approved=is_approved)
 
 @app.route('/_approve')
 def approve():

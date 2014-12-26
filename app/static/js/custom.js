@@ -195,34 +195,39 @@ function removeFoodResource() {
         		id: foodResourceId
         	},
         	function(data) {
-        		// Hide corresponding resource table, regardless of whether 
-        		// resource is pending or approved.
-        		hide("food-resource-" + foodResourceId);
-        		hide("food-resource-" + foodResourceId + "-table");
-        		hide("food-resource-pending-" + foodResourceId);
-        		hide("food-resource-" + foodResourceId + "-table-pending");
+        		console.log(data);
+        		if (data["is_approved"]) {
+        			// Hide corresponding approved resource table.
+	        		hide("food-resource-" + foodResourceId);
+	        		hide("food-resource-" + foodResourceId + "-table");
+	        		
+	        		// Reduce total number of food resources.
+	        		var currentNumResources = $("#all-num-resources").html() - 1;
+	        		$("#all-num-resources").html(currentNumResources);
 
-        		// Reduce total number of food resources.
-        		var currentNumResources = $("#all-num-resources").html() - 1;
-        		$("#all-num-resources").html(currentNumResources);
+	        		// Reduce individual number of food resources.
+	        		var individualNumResources = $("#food-resource-" 
+	        			+ foodResourceId).parent().parent().parent()
+	        			.find(".total-num-resources").html();
+	        		individualNumResources--; 
+	        		$("#food-resource-" + foodResourceId).parent().parent().parent()
+	        			.find(".total-num-resources").html(individualNumResources); 
 
-        		// Reduce individual number of food resources.
-        		var individualNumResources = $("#food-resource-" 
-        			+ foodResourceId).parent().parent().parent()
-        			.find(".total-num-resources").html();
-        		individualNumResources--; 
-        		$("#food-resource-" + foodResourceId).parent().parent().parent()
-        			.find(".total-num-resources").html(individualNumResources); 
-
-        		if (individualNumResources == 0) {
-        			var header = $("#food-resource-" + foodResourceId)
-        				.parent().parent().parent()
-        				.find(".admin-food-resource-type-header");
-        			var headerIndex = header.attr("id").indexOf("-header"); 
-        			var foodResourceType = header.attr("id")
-        				.substring(0, headerIndex);
-        			var html = getNoResourcesHtml(foodResourceType);
-        			header.after(html);
+	        		if (individualNumResources == 0) {
+	        			var header = $("#food-resource-" + foodResourceId)
+	        				.parent().parent().parent()
+	        				.find(".admin-food-resource-type-header");
+	        			var headerIndex = header.attr("id").indexOf("-header"); 
+	        			var foodResourceType = header.attr("id")
+	        				.substring(0, headerIndex);
+	        			var html = getNoResourcesHtml(foodResourceType);
+	        			header.after(html);
+        			}
+        		}
+        		else {
+        			// Hide corresponding pending resource table.
+        			hide("food-resource-pending-" + foodResourceId);
+	        		hide("food-resource-" + foodResourceId + "-table-pending");
         		}
         	});  
 	});	
