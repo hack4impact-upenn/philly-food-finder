@@ -5,15 +5,24 @@
 <body id = "resource_p">
 	<div class="row">
 		<h1 class="page-header" id="edit-resources-header">All Food Resources</h1>
-    <hr align="center">
-  </div>
+    	<hr align="center">
+  	</div>
 
-  {% if food_resource_contacts|count > 0 %}
+  	<!-- Pending Food Resources --> 
+	<div class="row">
+		<div class="small-12 columns">
+		    <h2>Pending Food Resources</h2>
+		    <hr align="center">
+		</div>
+	</div>
 
-  <div class="row">
-    <h2>Pending Food Resources</h2>
-    <hr align="center">
-  </div>
+	{% if food_resource_contacts|count == 0 %}
+ 	<div class="row">
+ 		<div class="small-12 columns">
+ 			None.
+	    </div>
+	</div>
+	{% else %}
   <div class="large-centered 
                   large-8 medium-centered medium-8 small-8 small-centered
                   columns resources">
@@ -22,22 +31,22 @@
 	<div id="{{ name_without_spaces }}">
 		<div class="block-header" id="{{ name_without_spaces }}-header">
 			<table>
-			  <thead>
-			    <tr>
-			      <th width="200" class="expand-food-resource-type" id="food-resource-type-expand-{{ name_without_spaces }}">+</th>
-			      <th width="100%">{{ contact.name }}</th>	
-			    </tr>
-			  </thead>
+			  	<thead>
+			    	<tr>
+			      		<th width="200" class="expand-food-resource-type-pending" id="food-resource-type-expand-pending-{{ name_without_spaces }}">+</th>
+			      		<th width="100%">{{ contact.name }}</th>	
+			    	</tr>
+			  	</thead>
 			</table>
 		</div>
-		<div id="{{ name_without_spaces }}-table" class="admin-food-resource-type">
+		<div class="admin-food-resource-type-pending" id="{{ name_without_spaces }}-table-pending">
 			{% for resource in contact.food_resource %}
 
 			<div class="resource"> 
 
 			<!-- Resource header --> 
-			  <div class= "row" id="food-resource-{{ resource.id }}">
-				<div class="small-1 columns expand-food-resource" id="food-resource-expand-{{ resource.id }}">
+			  <div class= "row" id="food-resource-pending-{{ resource.id }}">
+				<div class="small-1 columns expand-food-resource-pending" id="food-resource-expand-pending-{{ resource.id }}">
 					+
 				</div>
 				<div class="small-7 columns">
@@ -51,7 +60,7 @@
 				</div>
 			</div>
 			<!-- Resource content --> 
-			<div class="row admin-food-resource" id="food-resource-{{ resource.id }}-table">
+			<div class="row admin-food-resource-pending" id="food-resource-{{ resource.id }}-table-pending">
 				<div class="large-6 small-12 columns">
 					<div class="row">
 						<div class="small-3 columns">
@@ -147,6 +156,54 @@
 							{% endif %}
 						</div>
 					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Family and children?
+						</div>
+						<div class="small-9 columns">
+							{% if resource.is_for_family_and_children %}
+								Yes
+							{% else %}
+								No
+							{% endif %}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Seniors?
+						</div>
+						<div class="small-9 columns">
+							{% if resource.is_for_seniors %}
+								Yes
+							{% else %}
+								No
+							{% endif %}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Wheelchair accessible?
+						</div>
+						<div class="small-9 columns">
+							{% if resource.is_wheelchair_accessible %}
+								Yes
+							{% else %}
+								No
+							{% endif %}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Accepts SNAP?
+						</div>
+						<div class="small-9 columns">
+							{% if resource.is_accepts_snap %}
+								Yes
+							{% else %}
+								No
+							{% endif %}
+						</div>
+					</div>
 				</div>
 				<div class="large-6 small-12 columns">
 					<div class="row">
@@ -180,6 +237,13 @@
 </div> </div>
 {% endif %}
 
+	<div class="row">
+		<div class="small-12 columns">
+		    <h2>Approved Food Resources</h2>
+		    <hr align="center">
+		</div>
+	</div>
+
   	<!-- Filter admin resources by certain criteria -->
   	<div class="row">
   		<div class="medium-10 small-12 columns">
@@ -211,7 +275,7 @@
 	<!-- Total number of food resources in the database. --> 
 	<div class="row">
 		<div class="small-12 columns">
-			{% set total_num_resources = resources["farmers-markets"]|count + resources["meals-on-wheels"]|count + resources["food-cupboards"]|count + resources["farmers-markets"]|count + resources["share-host-sites"]|count + resources["soup-kitchens"]|count + resources["wic-offices"]|count %}
+			{% set total_num_resources = resources["farmers-markets"]|count + resources["meals-on-wheels"]|count + resources["food-cupboards"]|count + resources["share-host-sites"]|count + resources["soup-kitchens"]|count + resources["wic-offices"]|count %}
 			Displaying <div id="all-num-resources" class="total-num-resources">{{ total_num_resources }}</div> food resource(s).
 		</div>
 	</div>
@@ -502,62 +566,84 @@
         	});  
 		}); 
 
+		// Approves a food resource without reloading page.
+		$("[id$='approve']").click(function() {
+			var id = $(this).attr('id');
+			var dashIndex = id.indexOf("-"); 
+			var foodResourceId = id.substring(0, dashIndex); 
+			$.getJSON($SCRIPT_ROOT + '/_approve', {
+	        		id: foodResourceId
+	        	},
+	        	function(data) {
+	        		hide("food-resource-pending-" + foodResourceId);
+	        		hide("food-resource-" + foodResourceId + "-table-pending");
+
+	        		reloadFoodResourcesTables();
+	        	});  
+		});
+
 		$("#clear-filters-resources-button").click(function() {
-			$.getJSON($SCRIPT_ROOT + '/_admin_remove_filters', {
-        	},
-        	function(data) {
-        		clearTablesOfFoodResources();
-
-        		var totalNumResources = 0; 
-        		{% for resource_info in resources_info %}
-        			if (data["{{ resource_info.underscore_id }}"].length == 0) {
-        				var html = getNoResourcesHtml(
-        					"{{ resource_info.id }}"); 
-        				$("#{{ resource_info.id }}-header").after(html);
-
-        				// Set number of filtered resources to be 0.
-        				setIndividualNumResources(0, "{{ resource_info.id }}");
-        			}
-        			else {
-        				totalNumResources += data["{{ resource_info.underscore_id }}"].length; 
-        				var html = getResourcesHtml(
-        					"{{ resource_info.id }}", 
-        					"{{ resource_info.lowercase_name }}", 
-        					data["{{ resource_info.underscore_id }}"], 
-        					data["days_of_week"]);
-        				$("#{{ resource_info.id }}-header").after(html);
-
-        				// Update number of filtered resources. 
-        				var individualNumResources = data["{{ resource_info.underscore_id }}"].length;
-        				setIndividualNumResources(individualNumResources, "{{ resource_info.id }}"); 
-        			}
-        		{% endfor %}
-
-        		// Reset the total number of resources count to reflect the cleared filters. 
-        		setTotalNumResources(totalNumResources); 
-
-        		// Clear checkboxes and text box.
-				$('#filter-by-families-and-children').attr('checked', false);
-				$('#filter-by-seniors').attr('checked', false);
-				$('#filter-by-wheelchair-accessible').attr('checked', false);
-				$('#filter-by-accepts-snap').attr('checked', false);
-				$("#zip-code").val("");
-
-        		// Hide all food resource tables initially.
-				$(".admin-food-resource-type").hide(); 
-				$(".admin-food-resource").hide();
-
-				// If an "Expand" button is pressed, either show or hide the associated
-				// food resource information.
-				toggleAdminFoodResourceVisibility(); 
-
-				// Remove a food resource without reloading page.
-				removeFoodResource(); 
-        	});
+			reloadFoodResourcesTables();
 		}); 
-
-
 	}); 
+
+	function reloadFoodResourcesTables()) {
+		$.getJSON($SCRIPT_ROOT + '/_admin_remove_filters', {
+    	},
+    	function(data) {
+    		clearTablesOfFoodResources();
+
+    		var totalNumResources = 0; 
+    		{% for resource_info in resources_info %}
+    			if (data["{{ resource_info.underscore_id }}"].length == 0) {
+    				var html = getNoResourcesHtml(
+    					"{{ resource_info.id }}"); 
+    				$("#{{ resource_info.id }}-header").after(html);
+
+    				// Set number of filtered resources to be 0.
+    				setIndividualNumResources(0, "{{ resource_info.id }}");
+    			}
+    			else {
+    				totalNumResources += 
+    					data["{{ resource_info.underscore_id }}"].length; 
+    				var html = getResourcesHtml(
+    					"{{ resource_info.id }}", 
+    					"{{ resource_info.lowercase_name }}", 
+    					data["{{ resource_info.underscore_id }}"], 
+    					data["days_of_week"]);
+    				$("#{{ resource_info.id }}-header").after(html);
+
+    				// Update number of filtered resources. 
+    				var individualNumResources = 
+    					data["{{ resource_info.underscore_id }}"].length;
+    				setIndividualNumResources(individualNumResources, 
+						"{{ resource_info.id }}"); 
+    			}
+    		{% endfor %}
+
+    		// Reset the total number of resources count to reflect the cleared 
+    		// filters. 
+    		setTotalNumResources(totalNumResources); 
+
+    		// Clear checkboxes and text box.
+			$('#filter-by-families-and-children').attr('checked', false);
+			$('#filter-by-seniors').attr('checked', false);
+			$('#filter-by-wheelchair-accessible').attr('checked', false);
+			$('#filter-by-accepts-snap').attr('checked', false);
+			$("#zip-code").val("");
+
+    		// Hide all food resource tables initially.
+			$(".admin-food-resource-type").hide(); 
+			$(".admin-food-resource").hide();
+
+			// If an "Expand" button is pressed, either show or hide the 
+			// associated food resource information.
+			toggleAdminFoodResourceVisibility(); 
+
+			// Remove a food resource without reloading page.
+			removeFoodResource(); 
+    	});
+	}
 </script>
 
 

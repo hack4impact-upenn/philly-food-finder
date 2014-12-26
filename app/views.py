@@ -160,12 +160,12 @@ def new(id=None):
 def guest_new_food_resource():
 	form = NonAdminAddNewFoodResourceForm(request.form)
 	timeslots = []
-	food_resource_type = ""
+	food_resource_type = "FARMERS_MARKET"
 
 	additional_errors = []
 	if request.method == 'POST' and form.validate(): 
-		# Checks if this guest has add resources in the past. If not,
-		# creates a new FoodResourceContact
+		# Check if this guest has added resources in the past. If not,
+		# create a new FoodResourceContact.
 		guest_name = form.your_name.data
 		guest_email = form.your_email_address.data
 		guest_phone_number = form.your_phone_number.data
@@ -227,7 +227,11 @@ def guest_new_food_resource():
 				timeslots = timeslots,
 				address = address,
 				is_approved = False,
-				food_resource_contact = contact)
+				food_resource_contact = contact, 
+				is_for_family_and_children = form.is_for_family_and_children.data,
+				is_for_seniors = form.is_for_seniors.data,
+				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
+				is_accepts_snap = form.is_accepts_snap.data)
 
 			# Assign a type to the food resource. 
 			food_resource.location_type = request.form['food-resource-type']
@@ -568,14 +572,23 @@ def save_page():
 def remove():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
-	contact = food_resource.food_resource_contact
 
+	# Determine whether the food resource being removed is approved or pending.
+	# Needed for front-end update after food resource is removed.
+	is_approved = False
+	if (food_resource.is_approved):
+		is_approved = True
+
+	# If the food resource has a contact and its contact has submitted no other 
+	# food resources to the database, remove him/her from the database.
+	contact = food_resource.food_resource_contact
 	if contact and len(contact.food_resource) <= 1:
 		db.session.delete(contact)
 
+	# Remove the food resource from the database.
 	db.session.delete(food_resource)
 	db.session.commit()
-	return jsonify(message="success")
+	return jsonify(is_approved=is_approved)
 
 @app.route('/_approve')
 def approve():

@@ -2,7 +2,11 @@ $(document).ready(function() {
 
 	// Hide all food resource tables initially.
 	$(".admin-food-resource-type").hide(); 
-	$(".admin-food-resource").hide(); 
+	$(".admin-food-resource").hide();
+
+	// Also hide pending food resource tables. 
+	$(".admin-food-resource-type-pending").hide(); 
+	$(".admin-food-resource-pending").hide(); 
 
 	// Expand all resources on admin resources page.
 	// Triggered when "Expand All" button pressed on admin resources page.
@@ -19,21 +23,7 @@ $(document).ready(function() {
 	}); 
 
 	// Remove a food resource without reloading page.
-	removeFoodResource(); 
-
-	// Approves a food resource without reloading page.
-	$("[id$='approve']").click(function() {
-		var id = $(this).attr('id');
-		var dashIndex = id.indexOf("-"); 
-		var foodResourceID = id.substring(0, dashIndex); 
-		$.getJSON($SCRIPT_ROOT + '/_approve', {
-        		id: foodResourceID
-        	},
-        	function(data) {
-        		hide("food-resource-" + foodResourceID);
-        		hide("food-resource-" + foodResourceID + "-table");
-        	});  
-	});	
+	removeFoodResource(); 	
 
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource table.
@@ -41,7 +31,25 @@ $(document).ready(function() {
 
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource information. 
-	toggleAdminFoodResourceVisibility(); 
+	toggleAdminFoodResourceVisibility();
+
+	$(".expand-food-resource-type-pending").click(function() {
+		var id = $(this).attr('id');  
+		var prefix = "food-resource-type-expand-pending-"; 
+		var start_index = prefix.length; 
+		var resource_type = id.substring(start_index); 
+		var table_to_expand = resource_type + "-table-pending"; 		
+		toggleExpansion(table_to_expand, "expand-food-resource-type-pending"); 
+	}) 
+
+	$(".expand-food-resource-pending").click(function() {
+		var id = $(this).attr('id');  
+		var prefix = "food-resource-expand-pending-"; 
+		var start_index = prefix.length; 
+		var resource_id = id.substring(start_index); 
+		var table_to_expand = "food-resource-" + resource_id + "-table-pending"; 		
+		toggleExpansion(table_to_expand, "expand-food-resource-pending"); 
+	}) 
 
     $(".start-edit").click(function() {
 		CKEDITOR.disableAutoInline = true;
@@ -137,7 +145,7 @@ symbol should be toggled (e.g., "+" to "-" if expanding an element).
 */
 function show(idToShow, classToToggleExpandSymbol) {
 	$("#"+idToShow).slideDown("medium", function() {
-		$(this).show();
+		$(this).show(); 
 		$(this).parent().find("." + classToToggleExpandSymbol).html("-"); 
 	});
 }
@@ -203,30 +211,40 @@ function removeFoodResource() {
         		id: foodResourceId
         	},
         	function(data) {
-        		hide("food-resource-" + foodResourceId);
-        		hide("food-resource-" + foodResourceId + "-table");
+        		if (data["is_approved"]) {
+        			// Hide corresponding approved resource table.
+	        		hide("food-resource-" + foodResourceId);
+	        		hide("food-resource-" + foodResourceId + "-table");
+	        		
+	        		// Reduce total number of food resources.
+	        		var currentNumResources = 
+	        			$("#all-num-resources").html() - 1;
+	        		$("#all-num-resources").html(currentNumResources);
 
-        		// Reduce total number of food resources.
-        		var currentNumResources = $("#all-num-resources").html() - 1;
-        		$("#all-num-resources").html(currentNumResources);
+	        		// Reduce individual number of food resources.
+	        		var individualNumResources = $("#food-resource-" 
+	        			+ foodResourceId).parent().parent().parent()
+	        			.find(".total-num-resources").html();
+	        		individualNumResources--; 
+	        		$("#food-resource-" + foodResourceId).parent().parent()
+	        			.parent().find(".total-num-resources")
+	        			.html(individualNumResources); 
 
-        		// Reduce individual number of food resources.
-        		var individualNumResources = $("#food-resource-" 
-        			+ foodResourceId).parent().parent().parent()
-        			.find(".total-num-resources").html();
-        		individualNumResources--; 
-        		$("#food-resource-" + foodResourceId).parent().parent().parent()
-        			.find(".total-num-resources").html(individualNumResources); 
-
-        		if (individualNumResources == 0) {
-        			var header = $("#food-resource-" + foodResourceId)
-        				.parent().parent().parent()
-        				.find(".admin-food-resource-type-header");
-        			var headerIndex = header.attr("id").indexOf("-header"); 
-        			var foodResourceType = header.attr("id")
-        				.substring(0, headerIndex);
-        			var html = getNoResourcesHtml(foodResourceType);
-        			header.after(html);
+	        		if (individualNumResources == 0) {
+	        			var header = $("#food-resource-" + foodResourceId)
+	        				.parent().parent().parent()
+	        				.find(".admin-food-resource-type-header");
+	        			var headerIndex = header.attr("id").indexOf("-header"); 
+	        			var foodResourceType = header.attr("id")
+	        				.substring(0, headerIndex);
+	        			var html = getNoResourcesHtml(foodResourceType);
+	        			header.after(html);
+        			}
+        		}
+        		else {
+        			// Hide corresponding pending resource table.
+        			hide("food-resource-pending-" + foodResourceId);
+	        		hide("food-resource-" + foodResourceId + "-table-pending");
         		}
         	});  
 	});	
@@ -252,7 +270,7 @@ function clearTablesOfFoodResources() {
 function getNoResourcesHtml(resourceInfoId) {
 	var html = 
 	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">' +
-	'		<div class="no-resources-message">None to display.</div>' +
+		'<div class="no-resources-message">None to display.</div>' +
 	'</div>';
 	return html;
 }
