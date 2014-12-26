@@ -266,7 +266,7 @@ def post_guest_add():
 def admin():
 	resources = {}
 	resources['farmers-markets'] = FoodResource.query.filter_by(location_type="FARMERS_MARKET", is_approved=True).order_by(FoodResource.name).all()
-	resources['meals-on-wheels'] = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS", is_approved=True).order_by(FoodResource.name).all()
+	resources['senior-meals'] = FoodResource.query.filter_by(location_type="SENIOR_MEAL", is_approved=True).order_by(FoodResource.name).all()
 	resources['food-cupboards'] = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD", is_approved=True).order_by(FoodResource.name).all()
 	resources['share-host-sites'] = FoodResource.query.filter_by(location_type="SHARE", is_approved=True).order_by(FoodResource.name).all()
 	resources['soup-kitchens'] = FoodResource.query.filter_by(location_type="SOUP_KITCHEN", is_approved=True).order_by(FoodResource.name).all()
@@ -414,7 +414,7 @@ def invite_sent():
 @app.route("/_admin_remove_filters")
 def get_all_food_resource_data():
 	farmers_markets = FoodResource.query.filter_by(location_type="FARMERS_MARKET", is_approved=True).order_by(FoodResource.name).all()
-	meals_on_wheels = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS", is_approved=True).order_by(FoodResource.name).all()
+	senior_meals = FoodResource.query.filter_by(location_type="SENIOR_MEAL", is_approved=True).order_by(FoodResource.name).all()
 	food_cupboards = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD", is_approved=True).order_by(FoodResource.name).all()
 	share_host_sites = FoodResource.query.filter_by(location_type="SHARE", is_approved=True).order_by(FoodResource.name).all()
 	soup_kitchens = FoodResource.query.filter_by(location_type="SOUP_KITCHEN", is_approved=True).order_by(FoodResource.name).all()
@@ -422,7 +422,7 @@ def get_all_food_resource_data():
 
 	return jsonify(farmers_markets=[i.serialize_food_resource() for i in 
 			farmers_markets],
-		meals_on_wheels=[i.serialize_food_resource() for i in meals_on_wheels],
+		senior_meals=[i.serialize_food_resource() for i in senior_meals],
 		food_cupboards=[i.serialize_food_resource() for i in food_cupboards],
 		share_host_sites=[i.serialize_food_resource() for i in 
 			share_host_sites],
@@ -445,7 +445,7 @@ def get_filtered_food_resource_data():
 
 	# Create empty arrays to hold food resources.
 	farmers_markets = []
-	meals_on_wheels = []
+	senior_meals = []
 	food_cupboards = []
 	share_host_sites = []
 	soup_kitchens = []
@@ -461,10 +461,10 @@ def get_filtered_food_resource_data():
 			zip_code # Zip code by which to filter.
 		)
 
-		# Filter for Meals on Wheels with a specific zip code.
+		# Filter for senior meals with a specific zip code.
 		get_food_resources_by_location_type_and_zip_code(
-			meals_on_wheels, # List to populate.
-			"MEALS_ON_WHEELS", # Location type by which to filter.
+			senior_meals, # List to populate.
+			"SENIOR_MEAL", # Location type by which to filter.
 			zip_code # Zip code by which to filter.
 		)
 
@@ -505,10 +505,10 @@ def get_filtered_food_resource_data():
 			"FARMERS_MARKET" # Location type by which to filter.
 		)
 
-		# Filter for meals on wheels without a specific zip code.
+		# Filter for senior meals without a specific zip code.
 		get_food_resources_by_location_type(
-			meals_on_wheels, # List to populate.
-			"MEALS_ON_WHEELS" # Location type by which to filter.
+			senior_meals, # List to populate.
+			"SENIOR_MEAL" # Location type by which to filter.
 		)
 
 		# Filter for food cupboards without a specific zip code.
@@ -536,7 +536,7 @@ def get_filtered_food_resource_data():
 		)
 
 	# Filter each list by other boolean criteria.
-	for list_to_filter in [farmers_markets, meals_on_wheels, food_cupboards, 
+	for list_to_filter in [farmers_markets, senior_meals, food_cupboards, 
 		share_host_sites, soup_kitchens, wic_offices]:
 		filter_food_resources(list_to_filter, has_families_and_children_filter, 
 			has_seniors_filter, has_wheelchair_accessible_filter,
@@ -544,7 +544,7 @@ def get_filtered_food_resource_data():
 
 	return jsonify(farmers_markets=[i.serialize_food_resource() for i in 
 			farmers_markets],
-		meals_on_wheels=[i.serialize_food_resource() for i in meals_on_wheels],
+		senior_meals=[i.serialize_food_resource() for i in senior_meals],
 		food_cupboards=[i.serialize_food_resource() for i in food_cupboards],
 		share_host_sites=[i.serialize_food_resource() for i in 
 			share_host_sites],

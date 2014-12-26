@@ -279,7 +279,7 @@
 	<!-- Total number of food resources in the database. --> 
 	<div class="row">
 		<div class="small-12 columns">
-			{% set total_num_resources = resources["farmers-markets"]|count + resources["meals-on-wheels"]|count + resources["food-cupboards"]|count + resources["share-host-sites"]|count + resources["soup-kitchens"]|count + resources["wic-offices"]|count %}
+			{% set total_num_resources = resources["farmers-markets"]|count + resources["senior-meals"]|count + resources["food-cupboards"]|count + resources["share-host-sites"]|count + resources["soup-kitchens"]|count + resources["wic-offices"]|count %}
 			Displaying <div id="all-num-resources" class="total-num-resources">{{ total_num_resources }}</div> food resource(s).
 		</div>
 	</div>
