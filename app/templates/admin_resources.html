@@ -31,12 +31,12 @@
 	<div id="{{ name_without_spaces }}">
 		<div class="block-header" id="{{ name_without_spaces }}-header">
 			<table>
-			  <thead>
-			    <tr>
-			      <th width="200" class="expand-food-resource-type-pending" id="food-resource-type-expand-pending-{{ name_without_spaces }}">+</th>
-			      <th width="100%">{{ contact.name }}</th>	
-			    </tr>
-			  </thead>
+			  	<thead>
+			    	<tr>
+			      		<th width="200" class="expand-food-resource-type-pending" id="food-resource-type-expand-pending-{{ name_without_spaces }}">+</th>
+			      		<th width="100%">{{ contact.name }}</th>	
+			    	</tr>
+			  	</thead>
 			</table>
 		</div>
 		<div class="admin-food-resource-type-pending" id="{{ name_without_spaces }}-table-pending">
@@ -573,7 +573,6 @@
 	        	function(data) {
 	        		hide("food-resource-pending-" + foodResourceId);
 	        		hide("food-resource-" + foodResourceId + "-table-pending");
-	        		//$("#clear-filters-resources-button").click();
 
 	        		$.getJSON($SCRIPT_ROOT + '/_admin_remove_filters', {
 			        	},

@@ -195,8 +195,12 @@ function removeFoodResource() {
         		id: foodResourceId
         	},
         	function(data) {
+        		// Hide corresponding resource table, regardless of whether 
+        		// resource is pending or approved.
         		hide("food-resource-" + foodResourceId);
         		hide("food-resource-" + foodResourceId + "-table");
+        		hide("food-resource-pending-" + foodResourceId);
+        		hide("food-resource-" + foodResourceId + "-table-pending");
 
         		// Reduce total number of food resources.
         		var currentNumResources = $("#all-num-resources").html() - 1;
@@ -222,12 +226,6 @@ function removeFoodResource() {
         		}
         	});  
 	});	
-}
-
-function incrementTotalNumResourcesByOne() {
-	var num = $("#all-num-resources").html(num);
-	num++; 
-	$("#all-num-resources").html(num); 
 }
 
 function setTotalNumResources(num) {
