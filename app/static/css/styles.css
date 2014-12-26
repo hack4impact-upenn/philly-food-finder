@@ -8,6 +8,7 @@
 /* #343434 - black */
 /* #2D4FA0 - navy */ 
 /* #F7F9F9 - off white */
+/* #999999 - gray */
 
 
 /* background colors */
@@ -241,12 +242,18 @@ img {
 }
 
 #map {
-    display: block;
+    display: inline-block;
     width: 100%;
     height: 70%;
-    margin-bottom: 4em;
+    margin-bottom: 1em;
+    border-style: solid;
+    border-color: #999999; /* gray */
 }
 
+/* Display non-squashed map controls */
+.gmnoprint img {
+    max-width: none; 
+}
 
 /* header page-specific colors */
 #l_admin .page-header .top-bar-section ul li>a{
@@ -267,7 +274,7 @@ img {
 }
 
 /* Edit Food Resources Page */
- #edit-resources-header {
+#edit-resources-header {
   color: #ef3d23;
 }
 
@@ -336,7 +343,9 @@ table thead tr th, table thead tr td {
 }
 
 .expand-food-resource-type:hover,
-.expand-food-resource:hover {
+.expand-food-resource:hover,
+.expand-food-resource-type-pending:hover,
+.expand-food-resource-pending:hover  {
   cursor: pointer; 
 }
 
@@ -355,4 +364,46 @@ table thead tr th, table thead tr td {
 .food-resource-update-button:hover {
   cursor: pointer;
   color: #2D4FA0; /* navy */
+}
+
+#expand-all-resources-button, 
+#collapse-all-resources-button, 
+#apply-filters-resources-button, 
+#clear-filters-resources-button, 
+#map-search-button, 
+#map-filter-button {
+  margin-bottom: 10px;
+}
+
+.no-resources-message {
+  font-style: italic;
+  font-size: 0.8em;
+  margin: 0.4em;
+  line-height: 1.2em; 
+}
+
+#filter-error {
+  color: #ef3d23; /* red */
+}
+
+input[type=checkbox] {
+  margin-left:10px;
+}
+
+.pin-definition {
+  margin-bottom: 1em;
+  text-transform: lowercase; 
+  color: #0f85c7; /* blue */
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  letter-spacing: 1px;
+}
+
+.pin-definition img {
+  width: 20px;  
+  height: auto;
+}
+
+.total-num-resources {
+  display: inline;
+  font-weight: bold; 
 }

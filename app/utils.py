@@ -105,3 +105,39 @@ def get_possible_closing_times():
 		# Closing time is incremented in 15-minute intervals.
 		closing_time += timedelta(0, 15*60) # Number of seconds in 15 minutes.
 	return closing_times
+
+def get_food_resources_by_location_type(list_to_populate, location_type):
+	for food_resource in db.session.query(FoodResource) \
+		.join(FoodResource.address) \
+		.filter(
+			FoodResource.location_type==location_type) \
+		.order_by(FoodResource.name).all():
+		list_to_populate.append(food_resource)
+
+def get_food_resources_by_location_type_and_zip_code(list_to_populate, 
+	location_type, 
+	zip_code):
+	for food_resource in db.session.query(FoodResource) \
+		.join(FoodResource.address) \
+		.filter(
+			Address.zip_code==zip_code,
+			FoodResource.location_type==location_type) \
+		.order_by(FoodResource.name).all():
+		list_to_populate.append(food_resource)
+
+def filter_food_resources(list_to_filter, has_families_and_children_filter, 
+	has_seniors_filter, has_wheelchair_accessible_filter,
+	has_accepts_snap_filter):
+	for food_resource in list(list_to_filter):
+		if has_families_and_children_filter and \
+			food_resource.is_for_family_and_children == False:
+			list_to_filter.remove(food_resource)
+		elif has_seniors_filter and \
+			food_resource.is_for_seniors == False:
+			list_to_filter.remove(food_resource)
+		elif has_wheelchair_accessible_filter and \
+			food_resource.is_wheelchair_accessible == False:
+			list_to_filter.remove(food_resource)
+		elif has_accepts_snap_filter and \
+			food_resource.is_accepts_snap == False:
+			list_to_filter.remove(food_resource)

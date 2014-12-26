@@ -246,6 +246,74 @@
 		    </div>
 		</div>
 
+		{% set field = form.is_for_family_and_children %}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered" id="top-padding-section">
+		      	<label>{{ form.is_for_family_and_children.label }}
+		        	<dd class="error">{{ form.is_for_family_and_children()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+		      	</label>
+		    </div>
+		</div>
+
+		{% set field = form.is_for_seniors %}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered" id="top-padding-section">
+		      	<label>{{ form.is_for_seniors.label }}
+		        	<dd class="error">{{ form.is_for_seniors()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+		      	</label>
+		    </div>
+		</div>
+
+		{% set field = form.is_wheelchair_accessible %}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered" id="top-padding-section">
+		      	<label>{{ form.is_wheelchair_accessible.label }}
+		        	<dd class="error">{{ form.is_wheelchair_accessible()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+		      	</label>
+		    </div>
+		</div>
+
+		{% set field = form.is_accepts_snap %}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered" id="top-padding-section">
+		      	<label>{{ form.is_accepts_snap.label }}
+		        	<dd class="error">{{ form.is_accepts_snap()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+		      	</label>
+		    </div>
+		</div>
+
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered" id="bottom-padding-section">
@@ -279,8 +347,10 @@
 			$("." + dayOfWeekId + "-time-picker").show();
 		{% endfor %}
 
-		var foodResourceTypeString = "{{ food_resource_type }}";
-		$('[name="food-resource-type"]').val(foodResourceTypeString);
+		{% if food_resource_type %}
+			var foodResourceTypeString = "{{ food_resource_type }}";
+			$('[name="food-resource-type"]').val(foodResourceTypeString);
+		{% endif %}
 	}); 
 </script>
 
