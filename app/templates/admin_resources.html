@@ -211,20 +211,24 @@
 							Hours: 
 						</div>
 						<div class="small-9 columns">
-							{% for day in days_of_week %}
-								<div class="row">
-									<div class="small-6 columns">
-										{{day['name']}}
+							{% if resource.are_hours_available %}
+								{% for day in days_of_week %}
+									<div class="row">
+										<div class="small-6 columns">
+											{{ day['name'] }}
+										</div>
+										<div class="small-6 columns">
+											{% for timeslot in resource.timeslots %}
+												{% if timeslot.day_of_week == day['index'] %}
+													{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
+												{% endif %}
+											{% endfor %}
+										</div>
 									</div>
-									<div class="small-6 columns">
-										{% for timeslot in resource.timeslots %}
-											{% if timeslot.day_of_week == day['index'] %}
-												{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
-											{% endif %}
-										{% endfor %}
-									</div>
-								</div>
-							{% endfor %}
+								{% endfor %}
+							{% else %}
+								No hours available.
+							{% endif %}
 						</div> 
 					</div>
 				</div>
@@ -496,18 +500,21 @@
 				}
 			} else {
 				// Provide helpful error message to user.
-				$("#filter-error").html("Zip code consist of exactly 5 digits (0-9).");
+				$("#filter-error")
+					.html("Zip code must consist of exactly 5 digits (0-9).");
 				return; 
 			}
 
 			// Determine which checkboxes are checked.
-			if ($('[id="filter-by-families-and-children"]:checked').length > 0) {
+			if ($('[id="filter-by-families-and-children"]:checked')
+				.length > 0) {
 				hasFamiliesAndChildrenFilter = 1; // TRUE 
 			}
 			if ($('[id="filter-by-seniors"]:checked').length > 0) {
 				hasSeniorsFilter = 1; // TRUE 
 			}
-			if ($('[id="filter-by-wheelchair-accessible"]:checked').length > 0) {
+			if ($('[id="filter-by-wheelchair-accessible"]:checked')
+				.length > 0) {
 				hasWheelchairAccessibleFilter = 1; // TRUE 
 			}
 			if ($('[id="filter-by-accepts-snap"]:checked').length > 0) {
@@ -536,7 +543,8 @@
         				setIndividualNumResources(0, "{{ resource_info.id }}");
         			}
         			else {
-        				totalNumResources += data["{{ resource_info.underscore_id }}"].length;
+        				totalNumResources += 
+        					data["{{ resource_info.underscore_id }}"].length;
         				var html = getResourcesHtml(
         					"{{ resource_info.id }}", 
         					"{{ resource_info.lowercase_name }}", 
@@ -545,20 +553,23 @@
         				$("#{{ resource_info.id }}-header").after(html);
 
         				// Update number of filtered resources. 
-        				var individualNumResources = data["{{ resource_info.underscore_id }}"].length;
-        				setIndividualNumResources(individualNumResources, "{{ resource_info.id }}"); 
+        				var individualNumResources = 
+        					data["{{ resource_info.underscore_id }}"].length;
+        				setIndividualNumResources(individualNumResources, 
+        					"{{ resource_info.id }}"); 
         			}
         		{% endfor %}
 
-        		// Reset the total number of resources count to reflect the applied filters. 
+        		// Reset the total number of resources count to reflect the 
+        		// applied filters. 
         		setTotalNumResources(totalNumResources); 
 
         		// Hide all food resource tables initially.
 				$(".admin-food-resource-type").hide(); 
 				$(".admin-food-resource").hide();
 
-				// If an "Expand" button is pressed, either show or hide the associated
-				// food resource information.
+				// If an "Expand" button is pressed, either show or hide the 
+				// associated food resource information.
 				toggleAdminFoodResourceVisibility();
 
 				// Remove a food resource without reloading page.

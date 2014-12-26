@@ -219,6 +219,12 @@ def guest_new_food_resource():
 			db.session.add(home_number)
 			phone_numbers.append(home_number)
 
+			are_hours_available = request.form['are-hours-available']
+			if are_hours_available == 'yes':
+				are_hours_available = True
+			else:
+				are_hours_available = False
+
 			# Create food resource and store all data in it.
 			food_resource = FoodResource(
 				name = form.name.data, 
@@ -226,6 +232,7 @@ def guest_new_food_resource():
 				description = form.additional_information.data,
 				timeslots = timeslots,
 				address = address,
+				are_hours_available = are_hours_available, 
 				is_approved = False,
 				food_resource_contact = contact, 
 				is_for_family_and_children = form.is_for_family_and_children.data,
