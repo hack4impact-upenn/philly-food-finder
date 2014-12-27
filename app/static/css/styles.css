@@ -318,8 +318,8 @@ table thead tr th, table thead tr td {
   border: none;
 }
 
-#meals-on-wheels-header table thead, 
-#meals-on-wheels-header table {
+#senior-meals-header table thead, 
+#senior-meals-header table {
   background-color: #0f85c7; /* blue */
   border: none; 
 }
