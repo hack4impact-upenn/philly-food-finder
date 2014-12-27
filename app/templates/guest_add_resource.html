@@ -11,6 +11,21 @@
 	<form action="" method="POST" role="form" name="submit_food_resource">
 	    {{ form.hidden_tag() }}
 
+	    <!-- Additional Errors -->
+	    <div class="row">
+		    <div class="large-8 medium-6 medium-centered small-12 columns large-centered 
+		    	medium-centered">
+		        	{% if additional_errors %}
+		                {% for e in additional_errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+		      	</label>
+		    </div>
+		</div>
+
 		<!-- Guest Name -->
 		{% set field = form.your_name %}
 	    <div class="row">
@@ -65,22 +80,7 @@
 			</div>
 		</div>
 
-	    <!-- Food Resource Name -->
-	    <div class="row">
-		    <div class="large-8 medium-6 medium-centered small-12 columns large-centered 
-		    	medium-centered">
-		        	{% if additional_errors %}
-		                {% for e in additional_errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-		      	</label>
-		    </div>
-		</div>
-
-	   <!-- Food Resource Type -->
+	   <!-- Food Resource Name -->
 	    {% set field = form.name %}
 	    <div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -97,6 +97,8 @@
 	            </label>
 			</div>
 		</div>
+
+		<!-- Food Resource Type --> 
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
@@ -243,9 +245,23 @@
 			</div>
 		</div>
 
+		<div class="row">
+			<div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		     	<div class="large-12 small-12 columns" id="middle-padding-section">
+	      			<label>Are hours of operation available?
+				    	<select name='are-hours-available' id="are-hours-available-picker">
+				    		<option value="no">No</option>
+							<option value="yes">Yes</option>
+				    	</select>
+	      			</label>
+	      		</div>
+		 	</div>
+		</div>
+
 		{% for day_of_week in days_of_week %}
 
-		<div class="row">
+		<div class="row open-or-closed-container">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
 	      		<div class="large-4 small-4 columns" id="middle-padding-section">
@@ -384,6 +400,8 @@
 		var dayOfWeekId, openOrClosedSelectorName, openingTimeSelectorName, 
 			closingTimeSelectorName; 
 
+		// Set timeslot drop-downs dynamically. The Flask form cannot 
+		// automatically pre-load the drop-downs.
 		{% for timeslot in timeslots %}
 			dayOfWeekId = {{ timeslot.day_of_week }};
 			openingTimeString = "{{ timeslot.start_time.strftime('%H') }}"
@@ -401,8 +419,15 @@
 			$("." + dayOfWeekId + "-time-picker").show();
 		{% endfor %}
 
+		// Set food resource type drop-down dynamically. The Flask form cannot
+		// automatically pre-load the drop-downs.
 		var foodResourceTypeString = "{{ food_resource_type }}";
 		$('[name="food-resource-type"]').val(foodResourceTypeString);
+
+		// Set "Are hours available?" drop-down dynamically. The Flask form 
+		// cannot automatically pre-load the drop-downs. 
+		$('select#are-hours-available-picker').val("no");
+		$(".open-or-closed-container").hide();
 	}); 
 </script>
 

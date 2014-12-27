@@ -23,8 +23,11 @@ def index():
 @login_required
 def new(id=None):
 	form = AddNewFoodResourceForm(request.form)
+
+	# Used to dynamically pre-load the form with existing database contents.
 	timeslots = []
 	food_resource_type = ""
+	are_hours_available = False
 
 	# Create a new food resource. 
 	if id is None:
@@ -59,6 +62,7 @@ def new(id=None):
 		for timeslot in food_resource.timeslots:
 			timeslots.append(timeslot)
 		food_resource_type = food_resource.location_type
+		are_hours_available = food_resource.are_hours_available
 
 	# POST request.
 	additional_errors = []
@@ -109,6 +113,12 @@ def new(id=None):
 			db.session.add(home_number)
 			phone_numbers.append(home_number)
 
+			are_hours_available = request.form['are-hours-available']
+			if are_hours_available == 'yes':
+				are_hours_available = True
+			else:
+				are_hours_available = False
+
 			# Create food resource and store all data in it.
 			food_resource = FoodResource(
 				name=form.name.data, 
@@ -119,7 +129,8 @@ def new(id=None):
 				is_for_family_and_children = form.is_for_family_and_children.data,
 				is_for_seniors = form.is_for_seniors.data,
 				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
-				is_accepts_snap = form.is_accepts_snap.data)
+				is_accepts_snap = form.is_accepts_snap.data, 
+				are_hours_available = are_hours_available)
 
 			# Assign a type to the food resource. 
 			food_resource.location_type = request.form['food-resource-type']
@@ -133,10 +144,16 @@ def new(id=None):
 	# render the page. 
 	return render_template('add_resource.html', form=form, 
 		days_of_week=days_of_week, resources_info=resources_info_singular, 
-		additional_errors=additional_errors, title=title, timeslots=timeslots, 
-		food_resource_type=food_resource_type, 
+		additional_errors=additional_errors, title=title, 
+
+		# Used to populate drop-downs for opening and closing times.
 		possible_opening_times=get_possible_opening_times(), 
-		possible_closing_times=get_possible_closing_times())
+		possible_closing_times=get_possible_closing_times(),
+
+		# Used to dynamically pre-load form.
+		timeslots=timeslots, 
+		food_resource_type=food_resource_type, 
+		are_hours_available=are_hours_available)
 
 #Allows non-admins to add food resources
 @app.route('/propose-resource', methods=['GET', 'POST'])
@@ -202,6 +219,12 @@ def guest_new_food_resource():
 			db.session.add(home_number)
 			phone_numbers.append(home_number)
 
+			are_hours_available = request.form['are-hours-available']
+			if are_hours_available == 'yes':
+				are_hours_available = True
+			else:
+				are_hours_available = False
+
 			# Create food resource and store all data in it.
 			food_resource = FoodResource(
 				name = form.name.data, 
@@ -209,6 +232,7 @@ def guest_new_food_resource():
 				description = form.additional_information.data,
 				timeslots = timeslots,
 				address = address,
+				are_hours_available = are_hours_available, 
 				is_approved = False,
 				food_resource_contact = contact, 
 				is_for_family_and_children = form.is_for_family_and_children.data,
