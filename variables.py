@@ -84,3 +84,12 @@ days_of_week = [
 	{'id' : "saturday",    
                 'name': "Saturday",     
                 'index' : 6}]
+
+enum_to_english = {
+        'FARMERS_MARKET': "Farmers' Market",
+        'FOOD_CUPBOARD': 'Food Cupboard',
+        'SENIOR_MEAL': 'Senior Meal',
+        'SHARE': 'SHARE Host Site',
+        'SOUP_KITCHEN': 'Soup Kitchen',
+        'WIC_OFFICE': 'WIC Office'
+}

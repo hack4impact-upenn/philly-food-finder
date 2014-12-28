@@ -7,7 +7,7 @@ from flask import render_template, flash, redirect, session, url_for, request, \
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import resources_info_singular, resources_info_plural, \
-	days_of_week
+	days_of_week, enum_to_english
 from datetime import time
 from utils import generate_password
 from flask_user import login_required, signals
@@ -275,7 +275,7 @@ def admin():
 	contacts = FoodResourceContact.query.all()
 
 	return render_template('admin_resources.html', food_resource_contacts = contacts,
-		resources_info=resources_info_plural, resources=resources, 
+		resources_info=resources_info_plural, resources=resources, enum_to_english=enum_to_english,
 		days_of_week=days_of_week)
 
 @app.route('/admin')
