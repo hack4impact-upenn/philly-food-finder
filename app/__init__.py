@@ -57,6 +57,12 @@ class ConfigClass(object):
     USER_AFTER_REGISTER_ENDPOINT = 'invite_sent'
     USER_AFTER_CONFIRM_ENDPOINT = 'user.change_password'
 
+    # Flask-WTF settings
+    RECAPTCHA_PUBLIC_KEY = '6LfRvf8SAAAAAJ4rnEu4hNukozjLnhaQ04LGbC7z'
+    RECAPTCHA_PRIVATE_KEY = ''
+    #RECAPTCHA_API_SERVER = 'https://www.google.com/recaptcha/api/siteverify'
+    #RECAPTCHA_OPTIONS = 
+
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')
 
