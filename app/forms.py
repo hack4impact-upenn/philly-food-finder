@@ -110,6 +110,7 @@ class AddNewFoodResourceForm(Form):
         SNAP.')
 
     def validate(self):
+        # Validate any other individual fields
         return super(Form, self).validate()
 
 # All information from AddNewFoodResourceForm plus information 

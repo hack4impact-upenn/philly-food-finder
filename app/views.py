@@ -23,6 +23,10 @@ def index():
 @login_required
 def new(id=None):
 	form = AddNewFoodResourceForm(request.form)
+	for timeslots in form.daily_timeslots:
+		for timeslot in timeslots.timeslots:
+			timeslot.starts_at.choices=get_possible_opening_times()
+			timeslot.ends_at.choices=get_possible_closing_times()
 
 	# Used to dynamically pre-load the form with existing database contents.
 	timeslots = []
@@ -55,9 +59,11 @@ def new(id=None):
 		form.phone_number.data = food_resource.phone_numbers[0].number
 		form.website.data = food_resource.url
 		form.additional_information.data = food_resource.description
-		form.is_for_family_and_children.data = food_resource.is_for_family_and_children
+		form.is_for_family_and_children.data = \
+			food_resource.is_for_family_and_children
 		form.is_for_seniors.data = food_resource.is_for_seniors
-		form.is_wheelchair_accessible.data = food_resource.is_wheelchair_accessible
+		form.is_wheelchair_accessible.data = \
+			food_resource.is_wheelchair_accessible
 		form.is_accepts_snap.data = food_resource.is_accepts_snap
 
 		# Data that must be interpreted before being rendered.
@@ -66,10 +72,15 @@ def new(id=None):
 		else:
 			form.are_hours_available.data = "no"
 
-		# Fields that must be dyanamically updated using JavaScript.
 		for timeslot in food_resource.timeslots:
-			timeslots.append(timeslot)
-		are_hours_available = food_resource.are_hours_available
+			index = timeslot.day_of_week
+			start_time = timeslot.start_time
+			end_time = timeslot.end_time
+			form.daily_timeslots[index].timeslots[0].starts_at.data = \
+				start_time.strftime("%H:%M")
+			form.daily_timeslots[index].timeslots[0].ends_at.data = \
+				end_time.strftime("%H:%M")
+			form.is_open[index].is_open.data = "open"
 
 	# POST request.
 	additional_errors = []
