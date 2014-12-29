@@ -78,27 +78,25 @@ $(document).ready(function() {
 
 	// Hide all open-and-close and time selectors iniially.
 	// Used on "Add New / Edit Resource" page.
-	$("[class$='-time-picker']").hide(); 
+	$(".time-pickers").hide(); 
 	$(".open-or-closed-container").hide(); 
 
 	// Toggle visibility of time selectors.
 	// Used on "Add New / Edit Resource" page.
-	$('select.open-or-closed').on('change', function (e) {
+	$('select[id^="is_open"]').on('change', function (e) {
 	    var optionSelected = $("option:selected", this);
 	    var valueSelected = this.value;
-	    var parentName = optionSelected.parent().attr("name"); 
-	    var endIndex = parentName.indexOf("-"); 
-	    var dayOfWeek = parentName.substring(0, endIndex);
+	    var divToToggle = $(this).parent().parent().parent().parent().find(".time-pickers"); 
 	    if (valueSelected == "open") {
-	    	$("." + dayOfWeek + "-time-picker").show();
+	    	divToToggle.show(); 
 	    } else if (valueSelected == "closed") {
-	    	$("." + dayOfWeek + "-time-picker").hide();
+	    	divToToggle.hide(); 
 	    }
 	});
 
 	// Toggle visibility of open-and-close selectors. 
 	// Used on "Add New / Edit Resource" page.
-	$('select#are-hours-available-picker').on('change', function (e) {
+	$('select#are_hours_available').on('change', function (e) {
 	    var optionSelected = $("option:selected", this);
 	    var valueSelected = this.value;
 	    if (valueSelected == "yes") {

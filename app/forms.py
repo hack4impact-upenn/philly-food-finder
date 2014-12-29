@@ -9,14 +9,23 @@ from flask_user.forms import RegisterForm, unique_email_validator
 from flask_user.translations import lazy_gettext as _
 
 class TimeSlotForm(Form):
-    opens_at = SelectField(u'Opens at', choices=[
-        ('8:00 AM', "8:00 AM")]) 
-    closes_at = SelectField(u'Closes at', choices=[
-        ('8:00 AM', "8:00 AM")]) 
+    starts_at = SelectField(u'Opens at', choices=[
+        ('08:00', "8:00 AM")]) 
+    ends_at = SelectField(u'Closes at', choices=[
+        ('08:00', "8:00 AM")]) 
+
+    # Write a custom back-end validator
+    #def validate(self):
+
+    #def get_start_time(self):
+        #return get_time_from_string
+
+    #def get_end_time(self):
+
 
 class IsOpenForm(Form):
     is_open = SelectField(u'Sunday', 
-        choices=[('closed', 'Open'), ('open', 'Closed')])
+        choices=[('closed', 'Closed'), ('open', 'Open')])
 
     def set_label(self, label):
         is_open.label = label
