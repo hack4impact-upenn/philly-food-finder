@@ -44,7 +44,9 @@ def new(id=None):
 		if food_resource is None:
 			return render_template('404.html')
 
+		# Data that can be directly retrieved from the database.
 		form.name.data = food_resource.name
+		form.location_type.data = food_resource.location_type
 		form.address_line1.data = food_resource.address.line1
 		form.address_line2.data = food_resource.address.line2
 		form.address_city.data = food_resource.address.city
@@ -58,16 +60,21 @@ def new(id=None):
 		form.is_wheelchair_accessible.data = food_resource.is_wheelchair_accessible
 		form.is_accepts_snap.data = food_resource.is_accepts_snap
 
+		# Data that must be interpreted before being rendered.
+		if food_resource.are_hours_available == True:
+			form.are_hours_available.data = "yes"
+		else:
+			form.are_hours_available.data = "no"
+
 		# Fields that must be dyanamically updated using JavaScript.
 		for timeslot in food_resource.timeslots:
 			timeslots.append(timeslot)
-		food_resource_type = food_resource.location_type
 		are_hours_available = food_resource.are_hours_available
 
 	# POST request.
 	additional_errors = []
 	if request.method == 'POST' and form.validate(): 
-		food_resource_type = request.form['food-resource-type']
+		food_resource_type = form.location_type.data
 
 		# Create the food resource's timeslots.
 		are_timeslots_valid = True

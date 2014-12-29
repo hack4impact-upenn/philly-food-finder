@@ -78,7 +78,7 @@ $(document).ready(function() {
 
 	// Hide all open-and-close and time selectors iniially.
 	// Used on "Add New / Edit Resource" page.
-	$(".time-pickers").hide(); 
+	/*$(".time-pickers").hide(); 
 	$(".open-or-closed-container").hide(); 
 
 	// Toggle visibility of time selectors.
@@ -104,7 +104,7 @@ $(document).ready(function() {
 	    } else if (valueSelected == "no") {
 	    	$(".open-or-closed-container").hide();
 	    }
-	});	
+	});	*/
 });
 
 /**
