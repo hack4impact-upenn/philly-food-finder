@@ -575,6 +575,22 @@ def save_page():
 		db.session.commit()
 	return 'Added' + data + 'to database.'
 
+@app.route('/_search_query', methods=['GET', 'POST'])
+def save_search_query():
+	# Only record searches for regular users
+	if(current_user.is_authenticated()):
+		return
+	zip_code = request.form.get('zipCode')
+	if(zip_code):
+		zip_requested = ZIPSearch.query.filter_by(zip_code = zip_code).first()
+		if(zip_requested):
+			zip_requested.search_count = zip_requested.search_count + 1
+		else:
+			zip_requested = ZIPSearch(zip_code = zip_code, search_count = 1)
+			db.session.add(zip_requested)
+		db.session.commit()
+	return 'Recorded a search for' + zip_code
+
 @app.route('/_remove')
 def remove():
 	id = request.args.get("id", type=int)
@@ -615,6 +631,10 @@ def approve():
 @app.route('/about')
 def about():
 	return render_template('about.html', html_string = HTML.query.filter_by(page = 'about-page').first())
+
+@app.route('/chart')
+def chart():
+	return render_template('charts.html', zip_codes = ZIPSearch.query.order_by(ZIPSearch.search_count.desc()).limit(15))
 
 @app.route('/faq')
 def faq():

@@ -29,6 +29,12 @@
             .html("<small class=error>Zip code must consist of exactly 5 digits (0-9).</small>");
             return;
         }
+        // Store search result in database
+        var json_data = {
+          zipCode: zipCode
+        };
+        $.post(url = $SCRIPT_ROOT + '/_search_query', data = json_data);
+
 
         GMaps.geocode({
           address: $('#address').val().trim(),
