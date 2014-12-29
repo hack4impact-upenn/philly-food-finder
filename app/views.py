@@ -94,19 +94,29 @@ def new(id=None):
 		if are_hours_available: 
 			for i, timeslots in enumerate(form.daily_timeslots):
 				for timeslot in timeslots.timeslots:
-					start_time = get_time_from_string(timeslot.starts_at.data)
-					end_time = get_time_from_string(timeslot.ends_at.data)
-					timeslot = TimeSlot(day_of_week=i, start_time=start_time, 
-						end_time=end_time)
-					all_timeslots.append(timeslot)
+					# Check if food resource is open on the i-th day of the 
+					# week.
+					is_open = True
+					if form.is_open[i].is_open.data == "closed":
+						is_open = False
 
-					# Check that timeslot is valid.
-					if start_time >= end_time: 
-						are_timeslots_valid = False
-						additional_errors.append("Opening time must be before \
-							closing time.")
-					else:
-						db.session.add(timeslot)
+					# Create timeslots only if the food resource is open on the
+					# i-th day of the week.
+					if is_open:
+						start_time = \
+							get_time_from_string(timeslot.starts_at.data)
+						end_time = get_time_from_string(timeslot.ends_at.data)
+						timeslot = TimeSlot(day_of_week=i, 
+							start_time=start_time, end_time=end_time)
+						all_timeslots.append(timeslot)
+
+						# Check that timeslot is valid.
+						if start_time >= end_time: 
+							are_timeslots_valid = False
+							additional_errors.append("Opening time must be \
+								before closing time.")
+						else:
+							db.session.add(timeslot)
 
 		# Create the food resource's remaining attributes. 
 		if are_timeslots_valid:
@@ -118,7 +128,6 @@ def new(id=None):
 				if fr:
 					db.session.delete(fr)
 					db.session.commit()
-			print "merge"
 			# Create food resource's address.
 			address = Address(line1=form.address_line1.data, 
 				line2=form.address_line2.data, 
@@ -140,14 +149,13 @@ def new(id=None):
 				description=form.additional_information.data,
 				timeslots=all_timeslots,
 				address=address, 
-				is_for_family_and_children = form.is_for_family_and_children.data,
+				is_for_family_and_children = \
+					form.is_for_family_and_children.data,
 				is_for_seniors = form.is_for_seniors.data,
 				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
 				is_accepts_snap = form.is_accepts_snap.data, 
 				are_hours_available = are_hours_available, 
 				location_type = food_resource_type)
-			print "faster"
-			print food_resource
 			# Commit all database changes. 
 			db.session.add(food_resource)
 			db.session.commit()
@@ -178,7 +186,7 @@ def guest_new_food_resource():
 		contact = FoodResourceContact.query.filter_by(
 			email = guest_email, name = guest_name).first()
 
-		if(contact is None):
+		if (contact is None):
 			contact = FoodResourceContact(name = guest_name, email = guest_email,
 				phone_number = guest_phone_number)
 			db.session.add(contact)

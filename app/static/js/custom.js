@@ -78,15 +78,18 @@ $(document).ready(function() {
 
 	// Hide all open-and-close and time selectors iniially.
 	// Used on "Add New / Edit Resource" page.
-	/*$(".time-pickers").hide(); 
+	$(".time-pickers").hide(); 
 	$(".open-or-closed-container").hide(); 
+	toggleAreHoursAvailable();
+	toggleOpenOrClosed(); 
 
 	// Toggle visibility of time selectors.
 	// Used on "Add New / Edit Resource" page.
 	$('select[id^="is_open"]').on('change', function (e) {
 	    var optionSelected = $("option:selected", this);
 	    var valueSelected = this.value;
-	    var divToToggle = $(this).parent().parent().parent().parent().find(".time-pickers"); 
+	    var divToToggle = $(this).parent().parent().parent().parent()
+	    	.find(".time-pickers"); 
 	    if (valueSelected == "open") {
 	    	divToToggle.show(); 
 	    } else if (valueSelected == "closed") {
@@ -97,15 +100,34 @@ $(document).ready(function() {
 	// Toggle visibility of open-and-close selectors. 
 	// Used on "Add New / Edit Resource" page.
 	$('select#are_hours_available').on('change', function (e) {
-	    var optionSelected = $("option:selected", this);
-	    var valueSelected = this.value;
-	    if (valueSelected == "yes") {
-	    	$(".open-or-closed-container").show();
-	    } else if (valueSelected == "no") {
-	    	$(".open-or-closed-container").hide();
-	    }
-	});	*/
+	    toggleAreHoursAvailable();
+	});	
 });
+
+function toggleAreHoursAvailable() {
+	var element = $('select#are_hours_available')[0];
+	var optionSelected = $("option:selected", element);
+    var valueSelected = element.value;
+    if (valueSelected == "yes") {
+    	$(".open-or-closed-container").show();
+    } else if (valueSelected == "no") {
+    	$(".open-or-closed-container").hide();
+    }
+}
+
+function toggleOpenOrClosed() {
+	$('select[id^="is_open"]').each(function(index) {
+		var optionSelected = $("option:selected", this);
+	    var valueSelected = this.value;
+	    var divToToggle = $(this).parent().parent().parent().parent()
+	    	.find(".time-pickers"); 
+	    if (valueSelected == "open") {
+	    	divToToggle.show(); 
+	    } else if (valueSelected == "closed") {
+	    	divToToggle.hide(); 
+	    }
+	})
+}
 
 /**
 @function toggleExpansion Expand or collapse the given ID if it is currently
