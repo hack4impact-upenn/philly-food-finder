@@ -1,7 +1,8 @@
 from app import app
 from flask import current_app
 from flask.ext.wtf import Form
-from wtforms.validators import InputRequired, Length, URL, Email, Optional
+from wtforms.validators import InputRequired, Length, URL, Email, Optional, \
+    ValidationError
 from wtforms import TextField, TextAreaField, validators, PasswordField, \
     StringField, BooleanField, SubmitField, HiddenField, SelectField, \
     SelectField, FieldList, FormField
@@ -9,13 +10,8 @@ from flask_user.forms import RegisterForm, unique_email_validator
 from flask_user.translations import lazy_gettext as _
 
 class TimeSlotForm(Form):
-    starts_at = SelectField(u'Opens at', choices=[
-        ('08:00', "8:00 AM")]) 
-    ends_at = SelectField(u'Closes at', choices=[
-        ('08:00', "8:00 AM")]) 
-
-    # Write a custom back-end validator
-    #def validate(self):
+    starts_at = SelectField(u'Opens at') 
+    ends_at = SelectField(u'Closes at') 
 
     #def get_start_time(self):
         #return get_time_from_string
@@ -108,10 +104,6 @@ class AddNewFoodResourceForm(Form):
         is wheelchair accessible.')
     is_accepts_snap = BooleanField('Check off if this food resource accepts \
         SNAP.')
-
-    def validate(self):
-        # Validate any other individual fields
-        return super(Form, self).validate()
 
 # All information from AddNewFoodResourceForm plus information 
 # about the person submitting the food resource for evaluation. 

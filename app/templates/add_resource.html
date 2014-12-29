@@ -217,6 +217,9 @@
 		{% set day_of_week = days_of_week[loop.index0] %}
 		{% set is_open = form.is_open[loop.index0].is_open %}
 
+		{{ form.is_open[loop.index0].form.hidden_tag() }}
+		{{ multi_timeslot_form.form.hidden_tag() }}
+
 			<div class="row open-or-closed-container">
 			    <div class="large-8 medium-8 medium-centered small-8 small-centered
 			     columns large-centered">
@@ -234,6 +237,7 @@
 			      			</label>
 			      		</div>
 			      		{% for timeslot_form in multi_timeslot_form.timeslots %} 
+			      			{{ timeslot_form.form.hidden_tag() }}
 				      		<div class="large-8 small-8 columns time-pickers" id="middle-padding-section">
 					      		<div class="row">
 						      		<div class="large-6 small-6 columns" id="middle-padding-section">
@@ -370,46 +374,6 @@
 
 <script>
 	$(document).ready(function() {
-
-		// Set food resource timeslots.
-		/*var dayOfWeekId, openOrClosedSelectorName, openingTimeSelectorName, 
-			closingTimeSelectorName; 
-
-		// Set timeslot drop-downs dynamically. The Flask form cannot 
-		// automatically pre-load the drop-downs.
-		{% for timeslot in timeslots %}
-			dayOfWeekId = {{ timeslot.day_of_week }};
-			openingTimeString = "{{ timeslot.start_time.strftime('%H') }}"
-				+ ":" + "{{ timeslot.start_time.strftime('%M') }}";
-			closingTimeString = "{{ timeslot.end_time.strftime('%H') }}"
-				+ ":" + "{{ timeslot.end_time.strftime('%M') }}";
-
-			openOrClosedSelectorName = dayOfWeekId + "-open-or-closed";
-			openingTimeSelectorName = dayOfWeekId + "-opening-time";
-			closingTimeSelectorName = dayOfWeekId + "-closing-time";
-
-			$('[name="' + openOrClosedSelectorName + '"]').val("open");
-			$('[name="' + openingTimeSelectorName + '"]').val(openingTimeString);
-			$('[name="' + closingTimeSelectorName + '"]').val(closingTimeString);
-			$("." + dayOfWeekId + "-time-picker").show();
-		{% endfor %}
-
-		// Set food resource type drop-down dynamically. The Flask form cannot
-		// automatically pre-load the drop-downs.
-		{% if food_resource_type %}
-			var foodResourceTypeString = "{{ food_resource_type }}";
-			$('[name="food-resource-type"]').val(foodResourceTypeString);
-		{% endif %}
-
-		// Set "Are hours available?" drop-down dynamically. The Flask form 
-		// cannot automatically pre-load the drop-downs. 
-		{% if are_hours_available %}
-			$('select#are-hours-available-picker').val("yes"); 
-			$(".open-or-closed-container").show();
-		{% else %}
-			$('select#are-hours-available-picker').val("no");
-			$(".open-or-closed-container").hide();
-		{% endif %}*/
 	}); 
 </script>
 
