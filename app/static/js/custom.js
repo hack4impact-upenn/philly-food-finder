@@ -106,13 +106,15 @@ $(document).ready(function() {
 
 function toggleAreHoursAvailable() {
 	var element = $('select#are_hours_available')[0];
-	var optionSelected = $("option:selected", element);
-    var valueSelected = element.value;
-    if (valueSelected == "yes") {
-    	$(".open-or-closed-container").show();
-    } else if (valueSelected == "no") {
-    	$(".open-or-closed-container").hide();
-    }
+	if (element) {
+		var optionSelected = $("option:selected", element);
+	    var valueSelected = element.value;
+	    if (valueSelected == "yes") {
+	    	$(".open-or-closed-container").show();
+	    } else if (valueSelected == "no") {
+	    	$(".open-or-closed-container").hide();
+	    }
+	}
 }
 
 function toggleOpenOrClosed() {

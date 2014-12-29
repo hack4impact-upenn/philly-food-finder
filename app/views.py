@@ -171,8 +171,11 @@ def new(id=None):
 @app.route('/propose-resource', methods=['GET', 'POST'])
 def guest_new_food_resource():
 	form = NonAdminAddNewFoodResourceForm(request.form)
-	timeslots = []
-	food_resource_type = "FARMERS_MARKET"
+	for timeslots in form.daily_timeslots:
+		for timeslot in timeslots.timeslots:
+			timeslot.starts_at.choices=get_possible_opening_times()
+			timeslot.ends_at.choices=get_possible_closing_times()
+	form.location_type.data = "FARMERS_MARKET"
 
 	additional_errors = []
 	if request.method == 'POST' and form.validate(): 
@@ -182,37 +185,50 @@ def guest_new_food_resource():
 		guest_email = form.your_email_address.data
 		guest_phone_number = form.your_phone_number.data
 
-		#Checks to see if this contact exists
+		# Check to see if this contact exists.
 		contact = FoodResourceContact.query.filter_by(
 			email = guest_email, name = guest_name).first()
 
 		if (contact is None):
-			contact = FoodResourceContact(name = guest_name, email = guest_email,
-				phone_number = guest_phone_number)
+			contact = FoodResourceContact(name=guest_name, 
+				email=guest_email, phone_number=guest_phone_number)
 			db.session.add(contact)
 			db.session.commit()
 
-		food_resource_type = request.form['food-resource-type']
+		if form.are_hours_available.data == "yes":
+			are_hours_available = True
+		else:
+			are_hours_available = False
 
 		# Create the food resource's timeslots.
 		are_timeslots_valid = True
-		for i, day_of_week in enumerate(days_of_week): 
-			if (request.form[str(day_of_week['index']) + '-open-or-closed'] == "open"):
-				opening_time = request.form[str(day_of_week['index']) + '-opening-time']
-				start_time = get_time_from_string(opening_time)
-				closing_time = request.form[str(day_of_week['index']) + '-closing-time']
-				end_time = get_time_from_string(closing_time)
-				timeslot = TimeSlot(day_of_week=i, start_time=start_time, 
-					end_time=end_time)
-				timeslots.append(timeslot)
+		all_timeslots = []
+		if are_hours_available: 
+			for i, timeslots in enumerate(form.daily_timeslots):
+				for timeslot in timeslots.timeslots:
+					# Check if food resource is open on the i-th day of the 
+					# week.
+					is_open = True
+					if form.is_open[i].is_open.data == "closed":
+						is_open = False
 
-				# Check that timeslot is valid.
-				if start_time >= end_time: 
-					are_timeslots_valid = False
-					additional_errors.append("Opening time must be before \
-						closing time.")
-				else:
-					db.session.add(timeslot)
+					# Create timeslots only if the food resource is open on the
+					# i-th day of the week.
+					if is_open:
+						start_time = \
+							get_time_from_string(timeslot.starts_at.data)
+						end_time = get_time_from_string(timeslot.ends_at.data)
+						timeslot = TimeSlot(day_of_week=i, 
+							start_time=start_time, end_time=end_time)
+						all_timeslots.append(timeslot)
+
+						# Check that timeslot is valid.
+						if start_time >= end_time: 
+							are_timeslots_valid = False
+							additional_errors.append("Opening time must be \
+								before closing time.")
+						else:
+							db.session.add(timeslot)
 
 		# Create the food resource's remaining attributes. 
 		if are_timeslots_valid:
@@ -231,29 +247,20 @@ def guest_new_food_resource():
 			db.session.add(home_number)
 			phone_numbers.append(home_number)
 
-			are_hours_available = request.form['are-hours-available']
-			if are_hours_available == 'yes':
-				are_hours_available = True
-			else:
-				are_hours_available = False
-
 			# Create food resource and store all data in it.
 			food_resource = FoodResource(
-				name = form.name.data, 
-				phone_numbers = phone_numbers,
-				description = form.additional_information.data,
-				timeslots = timeslots,
-				address = address,
-				are_hours_available = are_hours_available, 
-				is_approved = False,
-				food_resource_contact = contact, 
-				is_for_family_and_children = form.is_for_family_and_children.data,
+				name=form.name.data, 
+				phone_numbers=phone_numbers,
+				description=form.additional_information.data,
+				timeslots=all_timeslots,
+				address=address, 
+				is_for_family_and_children = \
+					form.is_for_family_and_children.data,
 				is_for_seniors = form.is_for_seniors.data,
 				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
-				is_accepts_snap = form.is_accepts_snap.data)
-
-			# Assign a type to the food resource. 
-			food_resource.location_type = request.form['food-resource-type']
+				is_accepts_snap = form.is_accepts_snap.data, 
+				are_hours_available = are_hours_available, 
+				location_type = form.location_type.data)
 
 			# Commit all database changes. 
 			db.session.add(food_resource)
@@ -264,10 +271,7 @@ def guest_new_food_resource():
 	# render the page. 
 	return render_template('guest_add_resource.html', form=form, 
 		days_of_week=days_of_week, resources_info=resources_info_singular, 
-		additional_errors=additional_errors, timeslots=timeslots, 
-		food_resource_type=food_resource_type, 
-		possible_opening_times=get_possible_opening_times(), 
-		possible_closing_times=get_possible_closing_times())
+		additional_errors=additional_errors)
 
 @app.route('/_thank-you')
 def post_guest_add():
@@ -286,7 +290,8 @@ def admin():
 
 	contacts = FoodResourceContact.query.all()
 
-	return render_template('admin_resources.html', food_resource_contacts = contacts,
+	return render_template('admin_resources.html', 
+		food_resource_contacts=contacts,
 		resources_info=resources_info_plural, resources=resources, 
 		days_of_week=days_of_week)
 
