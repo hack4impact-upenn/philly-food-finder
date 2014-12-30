@@ -6,6 +6,17 @@ import os, random, string
 from datetime import time
 from pytz import timezone
 from models import *
+import re
+
+def get_underscored_string(string_to_convert):
+	string = string_to_convert.lower().replace(" ", "_")
+	string = re.sub(r'[^a-zA-Z0-9_]','', string)
+	return string 
+
+def get_hyphenated_string(string_to_convert):
+	string = string_to_convert.lower().replace(" ", "-")
+	string = re.sub(r'[^a-zA-Z0-9\-]','', string)
+	return string 
 
 # Function to generate a random password of given length 
 def generate_password(length):
