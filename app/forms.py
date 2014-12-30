@@ -172,6 +172,7 @@ class InviteForm(RegisterForm):
         return True
 
 class AddNewFoodResourceTypeForm(Form):
+    id = TextField() # Hidden from user
     name_singular = TextField(
         label = 'Food Resource Type Name - Singular', 
         validators = [
@@ -197,19 +198,20 @@ class AddNewFoodResourceTypeForm(Form):
 
     def validate_name_singular(form, field):
         name = field.data.lower()
-        underscored_name = get_underscored_string(name)
-        existing_types = FoodResourceType.query \
-            .filter_by(underscored_id_singular=underscored_name).all()
-        if len(existing_types) > 0:
+        underscored_id_singular = get_underscored_string(name)
+        existing_type = FoodResourceType.query \
+            .filter_by(underscored_id_singular=underscored_id_singular).first()
+        if (existing_type is not None) \
+            and (form.id.data is not existing_type.id):
             raise ValidationError('Another food resource type already has this \
                 singular name. Singular names must be unique.')
 
     def validate_name_plural(form, field):
         name = field.data.lower()
         underscored_name = get_underscored_string(name)
-        existing_types = FoodResourceType.query \
-            .filter_by(underscored_id_plural=underscored_name).all()
-        if len(existing_types) > 0:
+        existing_type = FoodResourceType.query \
+            .filter_by(underscored_id_plural=underscored_name).first()
+        if existing_type is not None and form.id.data is not existing_type.id:
             raise ValidationError('Another food resource type already has this \
                 plural name. Plural names must be unique.')
 
@@ -219,9 +221,9 @@ class AddNewFoodResourceTypeForm(Form):
         if not a.match(hex_color):
             raise ValidationError('Hex color code must be a combination of six \
                 digits 0-9 and A-F')
-        existing_types = FoodResourceType.query \
-            .filter_by(hex_color=hex_color).all()
-        if len(existing_types) > 0:
+        existing_type = FoodResourceType.query.filter_by(hex_color=hex_color) \
+            .first()
+        if existing_type is not None and form.id.data is not existing_type.id:
             raise ValidationError('Another food resource type already has this \
                 hex color code. Hex color codes names must be unique.')
 

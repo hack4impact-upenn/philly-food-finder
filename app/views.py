@@ -1,7 +1,7 @@
 from app import app, db, utils
 from utils import *
 from models import *
-from forms import AddNewFoodResourceForm, NonAdminAddNewFoodResourceForm
+from forms import *
 from flask import render_template, flash, redirect, session, url_for, request, \
 	g, jsonify, current_app
 from flask.ext.login import login_user, logout_user, current_user, \
@@ -444,12 +444,24 @@ def invite_sent():
 
 @app.route("/_admin_remove_filters")
 def get_all_food_resource_data():
-	farmers_markets = FoodResource.query.filter_by(location_type="FARMERS_MARKET", is_approved=True).order_by(FoodResource.name).all()
-	senior_meals = FoodResource.query.filter_by(location_type="SENIOR_MEAL", is_approved=True).order_by(FoodResource.name).all()
-	food_cupboards = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD", is_approved=True).order_by(FoodResource.name).all()
-	share_host_sites = FoodResource.query.filter_by(location_type="SHARE", is_approved=True).order_by(FoodResource.name).all()
-	soup_kitchens = FoodResource.query.filter_by(location_type="SOUP_KITCHEN", is_approved=True).order_by(FoodResource.name).all()
-	wic_offices = FoodResource.query.filter_by(location_type="WIC_OFFICE", is_approved=True).order_by(FoodResource.name).all()
+	farmers_markets = FoodResource.query \
+		.filter_by(location_type="FARMERS_MARKET", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	senior_meals = FoodResource.query \
+		.filter_by(location_type="SENIOR_MEAL", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	food_cupboards = FoodResource.query \
+		.filter_by(location_type="FOOD_CUPBOARD", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	share_host_sites = FoodResource.query \
+		.filter_by(location_type="SHARE", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	soup_kitchens = FoodResource.query \
+		.filter_by(location_type="SOUP_KITCHEN", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	wic_offices = FoodResource.query \
+		.filter_by(location_type="WIC_OFFICE", is_approved=True) \
+		.order_by(FoodResource.name).all()
 
 	return jsonify(farmers_markets=[i.serialize_food_resource() for i in 
 			farmers_markets],
@@ -681,6 +693,61 @@ def seniors():
 @app.route('/admin/food-resource-types')
 @login_required
 def view_food_resource_types():
-	food_resource_types = FoodResourceType.query.all()
+	food_resource_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_singular).all()
 	return render_template('food_resource_types.html', 
 		food_resource_types=food_resource_types)
+
+@app.route('/admin/new-food-resource-type', methods=['GET', 'POST'])
+@app.route('/admin/edit-food-resource-type/<id>', methods=['GET', 'POST'])
+@login_required
+def new_food_resource_type(id=None):
+	form = AddNewFoodResourceTypeForm(request.form)
+	form.id.data = None
+
+	# Create a new food resource. 
+	if id is None:
+		title = "Add New Food Resource Type"
+	# Edit an existing food resource.
+	else:
+		title = "Edit Food Resource Type"
+		food_resource_type = FoodResourceType.query.filter_by(id=id).first()
+		if food_resource_type is not None:
+			form.id.data = food_resource_type.id
+
+	# GET request.
+	if request.method == 'GET' and id is not None:
+
+		# Retrieve existing food resource type. 
+		food_resource_type = FoodResourceType.query.filter_by(id=id).first()
+		if food_resource_type is None:
+			return render_template('404.html')
+
+		# Pre-populate form fields with data from database.
+		form.name_singular.data = food_resource_type.name_singular
+		form.name_plural.data = food_resource_type.name_plural
+		form.hex_color.data = food_resource_type.hex_color
+
+	if request.method == 'POST' and form.validate():
+		# If editing an existing food resource type, delete its current record
+		# from the database. 
+		if id is not None:
+			food_resource_type = FoodResourceType.query.filter_by(id=id).first()
+			if food_resource_type:
+				form.id.data = food_resource_type.id
+				db.session.delete(food_resource_type)
+				db.session.commit()
+
+		# Create new food resource type.
+		food_resource_type = FoodResourceType(
+			name_singular = form.name_singular.data, 
+			name_plural = form.name_plural.data, 
+			hex_color = form.hex_color.data
+		)
+		db.session.add(food_resource_type)
+		db.session.commit()
+
+		return redirect(url_for('view_food_resource_types'))
+
+	return render_template('add_resource_type.html', 
+		form=form, title=title)

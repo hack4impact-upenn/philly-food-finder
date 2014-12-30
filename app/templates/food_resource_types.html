@@ -1,0 +1,119 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+ 	<h1 class="page-header">All Food Resource Types</h1>
+    <hr align="center">
+</div>
+
+<!-- Create new food resource type -->
+<div class="row">
+    <div class="small-12 columns">
+    	<a href="{{ url_for('new_food_resource_type') }}" class="button radius small" id="create-new-food-resource-type-button">Create New Food Resource Type</a>
+    </div>
+</div>
+
+<!-- Expand or collapse all food resource types -->
+<div class="row">
+    <div class="small-12 columns">
+      	<div class="button radius small" id="expand-all-resources-button">Expand All</div>
+      	<div class="button radius small" id="collapse-all-resources-button">Collapse All</div>
+    </div>
+</div>
+
+	<div class="large-centered large-8 medium-centered medium-8 small-8 small-centered columns resources">
+
+		{% for food_resource_type in food_resource_types %}
+		<div id="{{ food_resource_type.id }}">
+			<!-- Header -->
+			<div class= "row" id="food-resource-{{ food_resource_type.id }}">
+				<div class="small-1 columns expand-food-resource" id="food-resource-expand-{{ food_resource_type.id }}">
+					+
+				</div>
+				<div class="small-7 columns">
+					{{ food_resource_type.name_singular }}
+				</div>
+				<div class="small-2 columns">
+					<a href="{{ url_for('new_food_resource_type', id=food_resource_type.id) }}" class="food-resource-update-button">Edit</a>
+				</div>
+				<div class="small-2 columns">
+					<div id="{{ food_resource_type.name_singular }}-remove" class="food-resource-update-button">Remove</div>
+				</div>
+			</div>
+			<!-- Content --> 
+			<div class="row admin-food-resource" id="{{ food_resource_type.id }}-food-resource-table">
+				<div class="large-12 small-12 columns">
+					<div class="row">
+						<div class="small-6 columns">
+							Name (singular):
+						</div>
+						<div class="small-6 columns">
+							{{ food_resource_type.name_singular }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-6 columns">
+							Name (plural):
+						</div>
+						<div class="small-6 columns">
+							{{ food_resource_type.name_plural }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-6 columns">
+							Color:
+						</div>
+						<div class="small-6 columns">
+							#{{ food_resource_type.hex_color }} 
+							<div class="color-box" id="color-box-{{ food_resource_type.hex_color }}"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-6 columns">
+							Pin image:
+						</div>
+						<div class="small-6 columns pin-image">
+							<img src="../static/img/{{ food_resource_type.pin_image_name }}">
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-6 columns">
+							Hyphenated ID Singular:
+						</div>
+						<div class="small-6 columns pin-image">
+							{{ food_resource_type.hyphenated_id_singular }} 
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-6 columns">
+							Hyphenated ID Plural:
+						</div>
+						<div class="small-6 columns pin-image">
+							{{ food_resource_type.hyphenated_id_plural }} 
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-6 columns">
+							Underscored ID Singular:
+						</div>
+						<div class="small-6 columns pin-image">
+							{{ food_resource_type.underscored_id_singular }} 
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-6 columns">
+							Underscored ID Plural:
+						</div>
+						<div class="small-6 columns pin-image">
+							{{ food_resource_type.underscored_id_plural }} 
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+
+{% endblock %}

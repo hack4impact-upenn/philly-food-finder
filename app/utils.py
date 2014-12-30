@@ -18,6 +18,9 @@ def get_hyphenated_string(string_to_convert):
 	string = re.sub(r'[^a-zA-Z0-9\-]','', string)
 	return string 
 
+def get_enum(string_to_convert):
+	return get_underscored_string(string_to_convert).upper()
+
 # Function to generate a random password of given length 
 def generate_password(length):
 	chars = string.ascii_letters + string.digits + '!@#$%&'

@@ -1,18 +1,30 @@
 from app import app, db
 from flask_user import UserMixin
 from datetime import datetime
+import utils
 
 class FoodResourceType(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	enum = db.Column(db.String(35), unique=True) # Should be singular
 	name_singular = db.Column(db.String(35), unique=True)
 	name_plural = db.Column(db.String(35), unique=True)
-	hypenated_id_singular = db.Column(db.String(35), unique=True)
-	hypenated_id_plural = db.Column(db.String(35), unique=True)
+	hyphenated_id_singular = db.Column(db.String(35), unique=True)
+	hyphenated_id_plural = db.Column(db.String(35), unique=True)
 	underscored_id_singular = db.Column(db.String(35), unique=True)
 	underscored_id_plural = db.Column(db.String(35), unique=True)
 	hex_color = db.Column(db.String(6), unique=True)
 	pin_image_name = db.Column(db.String(35), unique=True)
+
+	def __init__(self, name_singular, name_plural, hex_color, pin_image_name=None):
+		self.enum = utils.get_enum(name_singular)
+		self.name_singular = name_singular
+		self.name_plural = name_plural
+		self.hyphenated_id_singular = utils.get_hyphenated_string(name_singular)
+		self.hyphenated_id_plural = utils.get_hyphenated_string(name_plural)
+		self.underscored_id_singular = utils.get_underscored_string(name_singular)
+		self.underscored_id_plural = utils.get_underscored_string(name_plural)
+		self.hex_color = hex_color
+		self.pin_image_name = pin_image_name
 
 class Address(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
