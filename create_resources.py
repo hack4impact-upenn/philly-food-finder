@@ -100,6 +100,7 @@ def main():
 									end_time=closing_time_1
 								)
 								db.session.add(timeslot)
+								timeslots.append(timeslot)
 
 					# Create food resource.
 					food_resource = FoodResource(
