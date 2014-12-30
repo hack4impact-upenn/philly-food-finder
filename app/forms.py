@@ -8,6 +8,7 @@ from wtforms import TextField, TextAreaField, validators, PasswordField, \
     SelectField, FieldList, FormField
 from flask_user.forms import RegisterForm, unique_email_validator
 from flask_user.translations import lazy_gettext as _
+from app.utils import *
 
 class TimeSlotForm(Form):
     starts_at = SelectField(u'Opens at') 
@@ -17,7 +18,6 @@ class TimeSlotForm(Form):
         #return get_time_from_string
 
     #def get_end_time(self):
-
 
 class IsOpenForm(Form):
     is_open = SelectField(u'Sunday', 
@@ -170,3 +170,58 @@ class InviteForm(RegisterForm):
             return False
 
         return True
+
+class AddNewFoodResourceTypeForm(Form):
+    name_singular = TextField(
+        label = 'Food Resource Type Name - Singular', 
+        validators = [
+            InputRequired("Please provide the singular version of the food \
+                resource type's name."),
+            Length(1, 35)
+        ]
+    )
+    name_plural = TextField(
+        label = 'Food Resource Type Name - Plural', 
+        validators = [
+            InputRequired("Please provide the plural version of the food \
+                resource type's name."),
+            Length(1, 35)
+        ]
+    )
+    hex_color = TextField(
+        label = 'Hexadecimal Color Code', 
+        validators = [
+            InputRequired("Please provide a 6-digit hexadecimal color code.")
+        ]
+    )
+
+    def validate_name_singular(form, field):
+        name = field.data.lower()
+        underscored_name = get_underscored_string(name)
+        existing_types = FoodResourceType.query \
+            .filter_by(underscored_id_singular=underscored_name).all()
+        if len(existing_types) > 0:
+            raise ValidationError('Another food resource type already has this \
+                singular name. Singular names must be unique.')
+
+    def validate_name_plural(form, field):
+        name = field.data.lower()
+        underscored_name = get_underscored_string(name)
+        existing_types = FoodResourceType.query \
+            .filter_by(underscored_id_plural=underscored_name).all()
+        if len(existing_types) > 0:
+            raise ValidationError('Another food resource type already has this \
+                plural name. Plural names must be unique.')
+
+    def validate_hex_color(form, field):
+        hex_color = field.data.lower()
+        a = re.compile("^[a-fA-F0-9]{6}$")
+        if not a.match(hex_color):
+            raise ValidationError('Hex color code must be a combination of six \
+                digits 0-9 and A-F')
+        existing_types = FoodResourceType.query \
+            .filter_by(hex_color=hex_color).all()
+        if len(existing_types) > 0:
+            raise ValidationError('Another food resource type already has this \
+                hex color code. Hex color codes names must be unique.')
+
