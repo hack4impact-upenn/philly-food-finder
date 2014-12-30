@@ -9,6 +9,51 @@ db.drop_all()
 # Create new database tables.
 db.create_all()
 
+# Create food resource types.
+frt_farmers_market = FoodResourceType(
+    name_singular="Farmers' Market",
+    name_plural="Farmers' Markets",
+    hex_color="fdd800",
+    pin_image_name="mb_yellow.png")
+
+frt_food_cupboard = FoodResourceType(
+    name_singular="Food Cupboard",
+    name_plural="Food Cupboards",
+    hex_color="009933",
+    pin_image_name="mbb_green.png")
+
+frt_senior_meals = FoodResourceType(
+    name_singular="Senior Meals",
+    name_plural="Senior Meals",
+    hex_color="0f85c7",
+    pin_image_name="mbb_blue.png")
+
+frt_share_host_site = FoodResourceType(
+    name_singular="SHARE Host Site",
+    name_plural="SHARE Host Sites",
+    hex_color="ef3d23",
+    pin_image_name="mbb_red.png")
+
+frt_soup_kitchen = FoodResourceType(
+    name_singular="Soup Kitchen",
+    name_plural="Soup Kitchens",
+    hex_color="f8a11d",
+    pin_image_name="mbb_orange.png")
+
+frt_wic_office = FoodResourceType(
+    name_singular="WIC Office",
+    name_plural="WIC Offices",
+    hex_color="84459b",
+    pin_image_name="mbb_purple.png")
+
+db.session.add(frt_farmers_market)
+db.session.add(frt_food_cupboard)
+db.session.add(frt_senior_meals)
+db.session.add(frt_share_host_site)
+db.session.add(frt_soup_kitchen)
+db.session.add(frt_wic_office)
+db.session.commit()
+
 # Create a Farmers' Market FoodResource.
 f0 = FoodResource() 
 f0.name = "Clark Park"
@@ -18,6 +63,7 @@ db.session.add(num0)
 f0.phone_number = "123-456-7890"
 f0.description = "Open year round"
 f0.location_type = "FARMERS_MARKET"
+f0.food_resource_type = frt_farmers_market
 f0.is_for_family_and_children = True
 f0.is_for_seniors = True
 
@@ -59,6 +105,7 @@ f1.phone_numbers.append(num1)
 db.session.add(num1)
 f1.description = "Fresh fruit and veggies!"
 f1.location_type = "SENIOR_MEAL"
+f1.food_resource_type = frt_senior_meals
 f1.is_for_family_and_children = False
 f1.is_for_seniors = True
 
@@ -100,6 +147,7 @@ f2.phone_numbers.append(num2)
 db.session.add(num2)
 f2.description = "Food cupboard description"
 f2.location_type = "FOOD_CUPBOARD"
+f2.food_resource_type = frt_food_cupboard
 f2.is_for_family_and_children = False
 f2.is_for_seniors = True
 
@@ -141,6 +189,7 @@ f3.phone_numbers.append(num3)
 db.session.add(num3)
 f3.description = "A description"
 f3.location_type = "SHARE"
+f3.food_resource_type = frt_share_host_site
 f3.is_for_family_and_children = False
 f3.is_for_seniors = True
 
@@ -182,6 +231,7 @@ f4.phone_numbers.append(num4)
 db.session.add(num4)
 f4.description = "Another description"
 f4.location_type = "SOUP_KITCHEN"
+f4.food_resource_type = frt_soup_kitchen
 f4.is_for_family_and_children = False
 f4.is_for_seniors = True
 
@@ -223,6 +273,7 @@ f5.phone_numbers.append(num5)
 db.session.add(num5)
 f5.description = "Another another description"
 f5.location_type = "WIC_OFFICE"
+f5.food_resource_type = frt_wic_office
 f5.is_for_family_and_children = False
 f5.is_for_seniors = True
 
@@ -265,6 +316,7 @@ db.session.add(num6)
 f6.phone_number = "215-575-0444"
 f6.description = "Everyone deserves healthy food"
 f6.location_type = "FARMERS_MARKET"
+f6.food_resource_type = frt_farmers_market
 a6 = Address()
 a6.line1 = "1617 John F. Kennedy Blvd."
 a6.city = "Philadelphia"
@@ -303,6 +355,7 @@ f7.phone_numbers.append(num7)
 db.session.add(num7)
 f7.description = "Fresh foods!"
 f7.location_type = "SENIOR_MEAL"
+f7.food_resource_type = frt_senior_meals
 a7 = Address()
 a7.line1 = "8446 Bayard Street"
 a7.city = "Philadelphia"
@@ -341,6 +394,7 @@ f8.phone_numbers.append(num8)
 db.session.add(num8)
 f8.description = "Food cupboard description"
 f8.location_type = "FOOD_CUPBOARD"
+f8.food_resource_type = frt_farmers_market
 a8 = Address()
 a8.line1 = "2441 Kensington Avenue"
 a8.city = "Philadelphia"
@@ -379,6 +433,7 @@ f9.phone_numbers.append(num9)
 db.session.add(num9)
 f9.description = "A description"
 f9.location_type = "SHARE"
+f9.food_resource_type = frt_share_host_site
 a9 = Address()
 a9.line1 = "2901 Hunting Park Avenue"
 a9.city = "Philadelphia"
@@ -417,6 +472,7 @@ f10.phone_numbers.append(num10)
 db.session.add(num10)
 f10.description = "Another description"
 f10.location_type = "SOUP_KITCHEN"
+f10.food_resource_type = frt_soup_kitchen
 a10 = Address()
 a10.line1 = "3616 S Galloway St"
 a10.city = "Philadelphia"
@@ -455,6 +511,7 @@ f11.phone_numbers.append(num11)
 db.session.add(num11)
 f11.description = "Another another description"
 f11.location_type = "WIC_OFFICE"
+f11.food_resource_type = frt_wic_office
 a11 = Address()
 a11.line1 = "2100 Arch Street"
 a11.city = "Philadelphia"
@@ -524,49 +581,4 @@ db.session.add(p4)
 db.session.add(p5)
 db.session.add(p6)
 db.session.add(p7)
-db.session.commit()
-
-# Create food resource types.
-frt0 = FoodResourceType(
-    name_singular="Farmers' Market",
-    name_plural="Farmers' Markets",
-    hex_color="fdd800",
-    pin_image_name="mb_yellow.png")
-
-frt1 = FoodResourceType(
-    name_singular="Food Cupboard",
-    name_plural="Food Cupboards",
-    hex_color="009933",
-    pin_image_name="mbb_green.png")
-
-frt2 = FoodResourceType(
-    name_singular="Senior Meals",
-    name_plural="Senior Meals",
-    hex_color="0f85c7",
-    pin_image_name="mbb_blue.png")
-
-frt3 = FoodResourceType(
-    name_singular="SHARE Host Site",
-    name_plural="SHARE Host Sites",
-    hex_color="ef3d23",
-    pin_image_name="mbb_red.png")
-
-frt4 = FoodResourceType(
-    name_singular="Soup Kitchen",
-    name_plural="Soup Kitchens",
-    hex_color="f8a11d",
-    pin_image_name="mbb_orange.png")
-
-frt5 = FoodResourceType(
-    name_singular="WIC Office",
-    name_plural="WIC Offices",
-    hex_color="84459b",
-    pin_image_name="mbb_purple.png")
-
-db.session.add(frt0)
-db.session.add(frt1)
-db.session.add(frt2)
-db.session.add(frt3)
-db.session.add(frt4)
-db.session.add(frt5)
 db.session.commit()

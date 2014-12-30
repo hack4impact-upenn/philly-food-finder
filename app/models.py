@@ -14,6 +14,10 @@ class FoodResourceType(db.Model):
 	underscored_id_plural = db.Column(db.String(35), unique=True)
 	hex_color = db.Column(db.String(6), unique=True)
 	pin_image_name = db.Column(db.String(35), unique=True)
+	food_resources = db.relationship(
+		'FoodResource', # One-to-many relationship (one FoodResourceType with many FoodResource).
+		backref='food_resource_type', # Declare a new property of the FoodResource class.
+		lazy='select', uselist=True)
 
 	def __init__(self, name_singular, name_plural, hex_color, pin_image_name):
 		self.enum = utils.get_enum(name_singular)
@@ -94,7 +98,6 @@ class PhoneNumber(db.Model):
 			'reource_id': self.resource_id
 		}
 
-
 class FoodResourceContact(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(150))
@@ -114,6 +117,8 @@ class FoodResource(db.Model):
 	exceptions = db.Column(db.Text)
 	description = db.Column(db.Text)
 	location_type = db.Column(db.String(100))
+	food_resource_type_id = db.Column(db.Integer, 
+		db.ForeignKey('food_resource_type.id'))
 	address = db.relationship('Address', backref='food_resource', 
 		lazy='select', uselist=False)
 
