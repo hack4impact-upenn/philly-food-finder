@@ -618,6 +618,16 @@ def save_page():
 		db.session.commit()
 	return 'Added' + data + 'to database.'
 
+@app.route('/_remove_food_resource_type')
+def remove_food_resource_type():
+	id = request.args.get("id", type=int)
+	food_resource_type = FoodResourceType.query.filter_by(id=id).first()
+
+	# Remove the food resource type from the database.
+	db.session.delete(food_resource_type)
+	db.session.commit()
+	return jsonify(success="success")
+
 @app.route('/_remove')
 def remove():
 	id = request.args.get("id", type=int)

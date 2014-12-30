@@ -21,7 +21,7 @@
 		{% for food_resource_type in food_resource_types %}
 		<div id="{{ food_resource_type.id }}">
 			<!-- Header -->
-			<div class= "row" id="food-resource-{{ food_resource_type.id }}">
+			<div class= "row" id="food-resource-type-{{ food_resource_type.id }}">
 				<div class="small-1 columns expand-food-resource" id="food-resource-expand-{{ food_resource_type.id }}">
 					+
 				</div>
@@ -32,7 +32,7 @@
 					<a href="{{ url_for('new_food_resource_type', id=food_resource_type.id) }}" class="food-resource-update-button">Edit</a>
 				</div>
 				<div class="small-2 columns">
-					<div id="{{ food_resource_type.name_singular }}-remove" class="food-resource-update-button">Remove</div>
+					<div id="{{ food_resource_type.id }}-remove-food-resource-type" class="food-resource-update-button">Remove</div>
 				</div>
 			</div>
 			<!-- Content --> 

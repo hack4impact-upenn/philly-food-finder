@@ -27,7 +27,10 @@ $(document).ready(function() {
 	setPinImageSize();
 
 	// Remove a food resource without reloading page.
-	removeFoodResource(); 	
+	removeFoodResource();
+
+	// Remove a food resource type without reloading page.
+	removeFoodResourceType(); 	
 
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource table.
@@ -245,6 +248,22 @@ function setPinImageSize() {
 		$(this).find("img").css('width', "20px");
 		$(this).find("img").css('height', "auto");
 	});
+}
+
+function removeFoodResourceType() {
+	$("[id$='-remove-food-resource-type']").click(function() {
+		var id = $(this).attr('id');
+		var dashIndex = id.indexOf("-"); 
+		var foodResourceTypeId = id.substring(0, dashIndex); 
+		$.getJSON($SCRIPT_ROOT + '/_remove_food_resource_type', {
+        		id: foodResourceTypeId
+        	},
+        	function(data) {
+    			// Hide corresponding approved resource table.
+        		hide(foodResourceTypeId + "-food-resource-table");
+        		hide("food-resource-type-" + foodResourceTypeId);
+        	});  
+	});	
 }
 
 function removeFoodResource() {
