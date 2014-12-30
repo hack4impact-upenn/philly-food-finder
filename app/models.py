@@ -30,6 +30,20 @@ class FoodResourceType(db.Model):
 		self.hex_color = hex_color
 		self.pin_image_name = pin_image_name
 
+	def serialize_food_resource_type(self):
+		return {
+			'id': self.id, 
+			'enum': self.enum, 
+			'name_singular': self.name_singular,
+			'name_plural': self.name_plural, 
+			'hyphenated_id_singular': self.hyphenated_id_singular,
+			'hyphenated_id_plural': self.hyphenated_id_plural, 
+			'underscored_id_singular': self.underscored_id_singular,
+			'underscored_id_plural': self.underscored_id_plural,
+			'hex_color': self.hex_color,
+			'pin_image_name': self.pin_image_name
+		}
+
 class Address(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	line1 = db.Column(db.String(100))
@@ -157,6 +171,7 @@ class FoodResource(db.Model):
 			'exceptions': self.exceptions, 
 			'description': self.description,
 			'location_type': self.location_type,
+			'food_resource_type': self.food_resource_type.serialize_food_resource_type(),
 			'address': self.address.serialize_address(),
 			'are_hours_available': self.are_hours_available, 
 			'timeslots': [i.serialize_timeslot(False) for i in self.timeslots], 
