@@ -2,15 +2,15 @@
   <head>
 
     <!-- CSS -->
-    <link href="../static/css/foundation.css" rel="stylesheet" type="text/css">
-    <link href="../static/css/styles.css" rel="stylesheet" type="text/css">
-    <script src="../static/js/vendor/jquery.js"></script>
-    <script src="../static/js/foundation.min.js"></script>
+    <link href="{{ url_for('static', filename='css/foundation.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
     <script type="text/javascript" 
             src="http://maps.google.com/maps/api/js?sensor=true"></script>
-    <script src="../static/js/gmaps.js"></script>
-    <script src="../static/js/custom.js"></script>
-    <script src="../static/js/ckeditor/ckeditor.js"></script>
+    <script src="{{ url_for('static', filename='js/gmaps.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ckeditor/ckeditor.js') }}"></script>
    
     <!-- JavaScript -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,7 +43,7 @@
            data-options="sticky_on: large">
         <ul class="title-area">
           <li class="name">
-            <h1><a href="#"><img src="../static/img/FPAC_logo.svg"/></a></h1>
+            <h1><a href="#"><img src="{{ url_for('static', filename='img/FPAC_logo.svg') }}"/></a></h1>
           </li>
           <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a>
           </li>
