@@ -742,7 +742,8 @@ def new_food_resource_type(id=None):
 		food_resource_type = FoodResourceType(
 			name_singular = form.name_singular.data, 
 			name_plural = form.name_plural.data, 
-			hex_color = form.hex_color.data
+			hex_color = form.hex_color.data, 
+			pin_image_name = None
 		)
 		db.session.add(food_resource_type)
 		db.session.commit()

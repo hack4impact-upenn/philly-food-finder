@@ -68,7 +68,9 @@
 							Pin image:
 						</div>
 						<div class="small-6 columns pin-image">
-							<img src="../static/img/{{ food_resource_type.pin_image_name }}">
+							{% if food_resource_type.pin_image_name %}
+								<img src="{{ url_for('static', filename='img/' + food_resource_type.pin_image_name) }}">
+							{% endif %}
 						</div>
 					</div>
 					<div class="row">

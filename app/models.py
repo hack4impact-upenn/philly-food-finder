@@ -15,7 +15,7 @@ class FoodResourceType(db.Model):
 	hex_color = db.Column(db.String(6), unique=True)
 	pin_image_name = db.Column(db.String(35), unique=True)
 
-	def __init__(self, name_singular, name_plural, hex_color, pin_image_name=None):
+	def __init__(self, name_singular, name_plural, hex_color, pin_image_name):
 		self.enum = utils.get_enum(name_singular)
 		self.name_singular = name_singular
 		self.name_plural = name_plural
