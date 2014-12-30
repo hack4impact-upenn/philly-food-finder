@@ -2,6 +2,18 @@ from app import app, db
 from flask_user import UserMixin
 from datetime import datetime
 
+class FoodResourceType(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	enum = db.Column(db.String(35), unique=True) # Should be singular
+	name_singular = db.Column(db.String(35), unique=True)
+	name_plural = db.Column(db.String(35), unique=True)
+	hypenated_id_singular = db.Column(db.String(35), unique=True)
+	hypenated_id_plural = db.Column(db.String(35), unique=True)
+	underscored_id_singular = db.Column(db.String(35), unique=True)
+	underscored_id_plural = db.Column(db.String(35), unique=True)
+	hex_color = db.Column(db.String(6), unique=True)
+	pin_image_name = db.Column(db.String(35), unique=True)
+
 class Address(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	line1 = db.Column(db.String(100))
@@ -76,15 +88,17 @@ class FoodResourceContact(db.Model):
 	name = db.Column(db.String(150))
 	email = db.Column(db.String(255))
 	phone_number = db.Column(db.String(35))
-	food_resource = db.relationship('FoodResource', backref='food_resource_contact', 
-	lazy='select', uselist=True)
+	food_resource = db.relationship('FoodResource', 
+		backref='food_resource_contact', lazy='select', uselist=True)
 
 class FoodResource(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50))
-	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', lazy='select', uselist=True)
+	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', 
+		lazy='select', uselist=True)
 	url = db.Column(db.Text)
-	open_month_pairs = db.relationship('OpenMonthPair', backref='food_resource', lazy='select', uselist=True)
+	open_month_pairs = db.relationship('OpenMonthPair', backref='food_resource', 
+		lazy='select', uselist=True)
 	exceptions = db.Column(db.Text)
 	description = db.Column(db.Text)
 	location_type = db.Column(db.String(100))
@@ -106,7 +120,8 @@ class FoodResource(db.Model):
 
 	# Fields for when non-admins submit resources
 	is_approved = db.Column(db.Boolean(), default=True)
-	food_resource_contact_id = db.Column(db.Integer, db.ForeignKey('food_resource_contact.id'))
+	food_resource_contact_id = db.Column(db.Integer, 
+		db.ForeignKey('food_resource_contact.id'))
 
 	def serialize_name_only(self):
 		return {
@@ -120,7 +135,8 @@ class FoodResource(db.Model):
 			'name': self.name, 
 			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
 			'url': self.url, 
-			'open_month_pairs': [i.serialize_open_month_pair() for i in self.open_month_pairs],
+			'open_month_pairs': 
+				[i.serialize_open_month_pair() for i in self.open_month_pairs],
 			'exceptions': self.exceptions, 
 			'description': self.description,
 			'location_type': self.location_type,
