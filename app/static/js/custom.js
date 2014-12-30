@@ -201,26 +201,28 @@ function showAll(idToShow, classToToggleExpandSymbol) {
 // If an "Expand" button is pressed, either show or hide the associated
 // food resource table.
 function toggleAdminFoodResourceTypeVisibility() {
-	$(".expand-food-resource-type").click(function() {
-		var id = $(this).attr('id');  
-		var prefix = "food-resource-type-expand-"; 
-		var start_index = prefix.length; 
-		var resource_type = id.substring(start_index); 
-		var table_to_expand = resource_type + "-table"; 		
-		toggleExpansion(table_to_expand, "expand-food-resource-type"); 
-	})
+	toggleTable("expand-food-resource-type", 
+		"food-resource-type-expand-", "-food-resource-type-table", 
+		"expand-food-resource-type");
 }
 
 // If an "Expand" button is pressed, either show or hide the associated
 // food resource information.
 function toggleAdminFoodResourceVisibility() {
-	$(".expand-food-resource").click(function() {
+	toggleTable("expand-food-resource", 
+		"food-resource-expand-", "-food-resource-table", 
+		"expand-food-resource");
+}
+
+function toggleTable(classThatIsClickedToTriggerExpansion, 
+	idPrefixThatIsClicked, tableIdToExpandSuffix, expandSymbolClass) {
+		$("." + classThatIsClickedToTriggerExpansion).click(function() {
 		var id = $(this).attr('id');  
-		var prefix = "food-resource-expand-"; 
+		var prefix = idPrefixThatIsClicked; 
 		var start_index = prefix.length; 
-		var resource_id = id.substring(start_index); 
-		var table_to_expand = "food-resource-" + resource_id + "-table"; 		
-		toggleExpansion(table_to_expand, "expand-food-resource"); 
+		var resource_type = id.substring(start_index); 
+		var table_to_expand = resource_type + tableIdToExpandSuffix; 		
+		toggleExpansion(table_to_expand, expandSymbolClass); 
 	}) 
 }
 
@@ -300,7 +302,8 @@ function getNoResourcesHtml(resourceInfoId) {
 function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural, 
 	resourcesArray, daysOfWeek) {
 	var html = 
-	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">';
+	'<div id="' + resourceInfoId + '-food-resource-type-table" ' + 
+		'class="admin-food-resource-type">';
 
 	// Iterate through all food resources in the array.
 	for (var i = 0; i < resourcesArray.length; i++) {
@@ -327,8 +330,8 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					'</div>' + 
 			'</div>' + 
 			'<!-- Resource content -->' +  
-			'<div class="row admin-food-resource" id="food-resource-'
-				+ resource["id"] + '-table">' + 
+			'<div class="row admin-food-resource" id="' + resource["id"] 
+				+ '-food-resource-table">' + 
 				'<div class="large-6 small-12 columns">' + 
 					'<div class="row">' + 
 						'<div class="small-3 columns">' + 
