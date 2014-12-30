@@ -371,8 +371,7 @@ table thead tr th, table thead tr td {
 #apply-filters-resources-button, 
 #clear-filters-resources-button, 
 #map-search-button, 
-#map-filter-button, 
-#create-new-food-resource-type-button {
+#map-filter-button {
   margin-bottom: 10px;
 }
 

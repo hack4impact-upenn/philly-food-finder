@@ -70,8 +70,10 @@
             <li class="has-dropdown">
               <a href="{{ url_for('admin') }}" id="l_admin">admin</a>
                 <ul class="dropdown">
-                  <li><a href="{{ url_for('admin') }}">Manage Resources</a></li>
-                  <li class="active"><a href="{{ url_for('new') }}">Add Resources</a></li>
+                  <li><a href="{{ url_for('admin') }}">Manage Food Resources</a></li>
+                  <li><a href="{{ url_for('new') }}">Add Food Resource</a></li>
+                  <li><a href="{{ url_for('view_food_resource_types') }}">Manage Food Resource Types</a></li>
+                  <li><a href="{{ url_for('new_food_resource_type') }}">Add Food Resource Type</a></li>
                   <li><a href="{{ url_for('user.register') }}">Invite Admins</a></li>
                   <li><a href="{{ url_for('user.change_password') }}">Change Password</a></li>
                 </ul>
