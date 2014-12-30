@@ -260,7 +260,9 @@ def guest_new_food_resource():
 				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
 				is_accepts_snap = form.is_accepts_snap.data, 
 				are_hours_available = are_hours_available, 
-				location_type = form.location_type.data)
+				location_type = form.location_type.data, 
+				is_approved = False, 
+				food_resource_contact = contact)
 
 			# Commit all database changes. 
 			db.session.add(food_resource)
@@ -281,12 +283,24 @@ def post_guest_add():
 @login_required
 def admin():
 	resources = {}
-	resources['farmers-markets'] = FoodResource.query.filter_by(location_type="FARMERS_MARKET", is_approved=True).order_by(FoodResource.name).all()
-	resources['senior-meals'] = FoodResource.query.filter_by(location_type="SENIOR_MEAL", is_approved=True).order_by(FoodResource.name).all()
-	resources['food-cupboards'] = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD", is_approved=True).order_by(FoodResource.name).all()
-	resources['share-host-sites'] = FoodResource.query.filter_by(location_type="SHARE", is_approved=True).order_by(FoodResource.name).all()
-	resources['soup-kitchens'] = FoodResource.query.filter_by(location_type="SOUP_KITCHEN", is_approved=True).order_by(FoodResource.name).all()
-	resources['wic-offices'] = FoodResource.query.filter_by(location_type="WIC_OFFICE", is_approved=True).order_by(FoodResource.name).all()
+	resources['farmers-markets'] = FoodResource.query \
+		.filter_by(location_type="FARMERS_MARKET", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	resources['senior-meals'] = FoodResource.query \
+		.filter_by(location_type="SENIOR_MEAL", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	resources['food-cupboards'] = FoodResource.query \
+		.filter_by(location_type="FOOD_CUPBOARD", is_approved=True) \
+		.order_by(FoodResource.name).all() 
+	resources['share-host-sites'] = FoodResource.query \
+		.filter_by(location_type="SHARE", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	resources['soup-kitchens'] = FoodResource.query \
+		.filter_by(location_type="SOUP_KITCHEN", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	resources['wic-offices'] = FoodResource.query \
+		.filter_by(location_type="WIC_OFFICE", is_approved=True) \
+		.order_by(FoodResource.name).all()
 
 	contacts = FoodResourceContact.query.all()
 

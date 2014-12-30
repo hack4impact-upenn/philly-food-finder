@@ -74,7 +74,7 @@ $(document).ready(function() {
     	$(".end-edit").hide();
     	$(".start-edit").show();
     	$("#editor1").attr("contenteditable","false");
-      	});
+  	});
 
 	// Hide all open-and-close and time selectors iniially.
 	// Used on "Add New / Edit Resource" page.
