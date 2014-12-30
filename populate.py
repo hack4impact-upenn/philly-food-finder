@@ -525,3 +525,78 @@ db.session.add(p5)
 db.session.add(p6)
 db.session.add(p7)
 db.session.commit()
+
+# Create food resource types.
+frt0 = FoodResourceType(
+    enum="FARMERS_MARKET",
+    name_singular="Farmers' Market",
+    name_plural="Farmers' Markets",
+    hypenated_id_singular="farmers-market",
+    hypenated_id_plural="farmers-markets",
+    underscored_id_singular="farmers_market",
+    underscored_id_plural="farmers_markets",
+    hex_color="fdd800",
+    pin_image_name="mb_yellow.png")
+
+frt1 = FoodResourceType(
+    enum="FOOD_CUPBOARD",
+    name_singular="Food Cupboard",
+    name_plural="Food Cupboards",
+    hypenated_id_singular="food-cupboard",
+    hypenated_id_plural="food-cupboards",
+    underscored_id_singular="food_cupboard",
+    underscored_id_plural="food_cupboards",
+    hex_color="009933",
+    pin_image_name="mbb_green.png")
+
+frt2 = FoodResourceType(
+    enum="SENIOR_MEAL",
+    name_singular="Senior Meals",
+    name_plural="Senior Meals",
+    hypenated_id_singular="senior-meals",
+    hypenated_id_plural="senior-meals",
+    underscored_id_singular="senior_meals",
+    underscored_id_plural="senior_meals",
+    hex_color="0f85c7",
+    pin_image_name="mbb_blue.png")
+
+frt3 = FoodResourceType(
+    enum="SHARE",
+    name_singular="SHARE Host Site",
+    name_plural="SHARE Host Sites",
+    hypenated_id_singular="share-host-site",
+    hypenated_id_plural="share-host-sites",
+    underscored_id_singular="share_host_site",
+    underscored_id_plural="share_host_sites",
+    hex_color="ef3d23",
+    pin_image_name="mbb_red.png")
+
+frt4 = FoodResourceType(
+    enum="SOUP_KITCHEN",
+    name_singular="Soup Kitchen",
+    name_plural="Soup Kitchens",
+    hypenated_id_singular="soup-kitchen",
+    hypenated_id_plural="soup-kitchens",
+    underscored_id_singular="soup_kitchen",
+    underscored_id_plural="soup_kitchens",
+    hex_color="f8a11d",
+    pin_image_name="mbb_orange.png")
+
+frt5 = FoodResourceType(
+    enum="WIC_OFFICE",
+    name_singular="WIC Office",
+    name_plural="WIC Offices",
+    hypenated_id_singular="wic-office",
+    hypenated_id_plural="wic-offices",
+    underscored_id_singular="wic_office",
+    underscored_id_plural="wic_offices",
+    hex_color="84459b",
+    pin_image_name="mbb_purple.png")
+
+db.session.add(frt0)
+db.session.add(frt1)
+db.session.add(frt2)
+db.session.add(frt3)
+db.session.add(frt4)
+db.session.add(frt5)
+db.session.commit()
