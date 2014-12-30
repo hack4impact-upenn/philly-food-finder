@@ -645,28 +645,42 @@ def approve():
 
 @app.route('/about')
 def about():
-	return render_template('about.html', html_string = HTML.query.filter_by(page = 'about-page').first())
+	return render_template('about.html', 
+		html_string = HTML.query.filter_by(page = 'about-page').first())
 
 @app.route('/faq')
 def faq():
-	return render_template('faq.html', html_string = HTML.query.filter_by(page = 'faq-page').first())
+	return render_template('faq.html', 
+		html_string = HTML.query.filter_by(page = 'faq-page').first())
 
 @app.route('/contact')
 def contact():
-	return render_template('contact.html', html_string = HTML.query.filter_by(page = 'contact-page').first())
+	return render_template('contact.html', 
+		html_string = HTML.query.filter_by(page = 'contact-page').first())
 
 @app.route('/resources/wic')
 def wic():
-	return render_template('wic_info.html', html_string = HTML.query.filter_by(page = 'wic-info-page').first())
+	return render_template('wic_info.html', 
+		html_string = HTML.query.filter_by(page = 'wic-info-page').first())
 
 @app.route('/resources/snap')
 def snap():
-	return render_template('snap_info.html', html_string = HTML.query.filter_by(page = 'snap-info-page').first())
+	return render_template('snap_info.html', 
+		html_string = HTML.query.filter_by(page = 'snap-info-page').first())
 
 @app.route('/resources/summer-meals')
 def summer_meals():
-	return render_template('summer_meals.html', html_string = HTML.query.filter_by(page = 'summer-info-page').first())
+	return render_template('summer_meals.html', 
+		html_string = HTML.query.filter_by(page = 'summer-info-page').first())
 
 @app.route('/resources/seniors')
 def seniors():
-	return render_template('seniors_info.html', html_string = HTML.query.filter_by(page = 'seniors-info-page').first())
+	return render_template('seniors_info.html', 
+		html_string = HTML.query.filter_by(page = 'seniors-info-page').first())
+
+@app.route('/admin/food-resource-types')
+@login_required
+def view_food_resource_types():
+	food_resource_types = FoodResourceType.query.all()
+	return render_template('food_resource_types.html', 
+		food_resource_types=food_resource_types)

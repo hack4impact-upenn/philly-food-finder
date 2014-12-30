@@ -23,9 +23,9 @@
 	    </div>
 	</div>
 	{% else %}
-  <div class="large-centered 
-                  large-8 medium-centered medium-8 small-8 small-centered
-                  columns resources">
+  	<div class="large-centered 
+         large-8 medium-centered medium-8 small-8 small-centered
+         columns resources">
 	{% for contact in food_resource_contacts %}
 	{% set name_without_spaces = contact.name.replace(" ", "-") %}
 	<div id="{{ name_without_spaces }}">
@@ -302,7 +302,7 @@
 			  	</thead>
 			</table>
 		</div>
-		<div id="{{ resource_info.id }}-table" class="admin-food-resource-type">
+		<div id="{{ resource_info.id }}-food-resource-type-table" class="admin-food-resource-type">
 			{% if not resources[resource_info.id] %}
 				<div class="no-resources-message">None to display.</div>
 			{% endif %}
@@ -326,7 +326,7 @@
 				</div>
 			</div>
 			<!-- Resource content --> 
-			<div class="row admin-food-resource" id="food-resource-{{ resource.id }}-table">
+			<div class="row admin-food-resource" id="{{ resource.id }}-food-resource-table">
 				<div class="large-6 small-12 columns">
 					<div class="row">
 						<div class="small-3 columns">

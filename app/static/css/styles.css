@@ -407,3 +407,10 @@ input[type=checkbox] {
   display: inline;
   font-weight: bold; 
 }
+
+.color-box {
+  border: 1px solid black;
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+}

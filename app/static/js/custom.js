@@ -22,6 +22,10 @@ $(document).ready(function() {
 		hideAll("-table", "expand-food-resource");
 	}); 
 
+	setColorBoxColor(); 
+
+	setPinImageSize();
+
 	// Remove a food resource without reloading page.
 	removeFoodResource(); 	
 
@@ -224,6 +228,23 @@ function toggleTable(classThatIsClickedToTriggerExpansion,
 		var table_to_expand = resource_type + tableIdToExpandSuffix; 		
 		toggleExpansion(table_to_expand, expandSymbolClass); 
 	}) 
+}
+
+function setColorBoxColor() {
+	$(".color-box").each(function(index) {
+		var id = $(this).attr('id');  
+		var prefix = "color-box-"
+		var start_index = prefix.length;
+		var color_hex = id.substring(start_index);
+		$(this).css('background', "#" + color_hex);
+	});
+}
+
+function setPinImageSize() {
+	$(".pin-image").each(function(index) {
+		$(this).find("img").css('width', "20px");
+		$(this).find("img").css('height', "auto");
+	});
 }
 
 function removeFoodResource() {
