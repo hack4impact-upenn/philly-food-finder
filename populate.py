@@ -11,36 +11,42 @@ db.create_all()
 
 # Create colored pins.
 cp_yellow = ColoredPin(
+    color_name="Yellow",
     hex_color="fdd800", 
     pin_image_name="mb_yellow.png"
 )
 db.session.add(cp_yellow)
 
 cp_green = ColoredPin(
+    color_name="Green",
     hex_color="009933", 
-    pin_image_name="mb_green.png"
+    pin_image_name="mbb_green.png"
 )
 db.session.add(cp_green)
 
 cp_blue = ColoredPin(
+    color_name="Blue",
     hex_color="0f85c7", 
     pin_image_name="mbb_blue.png"
 )
 db.session.add(cp_blue)
 
 cp_red = ColoredPin(
+    color_name="Red",
     hex_color="ef3d23", 
-    pin_image_name="mbb_red.png.png"
+    pin_image_name="mbb_red.png"
 )
 db.session.add(cp_red)
 
 cp_orange = ColoredPin(
+    color_name="Orange",
     hex_color="f8a11d", 
     pin_image_name="mbb_orange.png"
 )
 db.session.add(cp_orange)
 
 cp_purple = ColoredPin(
+    color_name="Purple",
     hex_color="84459b", 
     pin_image_name="mbb_purple.png"
 )

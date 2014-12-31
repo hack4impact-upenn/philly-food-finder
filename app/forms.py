@@ -32,13 +32,7 @@ class MultiTimeSlotForm(Form):
 # Information about a new food resource. 
 class AddNewFoodResourceForm(Form):
     food_resource_id = TextField() # Invisible to user
-    location_type = SelectField(u'Food Resource Type', choices=[
-        ('FARMERS_MARKET', "Farmers' Market"), 
-        ('FOOD_CUPBOARD', 'Food Cupboard'),
-        ('SENIOR_MEAL', 'Senior Meals'),
-        ('SHARE', 'SHARE Host Site'), 
-        ('SOUP_KITCHEN', 'Soup Kitchen'),
-        ('WIC_OFFICE', 'WIC Office')])
+    location_type = SelectField(u'Food Resource Type')
     website = TextField(
         label = 'Food Resource Website', 
         validators = [
@@ -189,12 +183,7 @@ class AddNewFoodResourceTypeForm(Form):
             Length(1, 35)
         ]
     )
-    hex_color = TextField(
-        label = 'Hexadecimal Color Code', 
-        validators = [
-            InputRequired("Please provide a 6-digit hexadecimal color code.")
-        ]
-    )
+    color = SelectField(u'Food Resource Color')
 
     def validate_name_singular(form, field):
         name = field.data.lower()
@@ -214,16 +203,4 @@ class AddNewFoodResourceTypeForm(Form):
         if existing_type is not None and form.id.data is not existing_type.id:
             raise ValidationError('Another food resource type already has this \
                 plural name. Plural names must be unique.')
-
-    def validate_hex_color(form, field):
-        hex_color = field.data.lower()
-        a = re.compile("^[a-fA-F0-9]{6}$")
-        if not a.match(hex_color):
-            raise ValidationError('Hex color code must be a combination of six \
-                digits 0-9 and A-F')
-        existing_type = FoodResourceType.query.filter_by(hex_color=hex_color) \
-            .first()
-        if existing_type is not None and form.id.data is not existing_type.id:
-            raise ValidationError('Another food resource type already has this \
-                hex color code. Hex color codes names must be unique.')
 

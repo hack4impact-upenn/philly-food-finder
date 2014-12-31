@@ -5,9 +5,10 @@ import utils
 
 class ColoredPin(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
+	color_name = db.Column(db.String(35), unique=True)
 	hex_color = db.Column(db.String(6), unique=True)
 	pin_image_name = db.Column(db.String(35), unique=True)
-	food_resources = db.relationship(
+	food_resource = db.relationship(
 		'FoodResourceType', # One-to-many relationship (one FoodResourceType with many FoodResource).
 		backref='colored_pin', # Declare a new property of the FoodResource class.
 		lazy='select', uselist=False)

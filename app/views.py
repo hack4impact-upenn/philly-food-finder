@@ -286,10 +286,8 @@ def guest_new_food_resource():
 
 			# Create food resource's type.
 			enum = form.location_type.data
-			print enum
 			food_resource_type = FoodResourceType.query.filter_by(enum=enum) \
 				.first()
-			print food_resource_type.name_singular
 
 			# Create food resource and store all data in it.
 			food_resource = FoodResource(
@@ -510,8 +508,6 @@ def get_filtered_food_resource_data():
 				zip_code # Zip code by which to filter.
 			)
 
-			print all_resources[i]
-
 	# Zip code is not one of the filters. 
 	else: 
 
@@ -659,6 +655,19 @@ def new_food_resource_type(id=None):
 	form = AddNewFoodResourceTypeForm(request.form)
 	form.id.data = None
 
+	# Show unused colors.
+	choices = []
+	unused_pins = ColoredPin.query.filter_by(food_resource=None) \
+		.order_by(ColoredPin.color_name).all()
+	for unused_pin in unused_pins:
+		choices.append((unused_pin.color_name, unused_pin.color_name))
+	if id is not None:
+		food_resource_type = FoodResourceType.query.filter_by(id=id).first()
+		if food_resource_type:
+			choices.insert(0, (food_resource_type.colored_pin.color_name, 
+				food_resource_type.colored_pin.color_name))
+	form.color.choices = choices
+
 	# Create a new food resource. 
 	if id is None:
 		title = "Add New Food Resource Type"
@@ -676,11 +685,11 @@ def new_food_resource_type(id=None):
 		food_resource_type = FoodResourceType.query.filter_by(id=id).first()
 		if food_resource_type is None:
 			return render_template('404.html')
+		print "merp"
 
 		# Pre-populate form fields with data from database.
 		form.name_singular.data = food_resource_type.name_singular
 		form.name_plural.data = food_resource_type.name_plural
-		form.hex_color.data = food_resource_type.hex_color
 
 	if request.method == 'POST' and form.validate():
 		# If editing an existing food resource type, delete its current record
@@ -693,16 +702,15 @@ def new_food_resource_type(id=None):
 				db.session.commit()
 
 		# Create new food resource type.
+		colored_pin = ColoredPin.query.filter_by(color_name=form.color.data).first()
 		food_resource_type = FoodResourceType(
 			name_singular = form.name_singular.data, 
 			name_plural = form.name_plural.data, 
-			hex_color = form.hex_color.data, 
-			pin_image_name = None
+			colored_pin = colored_pin
 		)
 		db.session.add(food_resource_type)
 		db.session.commit()
 
 		return redirect(url_for('view_food_resource_types'))
 
-	return render_template('add_resource_type.html', 
-		form=form, title=title)
+	return render_template('add_resource_type.html', form=form, title=title)
