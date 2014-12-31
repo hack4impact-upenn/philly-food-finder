@@ -41,7 +41,7 @@
                     + "Contact Information: " + data["addresses"][i]["phone_number"]["number"];
                     console.log(data["addresses"][i]["phone_number"])          
                     var newType = data["addresses"][i]["location_type"];
-                if (newType == 'FARMERS_MARKET') { var image = "../static/img/mb_yellow.png" }
+                if (newType == 'FARMERS_MARKET') { var image = "../static/img/mbb_yellow.png" }
                 else if (newType == 'FOOD_CUPBOARD') { var image = "../static/img/mbb_green.png" }
                 else if (newType == 'SENIOR_MEAL') { var image = "../static/img/mbb_blue.png" }
                 else if (newType == 'SHARE') { var image = "../static/img/mbb_red.png" }
@@ -116,7 +116,7 @@
             </div> 
             <div id="map-key">
                 <div class="small-12 medium-4 columns pin-definition">
-                    <img src="../static/img/mb_yellow.png" alt="Yellow Pin"/>
+                    <img src="../static/img/mbb_yellow.png" alt="Yellow Pin"/>
                     Farmers' Market
                 </div>
                 <div class="small-12 medium-4 columns pin-definition">
@@ -139,6 +139,8 @@
                     <img src="../static/img/mbb_purple.png" alt="Yellow Pin"/>
                     WIC Office
                 </div>
+            </div>
+            <div id="footer-spacer">
             </div>
         </div>
     </div> 

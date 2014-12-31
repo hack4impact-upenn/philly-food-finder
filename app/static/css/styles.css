@@ -1,8 +1,11 @@
 
 /* #ef3d23 - red */
 /* #f8a11d - orange */
+/* - light orange */
 /* #fdd800 - yellow */
+/* - light yellow */
 /* #009933 - green */
+/* - light green */
 /* #0f85c7 - blue */
 /* #84459b - purple */
 /* #343434 - black */
@@ -22,9 +25,18 @@ body#map_p {
   background-color: #F7F9F9;
 }
 
-body#faq_p {
+body#info_p {
   background-color: #009933;
   color: #FFF;
+
+}
+
+.h1 {
+  color: #FFF;
+}
+
+body#resources_p {
+  background-color: #F7F9F9;
 }
 
 body#about_p {
@@ -35,9 +47,6 @@ body#contact_p {
   background-color: #fdd800;
 }
 
-body#resources_p {
-  background-color: #F7F9F9;
-}
 
 body#add_p {
   background-color: #F7F9F9;
@@ -193,8 +202,13 @@ button.radius, .button.radius {
   background: #FFF;
 }
 
+.top-bar-section li:not(.has-form) a:active {
+  background: #FFF;
+}
+
 /* dropdown menu */
 .top-bar-section .dropdown li:not(.has-form):not(.active) > a:not(.button) {
+  background: #FFF;
   color: #2D4FA0;
   font-size: 1.6rem;
   font-weight: 200;
@@ -202,10 +216,10 @@ button.radius, .button.radius {
   letter-spacing: 2px;
   text-align: center;
   padding: 5;
+  z-index: 1;
 }
 
 .top-bar-section .dropdown li:not(.has-form):not(.active) > a:not(.button) {
-  background: #FFF;
 }
 
 .top-bar-section .dropdown li:not(.has-form) > a:not(.button) {
@@ -295,10 +309,6 @@ img {
 }
 
 #footer-spacer {
-  margin-bottom: 50em;
-}
-
-#map-key {
   margin-bottom: 10em;
 }
 
