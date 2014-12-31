@@ -126,20 +126,24 @@ input::-moz-placeholder {
 
 /* button styling */
 button, .button{
-  background-color: #FFF;
+  background-color: #000;
   border-color: #666666;
-  color: #000;
+  color: #FFF;
   opacity: 0.8;
   
 }
 
 button:hover, button:focus, .button:hover, .button:focus {
-  background-color: #000;
-  color: #FFF;
+  background-color: #FFF;
+  color: #000;
 }
 
 button.radius, .button.radius {
   margin-bottom: 100px;
+}
+
+.search-buttons {
+  margin-top: 1em;
 }
 
 /* HEADER - top-bar */
@@ -201,6 +205,10 @@ button.radius, .button.radius {
 }
 
 .top-bar-section .dropdown li:not(.has-form):not(.active) > a:not(.button) {
+  background: #FFF;
+}
+
+.top-bar-section .dropdown li:not(.has-form) > a:not(.button) {
   background: #FFF;
 }
 
@@ -279,9 +287,19 @@ img {
     display: inline-block;
     width: 100%;
     height: 70%;
-    margin-bottom: 1em;
+    margin: .875em;
+    margin-top: 2em;
+    margin-bottom: 2em;
     border-style: solid;
     border-color: #999999; /* gray */
+}
+
+#footer-spacer {
+  margin-bottom: 50em;
+}
+
+#map-key {
+  margin-bottom: 10em;
 }
 
 /* Display non-squashed map controls */
