@@ -574,6 +574,9 @@ def remove_food_resource_type():
 	for food_resource in food_resource_type.food_resources:
 		for timeslot in food_resource.timeslots:
 			db.session.delete(timeslot)
+		for phone_number in food_resource.phone_numbers:
+			db.session.delete(phone_number)
+		db.session.delete(food_resource.address)
 		db.session.delete(food_resource)
 
 	# Remove the food resource type from the database.
