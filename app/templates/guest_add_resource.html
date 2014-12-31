@@ -106,21 +106,23 @@
 			</div>
 		</div>
 
-		<!-- Food Resource Type --> 
+		<!-- Food Resource Type -->
+		{% set field = form.location_type %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		    	<label>Food Resource Type
-			    	<select name='food-resource-type' id="option-title">
-			    		{% for resource_info in resources_info %}
-						 	<option value="{{ resource_info.enum }}">
-								{{ resource_info.name }}
-							</option>
-						{% endfor %}
-			    	</select>
-		      	</label>
-		    </div>
-	  	</div>
+		      	<label>{{ form.location_type.label }}
+		        	<dd class="error">{{ form.location_type()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
 
 
 		<!-- Address Line 1 -->

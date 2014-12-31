@@ -6,8 +6,7 @@ from flask import render_template, flash, redirect, session, url_for, request, \
 	g, jsonify, current_app
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
-from variables import resources_info_singular, resources_info_plural, \
-	days_of_week
+from variables import *
 from datetime import time
 from utils import generate_password
 from flask_user import login_required, signals
@@ -185,13 +184,14 @@ def new(id=None):
 	# If GET request is received or POST request fails due to invalid timeslots, 
 	# render the page. 
 	return render_template('add_resource.html', form=form, 
-		days_of_week=days_of_week, resources_info=resources_info_singular, 
+		days_of_week=days_of_week,  
 		additional_errors=additional_errors, title=title)
 
 #Allows non-admins to add food resources
 @app.route('/propose-resource', methods=['GET', 'POST'])
 def guest_new_food_resource():
 	form = NonAdminAddNewFoodResourceForm(request.form)
+
 	# Set timeslot choices.
 	for timeslots in form.daily_timeslots:
 		for timeslot in timeslots.timeslots:
@@ -208,8 +208,10 @@ def guest_new_food_resource():
 			food_resource_type.name_singular)
 		)
 	form.location_type.choices = food_resource_types_choices
-	form.location_type.data = food_resource_types_choices[0][0]
 
+	# Initialize location type.
+	if request.method == 'GET':
+		form.location_type.data = food_resource_types_choices[0][0]
 
 	additional_errors = []
 	if request.method == 'POST' and form.validate(): 
@@ -284,8 +286,10 @@ def guest_new_food_resource():
 
 			# Create food resource's type.
 			enum = form.location_type.data
+			print enum
 			food_resource_type = FoodResourceType.query.filter_by(enum=enum) \
 				.first()
+			print food_resource_type.name_singular
 
 			# Create food resource and store all data in it.
 			food_resource = FoodResource(
@@ -312,7 +316,7 @@ def guest_new_food_resource():
 	# If GET request is received or POST request fails due to invalid timeslots, 
 	# render the page. 
 	return render_template('guest_add_resource.html', form=form, 
-		days_of_week=days_of_week, resources_info=resources_info_singular, 
+		days_of_week=days_of_week,  
 		additional_errors=additional_errors)
 
 @app.route('/_thank-you')
