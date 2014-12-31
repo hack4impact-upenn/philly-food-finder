@@ -3,6 +3,21 @@ from flask_user import UserMixin
 from datetime import datetime
 import utils
 
+class ColoredPin(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	hex_color = db.Column(db.String(6), unique=True)
+	pin_image_name = db.Column(db.String(35), unique=True)
+	food_resources = db.relationship(
+		'FoodResourceType', # One-to-many relationship (one FoodResourceType with many FoodResource).
+		backref='food_resource_type', # Declare a new property of the FoodResource class.
+		lazy='select', uselist=False)
+
+	def serialize_colored_pin(self):
+		return {
+			'hex_color': self.hex_color, 
+			'pin_image_name': self.pin_image_name
+		}
+
 class FoodResourceType(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	enum = db.Column(db.String(35), unique=True) # Should be singular
@@ -12,8 +27,7 @@ class FoodResourceType(db.Model):
 	hyphenated_id_plural = db.Column(db.String(35), unique=True)
 	underscored_id_singular = db.Column(db.String(35), unique=True)
 	underscored_id_plural = db.Column(db.String(35), unique=True)
-	hex_color = db.Column(db.String(6), unique=True)
-	pin_image_name = db.Column(db.String(35), unique=True)
+	colored_pin_id = db.Column(db.Integer, db.ForeignKey('colored_pin.id'))
 	food_resources = db.relationship(
 		'FoodResource', # One-to-many relationship (one FoodResourceType with many FoodResource).
 		backref='food_resource_type', # Declare a new property of the FoodResource class.
@@ -21,7 +35,7 @@ class FoodResourceType(db.Model):
 		uselist=True,
 		order_by='FoodResource.name')
 
-	def __init__(self, name_singular, name_plural, hex_color, pin_image_name):
+	def __init__(self, name_singular, name_plural, colored_pin):
 		self.enum = utils.get_enum(name_singular)
 		self.name_singular = name_singular
 		self.name_plural = name_plural
@@ -29,8 +43,7 @@ class FoodResourceType(db.Model):
 		self.hyphenated_id_plural = utils.get_hyphenated_string(name_plural)
 		self.underscored_id_singular = utils.get_underscored_string(name_singular)
 		self.underscored_id_plural = utils.get_underscored_string(name_plural)
-		self.hex_color = hex_color
-		self.pin_image_name = pin_image_name
+		self.colored_pin = colored_pin
 
 	def serialize_food_resource_type(self):
 		return {
@@ -42,8 +55,7 @@ class FoodResourceType(db.Model):
 			'hyphenated_id_plural': self.hyphenated_id_plural, 
 			'underscored_id_singular': self.underscored_id_singular,
 			'underscored_id_plural': self.underscored_id_plural,
-			'hex_color': self.hex_color,
-			'pin_image_name': self.pin_image_name,
+			'colored_pin': self.colored_pin.serialize_colored_pin(),
 			'food_resources': [i.serialize_food_resource(include_food_resource_type=False) for i in self.food_resources]
 		}
 

@@ -20,5 +20,3 @@ days_of_week = [
 	{'id' : "saturday",    
                 'name': "Saturday",     
                 'index' : 6}]
-
-pin_file_names = []

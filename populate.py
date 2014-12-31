@@ -9,42 +9,73 @@ db.drop_all()
 # Create new database tables.
 db.create_all()
 
+# Create colored pins.
+cp_yellow = ColoredPin(
+    hex_color="fdd800", 
+    pin_image_name="mb_yellow.png"
+)
+db.session.add(cp_yellow)
+
+cp_green = ColoredPin(
+    hex_color="009933", 
+    pin_image_name="mb_green.png"
+)
+db.session.add(cp_green)
+
+cp_blue = ColoredPin(
+    hex_color="0f85c7", 
+    pin_image_name="mbb_blue.png"
+)
+db.session.add(cp_blue)
+
+cp_red = ColoredPin(
+    hex_color="ef3d23", 
+    pin_image_name="mbb_red.png.png"
+)
+db.session.add(cp_red)
+
+cp_orange = ColoredPin(
+    hex_color="f8a11d", 
+    pin_image_name="mbb_orange.png"
+)
+db.session.add(cp_orange)
+
+cp_purple = ColoredPin(
+    hex_color="84459b", 
+    pin_image_name="mbb_purple.png"
+)
+db.session.add(cp_purple)
+
 # Create food resource types.
 frt_farmers_market = FoodResourceType(
     name_singular="Farmers' Market",
     name_plural="Farmers' Markets",
-    hex_color="fdd800",
-    pin_image_name="mb_yellow.png")
+    colored_pin=cp_yellow)
 
 frt_food_cupboard = FoodResourceType(
     name_singular="Food Cupboard",
     name_plural="Food Cupboards",
-    hex_color="009933",
-    pin_image_name="mbb_green.png")
+    colored_pin=cp_green)
 
 frt_senior_meals = FoodResourceType(
     name_singular="Senior Meals",
     name_plural="Senior Meals",
-    hex_color="0f85c7",
-    pin_image_name="mbb_blue.png")
+    colored_pin=cp_blue)
 
 frt_share_host_site = FoodResourceType(
     name_singular="SHARE Host Site",
     name_plural="SHARE Host Sites",
-    hex_color="ef3d23",
-    pin_image_name="mbb_red.png")
+    colored_pin=cp_red)
 
 frt_soup_kitchen = FoodResourceType(
     name_singular="Soup Kitchen",
     name_plural="Soup Kitchens",
-    hex_color="f8a11d",
-    pin_image_name="mbb_orange.png")
+    colored_pin=cp_orange)
 
 frt_wic_office = FoodResourceType(
     name_singular="WIC Office",
     name_plural="WIC Offices",
-    hex_color="84459b",
-    pin_image_name="mbb_purple.png")
+    colored_pin=cp_purple)
 
 db.session.add(frt_farmers_market)
 db.session.add(frt_food_cupboard)
