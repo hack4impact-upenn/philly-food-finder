@@ -326,6 +326,10 @@ def post_guest_add():
 def admin():
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_plural).all()
+	for food_resource_type in food_resource_types:
+		for food_resource in list(food_resource_type.food_resources):
+			if food_resource.is_approved == False:
+				food_resource_type.food_resources.remove(food_resource)
 
 	contacts = FoodResourceContact.query.all()
 
