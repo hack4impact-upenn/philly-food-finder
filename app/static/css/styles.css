@@ -50,6 +50,7 @@ hr {
   margin: 0.67em 50;
 }
 
+/* formatting for WYSIWYG editor */ 
 #editor1 {
   font-weight: 300;
   letter-spacing: .4px;
@@ -176,8 +177,36 @@ button.radius, .button.radius {
   text-transform: none;
   letter-spacing: 4px;
   text-align: center;
-  margin-right: 10px;
-/*  margin-left: 10px;*/
+
+}
+
+.top-bar-section li:not(.has-form) a:not(.button) {
+  background: #FFF;
+}
+
+.top-bar-section li:not(.has-form) a:not(.button):hover {
+  background: #FFF;
+}
+
+/* dropdown menu */
+.top-bar-section .dropdown li:not(.has-form):not(.active) > a:not(.button) {
+  color: #2D4FA0;
+  font-size: 1.6rem;
+  font-weight: 200;
+  text-transform: lowercase;  
+  letter-spacing: 2px;
+  text-align: center;
+  padding: 5;
+}
+
+.top-bar-section .dropdown li:not(.has-form):not(.active) > a:not(.button) {
+  background: #FFF;
+}
+
+/* arrow next to drop down */
+.top-bar-section .has-dropdown > a:after {
+  border-color: #2D4FA0 transparent transparent transparent;
+  top: 37px;
 }
 
 /* buttons - not hover */
@@ -185,11 +214,6 @@ button.radius, .button.radius {
   padding: 15 15;
   line-height: 40px;  /* bar height */
   background-color: #FFF;
-}
-
-.top-bar-section li:not(.has-form) a:not(.button):hover {
-  background-color: #FFF;
-  color: #FFF;
 }
 
 .top-bar-section ul li>a:hover {
@@ -216,8 +240,13 @@ button.radius, .button.radius {
   color: #0585C7;
 }
 
-#l_faq:hover {
+#l_resources:hover {
   color: #09ab4b;
+}
+
+#l_resources:focus {
+  color: #09ab4b;
+  background: #FFF;
 }
 
 #l_about:hover {
@@ -234,6 +263,11 @@ button.radius, .button.radius {
 
 #l_admin:hover {
   color: #ef3d23;
+}
+
+#l_admin:focus {
+  color: #ef3d23;
+  background: #FFF;
 }
 
 img {
