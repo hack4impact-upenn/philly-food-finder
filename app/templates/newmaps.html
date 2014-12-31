@@ -1,4 +1,4 @@
-  {% extends "base.html" %}
+{% extends "base.html" %}
 
 <!-- Map -->
   {% block content %}
@@ -29,13 +29,12 @@
                   var minLng = latlng.lng();
                   var maxLng = latlng.lng();              
             $.getJSON($SCRIPT_ROOT + '/_map', {
-          zipcode: zipCode
+          zip_code: zipCode
         },
             function(data) {
               for (var i = 0; i < data["addresses"].length; i++)
               {
                 var newAddress = data["addresses"][i]["address"]["line1"] + ', ' + data["addresses"][i]["address"]["city"] + ', ' + data["addresses"][i]["address"]["state"] ;
-
                 (function(){
                     var newTitle = data["addresses"][i]["name"];
                     var newDescription = newTitle + "<br>" + data["addresses"][i]["description"] + "<br>" 
@@ -43,13 +42,12 @@
                     console.log(data["addresses"][i]["phone_number"])          
                     var newType = data["addresses"][i]["location_type"];
                 if (newType == 'FARMERS_MARKET') { var image = "../static/img/mb_yellow.png" }
-                else if (newType == 'FOOD_CUPBOARD') { var image = "../static/img/mb_blue.png" }
-                else if (newType == 'MEALS_ON_WHEELS') { var image = "../static/img/mb_green.png" }
-                else if (newType == 'SHARE') { var image = "../static/img/mb_red.png" }
-                else if (newType == 'SOUP_KITCHEN') { var image = "../static/img/mb_orange.png" }
-                else if (newType == 'WIC_OFFICE') { var image = "../static/img/mb_purple.png" }
+                else if (newType == 'FOOD_CUPBOARD') { var image = "../static/img/mbb_green.png" }
+                else if (newType == 'SENIOR_MEAL') { var image = "../static/img/mbb_blue.png" }
+                else if (newType == 'SHARE') { var image = "../static/img/mbb_red.png" }
+                else if (newType == 'SOUP_KITCHEN') { var image = "../static/img/mbb_orange.png" }
+                else if (newType == 'WIC_OFFICE') { var image = "../static/img/mbb_purple.png" }
                 else                   { var image = "../static/img/FPAC_LOGO.png"}
-
                 GMaps.geocode({
                   address: newAddress,
                   callback: function(results, status) {
@@ -82,7 +80,6 @@
                   }
                   }); }) ();
               }
-
            });
             }
           }
@@ -93,35 +90,63 @@
 </div>
 
 <body id = "map_p">
-  <div class="row">
-    <h1 class="page-header" id="map-header">Philly Food Finder</h1>
-    <hr align="center">
-  </div>
     <div class="row">
-      <div class="large-centered 
-                  large-10 medium-centered medium-8 small-8 small-centered
-                  columns content">
-      <form method="post" id="geocoding_form">
-        <label for="address">Zip Code:</label>
-        <div class="input large-8 medium-8 small-12 columns">
-          <input type="text" id="address" name="address" />
-          <input type="submit" class="button radius tiny" value="Search" />
+        <h1 class="page-header" id="map-header">Philly Food Finder</h1>
+        <hr align="center">
+    </div>
+    <div class="row">
+        <div class="large-centered large-10 medium-centered medium-8 small-8 small-centered columns content">
+            <form method="post" id="geocoding_form">
+                <div class="small-12 columns">
+                    <label for="address">Zip Code:</label>
+                    <input type="text" id="address" name="address" />
+                </div>
+                <div class="small-12 columns">
+                    <input type="checkbox" id="map-filter-by-open-now"> Open now
+                    <input type="checkbox" id="map-filter-by-families-and-children"> Families and children
+                    <input type="checkbox" id="map-filter-by-seniors"> Seniors
+                </div>
+                <div class="small-12 columns">
+                    <input type="submit" class="button radius small" value="Search" id="map-search-button" />
+                    <input type="submit" class="button radius small" value="Clear Filters" id="map-filter-button" />
+                </div>
+            </form>      
+            <div id="map-container">
+                <div id="map"></div>
+            </div> 
+            <div id="map-key">
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mb_yellow.png" alt="Yellow Pin"/>
+                    Farmers' Market
+                </div>
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mbb_blue.png" alt="Blue Pin"/>
+                    Senior Meal
+                </div>
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mbb_green.png" alt="Green Pin"/>
+                    Food Cupboard
+                </div>
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mbb_red.png" alt="Red Pin"/>
+                    SHARE Host Site
+                </div>
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mbb_orange.png" alt="Orange Pin"/>
+                    Soup Kitchen
+                </div>
+                <div class="small-12 medium-4 columns pin-definition">
+                    <img src="../static/img/mbb_purple.png" alt="Yellow Pin"/>
+                    WIC Office
+                </div>
+            </div>
         </div>
-      </form>      
-      <div class="large-centered 
-                  large-10 medium-centered medium-8 small-8 small-centered
-                  columns">
-          <div id="map"></div>
-      </div> </div>
     </div> 
-  </div>
 </body>
-  {% endblock %}
+{% endblock %}
 
 
 <!-- FAQ -->
-  {% block content_faq %}
+{% block content_faq %}
 
-
-
-  {% endblock %}
+{% endblock %}
