@@ -23,15 +23,28 @@ def index():
 @login_required
 def new(id=None):
 	form = AddNewFoodResourceForm(request.form)
+
+	# Set timeslot choices.
 	for timeslots in form.daily_timeslots:
 		for timeslot in timeslots.timeslots:
 			timeslot.starts_at.choices=get_possible_opening_times()
 			timeslot.ends_at.choices=get_possible_closing_times()
 
+	# Set food resource type choices.
+	food_resource_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_plural).all()
+	food_resource_types_choices = []
+	for food_resource_type in food_resource_types:
+		food_resource_types_choices.append(
+			(food_resource_type.enum, 
+			food_resource_type.name_singular)
+		)
+	form.location_type.choices = food_resource_types_choices
+
 	# Create a new food resource. 
 	if id is None:
 		title = "Add New Food Resource"
-		food_resource_type = "FARMERS_MARKET"
+		food_resource_type = food_resource_types_choices[0][0]
 	# Edit an existing food resource.
 	else:
 		title = "Edit Food Resource"
@@ -61,6 +74,7 @@ def new(id=None):
 		form.is_wheelchair_accessible.data = \
 			food_resource.is_wheelchair_accessible
 		form.is_accepts_snap.data = food_resource.is_accepts_snap
+		form.location_type.data = food_resource.food_resource_type.enum
 
 		# Data that must be interpreted before being rendered.
 		if food_resource.are_hours_available == True:
@@ -128,6 +142,7 @@ def new(id=None):
 				if fr:
 					db.session.delete(fr)
 					db.session.commit()
+
 			# Create food resource's address.
 			address = Address(line1=form.address_line1.data, 
 				line2=form.address_line2.data, 
@@ -142,6 +157,11 @@ def new(id=None):
 			db.session.add(home_number)
 			phone_numbers.append(home_number)
 
+			# Create food resource's type.
+			enum = form.location_type.data
+			food_resource_type = FoodResourceType.query.filter_by(enum=enum) \
+				.first()
+
 			# Create food resource and store all data in it.
 			food_resource = FoodResource(
 				name=form.name.data, 
@@ -154,8 +174,9 @@ def new(id=None):
 				is_for_seniors = form.is_for_seniors.data,
 				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
 				is_accepts_snap = form.is_accepts_snap.data, 
-				are_hours_available = are_hours_available, 
-				location_type = food_resource_type)
+				are_hours_available = are_hours_available,
+				food_resource_type = food_resource_type)
+
 			# Commit all database changes. 
 			db.session.add(food_resource)
 			db.session.commit()
@@ -171,11 +192,24 @@ def new(id=None):
 @app.route('/propose-resource', methods=['GET', 'POST'])
 def guest_new_food_resource():
 	form = NonAdminAddNewFoodResourceForm(request.form)
+	# Set timeslot choices.
 	for timeslots in form.daily_timeslots:
 		for timeslot in timeslots.timeslots:
 			timeslot.starts_at.choices=get_possible_opening_times()
 			timeslot.ends_at.choices=get_possible_closing_times()
-	form.location_type.data = "FARMERS_MARKET"
+
+	# Set food resource type choices.
+	food_resource_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_plural).all()
+	food_resource_types_choices = []
+	for food_resource_type in food_resource_types:
+		food_resource_types_choices.append(
+			(food_resource_type.enum, 
+			food_resource_type.name_singular)
+		)
+	form.location_type.choices = food_resource_types_choices
+	form.location_type.data = food_resource_types_choices[0][0]
+
 
 	additional_errors = []
 	if request.method == 'POST' and form.validate(): 
@@ -247,6 +281,11 @@ def guest_new_food_resource():
 			db.session.add(home_number)
 			phone_numbers.append(home_number)
 
+			# Create food resource's type.
+			enum = form.location_type.data
+			food_resource_type = FoodResourceType.query.filter_by(enum=enum) \
+				.first()
+
 			# Create food resource and store all data in it.
 			food_resource = FoodResource(
 				name=form.name.data, 
@@ -260,7 +299,7 @@ def guest_new_food_resource():
 				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
 				is_accepts_snap = form.is_accepts_snap.data, 
 				are_hours_available = are_hours_available, 
-				location_type = form.location_type.data, 
+				food_resource_type = food_resource_type, 
 				is_approved = False, 
 				food_resource_contact = contact)
 

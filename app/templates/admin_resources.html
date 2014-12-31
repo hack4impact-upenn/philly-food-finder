@@ -75,7 +75,7 @@
 							Resource Type:
 						</div>
 						<div class="small-9 columns">
-							{{ resource.location_type }}
+							{{ resource.food_resource_type.name_singular }}
 						</div>
 					</div>
 					<div class="row">
@@ -84,16 +84,16 @@
 						</div>
 						<div class="small-9 columns">
 							{% if contact.name %}
-									{{ contact.name }}
-								{% endif %}
-								{% if contact.name %}
-									<br>
-									{{ contact.email }}
-								{% endif %}
-								{% if contact.phone_number %}
-									<br>
-									{{ contact.phone_number }}
-								{% endif %}
+								{{ contact.name }}
+							{% endif %}
+							{% if contact.name %}
+								<br>
+								{{ contact.email }}
+							{% endif %}
+							{% if contact.phone_number %}
+								<br>
+								{{ contact.phone_number }}
+							{% endif %}
 						</div>
 					</div>
 					<div class="row">
