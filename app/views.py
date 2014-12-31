@@ -541,7 +541,10 @@ def get_filtered_food_resource_data():
 
 @app.route('/map')
 def map():
-	return render_template('newmaps.html')
+	food_resource_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_singular).all()
+	return render_template('newmaps.html', 
+		food_resource_types=food_resource_types)
 
 @app.route('/_map')
 def address_food_resources():

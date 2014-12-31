@@ -109,30 +109,12 @@
                 <div id="map"></div>
             </div> 
             <div id="map-key">
+                {% for food_resource_type in food_resource_types %}
                 <div class="small-12 medium-4 columns pin-definition">
-                    <img src="../static/img/mb_yellow.png" alt="Yellow Pin"/>
-                    Farmers' Market
+                    <img src="../static/img/{{ food_resource_type.colored_pin.pin_image_name }}" alt="{{ food_resource_type.colored_pin.color_name}} Pin"/>
+                    {{ food_resource_type.name_singular }}
                 </div>
-                <div class="small-12 medium-4 columns pin-definition">
-                    <img src="../static/img/mbb_blue.png" alt="Blue Pin"/>
-                    Senior Meal
-                </div>
-                <div class="small-12 medium-4 columns pin-definition">
-                    <img src="../static/img/mbb_green.png" alt="Green Pin"/>
-                    Food Cupboard
-                </div>
-                <div class="small-12 medium-4 columns pin-definition">
-                    <img src="../static/img/mbb_red.png" alt="Red Pin"/>
-                    SHARE Host Site
-                </div>
-                <div class="small-12 medium-4 columns pin-definition">
-                    <img src="../static/img/mbb_orange.png" alt="Orange Pin"/>
-                    Soup Kitchen
-                </div>
-                <div class="small-12 medium-4 columns pin-definition">
-                    <img src="../static/img/mbb_purple.png" alt="Yellow Pin"/>
-                    WIC Office
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div> 
