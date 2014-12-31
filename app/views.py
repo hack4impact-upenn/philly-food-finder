@@ -570,7 +570,8 @@ def remove_food_resource_type():
 	id = request.args.get("id", type=int)
 	food_resource_type = FoodResourceType.query.filter_by(id=id).first()
 
-	# Remove the food resoures and timeslots from the database.
+	# Remove the food resoures and their timeslots, address, and phone numbers 
+	# from the database.
 	for food_resource in food_resource_type.food_resources:
 		for timeslot in food_resource.timeslots:
 			db.session.delete(timeslot)
@@ -601,7 +602,14 @@ def remove():
 	if contact and len(contact.food_resource) <= 1:
 		db.session.delete(contact)
 
-	# Remove the food resource from the database.
+	# Remove the food resoure and its timeslots, address, and phone numbers 
+	# from the database.
+	for timeslot in food_resource.timeslots:
+			db.session.delete(timeslot)
+	for phone_number in food_resource.phone_numbers:
+		db.session.delete(phone_number)
+	db.session.delete(food_resource.address)
+	db.session.delete(food_resource)
 	db.session.delete(food_resource)
 	db.session.commit()
 	return jsonify(is_approved=is_approved)
