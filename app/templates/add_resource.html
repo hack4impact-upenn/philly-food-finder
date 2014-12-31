@@ -11,7 +11,7 @@
 	<form action="" method="POST" role="form" name="submit_food_resource">
 	    {{ form.hidden_tag() }}
 
-	    <!-- Food Resource Name -->
+	    <!-- Additional Errors --> 
 	    <div class="row">
 		    <div class="large-8 medium-6 medium-centered small-12 columns large-centered 
 		    	medium-centered">
@@ -26,7 +26,7 @@
 		    </div>
 		</div>
 
-	   <!-- Food Resource Type -->
+	   <!-- Food Resource Name -->
 	    {% set field = form.name %}
 	    <div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -43,21 +43,24 @@
 	            </label>
 			</div>
 		</div>
+
+		<!-- Food Resource Type -->
+		{% set field = form.location_type %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		    	<label>Food Resource Type
-			    	<select name='food-resource-type' id="option-title">
-			    		{% for resource_info in resources_info %}
-						 	<option value="{{ resource_info.enum }}">
-								{{ resource_info.name }}
-							</option>
-						{% endfor %}
-			    	</select>
-		      	</label>
-		    </div>
-	  	</div>
-
+		      	<label>{{ form.location_type.label }}
+		        	<dd class="error">{{ form.location_type()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
 
 		<!-- Address Line 1 -->
 		{% set field = form.address_line1 %}
@@ -77,7 +80,6 @@
 			</div>
 		</div>
 
-
 	  <!-- Address Line 2 -->
 		{% set field = form.address_line2 %}
 		<div class="row">
@@ -96,6 +98,7 @@
 			</div>
 		</div>
 
+		<!-- Address City --> 
 		{% set field = form.address_city %}
 		<div class="row">
 			<div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -113,6 +116,7 @@
 			</div>
 		</div>
 
+		<!-- Address State --> 
 		{% set field = form.address_state %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -130,6 +134,7 @@
 			</div>
 		</div>
 
+		<!-- Address Zip Code --> 
 		{% set field = form.address_zip_code %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -147,6 +152,7 @@
 			</div>
 		</div>
 
+		<!-- Address Phone Number --> 
 		{% set field = form.phone_number %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -164,6 +170,7 @@
 			</div>
 		</div>
 
+		<!-- Website --> 
 		{% set field = form.website %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -189,57 +196,85 @@
 			</div>
 		</div>
 
+		{% set field = form.are_hours_available %}
 		<div class="row">
-			<div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		     	<div class="large-12 small-12 columns" id="middle-padding-section">
-	      			<label>Are hours of operation available?
-				    	<select name='are-hours-available' id="are-hours-available-picker">
-				    		<option value="no">No</option>
-							<option value="yes">Yes</option>
-				    	</select>
-	      			</label>
-	      		</div>
-		 	</div>
-		</div>
-
-		{% for day_of_week in days_of_week %}
-
-		<div class="row open-or-closed-container">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-	      		<div class="large-4 small-4 columns" id="middle-padding-section">
-	      			<label>{{ day_of_week.name }}
-				    	<select name='{{ day_of_week.index }}-open-or-closed' class='open-or-closed'>
-				    		<option value="closed">Closed</option>
-							<option value="open">Open</option>
-				    	</select>
-	      			</label>
-	      		</div>
-	      		<div class="large-4 small-4 columns {{ day_of_week.index }}-time-picker" id="middle-padding-section">
-	      			<label>Opens at
-				    	<select name='{{ day_of_week.index }}-opening-time'>
-				    		{% for time in possible_opening_times %}
-				    			<option value="{{ time.strftime('%H') }}:{{ time.strftime('%M') }}">
-				    				{{ time.strftime('%I') }}:{{ time.strftime('%M') }} {{ time.strftime('%p') }}
-				    			</option>
-				    		{% endfor %}
-				    	</select>
-	      			</label>
-	      		</div>
-	      		<div class="large-4 small-4 columns {{ day_of_week.index }}-time-picker" id="middle-padding-section">
-	      			<label>Closes at
-				    	<select name='{{ day_of_week.index }}-closing-time'>
-				    		{% for time in possible_closing_times %}
-				    			<option value="{{ time.strftime('%H') }}:{{ time.strftime('%M') }}">
-				    				{{ time.strftime('%I') }}:{{ time.strftime('%M') }} {{ time.strftime('%p') }}
-				    			</option>
-				    		{% endfor %}
-				    	</select>
-	      			</label>
-	      		</div>
-	   	  </div>
+		      	<label>{{ form.are_hours_available.label }}
+		        	<dd class="error">{{ form.are_hours_available()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
 		</div>
+
+		{% for multi_timeslot_form in form.daily_timeslots %}
+		{% set day_of_week = days_of_week[loop.index0] %}
+		{% set is_open = form.is_open[loop.index0].is_open %}
+
+		{{ form.is_open[loop.index0].form.hidden_tag() }}
+		{{ multi_timeslot_form.form.hidden_tag() }}
+
+			<div class="row open-or-closed-container">
+			    <div class="large-8 medium-8 medium-centered small-8 small-centered
+			     columns large-centered">
+			    	<div class="row">
+			      		<div class="large-4 small-4 columns" id="middle-padding-section">
+			      			<label>{{ day_of_week.name }}
+					        	<dd class="error">{{ is_open()|safe }}
+					        	{% if is_open.errors %}
+					                {% for e in is_open.errors %}
+					                    {% if e %}
+					                        <small class="error">{{ e }}</small>
+					                    {% endif %}
+					                {% endfor %}
+					            {% endif %}
+			      			</label>
+			      		</div>
+			      		{% for timeslot_form in multi_timeslot_form.timeslots %} 
+			      			{{ timeslot_form.form.hidden_tag() }}
+				      		<div class="large-8 small-8 columns time-pickers" id="middle-padding-section">
+					      		<div class="row">
+						      		<div class="large-6 small-6 columns" id="middle-padding-section">
+						      			<label>{{ timeslot_form.starts_at.label }}
+								        	<dd class="error">{{ timeslot_form.starts_at()|safe }}
+								        	{% if timeslot_form.starts_at.errors %}
+								                {% for e in timeslot_form.starts_at.errors %}
+								                    {% if e %}
+								                        <small class="error">{{ e }}</small>
+								                    {% endif %}
+								                {% endfor %}
+								            {% endif %}
+						      			</label>
+						      		</div>
+						      		<div class="large-6 small-6 columns" id="middle-padding-section">
+						      			<label>{{ timeslot_form.ends_at.label }}
+								        	<dd class="error">{{ timeslot_form.ends_at()|safe }}
+								        	{% if timeslot_form.ends_at.errors %}
+								                {% for e in timeslot_form.ends_at.errors %}
+								                    {% if e %}
+								                        <small class="error">{{ e }}</small>
+								                    {% endif %}
+								                {% endfor %}
+								            {% endif %}
+						      			</label>
+						      		</div>
+						      	</div>
+						      	<div class="row {{ day_of_week.index }}-add-another-time-picker">
+						      		<div class="small-12 columns">
+						      			Add another timeslot
+						      		</div>
+						      	</div>
+				      		</div>
+			      		{% endfor %}
+			      	</div>
+		   	  </div>
+			</div>
 
 		{% endfor %}
 
@@ -336,50 +371,5 @@
 		</div>
 	</form>
 </body>
-
-<script>
-	$(document).ready(function() {
-
-		// Set food resource timeslots.
-		var dayOfWeekId, openOrClosedSelectorName, openingTimeSelectorName, 
-			closingTimeSelectorName; 
-
-		// Set timeslot drop-downs dynamically. The Flask form cannot 
-		// automatically pre-load the drop-downs.
-		{% for timeslot in timeslots %}
-			dayOfWeekId = {{ timeslot.day_of_week }};
-			openingTimeString = "{{ timeslot.start_time.strftime('%H') }}"
-				+ ":" + "{{ timeslot.start_time.strftime('%M') }}";
-			closingTimeString = "{{ timeslot.end_time.strftime('%H') }}"
-				+ ":" + "{{ timeslot.end_time.strftime('%M') }}";
-
-			openOrClosedSelectorName = dayOfWeekId + "-open-or-closed";
-			openingTimeSelectorName = dayOfWeekId + "-opening-time";
-			closingTimeSelectorName = dayOfWeekId + "-closing-time";
-
-			$('[name="' + openOrClosedSelectorName + '"]').val("open");
-			$('[name="' + openingTimeSelectorName + '"]').val(openingTimeString);
-			$('[name="' + closingTimeSelectorName + '"]').val(closingTimeString);
-			$("." + dayOfWeekId + "-time-picker").show();
-		{% endfor %}
-
-		// Set food resource type drop-down dynamically. The Flask form cannot
-		// automatically pre-load the drop-downs.
-		{% if food_resource_type %}
-			var foodResourceTypeString = "{{ food_resource_type }}";
-			$('[name="food-resource-type"]').val(foodResourceTypeString);
-		{% endif %}
-
-		// Set "Are hours available?" drop-down dynamically. The Flask form 
-		// cannot automatically pre-load the drop-downs. 
-		{% if are_hours_available %}
-			$('select#are-hours-available-picker').val("yes"); 
-			$(".open-or-closed-container").show();
-		{% else %}
-			$('select#are-hours-available-picker').val("no");
-			$(".open-or-closed-container").hide();
-		{% endif %}
-	}); 
-</script>
 
 {% endblock %}

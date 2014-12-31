@@ -80,7 +80,12 @@ def get_possible_opening_times():
 		hour=17,	# Final opening time is 5:00 PM.
 		minute=0)
 	while opening_time != final_opening_time:
-		opening_times.append(opening_time.time())
+		opening_times.append(
+			(
+				opening_time.time().strftime("%H:%M"), # 8:00 AM or 1:OO PM
+				opening_time.time().strftime("%I:%M %p") # 8:00 or 13:00
+			)
+		)
 		# Opening time is incremented in 15-minute intervals.
 		opening_time += timedelta(0, 15*60) # Number of seconds in 15 minutes.
 	return opening_times
@@ -101,7 +106,12 @@ def get_possible_closing_times():
 		hour=21,	# Final closing time is 9:00 PM.
 		minute=0)
 	while closing_time != final_closing_time:
-		closing_times.append(closing_time.time())
+		closing_times.append(
+			(
+				closing_time.time().strftime("%H:%M"), # 8:00 AM or 1:OO PM
+				closing_time.time().strftime("%I:%M %p") # 8:00 or 13:00
+			)
+		)
 		# Closing time is incremented in 15-minute intervals.
 		closing_time += timedelta(0, 15*60) # Number of seconds in 15 minutes.
 	return closing_times

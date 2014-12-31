@@ -74,40 +74,62 @@ $(document).ready(function() {
     	$(".end-edit").hide();
     	$(".start-edit").show();
     	$("#editor1").attr("contenteditable","false");
-      	});
+  	});
 
 	// Hide all open-and-close and time selectors iniially.
 	// Used on "Add New / Edit Resource" page.
-	$("[class$='-time-picker']").hide(); 
+	$(".time-pickers").hide(); 
 	$(".open-or-closed-container").hide(); 
+	toggleAreHoursAvailable();
+	toggleOpenOrClosed(); 
 
 	// Toggle visibility of time selectors.
 	// Used on "Add New / Edit Resource" page.
-	$('select.open-or-closed').on('change', function (e) {
+	$('select[id^="is_open"]').on('change', function (e) {
 	    var optionSelected = $("option:selected", this);
 	    var valueSelected = this.value;
-	    var parentName = optionSelected.parent().attr("name"); 
-	    var endIndex = parentName.indexOf("-"); 
-	    var dayOfWeek = parentName.substring(0, endIndex);
+	    var divToToggle = $(this).parent().parent().parent().parent()
+	    	.find(".time-pickers"); 
 	    if (valueSelected == "open") {
-	    	$("." + dayOfWeek + "-time-picker").show();
+	    	divToToggle.show(); 
 	    } else if (valueSelected == "closed") {
-	    	$("." + dayOfWeek + "-time-picker").hide();
+	    	divToToggle.hide(); 
 	    }
 	});
 
 	// Toggle visibility of open-and-close selectors. 
 	// Used on "Add New / Edit Resource" page.
-	$('select#are-hours-available-picker').on('change', function (e) {
-	    var optionSelected = $("option:selected", this);
-	    var valueSelected = this.value;
+	$('select#are_hours_available').on('change', function (e) {
+	    toggleAreHoursAvailable();
+	});	
+});
+
+function toggleAreHoursAvailable() {
+	var element = $('select#are_hours_available')[0];
+	if (element) {
+		var optionSelected = $("option:selected", element);
+	    var valueSelected = element.value;
 	    if (valueSelected == "yes") {
 	    	$(".open-or-closed-container").show();
 	    } else if (valueSelected == "no") {
 	    	$(".open-or-closed-container").hide();
 	    }
-	});	
-});
+	}
+}
+
+function toggleOpenOrClosed() {
+	$('select[id^="is_open"]').each(function(index) {
+		var optionSelected = $("option:selected", this);
+	    var valueSelected = this.value;
+	    var divToToggle = $(this).parent().parent().parent().parent()
+	    	.find(".time-pickers"); 
+	    if (valueSelected == "open") {
+	    	divToToggle.show(); 
+	    } else if (valueSelected == "closed") {
+	    	divToToggle.hide(); 
+	    }
+	})
+}
 
 /**
 @function toggleExpansion Expand or collapse the given ID if it is currently
