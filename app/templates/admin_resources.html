@@ -484,11 +484,11 @@
 		// Dynamically set background colors of table headers. 
 		{% for food_resource_type in food_resource_types %}
 			$("#{{ food_resource_type.hyphenated_id_plural }}-header table thead").each(function(index) {
-				$(this).css('background-color', "#{{ food_resource_type.hex_color }}");
+				$(this).css('background-color', "#{{ food_resource_type.colored_pin.hex_color }}");
 				$(this).css('border', "none");
 			});
 			$("#{{ food_resource_type.hyphenated_id_plural }}-header table").each(function(index) {
-				$(this).css('background-color', "#{{ food_resource_type.hex_color }}");
+				$(this).css('background-color', "#{{ food_resource_type.colored_pin.hex_color }}");
 				$(this).css('border', "none");
 			});
 		{% endfor %}

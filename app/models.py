@@ -9,7 +9,7 @@ class ColoredPin(db.Model):
 	pin_image_name = db.Column(db.String(35), unique=True)
 	food_resources = db.relationship(
 		'FoodResourceType', # One-to-many relationship (one FoodResourceType with many FoodResource).
-		backref='food_resource_type', # Declare a new property of the FoodResource class.
+		backref='colored_pin', # Declare a new property of the FoodResource class.
 		lazy='select', uselist=False)
 
 	def serialize_colored_pin(self):
