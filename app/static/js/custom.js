@@ -333,7 +333,7 @@ function clearTablesOfFoodResources() {
 
 function getNoResourcesHtml(resourceInfoId) {
 	var html = 
-	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">' +
+	'<div id="' + resourceInfoId + '-food-resource-type-table" class="admin-food-resource-type">' +
 		'<div class="no-resources-message">None to display.</div>' +
 	'</div>';
 	return html;

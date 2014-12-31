@@ -289,7 +289,6 @@
                   columns resources">
 
 	{% for food_resource_type in food_resource_types %}
-	<script>console.log("{{food_resource_type.name_singular}}");</script>
 	<div id="{{ food_resource_type.hyphenated_id_plural }}">
 		<div class="block-header admin-food-resource-type-header" id="{{ food_resource_type.hyphenated_id_plural }}-header">
 			<table>
@@ -554,7 +553,7 @@
 
         		var totalNumResources = 0; 
         		{% for food_resource_type in food_resource_types %}
-        			if (data["{{ food_resource_type.underscored_id_plural }}"].length == 0) {
+        			if (!data["{{ food_resource_type.underscored_id_plural }}"] || data["{{ food_resource_type.underscored_id_plural }}"].length == 0) {
         				var html = getNoResourcesHtml(
         					"{{ food_resource_type.hyphenated_id_plural }}"); 
         				$("#{{ food_resource_type.hyphenated_id_plural }}-header").after(html);
@@ -566,8 +565,8 @@
         				totalNumResources += 
         					data["{{ food_resource_type.underscored_id_plural }}"].length;
         				var html = getResourcesHtml(
-        					"{{ food_resource_type.name_plural }}", 
         					"{{ food_resource_type.hyphenated_id_plural }}", 
+        					"{{ food_resource_type.name_plural }}", 
         					data["{{ food_resource_type.underscored_id_plural }}"], 
         					data["days_of_week"]);
         				$("#{{ food_resource_type.hyphenated_id_plural }}-header").after(html);
@@ -626,7 +625,7 @@
 
     		var totalNumResources = 0; 
     		{% for food_resource_type in food_resource_types %}
-    			if (data["{{ food_resource_type.underscored_id_plural }}"].length == 0) {
+    			if (!data["{{ food_resource_type.underscored_id_plural }}"] || data["{{ food_resource_type.underscored_id_plural }}"].length == 0) {
     				var html = getNoResourcesHtml(
     					"{{ food_resource_type.hyphenated_id_plural }}"); 
     				$("#{{ food_resource_type.hyphenated_id_plural }}-header").after(html);
@@ -637,6 +636,7 @@
     			else {
     				totalNumResources += 
     					data["{{ food_resource_type.underscored_id_plural }}"].length; 
+    				console.log(totalNumResources);
     				var html = getResourcesHtml(
     					"{{ food_resource_type.hyphenated_id_plural }}", 
     					"{{ food_resource_type.name_plural }}", 

@@ -394,7 +394,7 @@ f8.phone_numbers.append(num8)
 db.session.add(num8)
 f8.description = "Food cupboard description"
 f8.location_type = "FOOD_CUPBOARD"
-f8.food_resource_type = frt_farmers_market
+f8.food_resource_type = frt_food_cupboard
 a8 = Address()
 a8.line1 = "2441 Kensington Avenue"
 a8.city = "Philadelphia"
