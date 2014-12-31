@@ -554,7 +554,7 @@
         		var totalNumResources = 0;
         		var i = 0;  
         		{% for food_resource_type in food_resource_types %}
-        			foodResources = data["food_resource_types"][i]["food_resources"];
+        			var foodResources = data["food_resources"][i];
         			if (!foodResources || foodResources.length == 0) {
         				var html = getNoResourcesHtml(
         					"{{ food_resource_type.hyphenated_id_plural }}"); 
@@ -565,7 +565,7 @@
         			}
         			else {
         				totalNumResources += 
-        					data["{{ food_resource_type.underscored_id_plural }}"].length;
+        					foodResources.length;
         				var html = getResourcesHtml(
         					"{{ food_resource_type.hyphenated_id_plural }}", 
         					"{{ food_resource_type.name_plural }}", 
@@ -629,7 +629,7 @@
     		var totalNumResources = 0;
     		var i = 0;  
     		{% for food_resource_type in food_resource_types %}
-    			foodResources = data["food_resource_types"][i]["food_resources"];
+    			var foodResources = data["food_resource_types"][i]["food_resources"];
     			if (!foodResources || foodResources.length == 0) {
     				var html = getNoResourcesHtml(
     					"{{ food_resource_type.hyphenated_id_plural }}"); 

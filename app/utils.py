@@ -134,7 +134,7 @@ def get_food_resources_by_location_type(list_to_populate, location_type):
 	for food_resource in db.session.query(FoodResource) \
 		.join(FoodResource.address) \
 		.filter(
-			FoodResource.location_type==location_type) \
+			FoodResource.food_resource_type==location_type) \
 		.order_by(FoodResource.name).all():
 		list_to_populate.append(food_resource)
 
@@ -145,7 +145,7 @@ def get_food_resources_by_location_type_and_zip_code(list_to_populate,
 		.join(FoodResource.address) \
 		.filter(
 			Address.zip_code==zip_code,
-			FoodResource.location_type==location_type) \
+			FoodResource.food_resource_type==location_type) \
 		.order_by(FoodResource.name).all():
 		list_to_populate.append(food_resource)
 

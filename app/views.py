@@ -488,113 +488,52 @@ def get_filtered_food_resource_data():
 		'has_accepts_snap_filter', 0, type=int) 
 
 	# Create empty arrays to hold food resources.
-	farmers_markets = []
-	senior_meals = []
-	food_cupboards = []
-	share_host_sites = []
-	soup_kitchens = []
-	wic_offices = []
+	all_resources = []
+	food_resource_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_plural).all()
 
 	# Zip code is one of the filters.
 	if has_zip_code_filter:
 
-		# Filter for farmers' markets with a specific zip code.
-		get_food_resources_by_location_type_and_zip_code(
-			farmers_markets, # List to populate.
-			"FARMERS_MARKET", # Location type by which to filter.
-			zip_code # Zip code by which to filter.
-		)
+		# Iterate through all food resource types.
+		for i, food_resource_type in enumerate(food_resource_types):
 
-		# Filter for senior meals with a specific zip code.
-		get_food_resources_by_location_type_and_zip_code(
-			senior_meals, # List to populate.
-			"SENIOR_MEAL", # Location type by which to filter.
-			zip_code # Zip code by which to filter.
-		)
+			# Filter for each kind of food resource with a specific zip code.
+			all_resources.append([])
+			get_food_resources_by_location_type_and_zip_code(
+				all_resources[i], # List to populate.
+				food_resource_type, # Location type by which to filter.
+				zip_code # Zip code by which to filter.
+			)
 
-		# Filter for food cupboards with a specific zip code.
-		get_food_resources_by_location_type_and_zip_code(
-			food_cupboards, # List to populate.
-			"FOOD_CUPBOARD", # Location type by which to filter.
-			zip_code # Zip code by which to filter.
-		)
-
-		# Filter for SHARE host sites with a specific zip code.
-		get_food_resources_by_location_type_and_zip_code(
-			share_host_sites, # List to populate.
-			"SHARE", # Location type by which to filter.
-			zip_code # Zip code by which to filter.
-		)
-
-		# Filter for soup kitchens with a specific zip code.
-		get_food_resources_by_location_type_and_zip_code(
-			soup_kitchens, # List to populate.
-			"SOUP_KITCHEN", # Location type by which to filter.
-			zip_code # Zip code by which to filter.
-		)
-
-		# Filter for WIC offices with a specific zip code.
-		get_food_resources_by_location_type_and_zip_code(
-			wic_offices, # List to populate.
-			"WIC_OFFICE", # Location type by which to filter.
-			zip_code # Zip code by which to filter.
-		)
+			print all_resources[i]
 
 	# Zip code is not one of the filters. 
 	else: 
 
-		# Filter for farmers' markets without a specific zip code.
-		get_food_resources_by_location_type(
-			farmers_markets, # List to populate.
-			"FARMERS_MARKET" # Location type by which to filter.
-		)
+		# Iterate through all food resource types.
+		for i, food_resource_type in enumerate(food_resource_types):
 
-		# Filter for senior meals without a specific zip code.
-		get_food_resources_by_location_type(
-			senior_meals, # List to populate.
-			"SENIOR_MEAL" # Location type by which to filter.
-		)
-
-		# Filter for food cupboards without a specific zip code.
-		get_food_resources_by_location_type(
-			food_cupboards, # List to populate.
-			"FOOD_CUPBOARD" # Location type by which to filter.
-		)
-
-		# Filter for SHARE host sites without a specific zip code.
-		get_food_resources_by_location_type(
-			share_host_sites, # List to populate.
-			"SHARE" # Location type by which to filter.
-		)
-
-		# Filter for soup kitchens without a specific zip code.
-		get_food_resources_by_location_type(
-			soup_kitchens, # List to populate.
-			"SOUP_KITCHEN" # Location type by which to filter.
-		)
-
-		# Filter for WIC offices without a specific zip code. 
-		get_food_resources_by_location_type(
-			wic_offices, # List to populate.
-			"WIC_OFFICE" # Location type by which to filter.
-		)
+			# Filter for each kind of food resource without a specific zip code.
+			all_resources[i] = []
+			get_food_resources_by_location_type(
+				all_resources[i], # List to populate.
+				food_resource_type # Location type by which to filter.
+			)
 
 	# Filter each list by other boolean criteria.
-	for list_to_filter in [farmers_markets, senior_meals, food_cupboards, 
-		share_host_sites, soup_kitchens, wic_offices]:
+	for list_to_filter in all_resources:
 		filter_food_resources(list_to_filter, has_families_and_children_filter, 
 			has_seniors_filter, has_wheelchair_accessible_filter,
 			has_accepts_snap_filter)
 
-	return jsonify(farmers_markets=[i.serialize_food_resource() for i in 
-			farmers_markets],
-		senior_meals=[i.serialize_food_resource() for i in senior_meals],
-		food_cupboards=[i.serialize_food_resource() for i in food_cupboards],
-		share_host_sites=[i.serialize_food_resource() for i in 
-			share_host_sites],
-		soup_kitchens=[i.serialize_food_resource() for i in soup_kitchens],
-		wic_offices=[i.serialize_food_resource() for i in wic_offices], 
-		days_of_week=days_of_week)
+	json = []
+	for i, list in enumerate(all_resources):
+		json.append([])
+		for food_resource in list:
+			json[i].append(food_resource.serialize_food_resource())
+
+	return jsonify(days_of_week=days_of_week, food_resources=json)
 
 @app.route('/map')
 def map():
