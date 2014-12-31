@@ -17,7 +17,9 @@ class FoodResourceType(db.Model):
 	food_resources = db.relationship(
 		'FoodResource', # One-to-many relationship (one FoodResourceType with many FoodResource).
 		backref='food_resource_type', # Declare a new property of the FoodResource class.
-		lazy='select', uselist=True)
+		lazy='select', 
+		uselist=True,
+		order_by='FoodResource.name')
 
 	def __init__(self, name_singular, name_plural, hex_color, pin_image_name):
 		self.enum = utils.get_enum(name_singular)

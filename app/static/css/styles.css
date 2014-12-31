@@ -306,42 +306,6 @@ table thead tr th, table thead tr td {
   padding: 0em;
 }
 
-#farmers-markets-header table thead, 
-#farmers-markets-header table {
-  background-color: #fdd800; /* yellow */
-  border: none; 
-}
-
-#food-cupboards-header table thead, 
-#food-cupboards-header table {
-  background-color: #09ab4b; /* green */
-  border: none;
-}
-
-#senior-meals-header table thead, 
-#senior-meals-header table {
-  background-color: #0f85c7; /* blue */
-  border: none; 
-}
-
-#share-host-sites-header table thead, 
-#share-host-sites-header table {
-  background-color: #ef3d23; /* red */
-  border: none; 
-}
-
-#soup-kitchens-header table thead, 
-#soup-kitchens-header table {
-  background-color: #f8a11d; /* orange */
-  border: none; 
-}
-
-#wic-offices-header table thead, 
-#wic-offices-header table {
-  background-color: #84459b; /* purple */
-  border: none; 
-}
-
 .expand-food-resource-type:hover,
 .expand-food-resource:hover,
 .expand-food-resource-type-pending:hover,

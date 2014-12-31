@@ -282,32 +282,15 @@ def post_guest_add():
 @app.route('/admin/manage-resources')
 @login_required
 def admin():
-	resources = {}
-	resources['farmers-markets'] = FoodResource.query \
-		.filter_by(location_type="FARMERS_MARKET", is_approved=True) \
-		.order_by(FoodResource.name).all()
-	resources['senior-meals'] = FoodResource.query \
-		.filter_by(location_type="SENIOR_MEAL", is_approved=True) \
-		.order_by(FoodResource.name).all()
-	resources['food-cupboards'] = FoodResource.query \
-		.filter_by(location_type="FOOD_CUPBOARD", is_approved=True) \
-		.order_by(FoodResource.name).all() 
-	resources['share-host-sites'] = FoodResource.query \
-		.filter_by(location_type="SHARE", is_approved=True) \
-		.order_by(FoodResource.name).all()
-	resources['soup-kitchens'] = FoodResource.query \
-		.filter_by(location_type="SOUP_KITCHEN", is_approved=True) \
-		.order_by(FoodResource.name).all()
-	resources['wic-offices'] = FoodResource.query \
-		.filter_by(location_type="WIC_OFFICE", is_approved=True) \
-		.order_by(FoodResource.name).all()
+	food_resource_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_plural).all()
 
 	contacts = FoodResourceContact.query.all()
 
 	return render_template('admin_resources.html', 
-		food_resource_contacts=contacts,
-		resources_info=resources_info_plural, resources=resources, 
-		days_of_week=days_of_week)
+		food_resource_contacts=contacts, 
+		days_of_week=days_of_week,
+		food_resource_types=food_resource_types)
 
 @app.route('/admin')
 def admin_redirect():
