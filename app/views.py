@@ -570,6 +570,12 @@ def remove_food_resource_type():
 	id = request.args.get("id", type=int)
 	food_resource_type = FoodResourceType.query.filter_by(id=id).first()
 
+	# Remove the food resoures and timeslots from the database.
+	for food_resource in food_resource_type.food_resources:
+		for timeslot in food_resource.timeslots:
+			db.session.delete(timeslot)
+		db.session.delete(food_resource)
+
 	# Remove the food resource type from the database.
 	db.session.delete(food_resource_type)
 	db.session.commit()

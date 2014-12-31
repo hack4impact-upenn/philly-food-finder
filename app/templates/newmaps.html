@@ -32,16 +32,22 @@
           zip_code: zipCode
         },
             function(data) {
-              for (var i = 0; i < data["addresses"].length; i++)
-              {
-                var newAddress = data["addresses"][i]["address"]["line1"] + ', ' + data["addresses"][i]["address"]["city"] + ', ' + data["addresses"][i]["address"]["state"] ;
+              for (var i = 0; i < data["addresses"].length; i++) {
+                var newAddress = data["addresses"][i]["address"]["line1"] + ', ' 
+                  + data["addresses"][i]["address"]["city"] + ', ' 
+                  + data["addresses"][i]["address"]["state"] ;
                 (function(){
                     var newTitle = data["addresses"][i]["name"];
-                    var newDescription = newTitle + "<br>" + data["addresses"][i]["description"] + "<br>" 
-                    + "Contact Information: " + data["addresses"][i]["phone_number"]["number"];
+                    var newDescription = newTitle + "<br>" 
+                      + data["addresses"][i]["description"] + "<br>" 
+                      + "Contact Information: " 
+                      + data["addresses"][i]["phone_number"]["number"];
                     console.log(data["addresses"][i]["phone_number"])          
-                    var newType = data["addresses"][i]["food_resource_type"]["enum"];
-                    var image = "../static/img/" + data["addresses"][i]["food_resource_type"]["colored_pin"]["pin_image_name"]
+                    var newType = 
+                      data["addresses"][i]["food_resource_type"]["enum"];
+                    var filename = 
+                      data["addresses"][i]["food_resource_type"]["colored_pin"]["pin_image_name"];
+                    var image = "../static/img/" + filename; 
                 GMaps.geocode({
                   address: newAddress,
                   callback: function(results, status) {
