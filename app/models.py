@@ -43,7 +43,8 @@ class FoodResourceType(db.Model):
 			'underscored_id_singular': self.underscored_id_singular,
 			'underscored_id_plural': self.underscored_id_plural,
 			'hex_color': self.hex_color,
-			'pin_image_name': self.pin_image_name
+			'pin_image_name': self.pin_image_name,
+			'food_resources': [i.serialize_food_resource(include_food_resource_type=False) for i in self.food_resources]
 		}
 
 class Address(db.Model):
@@ -162,8 +163,8 @@ class FoodResource(db.Model):
 			'id': self.id
 		}
 
-	def serialize_food_resource(self):
-		return {
+	def serialize_food_resource(self, include_food_resource_type=True):
+		dict = {
 			'id': self.id, 
 			'name': self.name, 
 			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
@@ -173,7 +174,6 @@ class FoodResource(db.Model):
 			'exceptions': self.exceptions, 
 			'description': self.description,
 			'location_type': self.location_type,
-			'food_resource_type': self.food_resource_type.serialize_food_resource_type(),
 			'address': self.address.serialize_address(),
 			'are_hours_available': self.are_hours_available, 
 			'timeslots': [i.serialize_timeslot(False) for i in self.timeslots], 
@@ -182,6 +182,10 @@ class FoodResource(db.Model):
 			'is_wheelchair_accessible': self.is_wheelchair_accessible, 
 			'is_accepts_snap': self.is_accepts_snap 
 		}
+		if include_food_resource_type:
+			dict["food_resource_type"] = self.food_resource_type.serialize_food_resource_type()
+		return dict
+
 
 	def serialize_map_list(self):
 		return {

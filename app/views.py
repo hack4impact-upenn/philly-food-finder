@@ -240,7 +240,7 @@ def guest_new_food_resource():
 		if are_hours_available: 
 			for i, timeslots in enumerate(form.daily_timeslots):
 				for timeslot in timeslots.timeslots:
-					
+
 					# Check if food resource is open on the i-th day of the 
 					# week.
 					is_open = True
@@ -467,34 +467,12 @@ def invite_sent():
 
 @app.route("/_admin_remove_filters")
 def get_all_food_resource_data():
-	farmers_markets = FoodResource.query \
-		.filter_by(location_type="FARMERS_MARKET", is_approved=True) \
-		.order_by(FoodResource.name).all()
-	senior_meals = FoodResource.query \
-		.filter_by(location_type="SENIOR_MEAL", is_approved=True) \
-		.order_by(FoodResource.name).all()
-	food_cupboards = FoodResource.query \
-		.filter_by(location_type="FOOD_CUPBOARD", is_approved=True) \
-		.order_by(FoodResource.name).all()
-	share_host_sites = FoodResource.query \
-		.filter_by(location_type="SHARE", is_approved=True) \
-		.order_by(FoodResource.name).all()
-	soup_kitchens = FoodResource.query \
-		.filter_by(location_type="SOUP_KITCHEN", is_approved=True) \
-		.order_by(FoodResource.name).all()
-	wic_offices = FoodResource.query \
-		.filter_by(location_type="WIC_OFFICE", is_approved=True) \
-		.order_by(FoodResource.name).all()
+	food_resource_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_plural).all()
 
-	return jsonify(farmers_markets=[i.serialize_food_resource() for i in 
-			farmers_markets],
-		senior_meals=[i.serialize_food_resource() for i in senior_meals],
-		food_cupboards=[i.serialize_food_resource() for i in food_cupboards],
-		share_host_sites=[i.serialize_food_resource() for i in 
-			share_host_sites],
-		soup_kitchens=[i.serialize_food_resource() for i in soup_kitchens],
-		wic_offices=[i.serialize_food_resource() for i in wic_offices], 
-		days_of_week=days_of_week)
+	return jsonify(days_of_week=days_of_week, 
+		food_resource_types=[i.serialize_food_resource_type() for i in \
+			food_resource_types])
 
 @app.route('/_admin_apply_filters')
 def get_filtered_food_resource_data():

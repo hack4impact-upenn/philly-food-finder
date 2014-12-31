@@ -551,9 +551,11 @@
         	function(data) {
         		clearTablesOfFoodResources();
 
-        		var totalNumResources = 0; 
+        		var totalNumResources = 0;
+        		var i = 0;  
         		{% for food_resource_type in food_resource_types %}
-        			if (!data["{{ food_resource_type.underscored_id_plural }}"] || data["{{ food_resource_type.underscored_id_plural }}"].length == 0) {
+        			foodResources = data["food_resource_types"][i]["food_resources"];
+        			if (!foodResources || foodResources.length == 0) {
         				var html = getNoResourcesHtml(
         					"{{ food_resource_type.hyphenated_id_plural }}"); 
         				$("#{{ food_resource_type.hyphenated_id_plural }}-header").after(html);
@@ -567,16 +569,17 @@
         				var html = getResourcesHtml(
         					"{{ food_resource_type.hyphenated_id_plural }}", 
         					"{{ food_resource_type.name_plural }}", 
-        					data["{{ food_resource_type.underscored_id_plural }}"], 
+        					foodResources, 
         					data["days_of_week"]);
         				$("#{{ food_resource_type.hyphenated_id_plural }}-header").after(html);
 
         				// Update number of filtered resources. 
         				var individualNumResources = 
-        					data["{{ food_resource_type.underscored_id_plural }}"].length;
+        					foodResources.length;
         				setIndividualNumResources(individualNumResources, 
         					"{{ food_resource_type.hyphenated_id_plural }}"); 
         			}
+        			i++;
         		{% endfor %}
 
         		// Reset the total number of resources count to reflect the 
@@ -623,9 +626,11 @@
     	function(data) {
     		clearTablesOfFoodResources();
 
-    		var totalNumResources = 0; 
+    		var totalNumResources = 0;
+    		var i = 0;  
     		{% for food_resource_type in food_resource_types %}
-    			if (!data["{{ food_resource_type.underscored_id_plural }}"] || data["{{ food_resource_type.underscored_id_plural }}"].length == 0) {
+    			foodResources = data["food_resource_types"][i]["food_resources"];
+    			if (!foodResources || foodResources.length == 0) {
     				var html = getNoResourcesHtml(
     					"{{ food_resource_type.hyphenated_id_plural }}"); 
     				$("#{{ food_resource_type.hyphenated_id_plural }}-header").after(html);
@@ -635,21 +640,21 @@
     			}
     			else {
     				totalNumResources += 
-    					data["{{ food_resource_type.underscored_id_plural }}"].length; 
-    				console.log(totalNumResources);
+    					foodResources.length; 
     				var html = getResourcesHtml(
     					"{{ food_resource_type.hyphenated_id_plural }}", 
     					"{{ food_resource_type.name_plural }}", 
-    					data["{{ food_resource_type.hyphenated_id_plural }}"], 
+    					foodResources, 
     					data["days_of_week"]);
     				$("#{{ food_resource_type.hyphenated_id_plural }}-header").after(html);
 
     				// Update number of filtered resources. 
     				var individualNumResources = 
-    					data["{{ food_resource_type.underscored_id_plural }}"].length;
+    					foodResources.length;
     				setIndividualNumResources(individualNumResources, 
 						"{{ food_resource_type.hyphenated_id_plural }}"); 
     			}
+    			i++; 
     		{% endfor %}
 
     		// Reset the total number of resources count to reflect the cleared 
