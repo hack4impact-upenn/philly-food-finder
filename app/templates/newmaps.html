@@ -40,14 +40,8 @@
                     var newDescription = newTitle + "<br>" + data["addresses"][i]["description"] + "<br>" 
                     + "Contact Information: " + data["addresses"][i]["phone_number"]["number"];
                     console.log(data["addresses"][i]["phone_number"])          
-                    var newType = data["addresses"][i]["location_type"];
-                if (newType == 'FARMERS_MARKET') { var image = "../static/img/mb_yellow.png" }
-                else if (newType == 'FOOD_CUPBOARD') { var image = "../static/img/mbb_green.png" }
-                else if (newType == 'SENIOR_MEAL') { var image = "../static/img/mbb_blue.png" }
-                else if (newType == 'SHARE') { var image = "../static/img/mbb_red.png" }
-                else if (newType == 'SOUP_KITCHEN') { var image = "../static/img/mbb_orange.png" }
-                else if (newType == 'WIC_OFFICE') { var image = "../static/img/mbb_purple.png" }
-                else                   { var image = "../static/img/FPAC_LOGO.png"}
+                    var newType = data["addresses"][i]["food_resource_type"]["enum"];
+                    var image = "../static/img/" + data["addresses"][i]["food_resource_type"]["colored_pin"]["pin_image_name"]
                 GMaps.geocode({
                   address: newAddress,
                   callback: function(results, status) {
