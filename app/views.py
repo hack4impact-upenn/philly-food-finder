@@ -612,11 +612,11 @@ def save_search_query():
 		return
 	zip_code = request.form.get('zipCode')
 	if(zip_code):
-		zip_requested = ZIPSearch.query.filter_by(zip_code = zip_code).first()
+		zip_requested = ZipSearch.query.filter_by(zip_code = zip_code).first()
 		if(zip_requested):
 			zip_requested.search_count = zip_requested.search_count + 1
 		else:
-			zip_requested = ZIPSearch(zip_code = zip_code, search_count = 1)
+			zip_requested = ZipSearch(zip_code = zip_code, search_count = 1)
 			db.session.add(zip_requested)
 		db.session.commit()
 	return 'Recorded a search for' + zip_code
@@ -665,7 +665,7 @@ def about():
 @app.route('/admin/analytics')
 @login_required
 def analytics():
-	zip_codes_all = ZIPSearch.query.order_by(ZIPSearch.search_count.desc())
+	zip_codes_all = ZipSearch.query.order_by(ZipSearch.search_count.desc())
 	zip_codes_limit = zip_codes_all.limit(10)
 	return render_template('charts.html', zip_codes_all = zip_codes_all, zip_codes_limit = zip_codes_limit)
 
