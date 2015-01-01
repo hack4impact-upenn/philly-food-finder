@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<body id = "resource_p">
+<body id = "resources_p">
 	<div class="row">
 		<h1 class="page-header" id="edit-resources-header">All Food Resources</h1>
     	<hr align="center">
@@ -75,7 +75,7 @@
 							Resource Type:
 						</div>
 						<div class="small-9 columns">
-							{{ resource.location_type }}
+							{{ enum_to_english[resource.location_type] }}
 						</div>
 					</div>
 					<div class="row">

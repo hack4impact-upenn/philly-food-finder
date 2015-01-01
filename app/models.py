@@ -200,3 +200,7 @@ class HTML(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	page = db.Column(db.String(100), unique=True)
 	value = db.Column(db.Text)
+
+class ZipSearch(db.Model):
+	zip_code = db.Column(db.String(5), primary_key = True)
+	search_count = db.Column(db.Integer)
