@@ -14,7 +14,7 @@ from flask_user import login_required, signals
 from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
 from tempfile import NamedTemporaryFile
-import csv
+import csv, time
 
 @app.route('/')
 def index():
@@ -716,9 +716,7 @@ def files():
 # This route will prompt a file download with the csv lines
 @app.route('/download')
 def download():
-	outfile = open('mydump.csv', 'wb')
-	#outfile = NamedTemporaryFile(mode='wb')
-
+	outfile = open('.mydump.csv', 'wb')
 	outcsv = csv.writer(outfile)
 
 	resources = FoodResource.query.filter_by(is_approved = True).all()
@@ -777,10 +775,8 @@ def download():
 			timeslots[6].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 6) else ''])
 		row_counter = row_counter + 1
 
-	reader = csv.reader(open(outfile.name, 'rb'))
-
 	def generate():
-		with open(outfile.name, 'rb') as f:
+		with open('.mydump.csv', 'rb') as f:
 			for line in f:
 				yield line
 	
