@@ -37,6 +37,7 @@ body#contact_p {
 
 body#resources_p {
   background-color: #F7F9F9;
+  padding-bottom: 70%;
 }
 
 body#add_p {
@@ -250,6 +251,20 @@ img {
     border-color: #999999; /* gray */
 }
 
+#chart_div {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 1em;
+}
+
+#table_div {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 1em;
+}
+
 /* Display non-squashed map controls */
 .gmnoprint img {
     max-width: none; 
@@ -353,7 +368,7 @@ table thead tr th, table thead tr td {
 input[type=checkbox] {
   margin-left:10px;
 }
-
+display: block;
 .pin-definition {
   margin-bottom: 1em;
   text-transform: lowercase; 
@@ -377,4 +392,10 @@ input[type=checkbox] {
   width: 15px;
   height: 15px;
   display: inline-block;
+}
+
+.gapi-analytics-auth-styles-signinbutton {
+  margin-left: 33%;
+  margin-right: 50%;
+  width: 8em;
 }

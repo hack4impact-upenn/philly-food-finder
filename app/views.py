@@ -585,6 +585,23 @@ def remove_food_resource_type():
 	db.session.commit()
 	return jsonify(success="success")
 
+
+@app.route('/_search_query', methods=['GET', 'POST'])
+def save_search_query():
+	# Only record searches for regular users
+	if(current_user.is_authenticated()):
+		return
+	zip_code = request.form.get('zipCode')
+	if(zip_code):
+		zip_requested = ZipSearch.query.filter_by(zip_code = zip_code).first()
+		if(zip_requested):
+			zip_requested.search_count = zip_requested.search_count + 1
+		else:
+			zip_requested = ZipSearch(zip_code = zip_code, search_count = 1)
+			db.session.add(zip_requested)
+		db.session.commit()
+	return 'Recorded a search for' + zip_code
+
 @app.route('/_remove')
 def remove():
 	id = request.args.get("id", type=int)
@@ -633,6 +650,13 @@ def approve():
 def about():
 	return render_template('about.html', 
 		html_string = HTML.query.filter_by(page = 'about-page').first())
+
+@app.route('/admin/analytics')
+@login_required
+def analytics():
+	zip_codes_all = ZipSearch.query.order_by(ZipSearch.search_count.desc())
+	zip_codes_limit = zip_codes_all.limit(10)
+	return render_template('charts.html', zip_codes_all = zip_codes_all, zip_codes_limit = zip_codes_limit)
 
 @app.route('/faq')
 def faq():

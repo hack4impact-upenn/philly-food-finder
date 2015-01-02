@@ -1,6 +1,7 @@
 from app import app
 from flask import current_app
 from flask.ext.wtf import Form
+from flask.ext.wtf.recaptcha import RecaptchaField
 from wtforms.validators import InputRequired, Length, URL, Email, Optional, \
     ValidationError
 from wtforms import TextField, TextAreaField, validators, PasswordField, \
@@ -115,9 +116,10 @@ class NonAdminAddNewFoodResourceForm(AddNewFoodResourceForm):
     your_phone_number = TextField(
         label = 'Your Phone Number', 
         validators = [
-            InputRequired("Please provide a phone number at which we can \
-                contact you.")
+            InputRequired("Please provide a phone number at which we can contact you.")
         ])   
+
+    recaptcha = RecaptchaField()  
 
 # Form to invite new admin.
 # Subclassed from 'flask_user.forms.RegisterForm'

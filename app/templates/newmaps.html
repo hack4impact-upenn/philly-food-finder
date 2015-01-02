@@ -13,8 +13,29 @@
         lat: 39.9500,
         lng: -75.1667
       });
+
       $('#geocoding_form').submit(function(e){
+
+        // Check that zip code is properly formed.
+        var regex = /^(\d{5})?$/; // 5-digit number or an empty string.
+        var zipCode = $("#address").val().trim(); 
         e.preventDefault();
+        if (regex.test(zipCode)) {
+            $("#map-search-error").html("");
+        } else {
+          // Provide helpful error message to user.
+          // Clear any errors.
+          $("#map-search-error")
+            .html("<small class=error>Zip code must consist of exactly 5 digits (0-9).</small>");
+            return;
+        }
+        // Store search result in database
+        var json_data = {
+          zipCode: zipCode
+        };
+        $.post(url = $SCRIPT_ROOT + '/_search_query', data = json_data);
+
+
         GMaps.geocode({
           address: $('#address').val().trim(),
           callback: function(results, status){
@@ -108,6 +129,10 @@
                 <div class="small-12 columns">
                     <input type="submit" class="button radius small" value="Search" id="map-search-button" />
                     <input type="submit" class="button radius small" value="Clear Filters" id="map-filter-button" />
+                </div>
+                <div class="row">
+                    <div class="small-12 columns" id="map-search-error">
+                    </div>
                 </div>
             </form>      
             <div id="map-container">
