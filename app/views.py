@@ -296,15 +296,15 @@ def guest_new_food_resource():
 				description=form.additional_information.data,
 				timeslots=all_timeslots,
 				address=address, 
-				is_for_family_and_children = \
+				is_for_family_and_children= \
 					form.is_for_family_and_children.data,
-				is_for_seniors = form.is_for_seniors.data,
-				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
-				is_accepts_snap = form.is_accepts_snap.data, 
-				are_hours_available = are_hours_available, 
-				food_resource_type = food_resource_type, 
-				is_approved = False, 
-				food_resource_contact = contact)
+				is_for_seniors=form.is_for_seniors.data,
+				is_wheelchair_accessible=form.is_wheelchair_accessible.data,	
+				is_accepts_snap=form.is_accepts_snap.data, 
+				are_hours_available=are_hours_available, 
+				food_resource_type=food_resource_type, 
+				is_approved=False, 
+				food_resource_contact=contact)
 
 			# Commit all database changes. 
 			db.session.add(food_resource)
@@ -332,6 +332,10 @@ def admin():
 				food_resource_type.food_resources.remove(food_resource)
 
 	contacts = FoodResourceContact.query.all()
+	for contact in contacts:
+		for food_resource in contact.food_resource:
+			print food_resource.food_resource_type
+			#print food_resource.food_resource_type.name_singular
 
 	return render_template('admin_resources.html', 
 		food_resource_contacts=contacts, 
@@ -551,7 +555,7 @@ def address_food_resources():
 	zip_code = request.args.get('zip_code', 0, type=int)
 	food_resources = db.session.query(FoodResource) \
 		.join(FoodResource.address) \
-		.filter(Address.zip_code==zip_code) \
+		.filter(Address.zip_code==zip_code, FoodResource.is_approved==True) \
 		.order_by(FoodResource.name).all()
 	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
 
@@ -742,7 +746,7 @@ def new_food_resource_type(id=None):
 	if request.method == 'POST' and form.validate():
 		colored_pin = ColoredPin.query.filter_by(color_name=form.color.data) \
 			.first()
-			
+
 		# Edit an existing food resource type.
 		if id is not None:
 			food_resource_type = FoodResourceType.query.filter_by(id=id).first()

@@ -40,18 +40,26 @@ class FoodResourceType(db.Model):
 		self.enum = utils.get_enum(name_singular)
 		self.name_singular = name_singular
 		self.name_plural = name_plural
-		self.hyphenated_id_singular = utils.get_hyphenated_string(name_singular)
-		self.hyphenated_id_plural = utils.get_hyphenated_string(name_plural)
-		self.underscored_id_singular = utils.get_underscored_string(name_singular)
-		self.underscored_id_plural = utils.get_underscored_string(name_plural)
+		self.hyphenated_id_singular = utils \
+			.get_hyphenated_string(name_singular)
+		self.hyphenated_id_plural = utils \
+			.get_hyphenated_string(name_plural)
+		self.underscored_id_singular = utils \
+			.get_underscored_string(name_singular)
+		self.underscored_id_plural = utils \
+			.get_underscored_string(name_plural)
 		self.colored_pin = colored_pin
 
 	def recreate_fields(self):
 		self.enum = utils.get_enum(self.name_singular)
-		self.hyphenated_id_singular = utils.get_hyphenated_string(self.name_singular)
-		self.hyphenated_id_plural = utils.get_hyphenated_string(self.name_plural)
-		self.underscored_id_singular = utils.get_underscored_string(self.name_singular)
-		self.underscored_id_plural = utils.get_underscored_string(self.name_plural)
+		self.hyphenated_id_singular = utils \
+			.get_hyphenated_string(self.name_singular) 
+		self.hyphenated_id_plural = utils \
+			.get_hyphenated_string(self.name_plural)
+		self.underscored_id_singular = utils \
+			.get_underscored_string(self.name_singular)
+		self.underscored_id_plural = utils \
+			.get_underscored_string(self.name_plural)
 
 	def serialize_food_resource_type(self):
 		return {
