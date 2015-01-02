@@ -43,7 +43,7 @@
       ga('send', 'pageview');
 
       {% if current_user.is_authenticated() %}
-        ga(‘set’, ‘&uid’, {{ current_user.email }}); // Set the user ID using signed-in user_id.
+        ga(‘set’, ‘&uid’, ‘{{ current_user.email }}’); // Set the user ID using signed-in user_id.
       {% endif %}
 
     </script>

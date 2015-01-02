@@ -3,7 +3,7 @@ from utils import *
 from models import *
 from forms import AddNewFoodResourceForm, NonAdminAddNewFoodResourceForm
 from flask import render_template, flash, redirect, session, url_for, request, \
-	g, jsonify, current_app
+	g, jsonify, current_app, Response
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import resources_info_singular, resources_info_plural, \
@@ -13,6 +13,7 @@ from utils import generate_password
 from flask_user import login_required, signals
 from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
+import csv
 
 @app.route('/')
 def index():
@@ -152,7 +153,7 @@ def new(id=None):
 				is_for_family_and_children = \
 					form.is_for_family_and_children.data,
 				is_for_seniors = form.is_for_seniors.data,
-				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
+				is_wheelchair_accessible = form.is_wheelchair_accessible.data,  
 				is_accepts_snap = form.is_accepts_snap.data, 
 				are_hours_available = are_hours_available, 
 				location_type = food_resource_type)
@@ -257,7 +258,7 @@ def guest_new_food_resource():
 				is_for_family_and_children = \
 					form.is_for_family_and_children.data,
 				is_for_seniors = form.is_for_seniors.data,
-				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
+				is_wheelchair_accessible = form.is_wheelchair_accessible.data,  
 				is_accepts_snap = form.is_accepts_snap.data, 
 				are_hours_available = are_hours_available, 
 				location_type = form.location_type.data, 
@@ -362,7 +363,7 @@ def invite():
 				user_fields['is_active'] = True
 
 		# For all form fields
-		for field_name, field_value in register_form.data.items():	
+		for field_name, field_value in register_form.data.items():  
 			# Store corresponding Form fields into the User object and/or UserProfile object
 			if field_name in user_class_fields:
 				user_fields[field_name] = field_value
@@ -438,10 +439,12 @@ def invite():
 			register_form=register_form)
 
 @app.route('/_invite_sent')
+@login_required
 def invite_sent():
 	return render_template('invite_sent.html')
 
 @app.route("/_admin_remove_filters")
+@login_required
 def get_all_food_resource_data():
 	farmers_markets = FoodResource.query.filter_by(location_type="FARMERS_MARKET", is_approved=True).order_by(FoodResource.name).all()
 	senior_meals = FoodResource.query.filter_by(location_type="SENIOR_MEAL", is_approved=True).order_by(FoodResource.name).all()
@@ -461,6 +464,7 @@ def get_all_food_resource_data():
 		days_of_week=days_of_week)
 
 @app.route('/_admin_apply_filters')
+@login_required
 def get_filtered_food_resource_data():
 	# Collect boolean paramaters passed via JSON.
 	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
@@ -596,6 +600,7 @@ def address_food_resources():
 	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
 
 @app.route('/_edit', methods=['GET', 'POST'])
+@login_required
 def save_page():
 	data = request.form.get('edit_data')
 	name = request.form.get('page_name')
@@ -622,6 +627,7 @@ def save_search_query():
 	return 'Recorded a search for' + zip_code
 
 @app.route('/_remove')
+@login_required
 def remove():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
@@ -644,6 +650,7 @@ def remove():
 	return jsonify(is_approved=is_approved)
 
 @app.route('/_approve')
+@login_required
 def approve():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
@@ -657,6 +664,14 @@ def approve():
 	food_resource.is_approved = True
 	db.session.commit()
 	return jsonify(message="success")
+
+@app.route('/_csv_input', methods=['GET', 'POST'])
+@login_required
+def csv_input():
+	file = request.files['file']
+	if file:
+		print file
+		return jsonify(message="success")
 
 @app.route('/about')
 def about():
@@ -696,3 +711,30 @@ def seniors():
 @app.route('/files')
 def files():
 	return render_template('file_inputoutput.html')
+
+# This route will prompt a file download with the csv lines
+@app.route('/download')
+def download():
+	outfile = open('mydump.csv', 'wb')
+
+	fieldnames = ['name', 'phone_number', 'url', 'exceptions', 'description', 'location_type', 'address', 'are_hours_available', 'timeslots', 'is_for_family_and_children', 'is_for_seniors', 'is_wheelchair_accessible', 'is_accepts_snap']
+	outcsv = csv.DictWriter(outfile, fieldnames=fieldnames)
+
+	resources = FoodResource.query.filter_by(is_approved = True).all()
+	outcsv.writeheader()
+
+	for resource in resources:
+		outcsv.writerow(resource.serialize_food_resource_for_csv())
+
+	reader = csv.reader(open('mydump.csv', 'rb'))
+
+	def generate():
+		for row in reader:
+			yield ','.join(row) + '\n'
+			print row
+	
+	response = Response(generate(), mimetype='text/csv')
+
+	filename = 'resources_generated_at_' + str(datetime.now()) + '.csv'
+	response.headers["Content-Disposition"] = "attachment; filename="+filename
+	return response
