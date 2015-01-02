@@ -129,7 +129,8 @@ class NonAdminAddNewFoodResourceForm(AddNewFoodResourceForm):
             InputRequired("Please provide your name."),
             Length(1, 150)
         ],
-        description = "Please provide your first AND last name."
+        description = "Please provide your first AND last name. Your name will \
+            not be displayed publicly on Philly Food Finder."
     )
     your_email_address = TextField(
         label = 'Your Email Address', 
@@ -139,7 +140,8 @@ class NonAdminAddNewFoodResourceForm(AddNewFoodResourceForm):
         ],
         description = "Please provide an email address at which we can contact \
             you if we have questions about your submitted food resource. Your \
-            email address will not be used for any other purpose."
+            email address will not be used for any other purpose. Your email \
+            address will not be displayed publicly on Philly Food Finder."
     )
     your_phone_number = TextField(
         label = 'Your Phone Number', 
@@ -148,7 +150,8 @@ class NonAdminAddNewFoodResourceForm(AddNewFoodResourceForm):
                 contact you.")
         ],
         description = "Please provide a phone number at which we can contact \
-            you if we have questions about your submitted food resource."
+            you if we have questions about your submitted food resource. Your \
+            phone number will not be displayed publicly on Philly Food Finder."
     )
     notes = TextAreaField(
         label = 'Notes', 
