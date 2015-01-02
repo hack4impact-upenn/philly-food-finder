@@ -100,10 +100,25 @@ class TestCase(unittest.TestCase):
     # Adds a valid Address to the database and then makes sure it can be 
     # retrieved by name and address.
     def test_create_valid_food_resource(self):
+        # Create yellow colored pin.
+        cp_yellow = ColoredPin(
+            color_name="Yellow",
+            hex_color="fdd800", 
+            pin_image_name="mb_yellow.png"
+        )
+        db.session.add(cp_yellow)
 
+        # Create farmers' market food resource type.
+        frt_farmers_market = FoodResourceType(
+            name_singular="Farmers' Market",
+            name_plural="Farmers' Markets",
+            colored_pin=cp_yellow)
+        db.session.add(frt_farmers_market)
+
+        # Create a farmers' market food resource.
         r1 = FoodResource(name = 'Test Food Resource 1', address = self.a1, 
             phone_numbers=[self.p2], timeslots = self.timeslots_list,
-            description = self.desc, location_type = 'FARMERS_MARKET')
+            description = self.desc, food_resource_type = frt_farmers_market)
         db.session.add(r1)
         db.session.commit()
         assert len(FoodResource.query.filter_by(name = 'Test Food Resource 1')
@@ -112,14 +127,6 @@ class TestCase(unittest.TestCase):
             .all()) == 1
         assert len(FoodResource.query.filter_by(name = 'Test Food Resource 1')
             .first().timeslots) == 7
-
-    # Tries to add an invalid Address to the database (does not use a proper 
-    # location_type enum) and ensures IntegrityError is raised.
-    def test_create_invalid_food_resource_enum_resource(self):
-      self.assertRaises(IntegrityError, 
-        r1 = FoodResource(name = 'Test Food Resource 1', address = self.a2,
-            phone_numbers = [self.p2], timeslots = self.timeslots_list, 
-            description = self.desc, location_type = 'WRONG_ENUM!!!!!!!!!!!!!'))
 
     def test_create_user(self):
         db.session.add(self.u1)
@@ -143,6 +150,21 @@ class TestCase(unittest.TestCase):
         assert not(u.verify_password('239rjf9i#@$#R$#!#!!!48939832984893rfcnj3@#%***^%$#@#$@#'))
 
     def test_is_open(self):
+        # Create yellow colored pin.
+        cp_yellow = ColoredPin(
+            color_name="Yellow",
+            hex_color="fdd800", 
+            pin_image_name="mb_yellow.png"
+        )
+        db.session.add(cp_yellow)
+
+        # Create farmers' market food resource type.
+        frt_farmers_market = FoodResourceType(
+            name_singular="Farmers' Market",
+            name_plural="Farmers' Markets",
+            colored_pin=cp_yellow)
+        db.session.add(frt_farmers_market)
+
         open_pairs = \
             [OpenMonthPair(start_month = 1, end_month = 3), 
              OpenMonthPair(start_month = 5, end_month = 7),
@@ -150,11 +172,11 @@ class TestCase(unittest.TestCase):
 
         r1 = FoodResource(name = 'Test Food Resource 1', address = self.a1, 
             phone_numbers=[self.p2], timeslots = self.timeslots_list,
-            description = self.desc, location_type = 'FARMERS_MARKET'
+            description = self.desc, food_resource_type = frt_farmers_market
             )
         r2 = FoodResource(name = 'Test Food Resource 1', address = self.a1, 
             phone_numbers=[self.p2], timeslots = self.timeslots_list2,
-            description = self.desc, location_type = 'FARMERS_MARKET'
+            description = self.desc, food_resource_type = frt_farmers_market
             )
 
         r1.open_month_pairs.append(OpenMonthPair(start_month = 1, end_month = 3))

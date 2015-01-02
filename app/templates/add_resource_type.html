@@ -15,7 +15,14 @@
 	    <div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ field.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		      		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ field()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -33,7 +40,14 @@
 	    <div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ field.label }}
+	      	{% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		      		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ field()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -51,7 +65,14 @@
 	    <div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ field.label }}
+	     	{% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		      		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ field()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -61,6 +82,15 @@
 		                {% endfor %}
 		            {% endif %}
 				</label>
+			</div>
+		</div>
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+				<div class="required-disclaimer">
+					Required fields.
+				</div>
 			</div>
 		</div>
 
