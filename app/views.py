@@ -235,13 +235,21 @@ def get_food_resource_data():
 		wic_offices=[i.serialize_name_only() for i in wic_offices])
 
 @app.route('/_map')
-def address_food_resources():
-	address = Address.query.filter_by(zip_code = request.args.get('zipcode')).all()
+def food_resources():
+	zipCode = request.args.get('zipcode')
+	address = Address.query.filter_by(zip_code = zipCode).all()
 	addresses = []
 	for x in address:
 		currentResource = FoodResource.query.filter_by(id = x.food_resource_id).first()
 		addresses.append(currentResource)
 	return jsonify(addresses=[i.serialize_map_list() for i in addresses])
+
+@app.route('/_newmap')
+def address_food_resources():
+	resources = []
+	currentResource = FoodResource.query.all()
+	resources.append(currentResource)
+	return jsonify(resources=[i.serialize_map_list() for i in addresses])
 
 @app.route('/_edit', methods=['GET', 'POST'])
 def save_page():
