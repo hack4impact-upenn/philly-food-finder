@@ -23,9 +23,9 @@
 	    </div>
 	</div>
 	{% else %}
-  <div class="large-centered 
-                  large-8 medium-centered medium-8 small-8 small-centered
-                  columns resources">
+  	<div class="large-centered 
+         large-8 medium-centered medium-8 small-8 small-centered
+         columns resources">
 	{% for contact in food_resource_contacts %}
 	{% set name_without_spaces = contact.name.replace(" ", "-") %}
 	<div id="{{ name_without_spaces }}">
@@ -75,7 +75,7 @@
 							Resource Type:
 						</div>
 						<div class="small-9 columns">
-							{{ enum_to_english[resource.location_type] }}
+							{{ resource.food_resource_type.name_singular }}
 						</div>
 					</div>
 					<div class="row">
@@ -84,16 +84,16 @@
 						</div>
 						<div class="small-9 columns">
 							{% if contact.name %}
-									{{ contact.name }}
-								{% endif %}
-								{% if contact.name %}
-									<br>
-									{{ contact.email }}
-								{% endif %}
-								{% if contact.phone_number %}
-									<br>
-									{{ contact.phone_number }}
-								{% endif %}
+								{{ contact.name }}
+							{% endif %}
+							{% if contact.name %}
+								<br>
+								{{ contact.email }}
+							{% endif %}
+							{% if contact.phone_number %}
+								<br>
+								{{ contact.phone_number }}
+							{% endif %}
 						</div>
 					</div>
 					<div class="row">
@@ -279,8 +279,7 @@
 	<!-- Total number of food resources in the database. --> 
 	<div class="row">
 		<div class="small-12 columns">
-			{% set total_num_resources = resources["farmers-markets"]|count + resources["senior-meals"]|count + resources["food-cupboards"]|count + resources["share-host-sites"]|count + resources["soup-kitchens"]|count + resources["wic-offices"]|count %}
-			Displaying <div id="all-num-resources" class="total-num-resources">{{ total_num_resources }}</div> food resource(s).
+			Displaying <div id="all-num-resources" class="total-num-resources">0</div> food resource(s).
 		</div>
 	</div>
 
@@ -289,25 +288,25 @@
                   large-8 medium-centered medium-8 small-8 small-centered
                   columns resources">
 
-	{% for resource_info in resources_info %}
-	<div id="{{ resource_info.id }}">
-		<div class="block-header admin-food-resource-type-header" id="{{ resource_info.id }}-header">
+	{% for food_resource_type in food_resource_types %}
+	<div id="{{ food_resource_type.hyphenated_id_plural }}">
+		<div class="block-header admin-food-resource-type-header" id="{{ food_resource_type.hyphenated_id_plural }}-header">
 			<table>
 			  	<thead>
 			    	<tr>
-			    		{% set total_num_resources = resources[resource_info.id]|count %}
-			      		<th width="200" class="expand-food-resource-type" id="food-resource-type-expand-{{ resource_info.id }}">+</th>
-			      		<th width="100%">{{ resource_info.name }} (<div class="total-num-resources" id="{{ resource_info.id }}-num-resources">{{ total_num_resources}}</div>) </th>	
+			    		{% set total_num_resources = food_resource_type.food_resources|count %}
+			      		<th width="200" class="expand-food-resource-type" id="food-resource-type-expand-{{ food_resource_type.hyphenated_id_plural }}">+</th>
+			      		<th width="100%">{{ food_resource_type.name_plural }} (<div class="total-num-resources" id="{{ food_resource_type.hyphenated_id_plural }}-num-resources">{{ total_num_resources}}</div>) </th>	
 			    	</tr>
 			  	</thead>
 			</table>
 		</div>
-		<div id="{{ resource_info.id }}-table" class="admin-food-resource-type">
-			{% if not resources[resource_info.id] %}
+		<div id="{{ food_resource_type.hyphenated_id_plural }}-food-resource-type-table" class="admin-food-resource-type">
+			{% if food_resource_type.food_resources|count == 0 %}
 				<div class="no-resources-message">None to display.</div>
 			{% endif %}
 
-			{% for resource in resources[resource_info.id] %}
+			{% for resource in food_resource_type.food_resources %}
 			<div class="resource"> 
 
 			<!-- Resource header --> 
@@ -326,7 +325,7 @@
 				</div>
 			</div>
 			<!-- Resource content --> 
-			<div class="row admin-food-resource" id="food-resource-{{ resource.id }}-table">
+			<div class="row admin-food-resource" id="{{ resource.id }}-food-resource-table">
 				<div class="large-6 small-12 columns">
 					<div class="row">
 						<div class="small-3 columns">
@@ -334,6 +333,14 @@
 						</div>
 						<div class="small-9 columns">
 							{{ resource.name }}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
+							Resource Type:
+						</div>
+						<div class="small-9 columns">
+							{{ resource.food_resource_type.enum }}
 						</div>
 					</div>
 					<div class="row">
@@ -482,6 +489,26 @@
 <script>
 	$(document).ready(function() {
 
+		// Dynamically set background colors of table headers. 
+		{% for food_resource_type in food_resource_types %}
+			$("#{{ food_resource_type.hyphenated_id_plural }}-header table thead").each(function(index) {
+				$(this).css('background-color', "#{{ food_resource_type.colored_pin.hex_color }}");
+				$(this).css('border', "none");
+			});
+			$("#{{ food_resource_type.hyphenated_id_plural }}-header table").each(function(index) {
+				$(this).css('background-color', "#{{ food_resource_type.colored_pin.hex_color }}");
+				$(this).css('border', "none");
+			});
+		{% endfor %}
+
+		$("#all-num-resources").each(function(index) {
+			var totalNumResources = 0;
+			{% for food_resource_type in food_resource_types %}
+				totalNumResources += {{ food_resource_type.food_resources|count }};
+			{% endfor %}
+			setTotalNumResources(totalNumResources);
+		});
+
 		$("#apply-filters-resources-button").click(function() {
 			var hasZipCodeFilter = 0; // FALSE
 			var hasFamiliesAndChildrenFilter = 0; // FALSE
@@ -532,32 +559,35 @@
         	function(data) {
         		clearTablesOfFoodResources();
 
-        		var totalNumResources = 0; 
-        		{% for resource_info in resources_info %}
-        			if (data["{{ resource_info.underscore_id }}"].length == 0) {
+        		var totalNumResources = 0;
+        		var i = 0;  
+        		{% for food_resource_type in food_resource_types %}
+        			var foodResources = data["food_resources"][i];
+        			if (!foodResources || foodResources.length == 0) {
         				var html = getNoResourcesHtml(
-        					"{{ resource_info.id }}"); 
-        				$("#{{ resource_info.id }}-header").after(html);
+        					"{{ food_resource_type.hyphenated_id_plural }}"); 
+        				$("#{{ food_resource_type.hyphenated_id_plural }}-header").after(html);
 
         				// Set number of filtered resources to be 0.
-        				setIndividualNumResources(0, "{{ resource_info.id }}");
+        				setIndividualNumResources(0, "{{ food_resource_type.hyphenated_id_plural }}");
         			}
         			else {
         				totalNumResources += 
-        					data["{{ resource_info.underscore_id }}"].length;
+        					foodResources.length;
         				var html = getResourcesHtml(
-        					"{{ resource_info.id }}", 
-        					"{{ resource_info.lowercase_name }}", 
-        					data["{{ resource_info.underscore_id }}"], 
+        					"{{ food_resource_type.hyphenated_id_plural }}", 
+        					"{{ food_resource_type.name_plural }}", 
+        					foodResources, 
         					data["days_of_week"]);
-        				$("#{{ resource_info.id }}-header").after(html);
+        				$("#{{ food_resource_type.hyphenated_id_plural }}-header").after(html);
 
         				// Update number of filtered resources. 
         				var individualNumResources = 
-        					data["{{ resource_info.underscore_id }}"].length;
+        					foodResources.length;
         				setIndividualNumResources(individualNumResources, 
-        					"{{ resource_info.id }}"); 
+        					"{{ food_resource_type.hyphenated_id_plural }}"); 
         			}
+        			i++;
         		{% endfor %}
 
         		// Reset the total number of resources count to reflect the 
@@ -604,32 +634,34 @@
     	function(data) {
     		clearTablesOfFoodResources();
 
-    		var totalNumResources = 0; 
-    		{% for resource_info in resources_info %}
-    			if (data["{{ resource_info.underscore_id }}"].length == 0) {
+    		var totalNumResources = 0;
+    		var i = 0;  
+    		{% for food_resource_type in food_resource_types %}
+    			var foodResources = data["food_resource_types"][i]["food_resources"];
+    			if (!foodResources || foodResources.length == 0) {
     				var html = getNoResourcesHtml(
-    					"{{ resource_info.id }}"); 
-    				$("#{{ resource_info.id }}-header").after(html);
+    					"{{ food_resource_type.hyphenated_id_plural }}"); 
+    				$("#{{ food_resource_type.hyphenated_id_plural }}-header").after(html);
 
     				// Set number of filtered resources to be 0.
-    				setIndividualNumResources(0, "{{ resource_info.id }}");
+    				setIndividualNumResources(0, "{{ food_resource_type.hyphenated_id_plural }}");
     			}
     			else {
-    				totalNumResources += 
-    					data["{{ resource_info.underscore_id }}"].length; 
+    				totalNumResources += foodResources.length; 
     				var html = getResourcesHtml(
-    					"{{ resource_info.id }}", 
-    					"{{ resource_info.lowercase_name }}", 
-    					data["{{ resource_info.underscore_id }}"], 
+    					"{{ food_resource_type.hyphenated_id_plural }}", 
+    					"{{ food_resource_type.name_plural }}", 
+    					foodResources, 
     					data["days_of_week"]);
-    				$("#{{ resource_info.id }}-header").after(html);
+    				$("#{{ food_resource_type.hyphenated_id_plural }}-header").after(html);
 
     				// Update number of filtered resources. 
     				var individualNumResources = 
-    					data["{{ resource_info.underscore_id }}"].length;
+    					foodResources.length;
     				setIndividualNumResources(individualNumResources, 
-						"{{ resource_info.id }}"); 
+						"{{ food_resource_type.hyphenated_id_plural }}"); 
     			}
+    			i++; 
     		{% endfor %}
 
     		// Reset the total number of resources count to reflect the cleared 
