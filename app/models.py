@@ -133,23 +133,6 @@ class FoodResource(db.Model):
 			'is_accepts_snap': self.is_accepts_snap 
 		}
 
-	def serialize_food_resource_for_csv(self):
-		return {
-			'name': self.name, 
-			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
-			'url': self.url, 
-			'exceptions': self.exceptions, 
-			'description': self.description,
-			'location_type': self.location_type,
-			'address': self.address.serialize_address(),
-			'are_hours_available': self.are_hours_available, 
-			'timeslots': [i.serialize_timeslot(False) for i in self.timeslots], 
-			'is_for_family_and_children': self.is_for_family_and_children, 
-			'is_for_seniors': self.is_for_seniors, 
-			'is_wheelchair_accessible': self.is_wheelchair_accessible, 
-			'is_accepts_snap': self.is_accepts_snap 
-		}
-
 	def serialize_map_list(self):
 		return {
 			'id': self.id,

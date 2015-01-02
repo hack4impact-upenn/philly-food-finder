@@ -3,7 +3,7 @@ from utils import *
 from models import *
 from forms import AddNewFoodResourceForm, NonAdminAddNewFoodResourceForm
 from flask import render_template, flash, redirect, session, url_for, request, \
-	g, jsonify, current_app, Response
+	g, jsonify, current_app, send_file
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import resources_info_singular, resources_info_plural, \
@@ -13,6 +13,7 @@ from utils import generate_password
 from flask_user import login_required, signals
 from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
+from tempfile import NamedTemporaryFile
 import csv
 
 @app.route('/')
@@ -715,26 +716,67 @@ def files():
 # This route will prompt a file download with the csv lines
 @app.route('/download')
 def download():
-	outfile = open('mydump.csv', 'wb')
+	#outfile = open('mydump.csv', 'wb')
+	outfile = NamedTemporaryFile(mode='w+b')
 
-	fieldnames = ['name', 'phone_number', 'url', 'exceptions', 'description', 'location_type', 'address', 'are_hours_available', 'timeslots', 'is_for_family_and_children', 'is_for_seniors', 'is_wheelchair_accessible', 'is_accepts_snap']
-	outcsv = csv.DictWriter(outfile, fieldnames=fieldnames)
+	outcsv = csv.writer(outfile)
 
 	resources = FoodResource.query.filter_by(is_approved = True).all()
-	outcsv.writeheader()
 
-	for resource in resources:
-		outcsv.writerow(resource.serialize_food_resource_for_csv())
-
-	reader = csv.reader(open('mydump.csv', 'rb'))
-
-	def generate():
-		for row in reader:
-			yield ','.join(row) + '\n'
-			print row
+	outcsv.writerow(['Table 1'])
+	outcsv.writerow(['','Type (SHARE_HOST_SITE, FARMERS_MARKET, FOOD_CUPBOARD, SENIOR_MEAL, SOUP_KITCHEN, or WIC_OFFICE)',
+	 'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 'State', 'Zip Code', 'Phone Number (optional)', 
+	 'Website (optional)', 'Description (optional)', 'Families and children? (either \'Yes\' or leave blank)', 
+	 'Seniors? (either \'Yes\' or leave blank)', 'Wheelchair accessible? (either \'Yes\' or leave blank)', 
+	 'Accepts SNAP? (either \'Yes\' or leave blank)', 'Accepts FMNP Vouchers? (either \'Yes\' or leave blank)', 
+	 'Accepts Philly Food Bucks? (either \'Yes\' or leave blank)', 'Hours Available? (either \'Yes\' or leave blank)', 
+	 'Open Sunday? (either \'Yes\' or leave blank)', 'Open Monday? (either \'Yes\' or leave blank)', 
+	 'Open Tuesday? (either \'Yes\' or leave blank)',	'Open Wednesday? (either \'Yes\' or leave blank)', 
+	 'Open Thursday? (either \'Yes\' or leave blank)', 'Open Friday? (either \'Yes\' or leave blank)', 
+	 'Open Saturday? (either \'Yes\' or leave blank)', 'Sunday Opening Time (either \'Yes\' or leave blank)',
+	 'Sunday Closing Time (either \'Yes\' or leave blank)', 'Monday Opening Time (military time - e.g., 8:00 or 17:00)', 
+	 'Monday Closing Time (military time - e.g., 8:00 or 17:00)', 
+	 'Tuesday Opening Time (military time - e.g., 8:00 or 17:00)', 'Tuesday Closing Time (military time - e.g., 8:00 or 17:00)',
+	 'Wednesday Opening Time (military time - e.g., 8:00 or 17:00)', 
+	 'Wednesday Closing Time (military time - e.g., 8:00 or 17:00)', 
+	 'Thursday Opening Time (military time - e.g., 8:00 or 17:00)', 'Thursday Closing Time (military time - e.g., 8:00 or 17:00)', 
+	 'Friday Opening Time (military time - e.g., 8:00 or 17:00)', 'Friday Closing Time (military time - e.g., 8:00 or 17:00)', 
+	 'Saturday Opening Time (military time - e.g., 8:00 or 17:00)', 'Saturday Closing Time (military time - e.g., 8:00 or 17:00)'])
 	
-	response = Response(generate(), mimetype='text/csv')
+	def does_timeslot_exist(timeslots, index):
+		try:
+			return (timeslots[index] is not None)
+		except IndexError:
+			return False
+
+	row_counter = 1
+	for resource in resources:
+		timeslots = resource.timeslots
+		outcsv.writerow([row_counter,'insert fancy enum code here', resource.name, resource.address.line1, resource.address.line2, 
+			resource.address.city, resource.address.state, resource.address.zip_code, resource.phone_numbers[0].number, 
+			resource.url, resource.description, 'Yes' if resource.is_for_family_and_children else '', 
+			'Yes' if resource.is_for_seniors else '', 'Yes' if resource.is_wheelchair_accessible else '', 
+			'Yes' if resource.is_accepts_snap else '', 'Accepts FMNP Vouchers?', 'Accepts Philly Food Bucks?', 
+			'Yes' if resource.are_hours_available else '', 'Yes' if does_timeslot_exist(timeslots, 0) else '', 
+			'Yes' if does_timeslot_exist(timeslots, 1) else '', 'Yes' if does_timeslot_exist(timeslots, 2) else '', 
+			'Yes' if does_timeslot_exist(timeslots, 3) else '', 'Yes' if does_timeslot_exist(timeslots, 4) else '', 
+			'Yes' if does_timeslot_exist(timeslots, 5) else '', 'Yes' if does_timeslot_exist(timeslots, 6) else '', 
+			timeslots[0].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 0) else '', 
+			timeslots[0].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 0) else '', 
+			timeslots[1].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 1) else '', 
+			timeslots[1].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 1) else '', 
+			timeslots[2].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 2) else '', 
+			timeslots[2].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 2) else '', 
+			timeslots[3].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 3) else '', 
+			timeslots[3].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 3) else '', 
+			timeslots[4].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 4) else '', 
+			timeslots[4].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 4) else '', 
+			timeslots[5].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 5) else '', 
+			timeslots[5].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 5) else '', 
+			timeslots[6].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 6) else '', 
+			timeslots[6].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 6) else ''])
+		row_counter = row_counter + 1
 
 	filename = 'resources_generated_at_' + str(datetime.now()) + '.csv'
-	response.headers["Content-Disposition"] = "attachment; filename="+filename
+	response = send_file(filename_or_fp = os.path.abspath(outfile.name), mimetype = 'text/csv', as_attachment = True, attachment_filename = filename)
 	return response
