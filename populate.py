@@ -609,6 +609,7 @@ p4 = HTML(page = 'wic-info-page', value = 'Hello WIC!')
 p5 = HTML(page = 'snap-info-page', value = 'Hello SNAP!')
 p6 = HTML(page = 'summer-info-page', value = 'Hello Summer!')
 p7 = HTML(page = 'seniors-info-page', value = 'Hello Seniors!')
+p8 = HTML(page = 'contact-page', value = 'Hello contact!')
 
 # Add each new object to session and commit session. 
 db.session.add(p1)
@@ -618,4 +619,5 @@ db.session.add(p4)
 db.session.add(p5)
 db.session.add(p6)
 db.session.add(p7)
+db.session.add(p8)
 db.session.commit()
