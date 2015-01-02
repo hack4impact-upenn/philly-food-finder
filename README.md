@@ -17,11 +17,13 @@ that prevent people from going hungry.
 + [Flask](http://flask.pocoo.org) 
 + [Foundation](http://foundation.zurb.com)
 + [SQLAlchemy](http://www.sqlalchemy.org)
++ [gmaps.js](https://hpneo.github.io/gmaps/)
 
 ##Languages Used For This Project 
 + Python
-+ HTML/CSS
 + JavaScript
++ HTML
++ CSS
 
 #How to get started with this project
 

@@ -8,7 +8,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Use a Class-based config to config flask and extensions
 class ConfigClass(object):
     # Flask settings
-    SECRET_KEY =              os.getenv('SECRET_KEY',       'not a secret')
+    SECRET_KEY =              os.getenv('SECRET_KEY',       'super secret key')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',     
         'sqlite:///' + os.path.join(basedir, 'app.db'))
 
@@ -56,6 +56,10 @@ class ConfigClass(object):
 
     USER_AFTER_REGISTER_ENDPOINT = 'invite_sent'
     USER_AFTER_CONFIRM_ENDPOINT = 'user.change_password'
+
+    # Flask-WTF settings
+    RECAPTCHA_PUBLIC_KEY = '6LfRvf8SAAAAAJ4rnEu4hNukozjLnhaQ04LGbC7z'
+    RECAPTCHA_PRIVATE_KEY = ''
 
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')

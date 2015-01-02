@@ -1,13 +1,13 @@
 from app import app, db, utils
-from utils import get_time
+from utils import *
 from models import *
-from forms import AddNewFoodResourceForm, RequestNewFoodResourceForm
+from forms import AddNewFoodResourceForm, NonAdminAddNewFoodResourceForm
 from flask import render_template, flash, redirect, session, url_for, request, \
 	g, jsonify, current_app
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import resources_info_singular, resources_info_plural, \
-	days_of_week
+	days_of_week, enum_to_english
 from datetime import time
 from utils import generate_password
 from flask_user import login_required, signals
@@ -18,76 +18,299 @@ from flask_login import current_user, login_user, logout_user
 def index():
 	return render_template('base.html')
 
-@app.route('/map')
-def map():
-	return render_template('newmaps.html')
-
-@app.route('/new_food_resource', methods=['GET', 'POST'])
+@app.route('/new', methods=['GET', 'POST'])
+@app.route('/edit/<id>', methods=['GET', 'POST'])
 @login_required
-def new_food_resource():
+def new(id=None):
 	form = AddNewFoodResourceForm(request.form)
+	for timeslots in form.daily_timeslots:
+		for timeslot in timeslots.timeslots:
+			timeslot.starts_at.choices=get_possible_opening_times()
+			timeslot.ends_at.choices=get_possible_closing_times()
+
+	# Create a new food resource. 
+	if id is None:
+		title = "Add New Food Resource"
+		food_resource_type = "FARMERS_MARKET"
+	# Edit an existing food resource.
+	else:
+		title = "Edit Food Resource"
+
+	# GET request.
+	if request.method == 'GET' and id is not None:
+
+		# Populate form with information about existing food resource. 
+		food_resource = FoodResource.query.filter_by(id=id).first()
+		if food_resource is None:
+			return render_template('404.html')
+
+		# Data that can be directly retrieved from the database.
+		form.name.data = food_resource.name
+		form.location_type.data = food_resource.location_type
+		form.address_line1.data = food_resource.address.line1
+		form.address_line2.data = food_resource.address.line2
+		form.address_city.data = food_resource.address.city
+		form.address_state.data = food_resource.address.state
+		form.address_zip_code.data = food_resource.address.zip_code
+		form.phone_number.data = food_resource.phone_numbers[0].number
+		form.website.data = food_resource.url
+		form.additional_information.data = food_resource.description
+		form.is_for_family_and_children.data = \
+			food_resource.is_for_family_and_children
+		form.is_for_seniors.data = food_resource.is_for_seniors
+		form.is_wheelchair_accessible.data = \
+			food_resource.is_wheelchair_accessible
+		form.is_accepts_snap.data = food_resource.is_accepts_snap
+
+		# Data that must be interpreted before being rendered.
+		if food_resource.are_hours_available == True:
+			form.are_hours_available.data = "yes"
+		else:
+			form.are_hours_available.data = "no"
+
+		for timeslot in food_resource.timeslots:
+			index = timeslot.day_of_week
+			start_time = timeslot.start_time
+			end_time = timeslot.end_time
+			form.daily_timeslots[index].timeslots[0].starts_at.data = \
+				start_time.strftime("%H:%M")
+			form.daily_timeslots[index].timeslots[0].ends_at.data = \
+				end_time.strftime("%H:%M")
+			form.is_open[index].is_open.data = "open"
+
+	# POST request.
 	additional_errors = []
 	if request.method == 'POST' and form.validate(): 
-		# Create food resource's timeslots.
-		timeslots = []
-		is_timeslot_valid = True
-		for i, day_of_week in enumerate(days_of_week): 
-			if (request.form[day_of_week['id'] + '-open-or-closed'] == "open"):
-				opening_time = request.form[day_of_week['id'] + '-opening-time']
-				start_time = get_time(opening_time)
-				closing_time = request.form[day_of_week['id'] + '-closing-time']
-				end_time = get_time(closing_time)
-				if start_time >= end_time: 
-					is_timeslot_valid = False
-					additional_errors.append("Opening time must be before closing time.")
-				if is_timeslot_valid:
-					timeslot = TimeSlot(day_of_week = i, start_time = start_time, 
-						end_time = end_time)
-					db.session.add(timeslot)
-					timeslots.append(timeslot)
-		# Create food resource's address.
-		if is_timeslot_valid:
-			address = Address(
-				line1 = form.address_line1.data, 
+		food_resource_type = form.location_type.data
+		all_timeslots = []
+
+		if form.are_hours_available.data == "yes":
+			are_hours_available = True
+		else:
+			are_hours_available = False
+
+		# Create the food resource's timeslots.
+		are_timeslots_valid = True
+		if are_hours_available: 
+			for i, timeslots in enumerate(form.daily_timeslots):
+				for timeslot in timeslots.timeslots:
+					# Check if food resource is open on the i-th day of the 
+					# week.
+					is_open = True
+					if form.is_open[i].is_open.data == "closed":
+						is_open = False
+
+					# Create timeslots only if the food resource is open on the
+					# i-th day of the week.
+					if is_open:
+						start_time = \
+							get_time_from_string(timeslot.starts_at.data)
+						end_time = get_time_from_string(timeslot.ends_at.data)
+						timeslot = TimeSlot(day_of_week=i, 
+							start_time=start_time, end_time=end_time)
+						all_timeslots.append(timeslot)
+
+						# Check that timeslot is valid.
+						if start_time >= end_time: 
+							are_timeslots_valid = False
+							additional_errors.append("Opening time must be \
+								before closing time.")
+						else:
+							db.session.add(timeslot)
+
+		# Create the food resource's remaining attributes. 
+		if are_timeslots_valid:
+
+			# If editing an existing food resource, delete its current record
+			# from the database. 
+			if id is not None:
+				fr = FoodResource.query.filter_by(id=id).first()
+				if fr:
+					db.session.delete(fr)
+					db.session.commit()
+			# Create food resource's address.
+			address = Address(line1=form.address_line1.data, 
+				line2=form.address_line2.data, 
+				city=form.address_city.data, 
+				state=form.address_state.data, 
+				zip_code=form.address_zip_code.data)
+			db.session.add(address)
+
+			# Create food resource's phone number.
+			phone_numbers = []
+			home_number = PhoneNumber(number=form.phone_number.data)
+			db.session.add(home_number)
+			phone_numbers.append(home_number)
+
+			# Create food resource and store all data in it.
+			food_resource = FoodResource(
+				name=form.name.data, 
+				phone_numbers=phone_numbers,
+				description=form.additional_information.data,
+				timeslots=all_timeslots,
+				address=address, 
+				is_for_family_and_children = \
+					form.is_for_family_and_children.data,
+				is_for_seniors = form.is_for_seniors.data,
+				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
+				is_accepts_snap = form.is_accepts_snap.data, 
+				are_hours_available = are_hours_available, 
+				location_type = food_resource_type)
+			# Commit all database changes. 
+			db.session.add(food_resource)
+			db.session.commit()
+			return redirect(url_for('admin'))
+
+	# If GET request is received or POST request fails due to invalid timeslots, 
+	# render the page. 
+	return render_template('add_resource.html', form=form, 
+		days_of_week=days_of_week, resources_info=resources_info_singular, 
+		additional_errors=additional_errors, title=title)
+
+#Allows non-admins to add food resources
+@app.route('/propose-resource', methods=['GET', 'POST'])
+def guest_new_food_resource():
+	form = NonAdminAddNewFoodResourceForm(request.form)
+	for timeslots in form.daily_timeslots:
+		for timeslot in timeslots.timeslots:
+			timeslot.starts_at.choices=get_possible_opening_times()
+			timeslot.ends_at.choices=get_possible_closing_times()
+	form.location_type.data = "FARMERS_MARKET"
+
+	additional_errors = []
+	if request.method == 'POST' and form.validate(): 
+		# Check if this guest has added resources in the past. If not,
+		# create a new FoodResourceContact.
+		guest_name = form.your_name.data
+		guest_email = form.your_email_address.data
+		guest_phone_number = form.your_phone_number.data
+
+		# Check to see if this contact exists.
+		contact = FoodResourceContact.query.filter_by(
+			email = guest_email, name = guest_name).first()
+
+		if (contact is None):
+			contact = FoodResourceContact(name=guest_name, 
+				email=guest_email, phone_number=guest_phone_number)
+			db.session.add(contact)
+			db.session.commit()
+
+		if form.are_hours_available.data == "yes":
+			are_hours_available = True
+		else:
+			are_hours_available = False
+
+		# Create the food resource's timeslots.
+		are_timeslots_valid = True
+		all_timeslots = []
+		if are_hours_available: 
+			for i, timeslots in enumerate(form.daily_timeslots):
+				for timeslot in timeslots.timeslots:
+					# Check if food resource is open on the i-th day of the 
+					# week.
+					is_open = True
+					if form.is_open[i].is_open.data == "closed":
+						is_open = False
+
+					# Create timeslots only if the food resource is open on the
+					# i-th day of the week.
+					if is_open:
+						start_time = \
+							get_time_from_string(timeslot.starts_at.data)
+						end_time = get_time_from_string(timeslot.ends_at.data)
+						timeslot = TimeSlot(day_of_week=i, 
+							start_time=start_time, end_time=end_time)
+						all_timeslots.append(timeslot)
+
+						# Check that timeslot is valid.
+						if start_time >= end_time: 
+							are_timeslots_valid = False
+							additional_errors.append("Opening time must be \
+								before closing time.")
+						else:
+							db.session.add(timeslot)
+
+		# Create the food resource's remaining attributes. 
+		if are_timeslots_valid:
+
+			# Create food resource's address.
+			address = Address(line1 = form.address_line1.data, 
 				line2 = form.address_line2.data, 
 				city = form.address_city.data, 
 				state = form.address_state.data, 
 				zip_code = form.address_zip_code.data)
 			db.session.add(address)
+
 			# Create food resource's phone number.
 			phone_numbers = []
-			phone_number = PhoneNumber(number = form.phone_number.data)
-			db.session.add(phone_number)
-			phone_numbers.append(phone_number)
+			home_number = PhoneNumber(number = form.phone_number.data)
+			db.session.add(home_number)
+			phone_numbers.append(home_number)
+
 			# Create food resource and store all data in it.
 			food_resource = FoodResource(
-				name = form.name.data, 
-				phone_numbers = phone_numbers,
-				description = form.additional_information.data,
-				timeslots = timeslots,
-				address = address)
-			for resource_info in resources_info_singular:
-				if (request.form['food-resource-type'] == resource_info['id']+'-option'):
-					food_resource.location_type = resource_info['enum']
+				name=form.name.data, 
+				phone_numbers=phone_numbers,
+				description=form.additional_information.data,
+				timeslots=all_timeslots,
+				address=address, 
+				is_for_family_and_children = \
+					form.is_for_family_and_children.data,
+				is_for_seniors = form.is_for_seniors.data,
+				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
+				is_accepts_snap = form.is_accepts_snap.data, 
+				are_hours_available = are_hours_available, 
+				location_type = form.location_type.data, 
+				is_approved = False, 
+				food_resource_contact = contact)
+
+			# Commit all database changes. 
 			db.session.add(food_resource)
 			db.session.commit()
-			return redirect(url_for('index'))
-	return render_template('add_resource.html', form=form, 
+			return redirect(url_for('post_guest_add'))
+
+	# If GET request is received or POST request fails due to invalid timeslots, 
+	# render the page. 
+	return render_template('guest_add_resource.html', form=form, 
 		days_of_week=days_of_week, resources_info=resources_info_singular, 
 		additional_errors=additional_errors)
 
-@app.route('/admin')
+@app.route('/_thank-you')
+def post_guest_add():
+	return render_template('thank_you.html')
+
+@app.route('/admin/manage-resources')
 @login_required
 def admin():
 	resources = {}
-	resources['farmers-markets'] = FoodResource.query.filter_by(location_type="FARMERS_MARKET")
-	resources['meals-on-wheels'] = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS")  
-	resources['food-cupboards'] = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD")
-	resources['share-host-sites'] = FoodResource.query.filter_by(location_type="SHARE")
-	resources['soup-kitchens'] = FoodResource.query.filter_by(location_type="SOUP_KITCHEN")
-	resources['wic-offices'] = FoodResource.query.filter_by(location_type="WIC_OFFICE")
-	return render_template('admin_resources.html', resources_info=resources_info_plural, 
-	    resources=resources, days_of_week=days_of_week)
+	resources['farmers-markets'] = FoodResource.query \
+		.filter_by(location_type="FARMERS_MARKET", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	resources['senior-meals'] = FoodResource.query \
+		.filter_by(location_type="SENIOR_MEAL", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	resources['food-cupboards'] = FoodResource.query \
+		.filter_by(location_type="FOOD_CUPBOARD", is_approved=True) \
+		.order_by(FoodResource.name).all() 
+	resources['share-host-sites'] = FoodResource.query \
+		.filter_by(location_type="SHARE", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	resources['soup-kitchens'] = FoodResource.query \
+		.filter_by(location_type="SOUP_KITCHEN", is_approved=True) \
+		.order_by(FoodResource.name).all()
+	resources['wic-offices'] = FoodResource.query \
+		.filter_by(location_type="WIC_OFFICE", is_approved=True) \
+		.order_by(FoodResource.name).all()
+
+	contacts = FoodResourceContact.query.all()
+
+	return render_template('admin_resources.html', food_resource_contacts = contacts,
+		resources_info=resources_info_plural, resources=resources, enum_to_english=enum_to_english,
+		days_of_week=days_of_week)
+
+@app.route('/admin')
+def admin_redirect():
+	return redirect(url_for('admin'))
 
 @login_required
 def invite():
@@ -218,31 +441,159 @@ def invite():
 def invite_sent():
 	return render_template('invite_sent.html')
 
-@app.route('/_admin')
-def get_food_resource_data():
-	farmers_markets = FoodResource.query.filter_by(location_type="FARMERS_MARKET")
-	meals_on_wheels = FoodResource.query.filter_by(location_type="MEALS_ON_WHEELS")  
-	food_cupboards = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD")
-	share_host_sites = FoodResource.query.filter_by(location_type="SHARE")
-	soup_kitchens = FoodResource.query.filter_by(location_type="SOUP_KITCHEN")
-	wic_offices = FoodResource.query.filter_by(location_type="WIC_OFFICE")
-	names = FoodResource.query.all()
-	return jsonify(farmers_markets=[i.serialize_name_only() for i in farmers_markets],
-		meals_on_wheels=[i.serialize_name_only() for i in meals_on_wheels],
-		food_cupboards=[i.serialize_name_only() for i in food_cupboards],
-		share_host_sites=[i.serialize_name_only() for i in share_host_sites],
-		soup_kitchens=[i.serialize_name_only() for i in soup_kitchens],
-		wic_offices=[i.serialize_name_only() for i in wic_offices])
+@app.route("/_admin_remove_filters")
+def get_all_food_resource_data():
+	farmers_markets = FoodResource.query.filter_by(location_type="FARMERS_MARKET", is_approved=True).order_by(FoodResource.name).all()
+	senior_meals = FoodResource.query.filter_by(location_type="SENIOR_MEAL", is_approved=True).order_by(FoodResource.name).all()
+	food_cupboards = FoodResource.query.filter_by(location_type="FOOD_CUPBOARD", is_approved=True).order_by(FoodResource.name).all()
+	share_host_sites = FoodResource.query.filter_by(location_type="SHARE", is_approved=True).order_by(FoodResource.name).all()
+	soup_kitchens = FoodResource.query.filter_by(location_type="SOUP_KITCHEN", is_approved=True).order_by(FoodResource.name).all()
+	wic_offices = FoodResource.query.filter_by(location_type="WIC_OFFICE", is_approved=True).order_by(FoodResource.name).all()
+
+	return jsonify(farmers_markets=[i.serialize_food_resource() for i in 
+			farmers_markets],
+		senior_meals=[i.serialize_food_resource() for i in senior_meals],
+		food_cupboards=[i.serialize_food_resource() for i in food_cupboards],
+		share_host_sites=[i.serialize_food_resource() for i in 
+			share_host_sites],
+		soup_kitchens=[i.serialize_food_resource() for i in soup_kitchens],
+		wic_offices=[i.serialize_food_resource() for i in wic_offices], 
+		days_of_week=days_of_week)
+
+@app.route('/_admin_apply_filters')
+def get_filtered_food_resource_data():
+	# Collect boolean paramaters passed via JSON.
+	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
+	zip_code = request.args.get('zip_code', 0, type=int)
+	has_families_and_children_filter = request.args.get(
+		'has_families_and_children_filter', 0, type=int) 
+	has_seniors_filter = request.args.get('has_seniors_filter', 0, type=int) 
+	has_wheelchair_accessible_filter = request.args.get(
+		'has_wheelchair_accessible_filter', 0, type=int) 
+	has_accepts_snap_filter = request.args.get(
+		'has_accepts_snap_filter', 0, type=int) 
+
+	# Create empty arrays to hold food resources.
+	farmers_markets = []
+	senior_meals = []
+	food_cupboards = []
+	share_host_sites = []
+	soup_kitchens = []
+	wic_offices = []
+
+	# Zip code is one of the filters.
+	if has_zip_code_filter:
+
+		# Filter for farmers' markets with a specific zip code.
+		get_food_resources_by_location_type_and_zip_code(
+			farmers_markets, # List to populate.
+			"FARMERS_MARKET", # Location type by which to filter.
+			zip_code # Zip code by which to filter.
+		)
+
+		# Filter for senior meals with a specific zip code.
+		get_food_resources_by_location_type_and_zip_code(
+			senior_meals, # List to populate.
+			"SENIOR_MEAL", # Location type by which to filter.
+			zip_code # Zip code by which to filter.
+		)
+
+		# Filter for food cupboards with a specific zip code.
+		get_food_resources_by_location_type_and_zip_code(
+			food_cupboards, # List to populate.
+			"FOOD_CUPBOARD", # Location type by which to filter.
+			zip_code # Zip code by which to filter.
+		)
+
+		# Filter for SHARE host sites with a specific zip code.
+		get_food_resources_by_location_type_and_zip_code(
+			share_host_sites, # List to populate.
+			"SHARE", # Location type by which to filter.
+			zip_code # Zip code by which to filter.
+		)
+
+		# Filter for soup kitchens with a specific zip code.
+		get_food_resources_by_location_type_and_zip_code(
+			soup_kitchens, # List to populate.
+			"SOUP_KITCHEN", # Location type by which to filter.
+			zip_code # Zip code by which to filter.
+		)
+
+		# Filter for WIC offices with a specific zip code.
+		get_food_resources_by_location_type_and_zip_code(
+			wic_offices, # List to populate.
+			"WIC_OFFICE", # Location type by which to filter.
+			zip_code # Zip code by which to filter.
+		)
+
+	# Zip code is not one of the filters. 
+	else: 
+
+		# Filter for farmers' markets without a specific zip code.
+		get_food_resources_by_location_type(
+			farmers_markets, # List to populate.
+			"FARMERS_MARKET" # Location type by which to filter.
+		)
+
+		# Filter for senior meals without a specific zip code.
+		get_food_resources_by_location_type(
+			senior_meals, # List to populate.
+			"SENIOR_MEAL" # Location type by which to filter.
+		)
+
+		# Filter for food cupboards without a specific zip code.
+		get_food_resources_by_location_type(
+			food_cupboards, # List to populate.
+			"FOOD_CUPBOARD" # Location type by which to filter.
+		)
+
+		# Filter for SHARE host sites without a specific zip code.
+		get_food_resources_by_location_type(
+			share_host_sites, # List to populate.
+			"SHARE" # Location type by which to filter.
+		)
+
+		# Filter for soup kitchens without a specific zip code.
+		get_food_resources_by_location_type(
+			soup_kitchens, # List to populate.
+			"SOUP_KITCHEN" # Location type by which to filter.
+		)
+
+		# Filter for WIC offices without a specific zip code. 
+		get_food_resources_by_location_type(
+			wic_offices, # List to populate.
+			"WIC_OFFICE" # Location type by which to filter.
+		)
+
+	# Filter each list by other boolean criteria.
+	for list_to_filter in [farmers_markets, senior_meals, food_cupboards, 
+		share_host_sites, soup_kitchens, wic_offices]:
+		filter_food_resources(list_to_filter, has_families_and_children_filter, 
+			has_seniors_filter, has_wheelchair_accessible_filter,
+			has_accepts_snap_filter)
+
+	return jsonify(farmers_markets=[i.serialize_food_resource() for i in 
+			farmers_markets],
+		senior_meals=[i.serialize_food_resource() for i in senior_meals],
+		food_cupboards=[i.serialize_food_resource() for i in food_cupboards],
+		share_host_sites=[i.serialize_food_resource() for i in 
+			share_host_sites],
+		soup_kitchens=[i.serialize_food_resource() for i in soup_kitchens],
+		wic_offices=[i.serialize_food_resource() for i in wic_offices], 
+		days_of_week=days_of_week)
+
+@app.route('/map')
+def map():
+	return render_template('newmaps.html')
 
 @app.route('/_map')
-def food_resources():
-	zipCode = request.args.get('zipcode')
-	address = Address.query.filter_by(zip_code = zipCode).all()
-	addresses = []
-	for x in address:
-		currentResource = FoodResource.query.filter_by(id = x.food_resource_id).first()
-		addresses.append(currentResource)
-	return jsonify(addresses=[i.serialize_map_list() for i in addresses])
+def address_food_resources():
+	zip_code = request.args.get('zip_code', 0, type=int)
+	food_resources = db.session.query(FoodResource) \
+		.join(FoodResource.address) \
+		.filter(Address.zip_code==zip_code) \
+		.order_by(FoodResource.name).all()
+	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
 
 @app.route('/_newmap')
 def address_food_resources():
@@ -261,14 +612,69 @@ def save_page():
 		db.session.commit()
 	return 'Added' + data + 'to database.'
 
-#TODO: Remove this edit demo page once editing works on all others.
-@app.route('/admin/edit')
-def edit_content():
-	return render_template('edit_content.html', html_string = HTML.query.filter_by(page = 'edit-page').first())
+@app.route('/_search_query', methods=['GET', 'POST'])
+def save_search_query():
+	# Only record searches for regular users
+	if(current_user.is_authenticated()):
+		return
+	zip_code = request.form.get('zipCode')
+	if(zip_code):
+		zip_requested = ZipSearch.query.filter_by(zip_code = zip_code).first()
+		if(zip_requested):
+			zip_requested.search_count = zip_requested.search_count + 1
+		else:
+			zip_requested = ZipSearch(zip_code = zip_code, search_count = 1)
+			db.session.add(zip_requested)
+		db.session.commit()
+	return 'Recorded a search for' + zip_code
+
+@app.route('/_remove')
+def remove():
+	id = request.args.get("id", type=int)
+	food_resource = FoodResource.query.filter_by(id=id).first()
+
+	# Determine whether the food resource being removed is approved or pending.
+	# Needed for front-end update after food resource is removed.
+	is_approved = False
+	if (food_resource.is_approved):
+		is_approved = True
+
+	# If the food resource has a contact and its contact has submitted no other 
+	# food resources to the database, remove him/her from the database.
+	contact = food_resource.food_resource_contact
+	if contact and len(contact.food_resource) <= 1:
+		db.session.delete(contact)
+
+	# Remove the food resource from the database.
+	db.session.delete(food_resource)
+	db.session.commit()
+	return jsonify(is_approved=is_approved)
+
+@app.route('/_approve')
+def approve():
+	id = request.args.get("id", type=int)
+	food_resource = FoodResource.query.filter_by(id=id).first()
+	contact = food_resource.food_resource_contact
+
+	if len(contact.food_resource) <= 1:
+		db.session.delete(contact)
+	else:
+		contact.food_resource.remove(food_resource)
+
+	food_resource.is_approved = True
+	db.session.commit()
+	return jsonify(message="success")
 
 @app.route('/about')
 def about():
 	return render_template('about.html', html_string = HTML.query.filter_by(page = 'about-page').first())
+
+@app.route('/admin/analytics')
+@login_required
+def analytics():
+	zip_codes_all = ZipSearch.query.order_by(ZipSearch.search_count.desc())
+	zip_codes_limit = zip_codes_all.limit(10)
+	return render_template('charts.html', zip_codes_all = zip_codes_all, zip_codes_limit = zip_codes_limit)
 
 @app.route('/faq')
 def faq():
@@ -277,3 +683,19 @@ def faq():
 @app.route('/contact')
 def contact():
 	return render_template('contact.html', html_string = HTML.query.filter_by(page = 'contact-page').first())
+
+@app.route('/resources/wic')
+def wic():
+	return render_template('wic_info.html', html_string = HTML.query.filter_by(page = 'wic-info-page').first())
+
+@app.route('/resources/snap')
+def snap():
+	return render_template('snap_info.html', html_string = HTML.query.filter_by(page = 'snap-info-page').first())
+
+@app.route('/resources/summer-meals')
+def summer_meals():
+	return render_template('summer_meals.html', html_string = HTML.query.filter_by(page = 'summer-info-page').first())
+
+@app.route('/resources/seniors')
+def seniors():
+	return render_template('seniors_info.html', html_string = HTML.query.filter_by(page = 'seniors-info-page').first())

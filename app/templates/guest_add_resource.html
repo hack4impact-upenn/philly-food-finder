@@ -11,7 +11,15 @@
 	<form action="" method="POST" role="form" name="submit_food_resource">
 	    {{ form.hidden_tag() }}
 
-	    <!-- Additional Errors --> 
+    	{% if form.location_type.errors %}
+            {% for e in form.location_type.errors %}
+                {% if e %}
+                    <small class="error">{{ e }}</small>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+	    <!-- Additional Errors -->
 	    <div class="row">
 		    <div class="large-8 medium-6 medium-centered small-12 columns large-centered 
 		    	medium-centered">
@@ -24,6 +32,60 @@
 		            {% endif %}
 		      	</label>
 		    </div>
+		</div>
+
+		<!-- Guest Name -->
+		{% set field = form.your_name %}
+	    <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ field.label }}
+		        	<dd class="error">{{ field()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		<!-- Guest Email -->
+		{% set field = form.your_email_address %}
+	    <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ field.label }}
+		        	<dd class="error">{{ field()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		<!-- Guest Phone -->
+		{% set field = form.your_phone_number %}
+	    <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ field.label }}
+		        	<dd class="error">{{ field()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
 		</div>
 
 	   <!-- Food Resource Name -->
@@ -44,23 +106,22 @@
 			</div>
 		</div>
 
-		<!-- Food Resource Type -->
-		{% set field = form.location_type %}
+		<!-- Food Resource Type --> 
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ form.location_type.label }}
-		        	<dd class="error">{{ form.location_type()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		    	<label>Food Resource Type
+			    	<select name='food-resource-type' id="option-title">
+			    		{% for resource_info in resources_info %}
+						 	<option value="{{ resource_info.enum }}">
+								{{ resource_info.name }}
+							</option>
+						{% endfor %}
+			    	</select>
+		      	</label>
+		    </div>
+	  	</div>
+
 
 		<!-- Address Line 1 -->
 		{% set field = form.address_line1 %}
@@ -80,6 +141,7 @@
 			</div>
 		</div>
 
+
 	  <!-- Address Line 2 -->
 		{% set field = form.address_line2 %}
 		<div class="row">
@@ -98,7 +160,6 @@
 			</div>
 		</div>
 
-		<!-- Address City --> 
 		{% set field = form.address_city %}
 		<div class="row">
 			<div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -116,7 +177,6 @@
 			</div>
 		</div>
 
-		<!-- Address State --> 
 		{% set field = form.address_state %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -134,7 +194,6 @@
 			</div>
 		</div>
 
-		<!-- Address Zip Code --> 
 		{% set field = form.address_zip_code %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -152,7 +211,6 @@
 			</div>
 		</div>
 
-		<!-- Address Phone Number --> 
 		{% set field = form.phone_number %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -170,7 +228,6 @@
 			</div>
 		</div>
 
-		<!-- Website --> 
 		{% set field = form.website %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -363,6 +420,21 @@
 		    </div>
 		</div>
 
+		{% set field = form.recaptcha %}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered" id="top-padding-section">
+		        	<dd class="error">{{ field()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+		    </div>
+		</div>
+
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered" id="bottom-padding-section">
@@ -373,3 +445,4 @@
 </body>
 
 {% endblock %}
+

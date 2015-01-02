@@ -10,15 +10,16 @@ class Address(db.Model):
 	state = db.Column(db.String(2))
 	zip_code = db.Column(db.String(5))
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+
 	def serialize_address(self):
 		return {
-		'id': self.id,
-		'line1': self.line1,
-		'line2': self.line2,
-		'city': self.city,
-		'state': self.state,
-		'zip_code': self.zip_code,
-		'food_resource_id': self.food_resource_id
+			'id': self.id,
+			'line1': self.line1,
+			'line2': self.line2,
+			'city': self.city,
+			'state': self.state,
+			'zip_code': self.zip_code,
+			'food_resource_id': self.food_resource_id
 		}
 
 class TimeSlot(db.Model):
@@ -27,13 +28,19 @@ class TimeSlot(db.Model):
 	start_time = db.Column(db.Time)
 	end_time = db.Column(db.Time)
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
-	def serialize_timeslot(self):
-		return {
-		'id': self.id,
-		'day_of_week': self.day_of_week,
-		'start_time': self.start_time,
-		'end_time': self.end_time
+
+	def serialize_timeslot(self, is_military_time=True):
+		data = {
+			'id': self.id,
+			'day_of_week': self.day_of_week,
 		}
+		if is_military_time:
+			data["start_time"] = self.start_time.isoformat()
+			data["end_time"] = self.end_time.isoformat()
+		else:
+			data["start_time"] = self.start_time.strftime('%I:%M %p')
+			data["end_time"] = self.end_time.strftime('%I:%M %p')
+		return data
 
 # Represents a start and end month for a resource. 
 # For example OpenMonthPair(3,5) means the resource is open from March to May.
@@ -42,6 +49,14 @@ class OpenMonthPair(db.Model):
 	start_month = db.Column(db.Integer)
 	end_month = db.Column(db.Integer)
 	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+
+	def serialize_open_month_pair(self):
+		return {
+			'id': self.id, 
+			'start_month': self.start_month, 
+			'end_month': self.end_month, 
+			'resource_id': self.resource_id
+		}
 
 class PhoneNumber(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -55,9 +70,16 @@ class PhoneNumber(db.Model):
 			'reource_id': self.resource_id
 		}
 
+
+class FoodResourceContact(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(150))
+	email = db.Column(db.String(255))
+	phone_number = db.Column(db.String(35))
+	food_resource = db.relationship('FoodResource', backref='food_resource_contact', 
+	lazy='select', uselist=True)
+
 class FoodResource(db.Model):
-	# food_resource_type_enums = ('FARMERS_MARKET','MEALS_ON_WHEELS',
-	# 	'FOOD_CUPBOARD','SHARE','SOUP_KITCHEN','WIC_OFFICE')
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(50))
 	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', lazy='select', uselist=True)
@@ -66,28 +88,49 @@ class FoodResource(db.Model):
 	exceptions = db.Column(db.Text)
 	description = db.Column(db.Text)
 	location_type = db.Column(db.String(100))
+	address = db.relationship('Address', backref='food_resource', 
+		lazy='select', uselist=False)
+
+	# Hours of operation.
+	are_hours_available = db.Column(db.Boolean, default=False)
 	timeslots = db.relationship(
 		'TimeSlot', # One-to-many relationship (one Address with many TimeSlots).
 		backref='food_resource', # Declare a new property of the TimeSlot class.
 		lazy='select', uselist=True)
-	address = db.relationship('Address', backref='food_resource', 
-		lazy='select', uselist=False)
-	family_children = db.Column(db.Boolean)
-	elderly = db.Column(db.Boolean)
+
+	# Boolean fields
+	is_for_family_and_children = db.Column(db.Boolean, default=False)
+	is_for_seniors = db.Column(db.Boolean, default=False)
+	is_wheelchair_accessible = db.Column(db.Boolean, default=False)
+	is_accepts_snap = db.Column(db.Boolean, default=False)
+
+	# Fields for when non-admins submit resources
+	is_approved = db.Column(db.Boolean(), default=True)
+	food_resource_contact_id = db.Column(db.Integer, db.ForeignKey('food_resource_contact.id'))
 
 	def serialize_name_only(self):
 		return {
-			'id': self.id, 
-			'name': self.name
+			'name': self.name, 
+			'id': self.id
 		}
 
-	def serialize_all_data(self):
+	def serialize_food_resource(self):
 		return {
 			'id': self.id, 
 			'name': self.name, 
 			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
-			# self.phone_numbers, 
+			'url': self.url, 
+			'open_month_pairs': [i.serialize_open_month_pair() for i in self.open_month_pairs],
+			'exceptions': self.exceptions, 
 			'description': self.description,
+			'location_type': self.location_type,
+			'address': self.address.serialize_address(),
+			'are_hours_available': self.are_hours_available, 
+			'timeslots': [i.serialize_timeslot(False) for i in self.timeslots], 
+			'is_for_family_and_children': self.is_for_family_and_children, 
+			'is_for_seniors': self.is_for_seniors, 
+			'is_wheelchair_accessible': self.is_wheelchair_accessible, 
+			'is_accepts_snap': self.is_accepts_snap 
 		}
 
 	def serialize_map_list(self):
@@ -157,3 +200,7 @@ class HTML(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	page = db.Column(db.String(100), unique=True)
 	value = db.Column(db.Text)
+
+class ZipSearch(db.Model):
+	zip_code = db.Column(db.String(5), primary_key = True)
+	search_count = db.Column(db.Integer)
