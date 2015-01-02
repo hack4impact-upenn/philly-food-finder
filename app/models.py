@@ -21,13 +21,13 @@ class ColoredPin(db.Model):
 
 class FoodResourceType(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	enum = db.Column(db.String(35), unique=True) # Should be singular
-	name_singular = db.Column(db.String(35), unique=True)
-	name_plural = db.Column(db.String(35), unique=True)
-	hyphenated_id_singular = db.Column(db.String(35), unique=True)
-	hyphenated_id_plural = db.Column(db.String(35), unique=True)
-	underscored_id_singular = db.Column(db.String(35), unique=True)
-	underscored_id_plural = db.Column(db.String(35), unique=True)
+	enum = db.Column(db.String(200), unique=True) # Should be singular
+	name_singular = db.Column(db.String(200), unique=True)
+	name_plural = db.Column(db.String(200), unique=True)
+	hyphenated_id_singular = db.Column(db.String(200), unique=True)
+	hyphenated_id_plural = db.Column(db.String(200), unique=True)
+	underscored_id_singular = db.Column(db.String(200), unique=True)
+	underscored_id_plural = db.Column(db.String(200), unique=True)
 	colored_pin_id = db.Column(db.Integer, db.ForeignKey('colored_pin.id'))
 	food_resources = db.relationship(
 		'FoodResource', # One-to-many relationship (one FoodResourceType with many FoodResource).

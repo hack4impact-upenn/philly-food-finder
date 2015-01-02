@@ -14,11 +14,6 @@ class TimeSlotForm(Form):
     starts_at = SelectField(u'Opens at') 
     ends_at = SelectField(u'Closes at') 
 
-    #def get_start_time(self):
-        #return get_time_from_string
-
-    #def get_end_time(self):
-
 class IsOpenForm(Form):
     is_open = SelectField(u'Sunday', 
         choices=[('closed', 'Closed'), ('open', 'Open')])
@@ -172,7 +167,7 @@ class AddNewFoodResourceTypeForm(Form):
         validators = [
             InputRequired("Please provide the singular version of the food \
                 resource type's name."),
-            Length(1, 35)
+            Length(1, 200)
         ]
     )
     name_plural = TextField(
@@ -180,7 +175,7 @@ class AddNewFoodResourceTypeForm(Form):
         validators = [
             InputRequired("Please provide the plural version of the food \
                 resource type's name."),
-            Length(1, 35)
+            Length(1, 200)
         ]
     )
     color = SelectField(u'Food Resource Color')
