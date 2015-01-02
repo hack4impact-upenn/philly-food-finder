@@ -189,6 +189,7 @@ def import_file(file):
 
 	with open(file.filename, 'rU') as csvfile:
 	#with file.stream as csvfile:
+
 		spamreader = csv.reader(csvfile)
 		for i, row in enumerate(spamreader):
 			'''if i == 1:

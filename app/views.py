@@ -719,7 +719,7 @@ def csv_input():
 	file = request.files['file']
 	if file:
 		import_file(file)
-		return jsonify(message="success")
+		return jsonify(message = "success")
 
 @app.route('/_csv_download')
 @login_required
