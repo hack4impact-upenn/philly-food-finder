@@ -429,6 +429,10 @@ display: block;
   width: 8em;
 }
 
+#sample_table_div {
+  height: auto;
+}
+
 /* Dropzone styling */
 
 .dropzone,

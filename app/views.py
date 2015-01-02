@@ -9,7 +9,7 @@ from flask.ext.login import login_user, logout_user, current_user, \
 from variables import resources_info_singular, resources_info_plural, \
 	days_of_week, enum_to_english
 from datetime import time
-from utils import generate_password
+from utils import generate_password, import_file
 from flask_user import login_required, signals
 from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
@@ -666,14 +666,6 @@ def approve():
 	db.session.commit()
 	return jsonify(message="success")
 
-@app.route('/_csv_input', methods=['GET', 'POST'])
-@login_required
-def csv_input():
-	file = request.files['file']
-	if file:
-		print file
-		return jsonify(message="success")
-
 @app.route('/about')
 def about():
 	return render_template('about.html', html_string = HTML.query.filter_by(page = 'about-page').first())
@@ -713,8 +705,16 @@ def seniors():
 def files():
 	return render_template('file_inputoutput.html')
 
-# This route will prompt a file download with the csv lines
-@app.route('/download')
+@app.route('/_csv_input', methods=['GET', 'POST'])
+@login_required
+def csv_input():
+	file = request.files['file']
+	if file:
+		import_file(file)
+		return jsonify(message="success")
+
+@app.route('/_csv_download')
+@login_required
 def download():
 	outfile = open('.mydump.csv', 'wb')
 	outcsv = csv.writer(outfile)
@@ -731,8 +731,8 @@ def download():
 	 'Open Sunday? (either \'Yes\' or leave blank)', 'Open Monday? (either \'Yes\' or leave blank)', 
 	 'Open Tuesday? (either \'Yes\' or leave blank)',	'Open Wednesday? (either \'Yes\' or leave blank)', 
 	 'Open Thursday? (either \'Yes\' or leave blank)', 'Open Friday? (either \'Yes\' or leave blank)', 
-	 'Open Saturday? (either \'Yes\' or leave blank)', 'Sunday Opening Time (either \'Yes\' or leave blank)',
-	 'Sunday Closing Time (either \'Yes\' or leave blank)', 'Monday Opening Time (military time - e.g., 8:00 or 17:00)', 
+	 'Open Saturday? (either \'Yes\' or leave blank)', 'Sunday Opening Time (military time - e.g., 8:00 or 17:00)',
+	 'Sunday Closing Time (military time - e.g., 8:00 or 17:00)', 'Monday Opening Time (military time - e.g., 8:00 or 17:00)', 
 	 'Monday Closing Time (military time - e.g., 8:00 or 17:00)', 
 	 'Tuesday Opening Time (military time - e.g., 8:00 or 17:00)', 'Tuesday Closing Time (military time - e.g., 8:00 or 17:00)',
 	 'Wednesday Opening Time (military time - e.g., 8:00 or 17:00)', 
