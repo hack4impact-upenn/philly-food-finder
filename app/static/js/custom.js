@@ -278,7 +278,7 @@ function removeFoodResource() {
         		if (data["is_approved"]) {
         			// Hide corresponding approved resource table.
 	        		hide("food-resource-" + foodResourceId);
-	        		hide("food-resource-" + foodResourceId + "-table");
+	        		hide(foodResourceId + "-food-resource-table");
 	        		
 	        		// Reduce total number of food resources.
 	        		var currentNumResources = 

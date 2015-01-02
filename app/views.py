@@ -519,7 +519,7 @@ def get_filtered_food_resource_data():
 		for i, food_resource_type in enumerate(food_resource_types):
 
 			# Filter for each kind of food resource without a specific zip code.
-			all_resources[i] = []
+			all_resources.append([])
 			get_food_resources_by_location_type(
 				all_resources[i], # List to populate.
 				food_resource_type # Location type by which to filter.
@@ -740,22 +740,27 @@ def new_food_resource_type(id=None):
 		form.name_plural.data = food_resource_type.name_plural
 
 	if request.method == 'POST' and form.validate():
-		# If editing an existing food resource type, delete its current record
-		# from the database. 
+		colored_pin = ColoredPin.query.filter_by(color_name=form.color.data) \
+			.first()
+			
+		# Edit an existing food resource type.
 		if id is not None:
 			food_resource_type = FoodResourceType.query.filter_by(id=id).first()
 			if food_resource_type:
-				form.id.data = food_resource_type.id
-				db.session.delete(food_resource_type)
-				db.session.commit()
+				food_resource_type.name_singular = form.name_singular.data
+				food_resource_type.name_plural = form.name_plural.data
+				food_resource_type.colored_pin = colored_pin
+				food_resource_type.recreate_fields()
+		
+		# Create a new food resource type.
+		else:
+			food_resource_type = FoodResourceType(
+				name_singular = form.name_singular.data, 
+				name_plural = form.name_plural.data, 
+				colored_pin = colored_pin
+			)
 
-		# Create new food resource type.
-		colored_pin = ColoredPin.query.filter_by(color_name=form.color.data).first()
-		food_resource_type = FoodResourceType(
-			name_singular = form.name_singular.data, 
-			name_plural = form.name_plural.data, 
-			colored_pin = colored_pin
-		)
+		# Save and commit database changes.
 		db.session.add(food_resource_type)
 		db.session.commit()
 
