@@ -672,11 +672,6 @@ def analytics():
 	zip_codes_limit = zip_codes_all.limit(10)
 	return render_template('charts.html', zip_codes_all = zip_codes_all, zip_codes_limit = zip_codes_limit)
 
-@app.route('/faq')
-def faq():
-	return render_template('faq.html', 
-		html_string = HTML.query.filter_by(page = 'faq-page').first())
-
 @app.route('/contact')
 def contact():
 	return render_template('contact.html', 
