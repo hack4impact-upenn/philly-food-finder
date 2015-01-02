@@ -3,7 +3,7 @@ from utils import *
 from models import *
 from forms import AddNewFoodResourceForm, NonAdminAddNewFoodResourceForm
 from flask import render_template, flash, redirect, session, url_for, request, \
-	g, jsonify, current_app, send_file
+	g, jsonify, current_app, Response
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import resources_info_singular, resources_info_plural, \
@@ -716,8 +716,8 @@ def files():
 # This route will prompt a file download with the csv lines
 @app.route('/download')
 def download():
-	#outfile = open('mydump.csv', 'wb')
-	outfile = NamedTemporaryFile(mode='w+b')
+	outfile = open('mydump.csv', 'wb')
+	#outfile = NamedTemporaryFile(mode='wb')
 
 	outcsv = csv.writer(outfile)
 
@@ -777,6 +777,14 @@ def download():
 			timeslots[6].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 6) else ''])
 		row_counter = row_counter + 1
 
+	reader = csv.reader(open(outfile.name, 'rb'))
+
+	def generate():
+		with open(outfile.name, 'rb') as f:
+			for line in f:
+				yield line
+	
+	response = Response(generate(), mimetype='text/csv')
 	filename = 'resources_generated_at_' + str(datetime.now()) + '.csv'
-	response = send_file(filename_or_fp = os.path.abspath(outfile.name), mimetype = 'text/csv', as_attachment = True, attachment_filename = filename)
+	response.headers["Content-Disposition"] = "attachment; filename="+filename
 	return response
