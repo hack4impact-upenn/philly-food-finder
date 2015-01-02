@@ -2,10 +2,24 @@ import os, random, string, datetime
 from datetime import time, datetime, timedelta
 from pytz import timezone
 from models import *
-import csv 
-from app import db
-from app.models import *
-from string import strip
+import os, random, string
+from datetime import time
+from pytz import timezone
+from models import *
+import re
+
+def get_underscored_string(string_to_convert):
+	string = string_to_convert.lower().replace(" ", "_")
+	string = re.sub(r'[^a-zA-Z0-9_]','', string)
+	return string 
+
+def get_hyphenated_string(string_to_convert):
+	string = string_to_convert.lower().replace(" ", "-")
+	string = re.sub(r'[^a-zA-Z0-9\-]','', string)
+	return string 
+
+def get_enum(string_to_convert):
+	return get_underscored_string(string_to_convert).upper()
 
 # Function to generate a random password of given length 
 def generate_password(length):
@@ -120,7 +134,8 @@ def get_food_resources_by_location_type(list_to_populate, location_type):
 	for food_resource in db.session.query(FoodResource) \
 		.join(FoodResource.address) \
 		.filter(
-			FoodResource.location_type==location_type) \
+			FoodResource.food_resource_type==location_type,
+			FoodResource.is_approved==True) \
 		.order_by(FoodResource.name).all():
 		list_to_populate.append(food_resource)
 
@@ -131,7 +146,8 @@ def get_food_resources_by_location_type_and_zip_code(list_to_populate,
 		.join(FoodResource.address) \
 		.filter(
 			Address.zip_code==zip_code,
-			FoodResource.location_type==location_type) \
+			FoodResource.food_resource_type==location_type,
+			FoodResource.is_approved==True) \
 		.order_by(FoodResource.name).all():
 		list_to_populate.append(food_resource)
 

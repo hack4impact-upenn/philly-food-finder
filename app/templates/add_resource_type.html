@@ -1,0 +1,76 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="row">
+      <h1 class="page-header">{{ title }}</h1>
+      <hr align="center">
+  </div>
+
+	<form action="" method="POST" role="form" name="submit_food_resource">
+	    {{ form.hidden_tag() }}
+
+		<!-- Singular Name -->
+		{% set field = form.name_singular %}
+	    <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ field.label }}
+		        	<dd class="error">{{ field()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		<!-- Plural Name -->
+		{% set field = form.name_plural %}
+	    <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ field.label }}
+		        	<dd class="error">{{ field()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		<!-- Hex Color Code -->
+		{% set field = form.color %}
+	    <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<label>{{ field.label }}
+		        	<dd class="error">{{ field()|safe }}
+		        	{% if field.errors %}
+		                {% for e in field.errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+				</label>
+			</div>
+		</div>
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered" id="bottom-padding-section">
+	          <input type=submit class="button radius small" value=Submit>
+		    </div>
+		</div>
+	</form>
+
+{% endblock %}
+
