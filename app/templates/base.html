@@ -67,10 +67,6 @@
         <section class="top-bar-section">
           <ul class="left">
             <li><a href="{{ url_for('map') }}" id="l_map">map</a></li>
-            <li><a href="{{ url_for('faq') }}" id="l_faq">faq</a></li>
-            <li><a href="{{ url_for('about') }}" id="l_about">about</a></li>
-            <li><a href="{{ url_for('contact') }}" id="l_contact">contact</a></li>
-
             <li class="has-dropdown">
               <a href="" id="l_resources">resources</a>
                 <ul class="dropdown">
@@ -80,6 +76,8 @@
                   <li><a href="{{ url_for('seniors') }}">Seniors</a></li>
                 </ul>
             </li>
+            <li><a href="{{ url_for('about') }}" id="l_about">about</a></li>
+            <li><a href="{{ url_for('contact') }}" id="l_contact">contact</a></li>
 
             {% if current_user.is_authenticated() %}
             <li class="has-dropdown">

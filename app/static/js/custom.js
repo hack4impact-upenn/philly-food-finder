@@ -22,6 +22,18 @@ $(document).ready(function() {
 		hideAll("-table", "expand-food-resource");
 	}); 
 
+	$(".required").each(function(index) {
+		var currentHtml = $(this).html(); 
+		currentHtml += "<div class='required-asterisk'>*</div>"; 
+		$(this).html(currentHtml);
+	});
+
+	$(".required-disclaimer").each(function(index) {
+		var currentHtml = $(this).html(); 
+		currentHtml = "<div class='required-asterisk'>*</div>" + currentHtml; 
+		$(this).html(currentHtml);
+	});
+
 	setColorBoxColor(); 
 
 	setPinImageSize();
@@ -361,7 +373,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					resource["name"] + 
 				'</div>' + 
 				'<div class="small-2 columns">' + 
-					'<a href="/edit/' + resource["id"] + '" ' + 
+					'<a href="/admin/edit/' + resource["id"] + '" ' + 
 						'class="food-resource-update-button">Edit</a>' + 
 				'</div>' + 
 				'<div class="small-2 columns">' + 
