@@ -596,7 +596,7 @@ def address_food_resources():
 	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
 
 @app.route('/_newmap')
-def address_food_resources():
+def initialize_food_resources():
 	resources = []
 	currentResource = FoodResource.query.all()
 	resources.append(currentResource)
