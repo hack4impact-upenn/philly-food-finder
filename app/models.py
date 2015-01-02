@@ -161,7 +161,6 @@ class FoodResource(db.Model):
 		lazy='select', uselist=True)
 	exceptions = db.Column(db.Text)
 	description = db.Column(db.Text)
-	location_type = db.Column(db.String(100))
 	food_resource_type_id = db.Column(db.Integer, 
 		db.ForeignKey('food_resource_type.id'))
 	address = db.relationship('Address', backref='food_resource', 
@@ -201,7 +200,6 @@ class FoodResource(db.Model):
 				[i.serialize_open_month_pair() for i in self.open_month_pairs],
 			'exceptions': self.exceptions, 
 			'description': self.description,
-			'location_type': self.location_type,
 			'address': self.address.serialize_address(),
 			'are_hours_available': self.are_hours_available, 
 			'timeslots': [i.serialize_timeslot(False) for i in self.timeslots], 

@@ -75,7 +75,7 @@
 							Resource Type:
 						</div>
 						<div class="small-9 columns">
-							{{ resource.food_resource_type.enum }}
+							{{ resource.food_resource_type.name_singular }}
 						</div>
 					</div>
 					<div class="row">
@@ -647,8 +647,7 @@
     				setIndividualNumResources(0, "{{ food_resource_type.hyphenated_id_plural }}");
     			}
     			else {
-    				totalNumResources += 
-    					foodResources.length; 
+    				totalNumResources += foodResources.length; 
     				var html = getResourcesHtml(
     					"{{ food_resource_type.hyphenated_id_plural }}", 
     					"{{ food_resource_type.name_plural }}", 

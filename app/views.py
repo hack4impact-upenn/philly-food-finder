@@ -229,7 +229,7 @@ def guest_new_food_resource():
 			contact = FoodResourceContact(name=guest_name, 
 				email=guest_email, phone_number=guest_phone_number)
 			db.session.add(contact)
-			db.session.commit()
+			#db.session.commit()
 
 		if form.are_hours_available.data == "yes":
 			are_hours_available = True
@@ -305,9 +305,15 @@ def guest_new_food_resource():
 				food_resource_type=food_resource_type, 
 				is_approved=False, 
 				food_resource_contact=contact)
+			food_resource.food_resource_type = food_resource_type
 
 			# Commit all database changes. 
 			db.session.add(food_resource)
+			db.session.add(food_resource_type)
+			fr = FoodResource.query.filter_by(name=form.name.data).first()
+			print "**********"
+			print fr.food_resource_type.name_singular
+			print "----------"
 			db.session.commit()
 			return redirect(url_for('post_guest_add'))
 
@@ -479,6 +485,10 @@ def invite_sent():
 def get_all_food_resource_data():
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_plural).all()
+	for food_resource_type in food_resource_types:
+		for food_resource in list(food_resource_type.food_resources):
+			if food_resource.is_approved == False:
+				food_resource_type.food_resources.remove(food_resource)
 
 	return jsonify(days_of_week=days_of_week, 
 		food_resource_types=[i.serialize_food_resource_type() for i in \
