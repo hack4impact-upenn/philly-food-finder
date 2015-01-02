@@ -9,16 +9,11 @@ from wtforms import TextField, TextAreaField, validators, PasswordField, \
     SelectField, FieldList, FormField
 from flask_user.forms import RegisterForm, unique_email_validator
 from flask_user.translations import lazy_gettext as _
+from app.utils import *
 
 class TimeSlotForm(Form):
     starts_at = SelectField(u'Opens at') 
     ends_at = SelectField(u'Closes at') 
-
-    #def get_start_time(self):
-        #return get_time_from_string
-
-    #def get_end_time(self):
-
 
 class IsOpenForm(Form):
     is_open = SelectField(u'Sunday', 
@@ -33,13 +28,7 @@ class MultiTimeSlotForm(Form):
 # Information about a new food resource. 
 class AddNewFoodResourceForm(Form):
     food_resource_id = TextField() # Invisible to user
-    location_type = SelectField(u'Food Resource Type', choices=[
-        ('FARMERS_MARKET', "Farmers' Market"), 
-        ('FOOD_CUPBOARD', 'Food Cupboard'),
-        ('SENIOR_MEAL', 'Senior Meals'),
-        ('SHARE', 'SHARE Host Site'), 
-        ('SOUP_KITCHEN', 'Soup Kitchen'),
-        ('WIC_OFFICE', 'WIC Office')])
+    location_type = SelectField(u'Food Resource Type')
     website = TextField(
         label = 'Food Resource Website', 
         validators = [
@@ -172,3 +161,43 @@ class InviteForm(RegisterForm):
             return False
 
         return True
+
+class AddNewFoodResourceTypeForm(Form):
+    id = TextField() # Hidden from user
+    name_singular = TextField(
+        label = 'Food Resource Type Name - Singular', 
+        validators = [
+            InputRequired("Please provide the singular version of the food \
+                resource type's name."),
+            Length(1, 200)
+        ]
+    )
+    name_plural = TextField(
+        label = 'Food Resource Type Name - Plural', 
+        validators = [
+            InputRequired("Please provide the plural version of the food \
+                resource type's name."),
+            Length(1, 200)
+        ]
+    )
+    color = SelectField(u'Food Resource Color')
+
+    def validate_name_singular(form, field):
+        name = field.data.lower()
+        underscored_id_singular = get_underscored_string(name)
+        existing_type = FoodResourceType.query \
+            .filter_by(underscored_id_singular=underscored_id_singular).first()
+        if (existing_type is not None) \
+            and (form.id.data is not existing_type.id):
+            raise ValidationError('Another food resource type already has this \
+                singular name. Singular names must be unique.')
+
+    def validate_name_plural(form, field):
+        name = field.data.lower()
+        underscored_name = get_underscored_string(name)
+        existing_type = FoodResourceType.query \
+            .filter_by(underscored_id_plural=underscored_name).first()
+        if existing_type is not None and form.id.data is not existing_type.id:
+            raise ValidationError('Another food resource type already has this \
+                plural name. Plural names must be unique.')
+

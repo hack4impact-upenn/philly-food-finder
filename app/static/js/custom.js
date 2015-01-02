@@ -22,8 +22,15 @@ $(document).ready(function() {
 		hideAll("-table", "expand-food-resource");
 	}); 
 
+	setColorBoxColor(); 
+
+	setPinImageSize();
+
 	// Remove a food resource without reloading page.
-	removeFoodResource(); 	
+	removeFoodResource();
+
+	// Remove a food resource type without reloading page.
+	removeFoodResourceType(); 	
 
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource table.
@@ -201,27 +208,62 @@ function showAll(idToShow, classToToggleExpandSymbol) {
 // If an "Expand" button is pressed, either show or hide the associated
 // food resource table.
 function toggleAdminFoodResourceTypeVisibility() {
-	$(".expand-food-resource-type").click(function() {
-		var id = $(this).attr('id');  
-		var prefix = "food-resource-type-expand-"; 
-		var start_index = prefix.length; 
-		var resource_type = id.substring(start_index); 
-		var table_to_expand = resource_type + "-table"; 		
-		toggleExpansion(table_to_expand, "expand-food-resource-type"); 
-	})
+	toggleTable("expand-food-resource-type", 
+		"food-resource-type-expand-", "-food-resource-type-table", 
+		"expand-food-resource-type");
 }
 
 // If an "Expand" button is pressed, either show or hide the associated
 // food resource information.
 function toggleAdminFoodResourceVisibility() {
-	$(".expand-food-resource").click(function() {
+	toggleTable("expand-food-resource", 
+		"food-resource-expand-", "-food-resource-table", 
+		"expand-food-resource");
+}
+
+function toggleTable(classThatIsClickedToTriggerExpansion, 
+	idPrefixThatIsClicked, tableIdToExpandSuffix, expandSymbolClass) {
+		$("." + classThatIsClickedToTriggerExpansion).click(function() {
 		var id = $(this).attr('id');  
-		var prefix = "food-resource-expand-"; 
+		var prefix = idPrefixThatIsClicked; 
 		var start_index = prefix.length; 
-		var resource_id = id.substring(start_index); 
-		var table_to_expand = "food-resource-" + resource_id + "-table"; 		
-		toggleExpansion(table_to_expand, "expand-food-resource"); 
+		var resource_type = id.substring(start_index); 
+		var table_to_expand = resource_type + tableIdToExpandSuffix; 		
+		toggleExpansion(table_to_expand, expandSymbolClass); 
 	}) 
+}
+
+function setColorBoxColor() {
+	$(".color-box").each(function(index) {
+		var id = $(this).attr('id');  
+		var prefix = "color-box-"
+		var start_index = prefix.length;
+		var color_hex = id.substring(start_index);
+		$(this).css('background', "#" + color_hex);
+	});
+}
+
+function setPinImageSize() {
+	$(".pin-image").each(function(index) {
+		$(this).find("img").css('width', "20px");
+		$(this).find("img").css('height', "auto");
+	});
+}
+
+function removeFoodResourceType() {
+	$("[id$='-remove-food-resource-type']").click(function() {
+		var id = $(this).attr('id');
+		var dashIndex = id.indexOf("-"); 
+		var foodResourceTypeId = id.substring(0, dashIndex); 
+		$.getJSON($SCRIPT_ROOT + '/_remove_food_resource_type', {
+        		id: foodResourceTypeId
+        	},
+        	function(data) {
+    			// Hide corresponding approved resource table.
+        		hide(foodResourceTypeId + "-food-resource-table");
+        		hide("food-resource-type-" + foodResourceTypeId);
+        	});  
+	});	
 }
 
 function removeFoodResource() {
@@ -236,7 +278,7 @@ function removeFoodResource() {
         		if (data["is_approved"]) {
         			// Hide corresponding approved resource table.
 	        		hide("food-resource-" + foodResourceId);
-	        		hide("food-resource-" + foodResourceId + "-table");
+	        		hide(foodResourceId + "-food-resource-table");
 	        		
 	        		// Reduce total number of food resources.
 	        		var currentNumResources = 
@@ -291,7 +333,7 @@ function clearTablesOfFoodResources() {
 
 function getNoResourcesHtml(resourceInfoId) {
 	var html = 
-	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">' +
+	'<div id="' + resourceInfoId + '-food-resource-type-table" class="admin-food-resource-type">' +
 		'<div class="no-resources-message">None to display.</div>' +
 	'</div>';
 	return html;
@@ -300,7 +342,8 @@ function getNoResourcesHtml(resourceInfoId) {
 function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural, 
 	resourcesArray, daysOfWeek) {
 	var html = 
-	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">';
+	'<div id="' + resourceInfoId + '-food-resource-type-table" ' + 
+		'class="admin-food-resource-type">';
 
 	// Iterate through all food resources in the array.
 	for (var i = 0; i < resourcesArray.length; i++) {
@@ -327,8 +370,8 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					'</div>' + 
 			'</div>' + 
 			'<!-- Resource content -->' +  
-			'<div class="row admin-food-resource" id="food-resource-'
-				+ resource["id"] + '-table">' + 
+			'<div class="row admin-food-resource" id="' + resource["id"] 
+				+ '-food-resource-table">' + 
 				'<div class="large-6 small-12 columns">' + 
 					'<div class="row">' + 
 						'<div class="small-3 columns">' + 
