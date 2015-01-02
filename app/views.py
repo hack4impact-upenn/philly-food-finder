@@ -692,3 +692,7 @@ def summer_meals():
 @app.route('/resources/seniors')
 def seniors():
 	return render_template('seniors_info.html', html_string = HTML.query.filter_by(page = 'seniors-info-page').first())
+
+@app.route('/files')
+def files():
+	return render_template('file_inputoutput.html')

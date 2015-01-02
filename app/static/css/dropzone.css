@@ -1,436 +1,4 @@
-
-/* #ef3d23 - red */
-/* #f8a11d - orange */
-/* #fdd800 - yellow */
-/* #009933 - green */
-/* #0f85c7 - blue */
-/* #84459b - purple */
-/* #343434 - black */
-/* #2D4FA0 - navy */ 
-/* #F7F9F9 - off white */
-/* #999999 - gray */
-
-
-/* background colors */
-/* some defaults */
-body {
-  background-color: #F7F9F9;
-  letter-spacing: .3px;
-}
-
-body#map_p {
-  background-color: #F7F9F9;
-}
-
-body#faq_p {
-  background-color: #009933;
-  color: #FFF;
-}
-
-body#about_p {
-  background-color: #f8a11d;
-}
-
-body#contact_p {
-  background-color: #fdd800;
-}
-
-body#resources_p {
-  background-color: #F7F9F9;
-  padding-bottom: 70%;
-}
-
-body#add_p {
-  background-color: #F7F9F9;
-}
-
-/* template: line */
-hr {
-  border: #343434;
-  background: #343434;
-  height: 0.5px; 
-  margin: 0.67em 50;
-}
-
-#editor1 {
-  font-weight: 300;
-  letter-spacing: .4px;
-  font-size: 1.275rem;
-}
-
-/* Food Resource Form */
-.page-header {
-  margin: 0.4em 50;
-  font-weight: 200;
-  text-transform: lowercase;
-  letter-spacing: 4px;
-  font-size: 1.875rem;
-}
-
-.content .p {
-  margin: 0.67em 50;
-  font-weight: 300;
-  letter-spacing: .4px;
-  font-size: 1.275rem;
-}
-
-label {
-  font-size: 1rem;
-  color: #343434;
-  font-weight: 400;
-}
-
-.row {
-  margin-top: 15px;
-}
-
-/* placeholder text */
-input:-ms-input-placeholder {
-  font-weight: 200;
-}
-
-input::-webkit-input-placeholder {
-  font-weight: 200;
-  letter-spacing: .2px;
-}
-
-input:-moz-placeholder {
-  font-weight: 200;
-}
-
-/* firefox 19+ */
-input::-moz-placeholder {
-  font-weight: 200;
-}
-
-/* Option boxes */
-#option-header {
-  font-weight: 200;
-}
-
-#option-title {
-  font-size: .875rem;
-  font-weight: 200;
-  letter-spacing: .2px;
-}
-
-#food-resources {
-  font-size: .875rem;
-}
-
-/* padding around submit button */
-#bottom-padding-section {
-  margin-bottom: 50px;
-  margin-top: 10px;
-}
-
-/* button styling */
-button, .button{
-  background-color: #FFF;
-  border-color: #666666;
-  color: #000;
-  opacity: 0.8;
-  
-}
-
-button:hover, button:focus, .button:hover, .button:focus {
-  background-color: #000;
-  color: #FFF;
-}
-
-button.radius, .button.radius {
-  margin-bottom: 100px;
-}
-
-/* HEADER - top-bar */
-
-.top-bar {
-  background: #FFF;
-  height: 70px;
-  opacity: 0.8;
-}
-
-.top-bar .name {
-  height: 70px;
-}
-
-.title-area {
-  background-color: #FFF;
-}
-
-.top-bar .name h1 {
-  padding: 10px;
-  font-weight: normal;
-  color: #2D4FA0;
-  background-color: #FFF;
-}
-
-.top-bar-section ul li {
-  background: #FFF;
-}
-
-.top-bar-section ul li>a {
-  display: inline-block;
-  width: 100%;
-  color: #2D4FA0;
-  font-size: 2rem;
-  font-weight: 200;
-  text-transform: none;
-  letter-spacing: 4px;
-  text-align: center;
-  margin-right: 10px;
-/*  margin-left: 10px;*/
-}
-
-/* buttons - not hover */
-.top-bar-section li:not(.has-form) a:not(.button) {
-  padding: 15 15;
-  line-height: 40px;  /* bar height */
-  background-color: #FFF;
-}
-
-.top-bar-section li:not(.has-form) a:not(.button):hover {
-  background-color: #FFF;
-  color: #FFF;
-}
-
-.top-bar-section ul li>a:hover {
-  background-color: #FFF;
-}
-
-.top-bar .toggle-topbar.menu-icon a {
-  color: #2D4FA0;
-}
-
-.top-bar.expanded {
-  background: #FFFFFF;
-}
-
-/* 3 lines for menu icon */
-.top-bar .toggle-topbar.menu-icon a span::after {
-  box-shadow: 0 0px  0 1px #2D4FA0,
-              0 7px  0 1px #2D4FA0,
-              0 14px 0 1px #2D4FA0;
-}
-
-/* each of the buttons*/
-#l_map:hover {
-  color: #0585C7;
-}
-
-#l_faq:hover {
-  color: #09ab4b;
-}
-
-#l_about:hover {
-  color: #f8a11d;
-}
-
-#l_contact:hover {
-  color: #fdd800;
-}
-
-#l_login:hover {
-  color: #ef3d23;
-}
-
-#l_admin:hover {
-  color: #ef3d23;
-}
-
-img {
-  height: 50;
-}
-
-#map {
-    display: inline-block;
-    width: 100%;
-    height: 70%;
-    margin-bottom: 1em;
-    border-style: solid;
-    border-color: #999999; /* gray */
-}
-
-#chart_div {
-    display: inline-block;
-    width: 100%;
-    height: 100%;
-    margin-bottom: 1em;
-}
-
-#table_div {
-    display: inline-block;
-    width: 100%;
-    height: 100%;
-    margin-bottom: 1em;
-}
-
-/* Display non-squashed map controls */
-.gmnoprint img {
-    max-width: none; 
-}
-
-/* header page-specific colors */
-#l_admin .page-header .top-bar-section ul li>a{
-  color: #FFF;
-}
-
-#FAQ-header {
-  color: #FFF;
-}
-
-#FAQ-line {
-  border: #FFF;
-  background: #FFF;
-}
-
-#map-header {
-  color: #0f85c7;
-}
-
-/* Edit Food Resources Page */
-#edit-resources-header {
-  color: #ef3d23;
-}
-
-.resource {
-  font-weight: 200;
-  letter-spacing: .2px;
-}
-
-.row .row {
-  margin: 10;
-}
-
-.resources {
-  background-color: #EEEEEE;
-  padding: 0;
-}
-
-table thead tr th, table thead tr td {
-  font-size: 0.9rem;
-  font-weight: 200;
-  color: #222222;
-  letter-spacing: .5px;
-}
-
-.block-header, 
-.block-header table {
-  color: #343434  ; /* black */
-  margin: 0em;
-  padding: 0em;
-}
-
-#farmers-markets-header table thead, 
-#farmers-markets-header table {
-  background-color: #fdd800; /* yellow */
-  border: none; 
-}
-
-#food-cupboards-header table thead, 
-#food-cupboards-header table {
-  background-color: #09ab4b; /* green */
-  border: none;
-}
-
-#senior-meals-header table thead, 
-#senior-meals-header table {
-  background-color: #0f85c7; /* blue */
-  border: none; 
-}
-
-#share-host-sites-header table thead, 
-#share-host-sites-header table {
-  background-color: #ef3d23; /* red */
-  border: none; 
-}
-
-#soup-kitchens-header table thead, 
-#soup-kitchens-header table {
-  background-color: #f8a11d; /* orange */
-  border: none; 
-}
-
-#wic-offices-header table thead, 
-#wic-offices-header table {
-  background-color: #84459b; /* purple */
-  border: none; 
-}
-
-.expand-food-resource-type:hover,
-.expand-food-resource:hover,
-.expand-food-resource-type-pending:hover,
-.expand-food-resource-pending:hover  {
-  cursor: pointer; 
-}
-
-.error {
-  text-transform:none;
-}
-
-.admin-food-resource {
-  background-color: #CCCCCC;
-}
-
-.food-resource-update-button {
-  color: #2D4FA0; /* navy */
-}
-
-.food-resource-update-button:hover {
-  cursor: pointer;
-  color: #2D4FA0; /* navy */
-}
-
-#expand-all-resources-button, 
-#collapse-all-resources-button, 
-#apply-filters-resources-button, 
-#clear-filters-resources-button, 
-#map-search-button, 
-#map-filter-button {
-  margin-bottom: 10px;
-}
-
-.no-resources-message {
-  font-style: italic;
-  font-size: 0.8em;
-  margin: 0.4em;
-  line-height: 1.2em; 
-}
-
-#filter-error {
-  color: #ef3d23; /* red */
-}
-
-input[type=checkbox] {
-  margin-left:10px;
-}
-display: block;
-.pin-definition {
-  margin-bottom: 1em;
-  text-transform: lowercase; 
-  color: #0f85c7; /* blue */
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-  letter-spacing: 1px;
-}
-
-.pin-definition img {
-  width: 20px;  
-  height: auto;
-}
-
-.total-num-resources {
-  display: inline;
-  font-weight: bold; 
-}
-
-.gapi-analytics-auth-styles-signinbutton {
-  margin-left: 33%;
-  margin-right: 50%;
-  width: 8em;
-}
-
-/* Dropzone styling */
-
+/* The MIT License */
 .dropzone,
 .dropzone *,
 .dropzone-previews,
@@ -439,33 +7,12 @@ display: block;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-/*.dropzone {
+.dropzone {
   position: relative;
   border: 1px solid rgba(0,0,0,0.08);
   background: rgba(0,0,0,0.02);
   padding: 1em;
-}*/
-.dropzone {
-  position: relative;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
-  background: #373d3f;
-  color: #fff;
-  text-align: center;
-  padding: 1em;
-  margin: 1% 5%;
-  min-height: 300px;
-  max-height: 300px;
-  transition: all ease 0.4s;
-  overflow: scroll;
-  overflow-x: hidden;
 }
-
-.dropzone:hover {
-  background: #484f52;
-  transition: all ease 0.4s;
-}
-
 .dropzone.dz-clickable {
   cursor: pointer;
 }
@@ -515,7 +62,6 @@ display: block;
 .dropzone-previews .dz-preview .dz-details .dz-filename {
   overflow: hidden;
   height: 100%;
-  color: #373d3f;
 }
 .dropzone .dz-preview .dz-details img,
 .dropzone-previews .dz-preview .dz-details img {
@@ -525,23 +71,13 @@ display: block;
   width: 100px;
   height: 100px;
 }
-/*.dropzone .dz-preview .dz-details .dz-size,
+.dropzone .dz-preview .dz-details .dz-size,
 .dropzone-previews .dz-preview .dz-details .dz-size {
   position: absolute;
   bottom: -28px;
   left: 3px;
   height: 28px;
   line-height: 28px;
-}*/
-.dropzone .dz-preview .dz-details .dz-size,
-.dropzone-previews .dz-preview .dz-details .dz-size {
-  padding-top: 0.1em;
-  bottom: -28px;
-  left: 3px;
-  height: 28px;
-  line-height: 28px;
-  text-align: center;
-  color: #373d3f;
 }
 .dropzone .dz-preview.dz-error .dz-error-mark,
 .dropzone-previews .dz-preview.dz-error .dz-error-mark {
@@ -634,6 +170,7 @@ display: block;
   -o-transition: opacity 0.3s ease-in-out;
   -ms-transition: opacity 0.3s ease-in-out;
   transition: opacity 0.3s ease-in-out;
+  background-image: url("../images/spritemap.png");
   background-repeat: no-repeat;
   background-position: 0 0;
   position: absolute;
@@ -646,6 +183,7 @@ display: block;
 }
 @media all and (-webkit-min-device-pixel-ratio:1.5),(min--moz-device-pixel-ratio:1.5),(-o-min-device-pixel-ratio:1.5/1),(min-device-pixel-ratio:1.5),(min-resolution:138dpi),(min-resolution:1.5dppx) {
   .dropzone .dz-default.dz-message {
+    background-image: url("../images/spritemap@2x.png");
     -webkit-background-size: 428px 406px;
     -moz-background-size: 428px 406px;
     background-size: 428px 406px;
@@ -714,6 +252,7 @@ display: block;
   -o-transition: opacity 0.4s ease-in-out;
   -ms-transition: opacity 0.4s ease-in-out;
   transition: opacity 0.4s ease-in-out;
+  background-image: url("../images/spritemap.png");
   background-repeat: no-repeat;
 }
 @media all and (-webkit-min-device-pixel-ratio:1.5),(min--moz-device-pixel-ratio:1.5),(-o-min-device-pixel-ratio:1.5/1),(min-device-pixel-ratio:1.5),(min-resolution:138dpi),(min-resolution:1.5dppx) {
@@ -721,6 +260,7 @@ display: block;
   .dropzone-previews .dz-preview .dz-error-mark,
   .dropzone .dz-preview .dz-success-mark,
   .dropzone-previews .dz-preview .dz-success-mark {
+    background-image: url("../images/spritemap@2x.png");
     -webkit-background-size: 428px 406px;
     -moz-background-size: 428px 406px;
     background-size: 428px 406px;
@@ -759,12 +299,14 @@ display: block;
   left: 0;
   width: 0%;
   height: 100%;
+  background-image: url("../images/spritemap.png");
   background-repeat: repeat-x;
   background-position: 0px -400px;
 }
 @media all and (-webkit-min-device-pixel-ratio:1.5),(min--moz-device-pixel-ratio:1.5),(-o-min-device-pixel-ratio:1.5/1),(min-device-pixel-ratio:1.5),(min-resolution:138dpi),(min-resolution:1.5dppx) {
   .dropzone .dz-preview .dz-progress .dz-upload,
   .dropzone-previews .dz-preview .dz-progress .dz-upload {
+    background-image: url("../images/spritemap@2x.png");
     -webkit-background-size: 428px 406px;
     -moz-background-size: 428px 406px;
     background-size: 428px 406px;
