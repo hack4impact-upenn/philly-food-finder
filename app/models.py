@@ -183,6 +183,7 @@ class FoodResource(db.Model):
 	is_approved = db.Column(db.Boolean(), default=True)
 	food_resource_contact_id = db.Column(db.Integer, 
 		db.ForeignKey('food_resource_contact.id'))
+	notes = db.Column(db.String(500))
 
 	def serialize_name_only(self):
 		return {

@@ -31,7 +31,14 @@
 	    <div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ form.name.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		      		<dd class="error">{{ form.name()|safe }}
 		            {% if field.errors %}
 		                {% for e in field.errors %}
@@ -49,7 +56,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ form.location_type.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.location_type()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -67,7 +81,14 @@
 	    <div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ form.address_line1.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.address_line1()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -85,7 +106,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ form.address_line2.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.address_line2()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -103,7 +131,14 @@
 		<div class="row">
 			<div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ form.address_city.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.address_city()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -121,7 +156,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ form.address_state.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.address_state()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -139,7 +181,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ form.address_zip_code.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.address_zip_code()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -157,7 +206,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ form.phone_number.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.phone_number()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -175,7 +231,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ form.website.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.website()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -200,7 +263,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>{{ form.are_hours_available.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.are_hours_available()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -282,7 +352,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered" id="top-padding-section">
-		      	<label>{{ form.additional_information.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.additional_information()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -299,7 +376,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered" id="top-padding-section">
-		      	<label>{{ form.is_for_family_and_children.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.is_for_family_and_children()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -316,7 +400,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered" id="top-padding-section">
-		      	<label>{{ form.is_for_seniors.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.is_for_seniors()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -333,7 +424,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered" id="top-padding-section">
-		      	<label>{{ form.is_wheelchair_accessible.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.is_wheelchair_accessible()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -350,7 +448,14 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered" id="top-padding-section">
-		      	<label>{{ form.is_accepts_snap.label }}
+		    {% if field.flags.required %}
+		      	<label>{{ field.label(class_='required') }}
+		    {% else %}
+				<label>{{ field.label }}
+		    {% endif %}
+		    		<div class="form-field-description">
+		      			{{ field.description }}
+		      		</div>
 		        	<dd class="error">{{ form.is_accepts_snap()|safe }}
 		        	{% if field.errors %}
 		                {% for e in field.errors %}
@@ -362,6 +467,15 @@
 		      	</label>
 		    </div>
 		</div>
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+				<div class="required-disclaimer">
+					Required fields.
+				</div>
+			</div>
+		</div>	
 
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered

@@ -19,8 +19,8 @@ import csv, time
 def index():
 	return render_template('base.html')
 
-@app.route('/new', methods=['GET', 'POST'])
-@app.route('/edit/<id>', methods=['GET', 'POST'])
+@app.route('/admin/new', methods=['GET', 'POST'])
+@app.route('/admin/edit/<id>', methods=['GET', 'POST'])
 @login_required
 def new(id=None):
 	form = AddNewFoodResourceForm(request.form)
@@ -60,7 +60,6 @@ def new(id=None):
 
 		# Data that can be directly retrieved from the database.
 		form.name.data = food_resource.name
-		form.location_type.data = food_resource.location_type
 		form.address_line1.data = food_resource.address.line1
 		form.address_line2.data = food_resource.address.line2
 		form.address_city.data = food_resource.address.city
@@ -306,7 +305,8 @@ def guest_new_food_resource():
 				are_hours_available=are_hours_available, 
 				food_resource_type=food_resource_type, 
 				is_approved=False, 
-				food_resource_contact=contact)
+				food_resource_contact=contact, 
+				notes=form.notes.data)
 			food_resource.food_resource_type = food_resource_type
 
 			# Commit all database changes. 
@@ -679,11 +679,6 @@ def analytics():
 	zip_codes_all = ZipSearch.query.order_by(ZipSearch.search_count.desc())
 	zip_codes_limit = zip_codes_all.limit(10)
 	return render_template('charts.html', zip_codes_all = zip_codes_all, zip_codes_limit = zip_codes_limit)
-
-@app.route('/faq')
-def faq():
-	return render_template('faq.html', 
-		html_string = HTML.query.filter_by(page = 'faq-page').first())
 
 @app.route('/contact')
 def contact():

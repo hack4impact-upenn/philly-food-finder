@@ -98,6 +98,18 @@
 					</div>
 					<div class="row">
 						<div class="small-3 columns">
+							Notes:
+						</div>
+						<div class="small-9 columns">
+							{% if resource.notes %}
+								{{ resource.notes }}
+							{% else %}
+								None.
+							{% endif %}
+						</div>
+					</div>
+					<div class="row">
+						<div class="small-3 columns">
 							Address:
 						</div>
 						<div class="small-9 columns">
