@@ -169,7 +169,7 @@ def filter_food_resources(list_to_filter, has_families_and_children_filter,
 			food_resource.is_accepts_snap == False:
 			list_to_filter.remove(food_resource)
 
-def import_file(file):
+def import_file(path):
 
 	# If there are errors, they will be returned to the user
 	errors = []
@@ -207,7 +207,7 @@ def import_file(file):
 			return False
 		return True
 
-	with open(file.filename, 'rU') as csvfile:
+	with open(path, 'rU') as csvfile:
 
 		spamreader = csv.reader(csvfile)
 		for i, row in enumerate(spamreader):

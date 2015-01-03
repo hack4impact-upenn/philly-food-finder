@@ -60,3 +60,4 @@ target/
 # Databases
 *.db
 .mydump.csv
+.csv_input.csv
