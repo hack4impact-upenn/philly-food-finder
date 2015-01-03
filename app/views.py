@@ -746,10 +746,12 @@ def files():
 @login_required
 def csv_input():
 	file = request.files['file']
+	path = '.csv_input.csv'
+	file.save(path)
 
 	if file:
 		try:
-			errors = import_file(file)
+			errors = import_file(path)
 		except Exception as e:
 			errors = [str(e)]
 
