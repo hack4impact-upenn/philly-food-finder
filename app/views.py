@@ -627,6 +627,8 @@ def save_search_query():
 def remove():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
+	if not food_resource:
+		return jsonify(message="something")
 
 	# Determine whether the food resource being removed is approved or pending.
 	# Needed for front-end update after food resource is removed.
