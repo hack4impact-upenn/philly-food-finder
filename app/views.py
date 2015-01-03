@@ -343,7 +343,7 @@ def admin():
 	contacts = FoodResourceContact.query.all()
 	for contact in contacts:
 		for food_resource in contact.food_resource:
-			#print food_resource.food_resource_type
+			print food_resource.food_resource_type
 			#print food_resource.food_resource_type.name_singular
 
 	return render_template('admin_resources.html', 
