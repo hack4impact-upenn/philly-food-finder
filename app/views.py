@@ -676,8 +676,9 @@ def about():
 @app.route('/admin/analytics')
 @login_required
 def analytics():
-	zip_codes_all = ZipSearch.query.order_by(ZipSearch.search_count.desc())
-	zip_codes_limit = zip_codes_all.limit(10)
+	zip_codes_all_query = ZipSearch.query.order_by(ZipSearch.search_count.desc())
+	zip_codes_all = ZipSearch.query.order_by(ZipSearch.search_count.desc()).all()
+	zip_codes_limit = zip_codes_all_query.limit(10)
 	return render_template('charts.html', zip_codes_all = zip_codes_all, zip_codes_limit = zip_codes_limit)
 
 @app.route('/contact')
@@ -702,7 +703,23 @@ def summer_meals():
 
 @app.route('/resources/seniors')
 def seniors():
-	return render_template('seniors_info.html', html_string = HTML.query.filter_by(page = 'seniors-info-page').first())
+	return render_template('seniors_info.html', 
+		html_string = HTML.query.filter_by(page = 'seniors-info-page').first())
+
+@app.route('/resources/farmers')
+def farmers():
+	return render_template('farmers_info.html', 
+		html_string = HTML.query.filter_by(page = 'farmers-info-page').first())
+
+@app.route('/resources/neighborhood')
+def neighborhood():
+	return render_template('neighborhood_info.html', 
+		html_string = HTML.query.filter_by(page = 'neighborhood-info-page').first())
+
+@app.route('/resources/share')
+def share():
+	return render_template('share_info.html', 
+		html_string = HTML.query.filter_by(page = 'share-info-page').first())
 
 @app.route('/admin/files')
 @login_required
@@ -718,7 +735,7 @@ def csv_input():
 		try:
 			errors = import_file(file)
 		except Exception as e:
-			errors = [e]
+			errors = [str(e)]
 
 		if errors is None or len(errors) is 0:
 			return jsonify(message = "success")
