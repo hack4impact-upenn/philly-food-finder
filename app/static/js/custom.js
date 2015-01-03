@@ -42,7 +42,7 @@ $(document).ready(function() {
 	onClickRemoveFoodResource();
 
 	// Remove a food resource type without reloading page.
-	removeFoodResourceType(); 	
+	onClickRemoveFoodResourceType(); 	
 
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource table.
@@ -262,20 +262,30 @@ function setPinImageSize() {
 	});
 }
 
-function removeFoodResourceType() {
+function onClickRemoveFoodResourceType() {
+	var foodResourceTypeToRemove = "";
 	$("[id$='-remove-food-resource-type']").click(function() {
-		var id = $(this).attr('id');
-		var dashIndex = id.indexOf("-"); 
-		var foodResourceTypeId = id.substring(0, dashIndex); 
-		$.getJSON($SCRIPT_ROOT + '/_remove_food_resource_type', {
-        		id: foodResourceTypeId
-        	},
-        	function(data) {
-    			// Hide corresponding approved resource table.
-        		hide(foodResourceTypeId + "-food-resource-table");
-        		hide("food-resource-type-" + foodResourceTypeId);
-        	});  
-	});	
+		foodResourceTypeToRemove = $(this);
+		console.log(foodResourceTypeToRemove); 
+		$(document).on('confirm', '.remodal', function () {
+		    removeFoodResourceType(foodResourceTypeToRemove);
+		});	
+	}); 
+}
+
+function removeFoodResourceType(element) {
+	var id = element.attr('id');
+	var dashIndex = id.indexOf("-"); 
+	var foodResourceTypeId = id.substring(0, dashIndex); 
+	$.getJSON($SCRIPT_ROOT + '/_remove_food_resource_type', {
+    		id: foodResourceTypeId
+    	},
+    	function(data) {
+			// Hide corresponding approved resource table.
+    		hide(foodResourceTypeId + "-food-resource-table");
+    		hide("food-resource-type-" + foodResourceTypeId);
+    	}
+    );  	
 }
 
 function removeFoodResource(element) {
@@ -332,7 +342,6 @@ function onClickRemoveFoodResource() {
 		    removeFoodResource(foodResourceToRemove);
 		});	
 	}); 
-	
 }
 
 function setTotalNumResources(num) {
