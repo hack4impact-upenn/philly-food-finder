@@ -717,6 +717,7 @@ def files():
 @login_required
 def csv_input():
 	file = request.files['file']
+
 	if file:
 		try:
 			errors = import_file(file)
