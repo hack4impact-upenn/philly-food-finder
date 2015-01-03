@@ -718,8 +718,20 @@ def files():
 def csv_input():
 	file = request.files['file']
 	if file:
-		import_file(file)
-		return jsonify(message = "success")
+		try:
+			errors = import_file(file)
+		except Exception as e:
+			errors = [e]
+
+		if errors is None or len(errors) is 0:
+			return jsonify(message = "success")
+		else:
+			response = jsonify({
+        		'status': 500,
+        		'errors': errors
+    		})
+    		response.status_code = 500
+    		return response
 
 @app.route('/_csv_download')
 @login_required

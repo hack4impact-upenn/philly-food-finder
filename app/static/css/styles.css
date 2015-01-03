@@ -404,6 +404,10 @@ display: block;
   height: auto;
 }
 
+li {
+  text-align: left;
+}
+
 /* Dropzone styling */
 
 .dropzone,

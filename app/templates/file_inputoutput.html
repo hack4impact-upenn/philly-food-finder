@@ -3,41 +3,61 @@
 {% block content %}
 
 <body id = "files_p">
-	<div class="row">
-    	<h1 class="page-header">Mass Data Input And Output</h1>
-     	<hr align="center">
-  	</div>
-  	<div class="row">
-    	<h2 class="text-center">Resource Data Output</h2>
-    	<div class="row">
-    		<p>All Food Resource data in the database can be downloaded as a csv. This csv will be formatted precisely like the sample below.</p>
-    	</div>
-    	<div class="row">
-			<a role="button" href="{{ url_for('download') }}" class="button button radius medium" id="download-button">Download</a>
-		</div> 
-  	</div>
-  	<div class="row">
-    	<h2 class="text-center">Resource Data Input</h2>
-    	<div class="row">
-	    	<p> It is very important that the csv you import exactly matches the expected format. Please click the download button below to download the import csv. The instructions in this csv must be followed precisely. Do not change the formatting of this csv in any way.</p>
-    	</div>
-    	<div class="row">
-	    	<p>The import csv looks like this. Please input data exactly like in the sample below.</p>
+	<div class="remodal-bg">
+		<div class="row">
+	    	<h1 class="page-header">Mass Data Input And Output</h1>
+	     	<hr align="center">
+	  	</div>
+	  	<div class="row">
+	    	<h2 class="text-center">Resource Data Output</h2>
+	    	<div class="row">
+	    		<p>All Food Resource data in the database can be downloaded as a csv. This csv will be formatted precisely like the sample below.</p>
+	    	</div>
+	    	<div class="row">
+				<a role="button" href="{{ url_for('download') }}" class="button button radius medium" id="download-button">Download</a>
+			</div> 
+	  	</div>
+	  	<div class="row">
+	    	<h2 class="text-center">Resource Data Input</h2>
+	    	<div class="row">
+		    	<p> It is very important that the csv you import exactly matches the expected format. Please click the download button below to download the import csv. The instructions in this csv must be followed precisely. Do not change the formatting of this csv in any way.</p>
+	    	</div>
+	    	<div class="row">
+		    	<p>The import csv looks like this. Please input data exactly like in the sample below.</p>
+		    </div>
+	    	<div class="row">
+	    		<div id="sample_table_div"></div>
+	  		</div>
+	  		<a role="button" href="https://docs.google.com/uc?authuser=0&id=0B1JCetguAr9fcFF3Mjh2ckhNWWs&export=download" class="button button radius medium" id="sample-download-button">Download Input CSV</a>
+	    	<a role="button" href="https://drive.google.com/file/d/0B1JCetguAr9fcFF3Mjh2ckhNWWs/view?usp=sharing" class="button button radius medium" id="sample-download-button">View Input CSV</a>
+	  	</div>
+		<div class="row">
+			<form action="/_csv_input"
+				  class="dropzone"
+				  id="my-awesome-dropzone"></form>
+		</div>	  
+		<div class="row">
+			<div class="button radius medium" id="upload-button">Upload</div>  
+		</div>  
+	</div>
+
+	<div class="remodal" id="error-modal" data-remodal-id="error-modal" data-remodal-options="hashTracking: false">
+	    <h1>Error</h1>
+	    <p>
+	      We had some trouble importing your csv. Please read the list of errors below and try again.
+	    </p>
+	    <div id="modal-error-list">
 	    </div>
-    	<div class="row">
-    		<div id="sample_table_div"></div>
-  		</div>
-  		<a role="button" href="https://docs.google.com/uc?authuser=0&id=0B1JCetguAr9fcFF3Mjh2ckhNWWs&export=download" class="button button radius medium" id="sample-download-button">Download Input CSV</a>
-    	<a role="button" href="https://drive.google.com/file/d/0B1JCetguAr9fcFF3Mjh2ckhNWWs/view?usp=sharing" class="button button radius medium" id="sample-download-button">View Input CSV</a>
-  	</div>
-	<div class="row">
-		<form action="/_csv_input"
-			  class="dropzone"
-			  id="my-awesome-dropzone"></form>
-	</div>	  
-	<div class="row">
-		<div class="button radius medium" id="upload-button" >Upload</div>  
-	</div>    
+	    <br>
+	    <a class="remodal-confirm" href="#">Try Again</a>
+	</div> 
+
+	<div class="remodal" id="success-modal" data-remodal-id="success-modal" data-remodal-options="hashTracking: false">
+	    <h1>Import Successful</h1>
+	    <p>
+	      Your resources were successfully imported! You are being redirected to the admin page.
+	    </p>
+	</div>   
 
 </body>
 
@@ -88,12 +108,40 @@ Dropzone.options.myAwesomeDropzone = {
   autoProcessQueue: false,
   dictDefaultMessage: "DROP OR CLICK HERE TO IMPORT A SINGLE CSV",
   init: function() {
-    this.on("success", function(file, response) { 
-    	window.location = "{{ url_for('admin') }}";
+    this.on("success", function(file, response) {
+    	var inst = $.remodal.lookup[$('[data-remodal-id=success-modal]').data('remodal')];
+
+        // open the success modal
+        inst.open();
+
+    	window.setTimeout(function(){
+        	window.location = "{{ url_for('admin') }}";
+    	}, 5000);
     });
 
     this.on("error", function(file, errorMessage) { 
-    	console.log(errorMessage); 
+    	var inst = $.remodal.lookup[$('[data-remodal-id=error-modal]').data('remodal')];
+
+        // open the error modal
+        inst.open();
+
+        // print errors on error modal
+        var htmlString = '<ul>'
+
+        for(i = 0; i < errorMessage.errors.length; i++) {
+        	htmlString += '<li>'+errorMessage.errors[i]+'</li>';
+        }
+
+        htmlString += '</ul>';
+
+        $('#modal-error-list').html(htmlString);
+
+		// when modal is closed, redirect to files page
+		$(document).on('close', '#error-modal', function () {
+		    console.log('close');
+		    window.location = "{{ url_for('files') }}";
+		});
+
     });
   },
 
