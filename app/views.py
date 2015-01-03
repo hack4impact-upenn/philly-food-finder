@@ -10,6 +10,7 @@ from variables import *
 from datetime import time
 from utils import generate_password, import_file
 from flask_user import login_required, signals
+from flask_user.emails import send_email
 from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
 from tempfile import NamedTemporaryFile
@@ -342,7 +343,7 @@ def admin():
 	contacts = FoodResourceContact.query.all()
 	for contact in contacts:
 		for food_resource in contact.food_resource:
-			print food_resource.food_resource_type
+			#print food_resource.food_resource_type
 			#print food_resource.food_resource_type.name_singular
 
 	return render_template('admin_resources.html', 
@@ -634,9 +635,17 @@ def remove():
 	if (food_resource.is_approved):
 		is_approved = True
 
+	contact = food_resource.food_resource_contact
+
+	if contact and contact.email:
+		send_email(recipient = contact.email, subject = food_resource.name+' has been rejected',
+			html_message = 'Dear '+contact.name+', \
+			<p>Your proposed resource <b>'+food_resource.name+ '</b> was rejected. Please contact an admin to find out why.</p><br> \
+			Sincerely,<br>'+app.config['USER_APP_NAME'],
+			text_message = 'Your proposed resource '+food_resource.name+ ' was rejected. Please contact an admin to find out why.')
+
 	# If the food resource has a contact and its contact has submitted no other 
 	# food resources to the database, remove him/her from the database.
-	contact = food_resource.food_resource_contact
 	if contact and len(contact.food_resource) <= 1:
 		db.session.delete(contact)
 
@@ -658,6 +667,13 @@ def approve():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
 	contact = food_resource.food_resource_contact
+
+	if contact.email:
+		send_email(recipient = contact.email, subject = food_resource.name+' has been approved',
+			html_message = 'Dear '+contact.name+',\
+			<p>Good news! Your proposed resource <b>'+food_resource.name+ '</b> was approved. Thanks so much!</p><br> \
+			Sincerely,<br>'+app.config['USER_APP_NAME'],
+			text_message = 'Good news! Your proposed resource '+food_resource.name+ ' was approved. Thanks so much!')
 
 	if len(contact.food_resource) <= 1:
 		db.session.delete(contact)
@@ -741,11 +757,11 @@ def csv_input():
 			return jsonify(message = "success")
 		else:
 			response = jsonify({
-        		'status': 500,
-        		'errors': errors
-    		})
-    		response.status_code = 500
-    		return response
+				'status': 500,
+				'errors': errors
+			})
+			response.status_code = 500
+			return response
 
 @app.route('/_csv_download')
 @login_required
