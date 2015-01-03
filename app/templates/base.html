@@ -4,6 +4,7 @@
     <!-- CSS -->
     <link href="{{ url_for('static', filename='css/foundation.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/jquery.remodal.css') }}" rel="stylesheet" type="text/css">
     <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
     <script type="text/javascript" 
@@ -11,8 +12,11 @@
     <script src="{{ url_for('static', filename='js/gmaps.js') }}"></script>
     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
     <script src="{{ url_for('static', filename='js/ckeditor/ckeditor.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dropzone.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.remodal.min.js') }}"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
    
-    <!-- JavaScript -->
+   
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Don't launch the Foundation JS until the DOM has loaded -->
@@ -88,6 +92,7 @@
                   <li><a href="{{ url_for('view_food_resource_types') }}">Manage Food Resource Types</a></li>
                   <li><a href="{{ url_for('new_food_resource_type') }}">Add Food Resource Type</a></li>
                   <li><a href="{{ url_for('user.register') }}">Invite Admins</a></li>
+                  <li><a href="{{ url_for('files') }}">Bulk Import and Output</a></li>
                   <li><a href="{{ url_for('analytics') }}">Admin Analytics</a></li>
                   <li><a href="{{ url_for('user.change_password') }}">Change Password</a></li>
                 </ul>

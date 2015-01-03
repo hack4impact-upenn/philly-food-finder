@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<body id = "files_p">
+	<div class="remodal-bg">
+		<div class="row">
+	    	<h1 class="page-header">Bulk Import and Output</h1>
+	     	<hr align="center">
+	  	</div>
+	  	<div class="row">
+	    	<h2 class="text-center">Resource Data Output</h2>
+	    	<div class="row">
+	    		<p>All Food Resource data in the database can be downloaded as a csv. This csv will be formatted precisely like the sample below.</p>
+	    	</div>
+	    	<div class="row">
+				<a role="button" href="{{ url_for('download') }}" class="button button radius medium" id="download-button">Download</a>
+			</div> 
+	  	</div>
+	  	<div class="row">
+	    	<h2 class="text-center">Resource Data Import</h2>
+	    	<div class="row">
+		    	<p> It is very important that the csv you import exactly matches the expected format. Please click the download button below to download the import csv. The instructions in this csv must be followed precisely. Do not change the formatting of this csv in any way.</p>
+	    	</div>
+	    	<div class="row">
+		    	<p>The import csv looks like this. Please input data exactly like in the sample below.</p>
+		    </div>
+	    	<div class="row">
+	    		<div id="sample_table_div"></div>
+	  		</div>
+	  		<a role="button" href="https://docs.google.com/uc?authuser=0&id=0B1JCetguAr9fcFF3Mjh2ckhNWWs&export=download" class="button button radius medium" id="sample-download-button">Download Import CSV</a>
+	    	<a role="button" href="https://drive.google.com/file/d/0B1JCetguAr9fcFF3Mjh2ckhNWWs/view?usp=sharing" class="button button radius medium" id="sample-download-button">View Import CSV</a>
+	  	</div>
+		<div class="row">
+			<form action="/_csv_input"
+				  class="dropzone"
+				  id="my-awesome-dropzone"></form>
+		</div>	  
+		<div class="row">
+			<div class="button radius medium" id="upload-button">Upload</div>  
+		</div>  
+	</div>
+
+	<div class="remodal" id="error-modal" data-remodal-id="error-modal" data-remodal-options="hashTracking: false">
+	    <h1>Error</h1>
+	    <p>
+	      We had some trouble importing your csv. Please read the list of errors below and try again.
+	    </p>
+	    <div id="modal-error-list">
+	    </div>
+	    <br>
+	    <a class="remodal-confirm" href="#">Try Again</a>
+	</div> 
+
+	<div class="remodal" id="success-modal" data-remodal-id="success-modal" data-remodal-options="hashTracking: false">
+	    <h1>Import Successful</h1>
+	    <p>
+	      Your resources were successfully imported! You are being redirected to the admin page.
+	    </p>
+	</div>   
+
+</body>
+
+<script type="text/javascript">
+    google.load("visualization", "1", {packages:["table"]});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+
+      var tableData = google.visualization.arrayToDataTable([
+      		['Table 1','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','',''],
+          ['','Type (SHARE_HOST_SITE, FARMERS_MARKET, FOOD_CUPBOARD, SENIOR_MEAL, SOUP_KITCHEN,  WIC_OFFICE, or new type already added by an admin)',
+			'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 'State', 'Zip Code', 'Phone Number (optional)', 
+			'Website (optional)', 'Description (optional)', 'Families and children? (either \'Yes\' or leave blank)', 
+			'Seniors? (either \'Yes\' or leave blank)', 'Wheelchair accessible? (either \'Yes\' or leave blank)', 
+			'Accepts SNAP? (either \'Yes\' or leave blank)', 'Accepts FMNP Vouchers? (either \'Yes\' or leave blank)', 
+			'Accepts Philly Food Bucks? (either \'Yes\' or leave blank)', 'Hours Available? (either \'Yes\' or leave blank)', 
+			'Open Sunday? (either \'Yes\' or leave blank)', 'Open Monday? (either \'Yes\' or leave blank)', 
+			'Open Tuesday? (either \'Yes\' or leave blank)',	'Open Wednesday? (either \'Yes\' or leave blank)', 
+			'Open Thursday? (either \'Yes\' or leave blank)', 'Open Friday? (either \'Yes\' or leave blank)', 
+			'Open Saturday? (either \'Yes\' or leave blank)', 'Sunday Opening Time (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time (military time - e.g., 8:00 or 17:00)', 'Monday Opening Time (military time - e.g., 8:00 or 17:00)', 
+			'Monday Closing Time (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time (military time - e.g., 8:00 or 17:00)', 'Tuesday Closing Time (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Opening Time (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Closing Time (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time (military time - e.g., 8:00 or 17:00)', 'Thursday Closing Time (military time - e.g., 8:00 or 17:00)', 'Friday Opening Time (military time - e.g., 8:00 or 17:00)', 'Friday Closing Time (military time - e.g., 8:00 or 17:00)', 'Saturday Opening Time (military time - e.g., 8:00 or 17:00)', 'Saturday Closing Time (military time - e.g., 8:00 or 17:00)'],
+			['1','FARMERS_MARKET','Fair Food Farmstand', '51 N. 12th St', 'Reading Terminal Market', 'Philadelphia', 'PA', '19107', '', '', 'Open year round', '', '', '', 'Yes', '', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes',	'Yes', 'Yes', 'Yes', 'Yes', '9:00','17:00', '8:00', '18:00', '8:00', '18:00','8:00', '18:00', '8:00', '18:00', '8:00', '18:00', '8:00', '18:00'],  
+        ]);
+
+      var tableOptions = {
+        alternatingRowStyle: true,
+        sort: 'disable',
+        width: '100%',
+      };
+
+      var table = new google.visualization.Table(document.getElementById('sample_table_div'));
+      table.draw(tableData, tableOptions);
+    }
+</script>
+
+<script>
+// Config dropzone
+Dropzone.options.myAwesomeDropzone = {
+  paramName: "file", 
+  addRemoveLinks: true,
+  maxFiles: 1,
+  acceptedFiles: ".csv",
+  autoProcessQueue: false,
+  dictDefaultMessage: "DROP OR CLICK HERE TO IMPORT A SINGLE CSV",
+  init: function() {
+    this.on("success", function(file, response) {
+    	var inst = $.remodal.lookup[$('[data-remodal-id=success-modal]').data('remodal')];
+
+        // open the success modal
+        inst.open();
+
+    	window.setTimeout(function(){
+        	window.location = "{{ url_for('admin') }}";
+    	}, 5000);
+    });
+
+    this.on("error", function(file, errorMessage) { 
+    	var inst = $.remodal.lookup[$('[data-remodal-id=error-modal]').data('remodal')];
+
+        // open the error modal
+        inst.open();
+
+        // print errors on error modal
+        var htmlString = '<ul>'
+
+        for(i = 0; i < errorMessage.errors.length; i++) {
+        	htmlString += '<li>'+errorMessage.errors[i]+'</li>';
+        }
+
+        htmlString += '</ul>';
+
+        $('#modal-error-list').html(htmlString);
+
+		// when modal is closed, redirect to files page
+		$(document).on('close', '#error-modal', function () {
+		    console.log('close');
+		    window.location = "{{ url_for('files') }}";
+		});
+
+    });
+  },
+
+
+};
+
+$("#upload-button").click(function() {
+	var dropzone = Dropzone.forElement("#my-awesome-dropzone");
+	dropzone.processQueue();
+});
+
+</script>
+
+{% endblock %}

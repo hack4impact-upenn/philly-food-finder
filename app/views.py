@@ -3,15 +3,17 @@ from utils import *
 from models import *
 from forms import *
 from flask import render_template, flash, redirect, session, url_for, request, \
-	g, jsonify, current_app
+	g, jsonify, current_app, Response
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import *
 from datetime import time
-from utils import generate_password
+from utils import generate_password, import_file
 from flask_user import login_required, signals
 from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
+from tempfile import NamedTemporaryFile
+import csv, time
 
 @app.route('/')
 def index():
@@ -170,7 +172,7 @@ def new(id=None):
 				is_for_family_and_children = \
 					form.is_for_family_and_children.data,
 				is_for_seniors = form.is_for_seniors.data,
-				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
+				is_wheelchair_accessible = form.is_wheelchair_accessible.data,  
 				is_accepts_snap = form.is_accepts_snap.data, 
 				are_hours_available = are_hours_available,
 				food_resource_type = food_resource_type)
@@ -402,7 +404,7 @@ def invite():
 				user_fields['is_active'] = True
 
 		# For all form fields
-		for field_name, field_value in register_form.data.items():	
+		for field_name, field_value in register_form.data.items():  
 			# Store corresponding Form fields into the User object and/or UserProfile object
 			if field_name in user_class_fields:
 				user_fields[field_name] = field_value
@@ -478,10 +480,12 @@ def invite():
 			register_form=register_form)
 
 @app.route('/_invite_sent')
+@login_required
 def invite_sent():
 	return render_template('invite_sent.html')
 
 @app.route("/_admin_remove_filters")
+@login_required
 def get_all_food_resource_data():
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_plural).all()
@@ -495,6 +499,7 @@ def get_all_food_resource_data():
 			food_resource_types])
 
 @app.route('/_admin_apply_filters')
+@login_required
 def get_filtered_food_resource_data():
 	# Collect boolean paramaters passed via JSON.
 	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
@@ -570,6 +575,7 @@ def address_food_resources():
 	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
 
 @app.route('/_edit', methods=['GET', 'POST'])
+@login_required
 def save_page():
 	data = request.form.get('edit_data')
 	name = request.form.get('page_name')
@@ -617,6 +623,7 @@ def save_search_query():
 	return 'Recorded a search for' + zip_code
 
 @app.route('/_remove')
+@login_required
 def remove():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
@@ -646,6 +653,7 @@ def remove():
 	return jsonify(is_approved=is_approved)
 
 @app.route('/_approve')
+@login_required
 def approve():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
@@ -694,8 +702,105 @@ def summer_meals():
 
 @app.route('/resources/seniors')
 def seniors():
-	return render_template('seniors_info.html', 
-		html_string = HTML.query.filter_by(page = 'seniors-info-page').first())
+	return render_template('seniors_info.html', html_string = HTML.query.filter_by(page = 'seniors-info-page').first())
+
+@app.route('/admin/files')
+@login_required
+def files():
+	return render_template('file_inputoutput.html')
+
+@app.route('/_csv_input', methods=['GET', 'POST'])
+@login_required
+def csv_input():
+	file = request.files['file']
+
+	if file:
+		try:
+			errors = import_file(file)
+		except Exception as e:
+			errors = [e]
+
+		if errors is None or len(errors) is 0:
+			return jsonify(message = "success")
+		else:
+			response = jsonify({
+        		'status': 500,
+        		'errors': errors
+    		})
+    		response.status_code = 500
+    		return response
+
+@app.route('/_csv_download')
+@login_required
+def download():
+	outfile = open('.mydump.csv', 'wb')
+	outcsv = csv.writer(outfile)
+
+	resources = FoodResource.query.filter_by(is_approved = True).all()
+
+	outcsv.writerow(['Table 1'])
+	outcsv.writerow(['','Type (SHARE_HOST_SITE, FARMERS_MARKET, FOOD_CUPBOARD, SENIOR_MEAL, SOUP_KITCHEN, or WIC_OFFICE)',
+	 'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 'State', 'Zip Code', 'Phone Number (optional)', 
+	 'Website (optional)', 'Description (optional)', 'Families and children? (either \'Yes\' or leave blank)', 
+	 'Seniors? (either \'Yes\' or leave blank)', 'Wheelchair accessible? (either \'Yes\' or leave blank)', 
+	 'Accepts SNAP? (either \'Yes\' or leave blank)', 'Accepts FMNP Vouchers? (either \'Yes\' or leave blank)', 
+	 'Accepts Philly Food Bucks? (either \'Yes\' or leave blank)', 'Hours Available? (either \'Yes\' or leave blank)', 
+	 'Open Sunday? (either \'Yes\' or leave blank)', 'Open Monday? (either \'Yes\' or leave blank)', 
+	 'Open Tuesday? (either \'Yes\' or leave blank)',	'Open Wednesday? (either \'Yes\' or leave blank)', 
+	 'Open Thursday? (either \'Yes\' or leave blank)', 'Open Friday? (either \'Yes\' or leave blank)', 
+	 'Open Saturday? (either \'Yes\' or leave blank)', 'Sunday Opening Time (military time - e.g., 8:00 or 17:00)',
+	 'Sunday Closing Time (military time - e.g., 8:00 or 17:00)', 'Monday Opening Time (military time - e.g., 8:00 or 17:00)', 
+	 'Monday Closing Time (military time - e.g., 8:00 or 17:00)', 
+	 'Tuesday Opening Time (military time - e.g., 8:00 or 17:00)', 'Tuesday Closing Time (military time - e.g., 8:00 or 17:00)',
+	 'Wednesday Opening Time (military time - e.g., 8:00 or 17:00)', 
+	 'Wednesday Closing Time (military time - e.g., 8:00 or 17:00)', 
+	 'Thursday Opening Time (military time - e.g., 8:00 or 17:00)', 'Thursday Closing Time (military time - e.g., 8:00 or 17:00)', 
+	 'Friday Opening Time (military time - e.g., 8:00 or 17:00)', 'Friday Closing Time (military time - e.g., 8:00 or 17:00)', 
+	 'Saturday Opening Time (military time - e.g., 8:00 or 17:00)', 'Saturday Closing Time (military time - e.g., 8:00 or 17:00)'])
+	
+	def does_timeslot_exist(timeslots, index):
+		try:
+			return (timeslots[index] is not None)
+		except IndexError:
+			return False
+
+	row_counter = 1
+	for resource in resources:
+		timeslots = resource.timeslots
+		outcsv.writerow([row_counter,'insert fancy enum code here', resource.name, resource.address.line1, resource.address.line2, 
+			resource.address.city, resource.address.state, resource.address.zip_code, resource.phone_numbers[0].number, 
+			resource.url, resource.description, 'Yes' if resource.is_for_family_and_children else '', 
+			'Yes' if resource.is_for_seniors else '', 'Yes' if resource.is_wheelchair_accessible else '', 
+			'Yes' if resource.is_accepts_snap else '', 'Accepts FMNP Vouchers?', 'Accepts Philly Food Bucks?', 
+			'Yes' if resource.are_hours_available else '', 'Yes' if does_timeslot_exist(timeslots, 0) else '', 
+			'Yes' if does_timeslot_exist(timeslots, 1) else '', 'Yes' if does_timeslot_exist(timeslots, 2) else '', 
+			'Yes' if does_timeslot_exist(timeslots, 3) else '', 'Yes' if does_timeslot_exist(timeslots, 4) else '', 
+			'Yes' if does_timeslot_exist(timeslots, 5) else '', 'Yes' if does_timeslot_exist(timeslots, 6) else '', 
+			timeslots[0].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 0) else '', 
+			timeslots[0].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 0) else '', 
+			timeslots[1].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 1) else '', 
+			timeslots[1].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 1) else '', 
+			timeslots[2].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 2) else '', 
+			timeslots[2].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 2) else '', 
+			timeslots[3].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 3) else '', 
+			timeslots[3].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 3) else '', 
+			timeslots[4].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 4) else '', 
+			timeslots[4].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 4) else '', 
+			timeslots[5].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 5) else '', 
+			timeslots[5].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 5) else '', 
+			timeslots[6].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 6) else '', 
+			timeslots[6].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 6) else ''])
+		row_counter = row_counter + 1
+
+	def generate():
+		with open('.mydump.csv', 'rb') as f:
+			for line in f:
+				yield line
+	
+	response = Response(generate(), mimetype='text/csv')
+	filename = 'resources_generated_at_' + str(datetime.now()) + '.csv'
+	response.headers["Content-Disposition"] = "attachment; filename="+filename
+	return response
 
 @app.route('/admin/food-resource-types')
 @login_required
