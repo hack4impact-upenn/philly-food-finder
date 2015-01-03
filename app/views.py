@@ -776,7 +776,7 @@ def download():
 	resources = FoodResource.query.filter_by(is_approved = True).all()
 
 	outcsv.writerow(['Table 1'])
-	outcsv.writerow(['','Type (SHARE_HOST_SITE, FARMERS_MARKET, FOOD_CUPBOARD, SENIOR_MEAL, SOUP_KITCHEN, or WIC_OFFICE)',
+	outcsv.writerow(['','Type (' + get_string_of_all_food_resource_types() + ')',
 	 'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 'State', 'Zip Code', 'Phone Number (optional)', 
 	 'Website (optional)', 'Description (optional)', 'Families and children? (either \'Yes\' or leave blank)', 
 	 'Seniors? (either \'Yes\' or leave blank)', 'Wheelchair accessible? (either \'Yes\' or leave blank)', 
