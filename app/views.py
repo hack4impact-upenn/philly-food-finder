@@ -767,7 +767,7 @@ def download():
 	row_counter = 1
 	for resource in resources:
 		timeslots = resource.timeslots
-		outcsv.writerow([row_counter,'insert fancy enum code here', resource.name, resource.address.line1, resource.address.line2, 
+		outcsv.writerow([row_counter,resource.food_resource_type.enum, resource.name, resource.address.line1, resource.address.line2, 
 			resource.address.city, resource.address.state, resource.address.zip_code, resource.phone_numbers[0].number, 
 			resource.url, resource.description, 'Yes' if resource.is_for_family_and_children else '', 
 			'Yes' if resource.is_for_seniors else '', 'Yes' if resource.is_wheelchair_accessible else '', 
