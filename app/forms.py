@@ -23,7 +23,7 @@ class IsOpenForm(Form):
         is_open.label = label
 
 class MultiTimeSlotForm(Form):
-    timeslots = FieldList(FormField(TimeSlotForm), min_entries=1)
+    timeslots = FieldList(FormField(TimeSlotForm), min_entries=10, max_entries=10)
 
 # Information about a new food resource. 
 class AddNewFoodResourceForm(Form):

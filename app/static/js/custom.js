@@ -361,6 +361,38 @@ function clearTablesOfFoodResources() {
 	$(".expand-food-resource-type").html("+");
 }
 
+/*function getTimeslotHtml(dayOfWeekIndex, timeslotIndex) {
+	var html = 
+	'<div class="row" id="daily_timeslots-' + dayOfWeekIndex + '-timeslots-' + timeslotIndex '">
+		'<div class="large-6 small-6 columns" id="middle-padding-section">
+			'<label>{{ timeslot_form.starts_at.label }}
+				<dd class="error">{{ timeslot_form.starts_at()|safe }}
+				{% if timeslot_form.starts_at.errors %}
+					{% for e in timeslot_form.starts_at.errors %}
+						{% if e %}
+							<small class="error">{{ e }}</small>
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+				</dd>
+			</label>
+		</div>
+		<div class="large-6 small-6 columns" id="middle-padding-section">
+			<label>{{ timeslot_form.ends_at.label }}
+				<dd class="error">{{ timeslot_form.ends_at()|safe }}
+				{% if timeslot_form.ends_at.errors %}
+					{% for e in timeslot_form.ends_at.errors %}
+						{% if e %}
+							<small class="error">{{ e }}</small>
+						{% endif %}
+					{% endfor %}
+				{% endif %}
+				</dd>
+			</label>
+		</div>
+	</div>
+}*/
+
 function getNoResourcesHtml(resourceInfoId) {
 	var html = 
 	'<div id="' + resourceInfoId + '-food-resource-type-table" class="admin-food-resource-type">' +

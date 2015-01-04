@@ -138,9 +138,9 @@ button:hover, button:focus, .button:hover, .button:focus {
   color: #FFF;
 }
 
-button.radius, .button.radius {
+/*button.radius, .button.radius {
   margin-bottom: 100px;
-}
+}*/
 
 /* HEADER - top-bar */
 
@@ -336,13 +336,16 @@ table thead tr th, table thead tr td {
   background-color: #CCCCCC;
 }
 
-.food-resource-update-button {
+.food-resource-update-button, 
+.add-another-time-picker {
   color: #2D4FA0; /* navy */
 }
 
-.food-resource-update-button:hover {
+.food-resource-update-button:hover,
+.add-another-time-picker {
   cursor: pointer;
   color: #2D4FA0; /* navy */
+
 }
 
 #expand-all-resources-button, 
@@ -352,6 +355,10 @@ table thead tr th, table thead tr td {
 #map-search-button, 
 #map-filter-button {
   margin-bottom: 10px;
+}
+
+.button-add-another-time-picker {
+  margin-top: 5px;
 }
 
 .no-resources-message {
