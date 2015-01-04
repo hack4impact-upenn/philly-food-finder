@@ -322,6 +322,20 @@ def import_file(path):
 							db.session.add(timeslot)
 							timeslots.append(timeslot)
 
+				# Checks database to see if identical resource exists
+				duplicate = FoodResource.query.filter_by(
+					name = name, 
+					url = website,
+					description = description,
+					are_hours_available = are_hours_available,
+					is_for_family_and_children = is_for_family_and_children,
+					is_for_seniors = is_for_seniors,
+					is_wheelchair_accessible = is_wheelchair_accessible,
+					is_accepts_snap = is_accepts_snap).first()
+
+				if duplicate:
+					make_error("Identical resource already exists in database.", i)
+
 				# Create food resource.
 				food_resource = FoodResource(
 					name = name, 
