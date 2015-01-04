@@ -640,11 +640,16 @@ def remove():
 	contact = food_resource.food_resource_contact
 
 	if contact and contact.email:
-		send_email(recipient = contact.email, subject = food_resource.name + ' has been rejected',
+		send_email(
+			recipient = contact.email, 
+			subject = food_resource.name + ' has been rejected',
 			html_message = 'Dear ' + contact.name + ', \
-			<p>Your proposed resource <b>' + food_resource.name +  '</b> was rejected. Please contact an admin to find out why.</p><br> \
-			Sincerely,<br>'+app.config['USER_APP_NAME'],
-			text_message = 'Your proposed resource ' + food_resource.name + ' was rejected. Please contact an admin to find out why.')
+				<p>Your proposed resource <b>' + food_resource.name + 
+				'</b> was rejected. Please contact an admin to find out why.\
+				</p><br> Sincerely,<br>' + app.config['USER_APP_NAME'],
+			text_message = 'Your proposed resource ' + food_resource.name + 
+				' was rejected. Please contact an admin to find out why.'
+		)
 
 	# If the food resource has a contact and its contact has submitted no other 
 	# food resources to the database, remove him/her from the database.
@@ -671,11 +676,16 @@ def approve():
 	contact = food_resource.food_resource_contact
 
 	if contact.email:
-		send_email(recipient = contact.email, subject = food_resource.name + ' has been approved',
+		send_email(
+			recipient = contact.email, 
+			subject = food_resource.name + ' has been approved',
 			html_message = 'Dear ' + contact.name + ',\
-			<p>Good news! Your proposed resource <b>' + food_resource.name + '</b> was approved. Thanks so much!</p><br> \
-			Sincerely,<br>' + app.config['USER_APP_NAME'],
-			text_message = 'Good news! Your proposed resource ' + food_resource.name + ' was approved. Thanks so much!')
+			<p>Good news! Your proposed resource <b>' + food_resource.name + 
+				'</b> was approved. Thanks so much!</p><br> Sincerely,<br>' + 
+				app.config['USER_APP_NAME'],
+			text_message = 'Good news! Your proposed resource ' + 
+				food_resource.name + ' was approved. Thanks so much!'
+		)
 
 	if len(contact.food_resource) <= 1:
 		db.session.delete(contact)
