@@ -56,7 +56,7 @@
 					<div id="{{ resource.id }}-approve" class="food-resource-update-button">Approve</div>
 				</div>
 				<div class="small-2 columns">
-					<div id="{{ resource.id }}-remove" class="food-resource-update-button">Reject</div>
+					<a id="{{ resource.id }}-remove" class="food-resource-update-button" href="#modal">Reject</a>
 				</div>
 			</div>
 			<!-- Resource content --> 
@@ -126,8 +126,6 @@
 							{{ resource.address.zip_code }}
 						</div>
 					</div>
-
-
 					<div class="row">
 						<div class="small-3 columns">
 							Zip Code:
@@ -333,7 +331,7 @@
 					<a href="{{ url_for('new', id=resource.id) }}" class="food-resource-update-button">Edit</a>
 				</div>
 				<div class="small-2 columns">
-					<div id="{{ resource.id }}-remove" class="food-resource-update-button">Remove</div>
+					<a id="{{ resource.id }}-remove" class="food-resource-update-button" href="#modal">Remove</a>
 				</div>
 			</div>
 			<!-- Resource content --> 
@@ -345,14 +343,6 @@
 						</div>
 						<div class="small-9 columns">
 							{{ resource.name }}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Resource Type:
-						</div>
-						<div class="small-9 columns">
-							{{ resource.food_resource_type.enum }}
 						</div>
 					</div>
 					<div class="row">
@@ -496,6 +486,19 @@
 	</div>
 {% endfor %}
 </div> </div>
+
+<div class="remodal" data-remodal-id="modal">
+    <h1>Confirm</h1>
+    <p>
+    	Are you sure you want to delete this food resource?
+    	<br>
+    	This action cannot be undone.
+    </p>
+    <br>
+    <a class="remodal-cancel" href="#">No</a>
+    <a class="remodal-confirm" href="#">Yes</a>
+</div>
+
 </body>
 
 <script>
@@ -615,7 +618,7 @@
 				toggleAdminFoodResourceVisibility();
 
 				// Remove a food resource without reloading page.
-				removeFoodResource();  
+				onClickRemoveFoodResource();  
         	});  
 		}); 
 
@@ -633,7 +636,7 @@
 
 	        		reloadFoodResourcesTables();
 	        	});  
-		});
+		});		
 
 		$("#clear-filters-resources-button").click(function() {
 			reloadFoodResourcesTables();
@@ -696,7 +699,7 @@
 			toggleAdminFoodResourceVisibility(); 
 
 			// Remove a food resource without reloading page.
-			removeFoodResource(); 
+			onClickRemoveFoodResource();
     	});
 	}
 </script>

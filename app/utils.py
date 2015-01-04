@@ -9,6 +9,30 @@ from models import *
 import re
 import csv
 
+def get_string_of_all_food_resource_types():
+	possible_types_text = ""
+	food_resource_types = FoodResourceType.query.all()
+	# There is 1 food resource type.
+	if len(food_resource_types) == 1:
+		possible_types_text = food_resource_types[0].enum
+	# There are 2 food resource types.
+	elif len(food_resource_types) == 2:
+		possible_types_text = food_resource_types[0].enum + " or " \
+			+ food_resource_types[1].enum
+	# There are 3 or more food resource types.
+	else:
+		for i, food_resource_type in enumerate(food_resource_types):
+			# Last item in the list.
+			if (i == len(food_resource_types) - 1):
+				possible_types_text += food_resource_type.enum
+			# Second-to-last item in list.
+			elif (i == len(food_resource_types) - 2):
+				possible_types_text += food_resource_type.enum + ", or "
+			# All other items in list.
+			else:
+				possible_types_text += food_resource_type.enum + ", "
+	return possible_types_text
+
 def get_underscored_string(string_to_convert):
 	string = string_to_convert.lower().replace(" ", "_")
 	string = re.sub(r'[^a-zA-Z0-9_]','', string)

@@ -628,6 +628,8 @@ def save_search_query():
 def remove():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
+	if not food_resource:
+		return jsonify(message="failed")
 
 	# Determine whether the food resource being removed is approved or pending.
 	# Needed for front-end update after food resource is removed.
@@ -638,11 +640,11 @@ def remove():
 	contact = food_resource.food_resource_contact
 
 	if contact and contact.email:
-		send_email(recipient = contact.email, subject = food_resource.name+' has been rejected',
-			html_message = 'Dear '+contact.name+', \
-			<p>Your proposed resource <b>'+food_resource.name+ '</b> was rejected. Please contact an admin to find out why.</p><br> \
+		send_email(recipient = contact.email, subject = food_resource.name + ' has been rejected',
+			html_message = 'Dear ' + contact.name + ', \
+			<p>Your proposed resource <b>' + food_resource.name +  '</b> was rejected. Please contact an admin to find out why.</p><br> \
 			Sincerely,<br>'+app.config['USER_APP_NAME'],
-			text_message = 'Your proposed resource '+food_resource.name+ ' was rejected. Please contact an admin to find out why.')
+			text_message = 'Your proposed resource ' + food_resource.name + ' was rejected. Please contact an admin to find out why.')
 
 	# If the food resource has a contact and its contact has submitted no other 
 	# food resources to the database, remove him/her from the database.
@@ -669,11 +671,11 @@ def approve():
 	contact = food_resource.food_resource_contact
 
 	if contact.email:
-		send_email(recipient = contact.email, subject = food_resource.name+' has been approved',
-			html_message = 'Dear '+contact.name+',\
-			<p>Good news! Your proposed resource <b>'+food_resource.name+ '</b> was approved. Thanks so much!</p><br> \
-			Sincerely,<br>'+app.config['USER_APP_NAME'],
-			text_message = 'Good news! Your proposed resource '+food_resource.name+ ' was approved. Thanks so much!')
+		send_email(recipient = contact.email, subject = food_resource.name + ' has been approved',
+			html_message = 'Dear ' + contact.name + ',\
+			<p>Good news! Your proposed resource <b>' + food_resource.name + '</b> was approved. Thanks so much!</p><br> \
+			Sincerely,<br>' + app.config['USER_APP_NAME'],
+			text_message = 'Good news! Your proposed resource ' + food_resource.name + ' was approved. Thanks so much!')
 
 	if len(contact.food_resource) <= 1:
 		db.session.delete(contact)
@@ -774,7 +776,7 @@ def download():
 	resources = FoodResource.query.filter_by(is_approved = True).all()
 
 	outcsv.writerow(['Table 1'])
-	outcsv.writerow(['','Type (SHARE_HOST_SITE, FARMERS_MARKET, FOOD_CUPBOARD, SENIOR_MEAL, SOUP_KITCHEN, or WIC_OFFICE)',
+	outcsv.writerow(['','Type (' + get_string_of_all_food_resource_types() + ')',
 	 'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 'State', 'Zip Code', 'Phone Number (optional)', 
 	 'Website (optional)', 'Description (optional)', 'Families and children? (either \'Yes\' or leave blank)', 
 	 'Seniors? (either \'Yes\' or leave blank)', 'Wheelchair accessible? (either \'Yes\' or leave blank)', 
@@ -802,7 +804,7 @@ def download():
 	row_counter = 1
 	for resource in resources:
 		timeslots = resource.timeslots
-		outcsv.writerow([row_counter,'insert fancy enum code here', resource.name, resource.address.line1, resource.address.line2, 
+		outcsv.writerow([row_counter,resource.food_resource_type.enum, resource.name, resource.address.line1, resource.address.line2, 
 			resource.address.city, resource.address.state, resource.address.zip_code, resource.phone_numbers[0].number, 
 			resource.url, resource.description, 'Yes' if resource.is_for_family_and_children else '', 
 			'Yes' if resource.is_for_seniors else '', 'Yes' if resource.is_wheelchair_accessible else '', 
