@@ -95,16 +95,18 @@
         <hr align="center">
     </div>
     <div class="row">
-        <div class="large-centered large-10 medium-centered medium-8 small-8 small-centered columns content">
+        <div class="large-centered large-10 medium-centered medium-10 small-10 small-centered columns content">
             <form method="post" id="geocoding_form">
                 <div class="small-12 columns">
                     <label for="address">Zip Code:</label>
                     <input type="text" id="address" name="address" />
                 </div>
-                <div class="small-12 columns">
-                    <input type="checkbox" id="map-filter-by-open-now"> Open now
-                    <input type="checkbox" id="map-filter-by-families-and-children"> Families and children
-                    <input type="checkbox" id="map-filter-by-seniors"> Seniors
+                <div class="small-8 columns">
+                    <ul id="checkboxes">
+                      <li id="checkbox-li"><input type="checkbox" id="map-filter-by-open-now"> Open now </li>
+                      <li id="checkbox-li"><input type="checkbox" id="map-filter-by-families-and-children"> Families and children</li>
+                      <li id="checkbox-li"><input type="checkbox" id="map-filter-by-seniors"> Seniors</li>
+                    </ul>
                 </div>
                 <div class="small-12 columns search-buttons">
                     <input type="submit" class="button radius small" value="Search" id="map-search-button" />
@@ -112,10 +114,10 @@
                 </div>
             </form>      
             <div id="map-container">
-                <div id="map"></div>
+                <div class="large-4" id="map"></div>
             </div> 
             <div id="map-key">
-                <div class="small-12 medium-4 columns pin-definition">
+                <div class="small-4 medium-4 columns pin-definition">
                     <img src="../static/img/mbb_yellow.png" alt="Yellow Pin"/>
                     Farmers' Market
                 </div>

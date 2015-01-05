@@ -1,11 +1,11 @@
 
 /* #ef3d23 - red */
 /* #f8a11d - orange */
-/* - light orange */
+/* rgba(248, 160, 26, .5) - light orange */
 /* #fdd800 - yellow */
-/* - light yellow */
+/* rgba(254, 217, 0, .5) - light yellow */
 /* #009933 - green */
-/* - light green */
+/* rgba(0, 171, 75, .5) - light green */
 /* #0f85c7 - blue */
 /* #84459b - purple */
 /* #343434 - black */
@@ -26,27 +26,29 @@ body#map_p {
 }
 
 body#info_p {
-  background-color: #009933;
+  /*background-color: #009933;*/
   color: #FFF;
-
 }
 
 .h1 {
   color: #FFF;
 }
 
-body#resources_p {
-  background-color: #F7F9F9;
+.h2 {
+  color: #FFF;
+}
+
+body#info_p {
+  /*background-color: rgba(248, 160, 26, .5);  light orange */
 }
 
 body#about_p {
-  background-color: #f8a11d;
+  /*background-color: rgba(254, 217, 0, .5);  light yellow */
 }
 
 body#contact_p {
-  background-color: #fdd800;
+  /*background-color: rgba(0, 171, 75, .5);  light green */
 }
-
 
 body#add_p {
   background-color: #F7F9F9;
@@ -186,7 +188,7 @@ button.radius, .button.radius {
   display: inline-block;
   width: 100%;
   color: #2D4FA0;
-  font-size: 2rem;
+  font-size: 1.875rem;
   font-weight: 200;
   text-transform: none;
   letter-spacing: 4px;
@@ -308,6 +310,18 @@ img {
     border-color: #999999; /* gray */
 }
 
+#checkboxes {
+    list-style-type: none;
+    display:inline;
+}
+
+/* display checkboxes in one line if screen is big, otherwise stack */
+@media only screen and (min-width: 54.063em) {
+  #checkbox-li {
+    display: inline;
+  }
+}
+
 #footer-spacer {
   margin-bottom: 10em;
 }
@@ -333,6 +347,21 @@ img {
 
 #map-header {
   color: #0f85c7;
+}
+
+#contact-line {
+  border: #fdd800;
+  background: #fdd800;;
+}
+
+/*
+#contact-header {
+  color: #fdd800;
+}
+*/
+
+#about-header {
+  color: #f8a11d;
 }
 
 /* Edit Food Resources Page */
