@@ -468,6 +468,7 @@
 											{% for timeslot in resource.timeslots %}
 												{% if timeslot.day_of_week == day['index'] %}
 													{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
+													<br>
 												{% endif %}
 											{% endfor %}
 										</div>

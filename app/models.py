@@ -171,7 +171,8 @@ class FoodResource(db.Model):
 	timeslots = db.relationship(
 		'TimeSlot', # One-to-many relationship (one Address with many TimeSlots).
 		backref='food_resource', # Declare a new property of the TimeSlot class.
-		lazy='select', uselist=True)
+		lazy='select', uselist=True, 
+		order_by='TimeSlot.start_time')
 
 	# Boolean fields
 	is_for_family_and_children = db.Column(db.Boolean, default=False)

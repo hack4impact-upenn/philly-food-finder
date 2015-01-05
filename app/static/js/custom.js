@@ -352,6 +352,42 @@ function getIndividualNumResources(resourceType) {
 	return $("#" + resourceType + "-num-resources").html();
 }
 
+function isInteger (s) {
+	var isInteger_re = /^\s*(\+|-)?\d+\s*$/;
+	return String(s).search (isInteger_re) != -1;
+}
+
+function onChangeNumberOfTimeslots() {
+	$("[id$='-num_timeslots']").change(function() {
+		var id = $(this).attr('id');
+		var dayOfWeekIndex = id.split("-")[1];
+		var num = $(this).val(); 
+		updateVisibleTimeslots(dayOfWeekIndex, num);
+	}); 
+}
+
+function updateVisibleTimeslots() {
+	$("[id$='-num_timeslots']").each(function(index) {
+		var id = $(this).attr('id');
+		var dayOfWeekIndex = id.split("-")[1];
+		var num = $(this).val(); 
+		updateVisibleTimeslot(dayOfWeekIndex, num);
+	});
+}
+
+function updateVisibleTimeslot(dayOfWeekIndex, numTimeslots) {
+	if (isInteger(numTimeslots) && numTimeslots >= 1 && numTimeslots <= 10) {
+		for (var i = 1; i < numTimeslots; i++) {
+			var idToShow = "daily_timeslots-" + dayOfWeekIndex + "-timeslots-" + i;
+			$("#" + idToShow).show(); 
+		}
+		for (var i = numTimeslots; i < 10; i++) {
+			var idToHide = "daily_timeslots-" + dayOfWeekIndex + "-timeslots-" + i;
+			$("#" + idToHide).hide();
+		}
+	}
+}
+
 function setIndividualNumResources(num, resourceType) {
 	$("#" + resourceType + "-num-resources").html(num);
 }
@@ -577,7 +613,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					if (timeslot["day_of_week"] == day["index"]) {
 						html += 
 									timeslot["start_time"] + " - " 
-										+ timeslot["end_time"];
+										+ timeslot["end_time"] + "<br>";
 					}
 				}
 
