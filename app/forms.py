@@ -30,7 +30,8 @@ class MultiTimeSlotForm(Form):
         validators = [
             InputRequired("Please indicate a number of timeslots between 1 and \
                 10.")
-        ]
+        ], 
+        default = 1
     )
 
     def validate_num_timeslots(form, field):
