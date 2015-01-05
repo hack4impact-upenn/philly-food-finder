@@ -53,7 +53,7 @@
           <ul class="left">
             <li><a href="{{ url_for('map') }}" id="l_map">map</a></li>
 
-            <li class="has-dropdown">
+            <li class="has-dropdown drop-resources">
               <a href="" id="l_resources">resources</a>
                 <ul class="dropdown">
                   <li class="dropdown-item"><a href="{{ url_for('wic') }}">WIC</a></li>
@@ -67,9 +67,9 @@
             <li><a href="{{ url_for('contact') }}" id="l_contact">contact</a></li>
 
             {% if current_user.is_authenticated() %}
-            <li class="has-dropdown">
+            <li class="has-dropdown drop-admin">
               <a href="{{ url_for('admin') }}" id="l_admin">admin</a>
-                <ul class="dropdown">
+                <ul class="dropdown drop-admin">
                   <li><a href="{{ url_for('admin') }}">Manage Resources</a></li>
                   <li><a href="{{ url_for('new') }}">Add Resources</a></li>
                   <li><a href="{{ url_for('user.register') }}">Invite Admins</a></li>

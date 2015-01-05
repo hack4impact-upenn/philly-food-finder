@@ -234,6 +234,36 @@ button.radius, .button.radius {
   top: 37px;
 }
 
+/* dropdown */
+.top-bar-section .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
+  background-color: #555555;
+  background: #FFF; 
+}
+
+.top-bar-section ul li:hover:not(.has-form) > a {
+  background-color: #555555;
+  background: #FFF; 
+}
+
+
+/* resources dropdown */
+.top-bar-section .drop-resources .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
+  color: #009933;
+}
+
+.top-bar-section ul li:hover:not(.has-form) > a {
+  color: #009933;
+}
+
+/* admin dropdown */
+.top-bar-section .drop-admin .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
+  color: #ef3d23;
+}
+
+.top-bar-section .drop-admin ul li:hover:not(.has-form) > a {
+  color: #ef3d23;
+}
+
 /* buttons - not hover */
 .top-bar-section li:not(.has-form) a:not(.button) {
   padding: 15 15;
@@ -336,29 +366,23 @@ img {
   color: #FFF;
 }
 
-#FAQ-header {
-  color: #FFF;
-}
-
-#FAQ-line {
-  border: #FFF;
-  background: #FFF;
+.info-header {
+  color: #009933;
 }
 
 #map-header {
   color: #0f85c7;
 }
 
+/*
 #contact-line {
   border: #fdd800;
   background: #fdd800;;
-}
+}*/
 
-/*
 #contact-header {
   color: #fdd800;
 }
-*/
 
 #about-header {
   color: #f8a11d;
