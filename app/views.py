@@ -90,10 +90,15 @@ def new(id=None):
 				num_timeslots_per_day[timeslot.day_of_week] += 1
 				start_time = timeslot.start_time
 				end_time = timeslot.end_time
-				form.daily_timeslots[day_of_week_index].timeslots[timeslot_index].starts_at.data = start_time.strftime("%H:%M")
-				form.daily_timeslots[day_of_week_index].timeslots[timeslot_index].ends_at.data = end_time.strftime("%H:%M")
+				form.daily_timeslots[day_of_week_index] \
+					.timeslots[timeslot_index].starts_at.data = \
+						start_time.strftime("%H:%M")
+				form.daily_timeslots[day_of_week_index] \
+					.timeslots[timeslot_index].ends_at.data = \
+						end_time.strftime("%H:%M")
 				form.is_open[day_of_week_index].is_open.data = "open"
-				form.daily_timeslots[day_of_week_index].num_timeslots.data = num_timeslots_per_day[timeslot.day_of_week]
+				form.daily_timeslots[day_of_week_index].num_timeslots.data = \
+					num_timeslots_per_day[timeslot.day_of_week]
 
 	# POST request.
 	additional_errors = []
@@ -101,7 +106,8 @@ def new(id=None):
 		food_resource = create_food_resource_from_form(form, additional_errors)
 
 		if (len(additional_errors) == 0):
-			# If a food resource is being edited, remove its old verion from the database.
+			# If a food resource is being edited, remove its old verion from the 
+			# database.
 			if id is not None:
 				fr = FoodResource.query.filter_by(id=id).first()
 				if fr:
@@ -260,7 +266,8 @@ def invite():
 
 		# For all form fields
 		for field_name, field_value in register_form.data.items():  
-			# Store corresponding Form fields into the User object and/or UserProfile object
+			# Store corresponding Form fields into the User object and/or 
+			# UserProfile object
 			if field_name in user_class_fields:
 				user_fields[field_name] = field_value
 			if db_adapter.UserEmailClass:
