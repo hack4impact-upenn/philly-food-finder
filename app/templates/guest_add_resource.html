@@ -55,6 +55,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 	            </label>
 			</div>
 		</div>
@@ -80,6 +81,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -106,6 +108,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -132,6 +135,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -156,6 +160,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -180,6 +185,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -204,6 +210,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -228,6 +235,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		        	</dd>
 				</label>
 			</div>
 		</div>
@@ -252,6 +260,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -284,6 +293,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -309,6 +319,7 @@
 					                    {% endif %}
 					                {% endfor %}
 					            {% endif %}
+					            </dd>
 			      			</label>
 			      		</div>
 			      		{% for timeslot_form in multi_timeslot_form.timeslots %} 
@@ -325,6 +336,7 @@
 								                    {% endif %}
 								                {% endfor %}
 								            {% endif %}
+								            </dd>
 						      			</label>
 						      		</div>
 						      		<div class="large-6 small-6 columns" id="middle-padding-section">
@@ -337,6 +349,7 @@
 								                    {% endif %}
 								                {% endfor %}
 								            {% endif %}
+								            </dd>
 						      			</label>
 						      		</div>
 						      	</div>
@@ -373,6 +386,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 		      	</label>
 		    </div>
 		</div>
@@ -397,6 +411,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 		      	</label>
 		    </div>
 		</div>
@@ -421,6 +436,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 		      	</label>
 		    </div>
 		</div>
@@ -445,6 +461,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 		      	</label>
 		    </div>
 		</div>
@@ -469,6 +486,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 		      	</label>
 		    </div>
 		</div>
@@ -494,6 +512,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -519,6 +538,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -544,6 +564,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -569,6 +590,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -586,14 +608,15 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered" id="top-padding-section">
-		        	<dd class="error">{{ field()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
+	        	<dd class="error">{{ field()|safe }}
+	        	{% if field.errors %}
+	                {% for e in field.errors %}
+	                    {% if e %}
+	                        <small class="error">{{ e }}</small>
+	                    {% endif %}
+	                {% endfor %}
+	            {% endif %}
+	            </dd>
 		    </div>
 		</div>
 
@@ -605,6 +628,13 @@
 		</div>
 	</form>
 </body>
+
+<script>
+	$(document).ready(function() {
+		updateVisibleTimeslots(); 
+		onChangeNumberOfTimeslots(); 
+	}); 
+</script>
 
 {% endblock %}
 
