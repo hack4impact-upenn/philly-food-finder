@@ -613,7 +613,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					if (timeslot["day_of_week"] == day["index"]) {
 						html += 
 									timeslot["start_time"] + " - " 
-										+ timeslot["end_time"];
+										+ timeslot["end_time"] + "<br>";
 					}
 				}
 
