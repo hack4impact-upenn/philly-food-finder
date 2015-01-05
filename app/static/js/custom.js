@@ -366,7 +366,16 @@ function onChangeNumberOfTimeslots() {
 	}); 
 }
 
-function updateVisibleTimeslots(dayOfWeekIndex, numTimeslots) {
+function updateVisibleTimeslots() {
+	$("[id$='-num_timeslots']").each(function(index) {
+		var id = $(this).attr('id');
+		var dayOfWeekIndex = id.split("-")[1];
+		var num = $(this).val(); 
+		updateVisibleTimeslot(dayOfWeekIndex, num);
+	});
+}
+
+function updateVisibleTimeslot(dayOfWeekIndex, numTimeslots) {
 	if (isInteger(numTimeslots) && numTimeslots >= 1 && numTimeslots <= 10) {
 		for (var i = 1; i < numTimeslots; i++) {
 			var idToShow = "daily_timeslots-" + dayOfWeekIndex + "-timeslots-" + i;

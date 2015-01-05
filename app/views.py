@@ -53,11 +53,12 @@ def new(id=None):
 
 	# GET request.
 	if request.method == 'GET':
-		# Initialize number of timeslots per day to 1.
-		for multi_timeslot_form in form.daily_timeslots:
-			multi_timeslot_form.num_timeslots.data = 1
+		if id is None: 
+			# Initialize number of timeslots per day to 1.
+			for multi_timeslot_form in form.daily_timeslots:
+				multi_timeslot_form.num_timeslots.data = 1
 
-		if id is not None:
+		else:
 			# Populate form with information about existing food resource. 
 			food_resource = FoodResource.query.filter_by(id=id).first()
 			if food_resource is None:
@@ -87,15 +88,17 @@ def new(id=None):
 			else:
 				form.are_hours_available.data = "no"
 
+			num_timeslots_per_day = [0] * 7
 			for timeslot in food_resource.timeslots:
-				index = timeslot.day_of_week
+				day_of_week_index = timeslot.day_of_week
+				timeslot_index = num_timeslots_per_day[timeslot.day_of_week]
+				num_timeslots_per_day[timeslot.day_of_week] += 1
 				start_time = timeslot.start_time
 				end_time = timeslot.end_time
-				form.daily_timeslots[index].timeslots[0].starts_at.data = \
-					start_time.strftime("%H:%M")
-				form.daily_timeslots[index].timeslots[0].ends_at.data = \
-					end_time.strftime("%H:%M")
-				form.is_open[index].is_open.data = "open"
+				form.daily_timeslots[day_of_week_index].timeslots[timeslot_index].starts_at.data = start_time.strftime("%H:%M")
+				form.daily_timeslots[day_of_week_index].timeslots[timeslot_index].ends_at.data = end_time.strftime("%H:%M")
+				form.is_open[day_of_week_index].is_open.data = "open"
+				form.daily_timeslots[day_of_week_index].num_timeslots.data = num_timeslots_per_day[timeslot.day_of_week]
 
 	# POST request.
 	additional_errors = []
@@ -109,6 +112,7 @@ def new(id=None):
 			are_hours_available = False
 
 		# Create the food resource's timeslots.
+		num_timeslots_checked_per_day = [0] * 7
 		are_timeslots_valid = True
 		if are_hours_available: 
 			for i, timeslots in enumerate(form.daily_timeslots):
@@ -119,9 +123,18 @@ def new(id=None):
 					if form.is_open[i].is_open.data == "closed":
 						is_open = False
 
+					# Check if all relevant timeslots have already been checked
+					are_all_timeslots_checked = False
+					day_of_week_index = i
+					if num_timeslots_checked_per_day[day_of_week_index] == \
+						int(form.daily_timeslots[day_of_week_index] \
+							.num_timeslots.data):
+						are_all_timeslots_checked = True
+
 					# Create timeslots only if the food resource is open on the
 					# i-th day of the week.
-					if is_open:
+					if is_open and not are_all_timeslots_checked:
+						num_timeslots_checked_per_day[day_of_week_index] += 1
 						start_time = \
 							get_time_from_string(timeslot.starts_at.data)
 						end_time = get_time_from_string(timeslot.ends_at.data)
