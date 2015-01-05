@@ -352,6 +352,33 @@ function getIndividualNumResources(resourceType) {
 	return $("#" + resourceType + "-num-resources").html();
 }
 
+function isInteger (s) {
+	var isInteger_re = /^\s*(\+|-)?\d+\s*$/;
+	return String(s).search (isInteger_re) != -1;
+}
+
+function onChangeNumberOfTimeslots() {
+	$("[id$='-num_timeslots']").change(function() {
+		var id = $(this).attr('id');
+		var dayOfWeekIndex = id.split("-")[1];
+		var num = $(this).val(); 
+		updateVisibleTimeslots(dayOfWeekIndex, num);
+	}); 
+}
+
+function updateVisibleTimeslots(dayOfWeekIndex, numTimeslots) {
+	if (isInteger(numTimeslots) && numTimeslots >= 1 && numTimeslots <= 10) {
+		for (var i = 1; i < numTimeslots; i++) {
+			var idToShow = "daily_timeslots-" + dayOfWeekIndex + "-timeslots-" + i;
+			$("#" + idToShow).show(); 
+		}
+		for (var i = numTimeslots; i < 10; i++) {
+			var idToHide = "daily_timeslots-" + dayOfWeekIndex + "-timeslots-" + i;
+			$("#" + idToHide).hide();
+		}
+	}
+}
+
 function setIndividualNumResources(num, resourceType) {
 	$("#" + resourceType + "-num-resources").html(num);
 }
@@ -360,38 +387,6 @@ function clearTablesOfFoodResources() {
 	$(".admin-food-resource-type").remove(); 
 	$(".expand-food-resource-type").html("+");
 }
-
-/*function getTimeslotHtml(dayOfWeekIndex, timeslotIndex) {
-	var html = 
-	'<div class="row" id="daily_timeslots-' + dayOfWeekIndex + '-timeslots-' + timeslotIndex '">
-		'<div class="large-6 small-6 columns" id="middle-padding-section">
-			'<label>{{ timeslot_form.starts_at.label }}
-				<dd class="error">{{ timeslot_form.starts_at()|safe }}
-				{% if timeslot_form.starts_at.errors %}
-					{% for e in timeslot_form.starts_at.errors %}
-						{% if e %}
-							<small class="error">{{ e }}</small>
-						{% endif %}
-					{% endfor %}
-				{% endif %}
-				</dd>
-			</label>
-		</div>
-		<div class="large-6 small-6 columns" id="middle-padding-section">
-			<label>{{ timeslot_form.ends_at.label }}
-				<dd class="error">{{ timeslot_form.ends_at()|safe }}
-				{% if timeslot_form.ends_at.errors %}
-					{% for e in timeslot_form.ends_at.errors %}
-						{% if e %}
-							<small class="error">{{ e }}</small>
-						{% endif %}
-					{% endfor %}
-				{% endif %}
-				</dd>
-			</label>
-		</div>
-	</div>
-}*/
 
 function getNoResourcesHtml(resourceInfoId) {
 	var html = 

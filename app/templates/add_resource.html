@@ -319,6 +319,26 @@
 			      			</label>
 			      		</div>
 			      		<div class="small-8 columns time-pickers" id="middle-padding-section">
+			      			{% set field = multi_timeslot_form.num_timeslots %}
+			      			<div class="row">
+			      				<div class="large-12 small-12 columns" id="middle-padding-section">
+			      					{% if multi_timeslot_form.num_timeslots.flags.required %}
+								      	<label>{{ field.label(class_='required') }}
+								    {% else %}
+										<label>{{ field.label }}
+								    {% endif %}
+										<dd class="error">{{ field()|safe }}
+										{% if field.errors %}
+											{% for e in field.errors %}
+												{% if e %}
+													<small class="error">{{ e }}</small>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+										</dd>
+									</label>
+								</div>
+			      			</div>
 			      		{% for timeslot_form in multi_timeslot_form.timeslots %} 
 		      			{% set timeslot_index = loop.index0 %}
 			      			{{ timeslot_form.form.hidden_tag() }}
@@ -351,13 +371,6 @@
 								</div>
 							</div>
 							{% endfor %}
-							<div class="row">
-								<div class="small-12 columns">
-									<div class="button radius small button-add-another-time-picker" id="{{ day_of_week.index }}-add-another-time-picker">
-										Add another timeslot
-									</div>
-								</div>
-							</div>
 						</div>
 					</div>
 		   	  </div>
@@ -509,31 +522,12 @@
 </body>
 
 <script>
-	var timeslots = []; // index 0 -> number of timeslots for Sunday, index 1 -> number of timeslots for Monday, etc.
 	$(document).ready(function() {
-		{% for multi_timeslot_form in form.daily_timeslots %}
-		{% set day_of_week = days_of_week[loop.index0] %}
-		{% set is_open = form.is_open[loop.index0].is_open %}
-			// Initialize number of timeslots on each day.
-			timeslots.push({{ multi_timeslot_form.timeslots|count }});
-		{% endfor %}
-		onClickAddAnotherTimeslot(); 
+		for (var i = 0; i < 7; i++) {
+			updateVisibleTimeslots(i, 1); 
+		}
+		onChangeNumberOfTimeslots(); 
 	}); 
-
-	function onClickAddAnotherTimeslot() {
-		console.log("merp");
-		$("[id$='-add-another-time-picker']").click(function() {
-			var id = $(this).attr('id');
-			console.log(id);
-			var dashIndex = id.indexOf("-"); 
-			var dayOfWeekIndex = id.substring(0, dashIndex);
-			var numTimeslots = timeslots[dayOfWeekIndex]; 
-			var appendAfterId = "daily_timeslots-" + dayOfWeekIndex + "-timeslots-" + (numTimeslots - 1); 
-			console.log(appendAfterId);
-			$("#" + appendAfterId).after("merp");
-			timeslots[dayOfWeekIndex] = ++numTimeslots;
-		}); 
-	}
 </script>
 
 {% endblock %}

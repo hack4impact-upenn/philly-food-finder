@@ -52,46 +52,50 @@ def new(id=None):
 		title = "Edit Food Resource"
 
 	# GET request.
-	if request.method == 'GET' and id is not None:
+	if request.method == 'GET':
+		# Initialize number of timeslots per day to 1.
+		for multi_timeslot_form in form.daily_timeslots:
+			multi_timeslot_form.num_timeslots.data = 1
 
-		# Populate form with information about existing food resource. 
-		food_resource = FoodResource.query.filter_by(id=id).first()
-		if food_resource is None:
-			return render_template('404.html')
+		if id is not None:
+			# Populate form with information about existing food resource. 
+			food_resource = FoodResource.query.filter_by(id=id).first()
+			if food_resource is None:
+				return render_template('404.html')
 
-		# Data that can be directly retrieved from the database.
-		form.name.data = food_resource.name
-		form.address_line1.data = food_resource.address.line1
-		form.address_line2.data = food_resource.address.line2
-		form.address_city.data = food_resource.address.city
-		form.address_state.data = food_resource.address.state
-		form.address_zip_code.data = food_resource.address.zip_code
-		form.phone_number.data = food_resource.phone_numbers[0].number
-		form.website.data = food_resource.url
-		form.additional_information.data = food_resource.description
-		form.is_for_family_and_children.data = \
-			food_resource.is_for_family_and_children
-		form.is_for_seniors.data = food_resource.is_for_seniors
-		form.is_wheelchair_accessible.data = \
-			food_resource.is_wheelchair_accessible
-		form.is_accepts_snap.data = food_resource.is_accepts_snap
-		form.location_type.data = food_resource.food_resource_type.enum
+			# Data that can be directly retrieved from the database.
+			form.name.data = food_resource.name
+			form.address_line1.data = food_resource.address.line1
+			form.address_line2.data = food_resource.address.line2
+			form.address_city.data = food_resource.address.city
+			form.address_state.data = food_resource.address.state
+			form.address_zip_code.data = food_resource.address.zip_code
+			form.phone_number.data = food_resource.phone_numbers[0].number
+			form.website.data = food_resource.url
+			form.additional_information.data = food_resource.description
+			form.is_for_family_and_children.data = \
+				food_resource.is_for_family_and_children
+			form.is_for_seniors.data = food_resource.is_for_seniors
+			form.is_wheelchair_accessible.data = \
+				food_resource.is_wheelchair_accessible
+			form.is_accepts_snap.data = food_resource.is_accepts_snap
+			form.location_type.data = food_resource.food_resource_type.enum
 
-		# Data that must be interpreted before being rendered.
-		if food_resource.are_hours_available == True:
-			form.are_hours_available.data = "yes"
-		else:
-			form.are_hours_available.data = "no"
+			# Data that must be interpreted before being rendered.
+			if food_resource.are_hours_available == True:
+				form.are_hours_available.data = "yes"
+			else:
+				form.are_hours_available.data = "no"
 
-		for timeslot in food_resource.timeslots:
-			index = timeslot.day_of_week
-			start_time = timeslot.start_time
-			end_time = timeslot.end_time
-			form.daily_timeslots[index].timeslots[0].starts_at.data = \
-				start_time.strftime("%H:%M")
-			form.daily_timeslots[index].timeslots[0].ends_at.data = \
-				end_time.strftime("%H:%M")
-			form.is_open[index].is_open.data = "open"
+			for timeslot in food_resource.timeslots:
+				index = timeslot.day_of_week
+				start_time = timeslot.start_time
+				end_time = timeslot.end_time
+				form.daily_timeslots[index].timeslots[0].starts_at.data = \
+					start_time.strftime("%H:%M")
+				form.daily_timeslots[index].timeslots[0].ends_at.data = \
+					end_time.strftime("%H:%M")
+				form.is_open[index].is_open.data = "open"
 
 	# POST request.
 	additional_errors = []
