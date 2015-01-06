@@ -189,7 +189,7 @@ def new(id=None):
 		days_of_week=days_of_week,  
 		additional_errors=additional_errors, title=title)
 
-#Allows non-admins to add food resources
+# Allows non-admins to add food resources
 @app.route('/propose-resource', methods=['GET', 'POST'])
 def guest_new_food_resource():
 	form = NonAdminAddNewFoodResourceForm(request.form)
@@ -231,7 +231,6 @@ def guest_new_food_resource():
 			contact = FoodResourceContact(name=guest_name, 
 				email=guest_email, phone_number=guest_phone_number)
 			db.session.add(contact)
-			#db.session.commit()
 
 		if form.are_hours_available.data == "yes":
 			are_hours_available = True
