@@ -559,10 +559,12 @@ li {
   color: #fff;
   text-align: center;
   padding: 1em;
-  margin: 1% 5%;
-  min-height: 300px;
-  max-height: 300px;
+  margin: 0;
+  margin-bottom: 1%;
+  min-height: 200px;
+  max-height: 200px;
   transition: all ease 0.4s;
+  overflow: -moz-scrollbars-horizontal;
   overflow: scroll;
   overflow-x: hidden;
 }
@@ -594,6 +596,7 @@ li {
 .dropzone.dz-started .dz-message {
   display: none;
 }
+
 .dropzone .dz-preview,
 .dropzone-previews .dz-preview {
   background: rgba(255,255,255,0.8);
@@ -724,7 +727,7 @@ li {
   display: block;
 }
 .dz-message {
-  padding-top: 100px;
+  padding-top: 70px;
   text-transform: uppercase;
   font-size: 120%;
 }
@@ -770,4 +773,3 @@ li {
     background-position: -7px -400px;
   }
 }
->>>>>>> 4daacd1061f5f57d26b3fe09e1b550f4c9bfada5
