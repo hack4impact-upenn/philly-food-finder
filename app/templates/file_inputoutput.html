@@ -241,7 +241,7 @@
 			'Saturday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
 			'Saturday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
 			'Saturday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
-			'Saturday Closing Time #10 (military time - e.g., 8:00 or 17:00)',],
+			'Saturday Closing Time #10 (military time - e.g., 8:00 or 17:00)'],
 			['1','FARMERS_MARKET','Fair Food Farmstand', '51 N. 12th St', 
 				'Reading Terminal Market', 'Philadelphia', 'PA', '19107', '', 
 				'', 'Open year round', '', '', '', 'Yes', '', 'Yes', 'Yes', 
@@ -338,6 +338,7 @@
 </script>
 
 <script>
+
 // Config dropzone
 Dropzone.options.myAwesomeDropzone = {
   paramName: "file", 
@@ -349,7 +350,6 @@ Dropzone.options.myAwesomeDropzone = {
   init: function() {
     this.on("success", function(file, response) {
     	var inst = $.remodal.lookup[$('[data-remodal-id=success-modal]').data('remodal')];
-
         // open the success modal
         inst.open();
 
@@ -375,7 +375,7 @@ Dropzone.options.myAwesomeDropzone = {
 
         $('#modal-error-list').html(htmlString);
 
-		// when modal is closed, redirect to files page
+		// When modal is closed, redirect to files page.
 		$(document).on('close', '#error-modal', function () {
 		    console.log('close');
 		    window.location = "{{ url_for('files') }}";
