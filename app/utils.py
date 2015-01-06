@@ -155,14 +155,11 @@ def is_open(resource, current_date = None):
 		eastern = timezone('US/Eastern')
 		current_date = datetime.now(eastern)
 	
-	pair_bool = False
 	for pair in month_pairs:
 		start_month = pair.start_month
 		end_month = pair.end_month
-		pair_bool = pair_bool or (current_date.month <= end_month and current_date.month >= start_month)
-
-	if(not pair_bool):
-		return False
+		if not (current_date.month <= end_month and current_date.month >= start_month):
+			return False
 
 	weekday = 0
 	if current_date.weekday() == 0:
@@ -180,7 +177,7 @@ def is_open(resource, current_date = None):
 
 	today_timeslot_list = [slot for slot in timeslots if slot.day_of_week == weekday]
 
-	if(len(today_timeslot_list) == 0): #This means it must be closed all day today
+	if(len(today_timeslot_list) == 0): # This means it must be closed all day today
 		return False
 	else:
 		today_timeslot = today_timeslot_list[0]
@@ -265,7 +262,7 @@ def get_food_resources_by_location_type_and_zip_code(list_to_populate,
 
 def filter_food_resources(list_to_filter, has_families_and_children_filter, 
 	has_seniors_filter, has_wheelchair_accessible_filter,
-	has_accepts_snap_filter):
+	has_accepts_snap_filter, has_open_now_filter):
 	for food_resource in list(list_to_filter):
 		if has_families_and_children_filter and \
 			food_resource.is_for_family_and_children == False:
@@ -278,6 +275,9 @@ def filter_food_resources(list_to_filter, has_families_and_children_filter,
 			list_to_filter.remove(food_resource)
 		elif has_accepts_snap_filter and \
 			food_resource.is_accepts_snap == False:
+			list_to_filter.remove(food_resource)
+		elif has_open_now_filter and not \
+		is_open(food_resource):
 			list_to_filter.remove(food_resource)
 
 def import_file(path):

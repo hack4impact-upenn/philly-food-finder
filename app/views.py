@@ -373,6 +373,8 @@ def get_filtered_food_resource_data():
 		'has_wheelchair_accessible_filter', 0, type=int) 
 	has_accepts_snap_filter = request.args.get(
 		'has_accepts_snap_filter', 0, type=int) 
+	has_open_now_filter = request.args.get(
+		'has_open_now_filter', 0, type=int) 
 
 	# Create empty arrays to hold food resources.
 	all_resources = []
@@ -410,7 +412,7 @@ def get_filtered_food_resource_data():
 	for list_to_filter in all_resources:
 		filter_food_resources(list_to_filter, has_families_and_children_filter, 
 			has_seniors_filter, has_wheelchair_accessible_filter,
-			has_accepts_snap_filter)
+			has_accepts_snap_filter, has_open_now_filter)
 
 	json = []
 	for i, list in enumerate(all_resources):

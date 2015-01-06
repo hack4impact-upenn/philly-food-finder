@@ -263,6 +263,7 @@
   		<div class="medium-10 small-12 columns">
   			<label for="zip-code">Zip Code:</label>
 	  		<input type="text" id="zip-code" />
+	  		<input type="checkbox" id="filter-by-open-now"> Open Now
 	  		<input type="checkbox" id="filter-by-families-and-children"> Families and children
 	  		<input type="checkbox" id="filter-by-seniors"> Seniors
 	  		<input type="checkbox" id="filter-by-wheelchair-accessible"> Wheelchair accessible
@@ -531,6 +532,7 @@
 			var hasSeniorsFilter = 0; // FALSE
 			var hasWheelchairAccessibleFilter = 0; // FALSE
 			var hasAcceptsSnapFilter = 0; // FALSE
+			var openNowFilter = 0; // FALSE
 
 			// Check that zip code is properly formed.
 			var regex = /^(\d{5})?$/; // 5-digit number or an empty string.
@@ -549,6 +551,10 @@
 			}
 
 			// Determine which checkboxes are checked.
+			if ($('[id="filter-by-open-now"]:checked')
+				.length > 0) {
+				openNowFilter = 1; // TRUE 
+			}
 			if ($('[id="filter-by-families-and-children"]:checked')
 				.length > 0) {
 				hasFamiliesAndChildrenFilter = 1; // TRUE 
@@ -570,7 +576,8 @@
         		has_families_and_children_filter: hasFamiliesAndChildrenFilter, 
         		has_seniors_filter: hasSeniorsFilter, 
         		has_wheelchair_accessible_filter: hasWheelchairAccessibleFilter, 
-        		has_accepts_snap_filter: hasAcceptsSnapFilter
+        		has_accepts_snap_filter: hasAcceptsSnapFilter,
+        		has_open_now_filter: openNowFilter
         	},
         	function(data) {
         		clearTablesOfFoodResources();
@@ -685,6 +692,7 @@
     		setTotalNumResources(totalNumResources); 
 
     		// Clear checkboxes and text box.
+    		$('#filter-by-open-now').attr('checked', false);
 			$('#filter-by-families-and-children').attr('checked', false);
 			$('#filter-by-seniors').attr('checked', false);
 			$('#filter-by-wheelchair-accessible').attr('checked', false);
