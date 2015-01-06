@@ -2,17 +2,21 @@
   <head>
 
     <!-- CSS -->
-    <link href="../static/css/foundation.css" rel="stylesheet" type="text/css">
-    <link href="../static/css/styles.css" rel="stylesheet" type="text/css">
-    <script src="../static/js/vendor/jquery.js"></script>
-    <script src="../static/js/foundation.min.js"></script>
+    <link href="{{ url_for('static', filename='css/foundation.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/jquery.remodal.css') }}" rel="stylesheet" type="text/css">
+    <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
     <script type="text/javascript" 
             src="http://maps.google.com/maps/api/js?sensor=true"></script>
-    <script src="../static/js/gmaps.js"></script>
-    <script src="../static/js/custom.js"></script>
-    <script src="../static/js/ckeditor/ckeditor.js"></script>
+    <script src="{{ url_for('static', filename='js/gmaps.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ckeditor/ckeditor.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dropzone.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.remodal.min.js') }}"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
    
-    <!-- JavaScript -->
+   
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Don't launch the Foundation JS until the DOM has loaded -->
@@ -29,6 +33,21 @@
     <script type=text/javascript>
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', '', 'auto');
+      ga('send', 'pageview');
+
+      {% if current_user.is_authenticated() %}
+        ga("set", "&uid", "{{ current_user.email }}"); // Set the user ID using signed-in user_id.
+      {% endif %}
+
+    </script>
     
     {% if title %}
     <title>{{title}} - GPCAH</title>
@@ -43,7 +62,7 @@
            data-options="sticky_on: large">
         <ul class="title-area">
           <li class="name">
-            <h1><a href="#"><img src="../static/img/FPAC_logo.svg"/></a></h1>
+            <h1><a href="#"><img src="{{ url_for('static', filename='img/FPAC_logo.svg') }}"/></a></h1>
           </li>
           <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a>
           </li>
@@ -56,23 +75,31 @@
             <li class="has-dropdown drop-resources">
               <a href="" id="l_resources">resources</a>
                 <ul class="dropdown">
-                  <li class="dropdown-item"><a href="{{ url_for('wic') }}">WIC</a></li>
-                  <li class="dropdown-item"><a href="{{ url_for('snap') }}">SNAP</a></li>
-                  <li class="dropdown-item"><a href="{{ url_for('summer_meals') }}">Summer Meals</a></li>
-                  <li class="dropdown-item"><a href="{{ url_for('seniors') }}">Seniors</a></li>
+                  <li><a href="{{ url_for('farmers') }}">Farmers’ Markets</a></li>
+                  <li><a href="{{ url_for('neighborhood') }}">Neighborhood Guide</a></li>
+                  <li><a href="{{ url_for('seniors') }}">Seniors</a></li>
+                  <li><a href="{{ url_for('share') }}">SHARE Host Sites</a></li>  
+                  <li><a href="{{ url_for('snap') }}">SNAP</a></li>
+                  <li><a href="{{ url_for('summer_meals') }}">Summer Meals</a></li>
+                  <li><a href="{{ url_for('wic') }}">WIC</a></li>                
+
                 </ul>
             </li>
-
             <li><a href="{{ url_for('about') }}" id="l_about">about</a></li>
             <li><a href="{{ url_for('contact') }}" id="l_contact">contact</a></li>
 
             {% if current_user.is_authenticated() %}
             <li class="has-dropdown drop-admin">
               <a href="{{ url_for('admin') }}" id="l_admin">admin</a>
+
                 <ul class="dropdown drop-admin">
-                  <li><a href="{{ url_for('admin') }}">Manage Resources</a></li>
-                  <li><a href="{{ url_for('new') }}">Add Resources</a></li>
+                  <li><a href="{{ url_for('admin') }}">Manage Food Resources</a></li>
+                  <li><a href="{{ url_for('new') }}">Add Food Resource</a></li>
+                  <li><a href="{{ url_for('view_food_resource_types') }}">Manage Food Resource Types</a></li>
+                  <li><a href="{{ url_for('new_food_resource_type') }}">Add Food Resource Type</a></li>
                   <li><a href="{{ url_for('user.register') }}">Invite Admins</a></li>
+                  <li><a href="{{ url_for('files') }}">Bulk Import and Export</a></li>
+                  <li><a href="{{ url_for('analytics') }}">Admin Analytics</a></li>
                   <li><a href="{{ url_for('user.change_password') }}">Change Password</a></li>
                 </ul>
             </li>

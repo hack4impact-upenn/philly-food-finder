@@ -1,6 +1,79 @@
 from app import app, db
 from flask_user import UserMixin
 from datetime import datetime
+import utils
+
+class ColoredPin(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	color_name = db.Column(db.String(35), unique=True)
+	hex_color = db.Column(db.String(6), unique=True)
+	pin_image_name = db.Column(db.String(35), unique=True)
+	food_resource = db.relationship(
+		'FoodResourceType', # One-to-many relationship (one FoodResourceType with many FoodResource).
+		backref='colored_pin', # Declare a new property of the FoodResource class.
+		lazy='select', uselist=False)
+
+	def serialize_colored_pin(self):
+		return {
+			'hex_color': self.hex_color, 
+			'pin_image_name': self.pin_image_name
+		}
+
+class FoodResourceType(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	enum = db.Column(db.String(200), unique=True) # Should be singular
+	name_singular = db.Column(db.String(200), unique=True)
+	name_plural = db.Column(db.String(200), unique=True)
+	hyphenated_id_singular = db.Column(db.String(200), unique=True)
+	hyphenated_id_plural = db.Column(db.String(200), unique=True)
+	underscored_id_singular = db.Column(db.String(200), unique=True)
+	underscored_id_plural = db.Column(db.String(200), unique=True)
+	colored_pin_id = db.Column(db.Integer, db.ForeignKey('colored_pin.id'))
+	food_resources = db.relationship(
+		'FoodResource', # One-to-many relationship (one FoodResourceType with many FoodResource).
+		backref='food_resource_type', # Declare a new property of the FoodResource class.
+		lazy='select', 
+		uselist=True,
+		order_by='FoodResource.name')
+
+	def __init__(self, name_singular, name_plural, colored_pin):
+		self.enum = utils.get_enum(name_singular)
+		self.name_singular = name_singular
+		self.name_plural = name_plural
+		self.hyphenated_id_singular = utils \
+			.get_hyphenated_string(name_singular)
+		self.hyphenated_id_plural = utils \
+			.get_hyphenated_string(name_plural)
+		self.underscored_id_singular = utils \
+			.get_underscored_string(name_singular)
+		self.underscored_id_plural = utils \
+			.get_underscored_string(name_plural)
+		self.colored_pin = colored_pin
+
+	def recreate_fields(self):
+		self.enum = utils.get_enum(self.name_singular)
+		self.hyphenated_id_singular = utils \
+			.get_hyphenated_string(self.name_singular) 
+		self.hyphenated_id_plural = utils \
+			.get_hyphenated_string(self.name_plural)
+		self.underscored_id_singular = utils \
+			.get_underscored_string(self.name_singular)
+		self.underscored_id_plural = utils \
+			.get_underscored_string(self.name_plural)
+
+	def serialize_food_resource_type(self):
+		return {
+			'id': self.id, 
+			'enum': self.enum, 
+			'name_singular': self.name_singular,
+			'name_plural': self.name_plural, 
+			'hyphenated_id_singular': self.hyphenated_id_singular,
+			'hyphenated_id_plural': self.hyphenated_id_plural, 
+			'underscored_id_singular': self.underscored_id_singular,
+			'underscored_id_plural': self.underscored_id_plural,
+			'colored_pin': self.colored_pin.serialize_colored_pin(),
+			'food_resources': [i.serialize_food_resource(include_food_resource_type=False) for i in self.food_resources]
+		}
 
 class Address(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
@@ -70,24 +143,26 @@ class PhoneNumber(db.Model):
 			'reource_id': self.resource_id
 		}
 
-
 class FoodResourceContact(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(150))
 	email = db.Column(db.String(255))
 	phone_number = db.Column(db.String(35))
-	food_resource = db.relationship('FoodResource', backref='food_resource_contact', 
-	lazy='select', uselist=True)
+	food_resource = db.relationship('FoodResource', 
+		backref='food_resource_contact', lazy='select', uselist=True)
 
 class FoodResource(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
-	name = db.Column(db.String(50))
-	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', lazy='select', uselist=True)
+	name = db.Column(db.String(100))
+	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', 
+		lazy='select', uselist=True)
 	url = db.Column(db.Text)
-	open_month_pairs = db.relationship('OpenMonthPair', backref='food_resource', lazy='select', uselist=True)
+	open_month_pairs = db.relationship('OpenMonthPair', backref='food_resource', 
+		lazy='select', uselist=True)
 	exceptions = db.Column(db.Text)
 	description = db.Column(db.Text)
-	location_type = db.Column(db.String(100))
+	food_resource_type_id = db.Column(db.Integer, 
+		db.ForeignKey('food_resource_type.id'))
 	address = db.relationship('Address', backref='food_resource', 
 		lazy='select', uselist=False)
 
@@ -96,7 +171,8 @@ class FoodResource(db.Model):
 	timeslots = db.relationship(
 		'TimeSlot', # One-to-many relationship (one Address with many TimeSlots).
 		backref='food_resource', # Declare a new property of the TimeSlot class.
-		lazy='select', uselist=True)
+		lazy='select', uselist=True, 
+		order_by='TimeSlot.start_time')
 
 	# Boolean fields
 	is_for_family_and_children = db.Column(db.Boolean, default=False)
@@ -106,7 +182,9 @@ class FoodResource(db.Model):
 
 	# Fields for when non-admins submit resources
 	is_approved = db.Column(db.Boolean(), default=True)
-	food_resource_contact_id = db.Column(db.Integer, db.ForeignKey('food_resource_contact.id'))
+	food_resource_contact_id = db.Column(db.Integer, 
+		db.ForeignKey('food_resource_contact.id'))
+	notes = db.Column(db.String(500))
 
 	def serialize_name_only(self):
 		return {
@@ -114,16 +192,16 @@ class FoodResource(db.Model):
 			'id': self.id
 		}
 
-	def serialize_food_resource(self):
-		return {
+	def serialize_food_resource(self, include_food_resource_type=True):
+		dict = {
 			'id': self.id, 
 			'name': self.name, 
 			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
 			'url': self.url, 
-			'open_month_pairs': [i.serialize_open_month_pair() for i in self.open_month_pairs],
+			'open_month_pairs': 
+				[i.serialize_open_month_pair() for i in self.open_month_pairs],
 			'exceptions': self.exceptions, 
 			'description': self.description,
-			'location_type': self.location_type,
 			'address': self.address.serialize_address(),
 			'are_hours_available': self.are_hours_available, 
 			'timeslots': [i.serialize_timeslot(False) for i in self.timeslots], 
@@ -132,6 +210,10 @@ class FoodResource(db.Model):
 			'is_wheelchair_accessible': self.is_wheelchair_accessible, 
 			'is_accepts_snap': self.is_accepts_snap 
 		}
+		if include_food_resource_type:
+			dict["food_resource_type"] = self.food_resource_type.serialize_food_resource_type()
+		return dict
+
 
 	def serialize_map_list(self):
 		return {
@@ -200,3 +282,7 @@ class HTML(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	page = db.Column(db.String(100), unique=True)
 	value = db.Column(db.Text)
+
+class ZipSearch(db.Model):
+	zip_code = db.Column(db.String(5), primary_key = True)
+	search_count = db.Column(db.Integer)

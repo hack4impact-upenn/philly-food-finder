@@ -22,8 +22,27 @@ $(document).ready(function() {
 		hideAll("-table", "expand-food-resource");
 	}); 
 
+	$(".required").each(function(index) {
+		var currentHtml = $(this).html(); 
+		currentHtml += "<div class='required-asterisk'>*</div>"; 
+		$(this).html(currentHtml);
+	});
+
+	$(".required-disclaimer").each(function(index) {
+		var currentHtml = $(this).html(); 
+		currentHtml = "<div class='required-asterisk'>*</div>" + currentHtml; 
+		$(this).html(currentHtml);
+	});
+
+	setColorBoxColor(); 
+
+	setPinImageSize();
+
 	// Remove a food resource without reloading page.
-	removeFoodResource(); 	
+	onClickRemoveFoodResource();
+
+	// Remove a food resource type without reloading page.
+	onClickRemoveFoodResourceType(); 	
 
 	// If an "Expand" button is pressed, either show or hide the associated
 	// food resource table.
@@ -201,75 +220,128 @@ function showAll(idToShow, classToToggleExpandSymbol) {
 // If an "Expand" button is pressed, either show or hide the associated
 // food resource table.
 function toggleAdminFoodResourceTypeVisibility() {
-	$(".expand-food-resource-type").click(function() {
-		var id = $(this).attr('id');  
-		var prefix = "food-resource-type-expand-"; 
-		var start_index = prefix.length; 
-		var resource_type = id.substring(start_index); 
-		var table_to_expand = resource_type + "-table"; 		
-		toggleExpansion(table_to_expand, "expand-food-resource-type"); 
-	})
+	toggleTable("expand-food-resource-type", 
+		"food-resource-type-expand-", "-food-resource-type-table", 
+		"expand-food-resource-type");
 }
 
 // If an "Expand" button is pressed, either show or hide the associated
 // food resource information.
 function toggleAdminFoodResourceVisibility() {
-	$(".expand-food-resource").click(function() {
+	toggleTable("expand-food-resource", 
+		"food-resource-expand-", "-food-resource-table", 
+		"expand-food-resource");
+}
+
+function toggleTable(classThatIsClickedToTriggerExpansion, 
+	idPrefixThatIsClicked, tableIdToExpandSuffix, expandSymbolClass) {
+		$("." + classThatIsClickedToTriggerExpansion).click(function() {
 		var id = $(this).attr('id');  
-		var prefix = "food-resource-expand-"; 
+		var prefix = idPrefixThatIsClicked; 
 		var start_index = prefix.length; 
-		var resource_id = id.substring(start_index); 
-		var table_to_expand = "food-resource-" + resource_id + "-table"; 		
-		toggleExpansion(table_to_expand, "expand-food-resource"); 
+		var resource_type = id.substring(start_index); 
+		var table_to_expand = resource_type + tableIdToExpandSuffix; 		
+		toggleExpansion(table_to_expand, expandSymbolClass); 
 	}) 
 }
 
-function removeFoodResource() {
+function setColorBoxColor() {
+	$(".color-box").each(function(index) {
+		var id = $(this).attr('id');  
+		var prefix = "color-box-"
+		var start_index = prefix.length;
+		var color_hex = id.substring(start_index);
+		$(this).css('background', "#" + color_hex);
+	});
+}
+
+function setPinImageSize() {
+	$(".pin-image").each(function(index) {
+		$(this).find("img").css('width', "20px");
+		$(this).find("img").css('height', "auto");
+	});
+}
+
+function onClickRemoveFoodResourceType() {
+	var foodResourceTypeToRemove = "";
+	$("[id$='-remove-food-resource-type']").click(function() {
+		foodResourceTypeToRemove = $(this);
+		console.log(foodResourceTypeToRemove); 
+		$(document).on('confirm', '.remodal', function () {
+		    removeFoodResourceType(foodResourceTypeToRemove);
+		});	
+	}); 
+}
+
+function removeFoodResourceType(element) {
+	var id = element.attr('id');
+	var dashIndex = id.indexOf("-"); 
+	var foodResourceTypeId = id.substring(0, dashIndex); 
+	$.getJSON($SCRIPT_ROOT + '/_remove_food_resource_type', {
+    		id: foodResourceTypeId
+    	},
+    	function(data) {
+			// Hide corresponding approved resource table.
+    		hide(foodResourceTypeId + "-food-resource-table");
+    		hide("food-resource-type-" + foodResourceTypeId);
+    	}
+    );  	
+}
+
+function removeFoodResource(element) {
+	var id = element.attr('id');
+	var dashIndex = id.indexOf("-"); 
+	var foodResourceId = id.substring(0, dashIndex); 
+	$.getJSON($SCRIPT_ROOT + '/_remove', {
+    		id: foodResourceId
+    	},
+    	function(data) {
+    		if (data["is_approved"]) {
+    			// Hide corresponding approved resource table.
+        		hide("food-resource-" + foodResourceId);
+        		hide(foodResourceId + "-food-resource-table");
+        		
+        		// Reduce total number of food resources.
+        		var currentNumResources = 
+        			$("#all-num-resources").html() - 1;
+        		$("#all-num-resources").html(currentNumResources);
+
+        		// Reduce individual number of food resources.
+        		var individualNumResources = $("#food-resource-" 
+        			+ foodResourceId).parent().parent().parent()
+        			.find(".total-num-resources").html();
+        		individualNumResources--; 
+        		$("#food-resource-" + foodResourceId).parent().parent()
+        			.parent().find(".total-num-resources")
+        			.html(individualNumResources); 
+
+        		if (individualNumResources == 0) {
+        			var header = $("#food-resource-" + foodResourceId)
+        				.parent().parent().parent()
+        				.find(".admin-food-resource-type-header");
+        			var headerIndex = header.attr("id").indexOf("-header"); 
+        			var foodResourceType = header.attr("id")
+        				.substring(0, headerIndex);
+        			var html = getNoResourcesHtml(foodResourceType);
+        			header.after(html);
+    			}
+    		}
+    		else {
+    			// Hide corresponding pending resource table.
+    			hide("food-resource-pending-" + foodResourceId);
+        		hide("food-resource-" + foodResourceId + "-table-pending");
+    		}
+    	});  
+}
+
+function onClickRemoveFoodResource() {
+	var foodResourceToRemove = "";
 	$("[id$='remove']").click(function() {
-		var id = $(this).attr('id');
-		var dashIndex = id.indexOf("-"); 
-		var foodResourceId = id.substring(0, dashIndex); 
-		$.getJSON($SCRIPT_ROOT + '/_remove', {
-        		id: foodResourceId
-        	},
-        	function(data) {
-        		if (data["is_approved"]) {
-        			// Hide corresponding approved resource table.
-	        		hide("food-resource-" + foodResourceId);
-	        		hide("food-resource-" + foodResourceId + "-table");
-	        		
-	        		// Reduce total number of food resources.
-	        		var currentNumResources = 
-	        			$("#all-num-resources").html() - 1;
-	        		$("#all-num-resources").html(currentNumResources);
-
-	        		// Reduce individual number of food resources.
-	        		var individualNumResources = $("#food-resource-" 
-	        			+ foodResourceId).parent().parent().parent()
-	        			.find(".total-num-resources").html();
-	        		individualNumResources--; 
-	        		$("#food-resource-" + foodResourceId).parent().parent()
-	        			.parent().find(".total-num-resources")
-	        			.html(individualNumResources); 
-
-	        		if (individualNumResources == 0) {
-	        			var header = $("#food-resource-" + foodResourceId)
-	        				.parent().parent().parent()
-	        				.find(".admin-food-resource-type-header");
-	        			var headerIndex = header.attr("id").indexOf("-header"); 
-	        			var foodResourceType = header.attr("id")
-	        				.substring(0, headerIndex);
-	        			var html = getNoResourcesHtml(foodResourceType);
-	        			header.after(html);
-        			}
-        		}
-        		else {
-        			// Hide corresponding pending resource table.
-        			hide("food-resource-pending-" + foodResourceId);
-	        		hide("food-resource-" + foodResourceId + "-table-pending");
-        		}
-        	});  
-	});	
+		foodResourceToRemove = $(this);
+		$(document).on('confirm', '.remodal', function () {
+		    removeFoodResource(foodResourceToRemove);
+		});	
+	}); 
 }
 
 function setTotalNumResources(num) {
@@ -278,6 +350,42 @@ function setTotalNumResources(num) {
 
 function getIndividualNumResources(resourceType) {
 	return $("#" + resourceType + "-num-resources").html();
+}
+
+function isInteger (s) {
+	var isInteger_re = /^\s*(\+|-)?\d+\s*$/;
+	return String(s).search (isInteger_re) != -1;
+}
+
+function onChangeNumberOfTimeslots() {
+	$("[id$='-num_timeslots']").change(function() {
+		var id = $(this).attr('id');
+		var dayOfWeekIndex = id.split("-")[1];
+		var num = $(this).val(); 
+		updateVisibleTimeslots(dayOfWeekIndex, num);
+	}); 
+}
+
+function updateVisibleTimeslots() {
+	$("[id$='-num_timeslots']").each(function(index) {
+		var id = $(this).attr('id');
+		var dayOfWeekIndex = id.split("-")[1];
+		var num = $(this).val(); 
+		updateVisibleTimeslot(dayOfWeekIndex, num);
+	});
+}
+
+function updateVisibleTimeslot(dayOfWeekIndex, numTimeslots) {
+	if (isInteger(numTimeslots) && numTimeslots >= 1 && numTimeslots <= 10) {
+		for (var i = 1; i < numTimeslots; i++) {
+			var idToShow = "daily_timeslots-" + dayOfWeekIndex + "-timeslots-" + i;
+			$("#" + idToShow).show(); 
+		}
+		for (var i = numTimeslots; i < 10; i++) {
+			var idToHide = "daily_timeslots-" + dayOfWeekIndex + "-timeslots-" + i;
+			$("#" + idToHide).hide();
+		}
+	}
 }
 
 function setIndividualNumResources(num, resourceType) {
@@ -291,7 +399,7 @@ function clearTablesOfFoodResources() {
 
 function getNoResourcesHtml(resourceInfoId) {
 	var html = 
-	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">' +
+	'<div id="' + resourceInfoId + '-food-resource-type-table" class="admin-food-resource-type">' +
 		'<div class="no-resources-message">None to display.</div>' +
 	'</div>';
 	return html;
@@ -300,7 +408,8 @@ function getNoResourcesHtml(resourceInfoId) {
 function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural, 
 	resourcesArray, daysOfWeek) {
 	var html = 
-	'<div id="' + resourceInfoId + '-table" class="admin-food-resource-type">';
+	'<div id="' + resourceInfoId + '-food-resource-type-table" ' + 
+		'class="admin-food-resource-type">';
 
 	// Iterate through all food resources in the array.
 	for (var i = 0; i < resourcesArray.length; i++) {
@@ -318,17 +427,17 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					resource["name"] + 
 				'</div>' + 
 				'<div class="small-2 columns">' + 
-					'<a href="/edit/' + resource["id"] + '" ' + 
+					'<a href="/admin/edit/' + resource["id"] + '" ' + 
 						'class="food-resource-update-button">Edit</a>' + 
 				'</div>' + 
 				'<div class="small-2 columns">' + 
-					'<div id="' + resource["id"] + '-remove" ' + 
-						'class="food-resource-update-button">Remove</div>' + 
+					'<a href="#modal" id="' + resource["id"] + '-remove" ' + 
+						'class="food-resource-update-button">Remove</a>' + 
 					'</div>' + 
 			'</div>' + 
 			'<!-- Resource content -->' +  
-			'<div class="row admin-food-resource" id="food-resource-'
-				+ resource["id"] + '-table">' + 
+			'<div class="row admin-food-resource" id="' + resource["id"] 
+				+ '-food-resource-table">' + 
 				'<div class="large-6 small-12 columns">' + 
 					'<div class="row">' + 
 						'<div class="small-3 columns">' + 
@@ -504,7 +613,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					if (timeslot["day_of_week"] == day["index"]) {
 						html += 
 									timeslot["start_time"] + " - " 
-										+ timeslot["end_time"];
+										+ timeslot["end_time"] + "<br>";
 					}
 				}
 

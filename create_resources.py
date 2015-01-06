@@ -21,7 +21,11 @@ def main():
 				location_type = row[1] # Required.
 
 				# Ignore any rows that don't have a food resource type.
-				if location_type: 
+				if location_type:
+
+					# Create food resource's FoodResourceType.
+					location_type = FoodResourceType.query \
+						.filter_by(enum=location_type).first() 
 
 					#print "row = " + str(i) + "\n"
 
@@ -108,7 +112,7 @@ def main():
 						phone_numbers = phone_numbers,
 						url = website,
 						description = description,
-						location_type = location_type,
+						food_resource_type = location_type,
 						address = address,
 						are_hours_available = are_hours_available,
 						timeslots = timeslots,

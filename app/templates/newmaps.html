@@ -13,8 +13,29 @@
         lat: 39.9500,
         lng: -75.1667
       });
+
       $('#geocoding_form').submit(function(e){
+
+        // Check that zip code is properly formed.
+        var regex = /^(\d{5})?$/; // 5-digit number or an empty string.
+        var zipCode = $("#address").val().trim(); 
         e.preventDefault();
+        if (regex.test(zipCode)) {
+            $("#map-search-error").html("");
+        } else {
+          // Provide helpful error message to user.
+          // Clear any errors.
+          $("#map-search-error")
+            .html("<small class=error>Zip code must consist of exactly 5 digits (0-9).</small>");
+            return;
+        }
+        // Store search result in database
+        var json_data = {
+          zipCode: zipCode
+        };
+        $.post(url = $SCRIPT_ROOT + '/_search_query', data = json_data);
+
+
         GMaps.geocode({
           address: $('#address').val().trim(),
           callback: function(results, status){
@@ -32,22 +53,22 @@
           zip_code: zipCode
         },
             function(data) {
-              for (var i = 0; i < data["addresses"].length; i++)
-              {
-                var newAddress = data["addresses"][i]["address"]["line1"] + ', ' + data["addresses"][i]["address"]["city"] + ', ' + data["addresses"][i]["address"]["state"] ;
+              for (var i = 0; i < data["addresses"].length; i++) {
+                var newAddress = data["addresses"][i]["address"]["line1"] + ', ' 
+                  + data["addresses"][i]["address"]["city"] + ', ' 
+                  + data["addresses"][i]["address"]["state"] ;
                 (function(){
                     var newTitle = data["addresses"][i]["name"];
-                    var newDescription = newTitle + "<br>" + data["addresses"][i]["description"] + "<br>" 
-                    + "Contact Information: " + data["addresses"][i]["phone_number"]["number"];
+                    var newDescription = newTitle + "<br>" 
+                      + data["addresses"][i]["description"] + "<br>" 
+                      + "Contact Information: " 
+                      + data["addresses"][i]["phone_number"]["number"];
                     console.log(data["addresses"][i]["phone_number"])          
-                    var newType = data["addresses"][i]["location_type"];
-                if (newType == 'FARMERS_MARKET') { var image = "../static/img/mbb_yellow.png" }
-                else if (newType == 'FOOD_CUPBOARD') { var image = "../static/img/mbb_green.png" }
-                else if (newType == 'SENIOR_MEAL') { var image = "../static/img/mbb_blue.png" }
-                else if (newType == 'SHARE') { var image = "../static/img/mbb_red.png" }
-                else if (newType == 'SOUP_KITCHEN') { var image = "../static/img/mbb_orange.png" }
-                else if (newType == 'WIC_OFFICE') { var image = "../static/img/mbb_purple.png" }
-                else                   { var image = "../static/img/FPAC_LOGO.png"}
+                    var newType = 
+                      data["addresses"][i]["food_resource_type"]["enum"];
+                    var filename = 
+                      data["addresses"][i]["food_resource_type"]["colored_pin"]["pin_image_name"];
+                    var image = "../static/img/" + filename; 
                 GMaps.geocode({
                   address: newAddress,
                   callback: function(results, status) {
@@ -101,46 +122,34 @@
                     <label for="address">Zip Code:</label>
                     <input type="text" id="address" name="address" />
                 </div>
+
                 <div class="small-8 columns">
                     <ul id="checkboxes">
-                      <li id="checkbox-li"><input type="checkbox" id="map-filter-by-open-now"> Open now </li>
                       <li id="checkbox-li"><input type="checkbox" id="map-filter-by-families-and-children"> Families and children</li>
                       <li id="checkbox-li"><input type="checkbox" id="map-filter-by-seniors"> Seniors</li>
                     </ul>
+
                 </div>
                 <div class="small-12 columns search-buttons">
                     <input type="submit" class="button radius small" value="Search" id="map-search-button" />
                     <input type="submit" class="button radius small" value="Clear Filters" id="map-filter-button" />
+                </div>
+                <div class="row">
+                    <div class="small-12 columns" id="map-search-error">
+                    </div>
                 </div>
             </form>      
             <div id="map-container">
                 <div class="large-4" id="map"></div>
             </div> 
             <div id="map-key">
+
+                {% for food_resource_type in food_resource_types %}
                 <div class="small-6 medium-4 columns pin-definition">
-                    <img src="../static/img/mbb_yellow.png" alt="Yellow Pin"/>
-                    Farmers' Market
+                    <img src="../static/img/{{ food_resource_type.colored_pin.pin_image_name }}" alt="{{ food_resource_type.colored_pin.color_name}} Pin"/>
+                    {{ food_resource_type.name_singular }}
                 </div>
-                <div class="small-6 medium-4 columns pin-definition">
-                    <img src="../static/img/mbb_blue.png" alt="Blue Pin"/>
-                    Senior Meal
-                </div>
-                <div class="small-6 medium-4 columns pin-definition">
-                    <img src="../static/img/mbb_green.png" alt="Green Pin"/>
-                    Food Cupboard
-                </div>
-                <div class="small-6 medium-4 columns pin-definition">
-                    <img src="../static/img/mbb_red.png" alt="Red Pin"/>
-                    SHARE Host Site
-                </div>
-                <div class="small-6 medium-4 columns pin-definition">
-                    <img src="../static/img/mbb_orange.png" alt="Orange Pin"/>
-                    Soup Kitchen
-                </div>
-                <div class="small-6 medium-4 columns pin-definition">
-                    <img src="../static/img/mbb_purple.png" alt="Yellow Pin"/>
-                    WIC Office
-                </div>
+                {% endfor %}
             </div>
             <div id="footer-spacer">
             </div>
