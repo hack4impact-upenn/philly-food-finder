@@ -148,18 +148,11 @@ def get_time_from_string(time_string):
 	return time(time_hour, time_minute)
 
 def is_open(resource, current_date = None):
-	month_pairs = resource.open_month_pairs
 	timeslots = resource.timeslots
 
 	if(current_date is None):
 		eastern = timezone('US/Eastern')
 		current_date = datetime.now(eastern)
-	
-	for pair in month_pairs:
-		start_month = pair.start_month
-		end_month = pair.end_month
-		if not (current_date.month <= end_month and current_date.month >= start_month):
-			return False
 
 	weekday = 0
 	if current_date.weekday() == 0:
@@ -445,7 +438,7 @@ def import_file(path):
 					is_accepts_snap = is_accepts_snap).first()
 
 				if duplicate:
-					make_error("Identical resource already exists in database.", i)
+					make_error("Identical resource (" + name + ") already exists in database.", i)
 
 				# Create food resource.
 				food_resource = FoodResource(
