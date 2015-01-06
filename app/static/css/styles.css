@@ -19,6 +19,8 @@
 body {
   background-color: #F7F9F9;
   letter-spacing: .3px;
+  font-weight: 200;
+  font-family: "Helvetica Neue";
 }
 
 body#map_p {
@@ -74,9 +76,11 @@ hr {
 }
 
 label {
-  font-size: 1rem;
+  font-size: 1.275rem;
   color: #343434;
-  font-weight: 400;
+  font-weight: 200;
+  margin-top: .275rem;
+  margin-bottom: .1rem;
 }
 
 .row {
@@ -133,7 +137,12 @@ button, .button{
   border-color: #666666;
   color: #FFF;
   opacity: 0.95;
-  
+}
+
+button.small, .button.small {
+  font-size: .875rem;
+  font-weight: 200;
+  letter-spacing: 0.5px;
 }
 
 button:hover, button:focus, .button:hover, .button:focus {
@@ -146,7 +155,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 }*/
 
 .search-buttons {
-  margin-top: 1em;
+  margin-top: 0.5em;
 }
 
 /* HEADER - top-bar */
@@ -330,9 +339,10 @@ img {
 }
 
 #checkboxes {
-    list-style-type: none;
-    display:inline;
-    margin: 0px;
+  list-style-type: none;
+  display:inline;
+  margin: 0px;
+  font-weight: 200;
 }
 
 /* display checkboxes in one line if screen is big, otherwise stack */
@@ -340,6 +350,10 @@ img {
   #checkbox-li {
     display: inline;
   }
+}
+
+#checkbox-li {
+  margin: 5px;
 }
 
 #footer-spacer {
@@ -481,7 +495,12 @@ table thead tr th, table thead tr td {
 }
 
 input[type=checkbox] {
-  margin-left:10px;
+  margin-top:15px;
+  margin-bottom:15px;
+}
+
+input[type="text"] {
+  margin:0;
 }
 
 .pin-definition {
