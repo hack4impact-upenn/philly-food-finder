@@ -239,21 +239,21 @@ button:hover, button:focus, .button:hover, .button:focus {
   top: 37px;
 }
 
-/* dropdown */
+/* dropdown - items */
 .top-bar-section .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
   background-color: #555555;
-  background: #FFF; 
+  color: #FFF; 
 }
 
+/* dropdown - top button */
 .top-bar-section ul li:hover:not(.has-form) > a {
   background-color: #555555;
   background: #FFF; 
 }
 
-
 /* resources dropdown */
 .top-bar-section .drop-resources .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
-  color: #009933;
+  background: #009933;
 }
 
 .top-bar-section ul li:hover:not(.has-form) > a {
@@ -262,7 +262,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 /* admin dropdown */
 .top-bar-section .drop-admin .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
-  color: #ef3d23;
+  background: #ef3d23;
 }
 
 .top-bar-section .drop-admin ul li:hover:not(.has-form) > a {
