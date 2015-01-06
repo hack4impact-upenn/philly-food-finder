@@ -15,7 +15,7 @@
   	    	<div class="row">
   	    		<p>All Food Resource data in the database can be downloaded as a csv. This csv will be formatted precisely like the sample below.</p>
   	    	</div>
-  	    	<div class="row">
+  	    	<div class="row text-center">
   				<a role="button" href="{{ url_for('download') }}" class="button radius medium" id="download-button">Download</a>
   			</div>
       </div>
@@ -33,7 +33,7 @@
 	    		<div id="sample_table_div"></div>
 	  		</div>
 
-        <div class="row" id="download-buttons">
+        <div class="row text-center" id="download-buttons">
 	  		  <a role="button" href="https://docs.google.com/uc?authuser=0&id=0B1JCetguAr9fcFF3Mjh2ckhNWWs&export=download" class="button button radius medium" id="sample-download-button">Download Import CSV</a>
 	    	  <a role="button" href="https://drive.google.com/file/d/0B1JCetguAr9fcFF3Mjh2ckhNWWs/view?usp=sharing" class="button button radius medium" id="sample-download-button">View Import CSV</a>
 	  	  </div>
@@ -45,8 +45,9 @@
 			<form action="/_csv_input"
 				  class="dropzone"
 				  id="my-awesome-dropzone"></form>
+				  <div class="row text-center">
       <div class="button radius medium" id="upload-button">Upload</div>  
-		</div></div>	  
+		</div></div>	  </div>
 	</div>
 
 	<div class="remodal" id="error-modal" data-remodal-id="error-modal" data-remodal-options="hashTracking: false">

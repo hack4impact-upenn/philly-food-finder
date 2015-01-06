@@ -168,6 +168,7 @@ button:hover, button:focus, .button:hover, .button:focus {
   background: #FFF;
   height: 70px;
   opacity: 0.95;
+  z-index: 1;
 }
 
 .top-bar .name {
