@@ -648,7 +648,7 @@ def download():
 	resources = FoodResource.query.filter_by(is_approved = True).all()
 
 	outcsv.writerow(['Table 1'])
-	outcsv.writerow(['','Type (' + get_string_of_all_food_resource_types() + ')',
+	data = ['','Type (' + get_string_of_all_food_resource_types() + ')',
 		'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 
 		'State', 'Zip Code', 'Phone Number (optional)', 
 		'Website (optional)', 'Description (optional)', 
@@ -665,154 +665,15 @@ def download():
 		'Open Wednesday? (either \'Yes\' or leave blank)', 
 		'Open Thursday? (either \'Yes\' or leave blank)', 
 		'Open Friday? (either \'Yes\' or leave blank)', 
-		'Open Saturday? (either \'Yes\' or leave blank)', 
-		# Sunday opening and closing times
-		'Sunday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Sunday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Sunday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
-		'Sunday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
-		'Sunday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
-		'Sunday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
-		'Sunday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
-		'Sunday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
-		'Sunday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
-		'Sunday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
-		'Sunday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
-		'Sunday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
-		'Sunday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
-		'Sunday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
-		'Sunday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
-		'Sunday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
-		'Sunday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
-		'Sunday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
-		'Sunday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
-		'Sunday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
-		# Monday opening and closing times 
-		'Monday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Monday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Monday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
-		'Monday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
-		'Monday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
-		'Monday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
-		'Monday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
-		'Monday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
-		'Monday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
-		'Monday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
-		'Monday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
-		'Monday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
-		'Monday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
-		'Monday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
-		'Monday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
-		'Monday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
-		'Monday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
-		'Monday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
-		'Monday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
-		'Monday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
-		# Tuesday opening and closing times 
-		'Tuesday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Tuesday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Tuesday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
-		'Tuesday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
-		'Tuesday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
-		'Tuesday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
-		'Tuesday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
-		'Tuesday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
-		'Tuesday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
-		'Tuesday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
-		'Tuesday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
-		'Tuesday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
-		'Tuesday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
-		'Tuesday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
-		'Tuesday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
-		'Tuesday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
-		'Tuesday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
-		'Tuesday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
-		'Tuesday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
-		'Tuesday Closing Time #10 (military time - e.g., 8:00 or 17:00)',
-		# Wednesday opening and closing times 
-		'Wednesday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Wednesday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Wednesday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
-		'Wednesday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
-		'Wednesday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
-		'Wednesday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
-		'Wednesday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
-		'Wednesday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
-		'Wednesday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
-		'Wednesday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
-		'Wednesday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
-		'Wednesday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
-		'Wednesday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
-		'Wednesday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
-		'Wednesday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
-		'Wednesday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
-		'Wednesday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
-		'Wednesday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
-		'Wednesday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
-		'Wednesday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
-		# Thursday opening and closing times
-		'Thursday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Thursday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Thursday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
-		'Thursday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
-		'Thursday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
-		'Thursday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
-		'Thursday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
-		'Thursday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
-		'Thursday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
-		'Thursday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
-		'Thursday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
-		'Thursday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
-		'Thursday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
-		'Thursday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
-		'Thursday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
-		'Thursday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
-		'Thursday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
-		'Thursday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
-		'Thursday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
-		'Thursday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
-		# Friday opening and closing times 
-		'Friday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Friday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Friday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
-		'Friday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
-		'Friday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
-		'Friday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
-		'Friday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
-		'Friday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
-		'Friday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
-		'Friday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
-		'Friday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
-		'Friday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
-		'Friday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
-		'Friday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
-		'Friday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
-		'Friday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
-		'Friday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
-		'Friday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
-		'Friday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
-		'Friday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
-		# Saturday opening and closing times 
-		'Saturday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Saturday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
-		'Saturday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
-		'Saturday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
-		'Saturday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
-		'Saturday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
-		'Saturday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
-		'Saturday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
-		'Saturday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
-		'Saturday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
-		'Saturday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
-		'Saturday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
-		'Saturday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
-		'Saturday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
-		'Saturday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
-		'Saturday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
-		'Saturday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
-		'Saturday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
-		'Saturday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
-		'Saturday Closing Time #10 (military time - e.g., 8:00 or 17:00)'])
+		'Open Saturday? (either \'Yes\' or leave blank)']
+	for day_of_week in ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
+		"Friday", "Saturday"]:
+		for i in range(1, 11): 
+			data.append(str(day_of_week) + ' Opening Time #' + str(i) + 
+				' (military time - e.g., 8:00 or 17:00)') 
+			data.append(str(day_of_week) + ' Closing Time #' + str(i) + 
+				' (military time - e.g., 8:00 or 17:00)')
+	outcsv.writerow(data)
 
 	for i, resource in enumerate(resources):
 		# 2-dimensional array to hold all timeslots.
@@ -851,12 +712,15 @@ def download():
 			'Yes' if len(all_timeslots[6]) != 0 else '']
 		for day_of_week_timeslots in all_timeslots: # 7 days of the week.
 			for j in range (0, 10): # [0, 10) - 10 possible timeslots per day.
-				if j >= len(day_of_week_timeslots) or day_of_week_timeslots[j] is None:
+				if j >= len(day_of_week_timeslots) or \
+					day_of_week_timeslots[j] is None:
 					data.append('') # Start time is empty.
 					data.append('') # End time is empty.
 				else:
-					data.append(day_of_week_timeslots[j].start_time.strftime('%H:%M'))
-					data.append(day_of_week_timeslots[j].end_time.strftime('%H:%M'))
+					data.append(day_of_week_timeslots[j] \
+						.start_time.strftime('%H:%M'))
+					data.append(day_of_week_timeslots[j] \
+						.end_time.strftime('%H:%M'))
 		outcsv.writerow(data)
 
 	def generate():
