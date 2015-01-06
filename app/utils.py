@@ -197,13 +197,13 @@ def get_possible_opening_times():
 		year=2014, 	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=1,		# Arbitrary.
-		hour=7, 	# First opening time is 7:00 AM.
+		hour=0, 	# First opening time is 12:00 AM.
 		minute=0)
 	final_opening_time = datetime( 
 		year=2014,	# Arbitrary.
 		month=1, 	# Arbitrary.
-		day=1,		# Arbitrary.
-		hour=17,	# Final opening time is 5:00 PM.
+		day=2,		# Arbitrary.
+		hour=0,		# Final opening time is 11:45 PM.
 		minute=0)
 	while opening_time != final_opening_time:
 		opening_times.append(
@@ -223,13 +223,13 @@ def get_possible_closing_times():
 		year=2014, 	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=1,		# Arbitrary.
-		hour=11, 	# First closing time is 11:00 AM.
+		hour=0, 	# First closing time is 12:00 AM.
 		minute=0)
 	final_closing_time = datetime( 
 		year=2014,	# Arbitrary.
 		month=1, 	# Arbitrary.
-		day=1,		# Arbitrary.
-		hour=21,	# Final closing time is 9:00 PM.
+		day=2,		# Arbitrary.
+		hour=0,		# Final closing time is 11:45 PM.
 		minute=0)
 	while closing_time != final_closing_time:
 		closing_times.append(
