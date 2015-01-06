@@ -11,57 +11,66 @@
   </div>
 </div>
 
-<form action="" method="POST" class="form" role="form">
-    {{ form.hidden_tag() }}
+<div class="row">
+    <div class="large-8 medium-8 small-8 large-centered 
+                        medium-centered small-centered columns">
+    <form action="" method="POST" class="form" role="form">
+        {{ form.hidden_tag() }}
 
-    {% set field = form.username if user_manager.enable_username else form.email %}
-        <div class="row">
-            <div class="large-6 columns">
-                <dt>{{ form.email.label }}
-                <dd class="error">{{ form.email()|safe }}
-                {% if field.errors %}
-                    {% for e in field.errors %}
-                        <small class="error">{{ e }}</small>
-                    {% endfor %}
-                {% endif %}
-            </div>
-        </div>
-
-    {% set field = form.first_name %}
-        <div class="row">
-            <div class="large-6 columns">
-                <dt>{{ field.label }}
-                <dd class="error">{{ field()|safe }}
+        {% set field = form.username if user_manager.enable_username else form.email %}
+            <div class="row">
+                <div class="large-8 medium-8 small-8 large-centered 
+                            medium-centered small-centered columns">
+                    <dt>{{ form.email.label }}
+                    <dd class="error">{{ form.email()|safe }}
                     {% if field.errors %}
                         {% for e in field.errors %}
-                            {% if e %}
-                                <small class="error">{{ e }}</small>
-                            {% endif %}
+                            <small class="error">{{ e }}</small>
                         {% endfor %}
                     {% endif %}
+                </div>
             </div>
-        </div>
-        
-    {% set field = form.last_name %}
-        <div class="row">
-            <div class="large-6 columns">
-                <dt>{{ field.label }}
-                <dd class="error">{{ field()|safe }}
-                    {% if field.errors %}
-                        {% for e in field.errors %}
-                            {% if e %}
-                                <small class="error">{{ e }}</small>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-            </div>
-        </div>
-     
 
-    <div class = "row">
-        {# Invite button #}
-        {{ render_submit_field(form.submit, tabindex=180) }}
-    </div>
+        {% set field = form.first_name %}
+            <div class="row">
+                <div class="large-8 medium-8 small-8 large-centered 
+                            medium-centered small-centered columns">
+                    <dt>{{ field.label }}
+                    <dd class="error">{{ field()|safe }}
+                        {% if field.errors %}
+                            {% for e in field.errors %}
+                                {% if e %}
+                                    <small class="error">{{ e }}</small>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                </div>
+            </div>
+            
+        {% set field = form.last_name %}
+            <div class="row">
+                <div class="large-8 medium-8 small-8 large-centered 
+                            medium-centered small-centered columns">
+                    <dt>{{ field.label }}
+                    <dd class="error">{{ field()|safe }}
+                        {% if field.errors %}
+                            {% for e in field.errors %}
+                                {% if e %}
+                                    <small class="error">{{ e }}</small>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                </div>
+            </div>
+         
+
+        <div class="row">
+                <div class="large-8 medium-8 small-8 large-centered 
+                            medium-centered small-centered columns submit-button">
+            {# Invite button #}
+            {{ render_submit_field(form.submit, tabindex=180) }}
+        </div>
+    </div></div>
 </form>
 
 {% endblock %}

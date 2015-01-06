@@ -353,7 +353,7 @@
 		      			{% set timeslot_index = loop.index0 %}
 			      			{{ timeslot_form.form.hidden_tag() }}
 				      		<div class="row" id="daily_timeslots-{{ day_of_week_index }}-timeslots-{{ timeslot_index }}">
-								<div class="large-6 small-6 columns" id="middle-padding-section">
+								<div class="large-8 small-6 columns" id="middle-padding-section">
 									<label>{{ timeslot_form.starts_at.label }}
 										<dd class="error">{{ timeslot_form.starts_at()|safe }}
 										{% if timeslot_form.starts_at.errors %}
@@ -366,7 +366,7 @@
 										</dd>
 									</label>
 								</div>
-								<div class="large-6 small-6 columns" id="middle-padding-section">
+								<div class="large-8 small-6 columns" id="middle-padding-section">
 									<label>{{ timeslot_form.ends_at.label }}
 										<dd class="error">{{ timeslot_form.ends_at()|safe }}
 										{% if timeslot_form.ends_at.errors %}

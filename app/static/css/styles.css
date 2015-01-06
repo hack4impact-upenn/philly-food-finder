@@ -123,7 +123,7 @@ input::-moz-placeholder {
   margin-top: 10px;
 }
 
-#submit-button {
+.submit-button {
   margin-top: 20px;
 }
 
@@ -332,6 +332,7 @@ img {
 #checkboxes {
     list-style-type: none;
     display:inline;
+    margin: 0px;
 }
 
 /* display checkboxes in one line if screen is big, otherwise stack */
@@ -402,16 +403,20 @@ img {
 }
 
 .row .row {
-  margin: 10;
+  margin: 0;
 }
 
 .resources {
   background-color: #EEEEEE;
-  padding: 0;
+  padding: 0.5%;
+}
+
+#resources-table {
+
 }
 
 table thead tr th, table thead tr td {
-  font-size: 0.9rem;
+  font-size: 1.075rem;
   font-weight: 200;
   color: #222222;
   letter-spacing: .5px;
@@ -534,6 +539,12 @@ li {
 .required-disclaimer {
   color: #999999;
 }
+
+/* pop-up modal 
+.remodal, .remodal * {
+  font-family: "Helvetica Neue";
+}
+*/
 
 /* Dropzone styling */
 
