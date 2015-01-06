@@ -187,13 +187,13 @@ def get_possible_opening_times():
 		year=2014, 	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=1,		# Arbitrary.
-		hour=7, 	# First opening time is 7:00 AM.
+		hour=0, 	# First opening time is 12:00 AM.
 		minute=0)
 	final_opening_time = datetime( 
 		year=2014,	# Arbitrary.
 		month=1, 	# Arbitrary.
-		day=1,		# Arbitrary.
-		hour=17,	# Final opening time is 5:00 PM.
+		day=2,		# Arbitrary.
+		hour=0,		# Final opening time is 11:45 PM.
 		minute=0)
 	while opening_time != final_opening_time:
 		opening_times.append(
@@ -213,13 +213,13 @@ def get_possible_closing_times():
 		year=2014, 	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=1,		# Arbitrary.
-		hour=11, 	# First closing time is 11:00 AM.
+		hour=0, 	# First closing time is 12:00 AM.
 		minute=0)
 	final_closing_time = datetime( 
 		year=2014,	# Arbitrary.
 		month=1, 	# Arbitrary.
-		day=1,		# Arbitrary.
-		hour=21,	# Final closing time is 9:00 PM.
+		day=2,		# Arbitrary.
+		hour=0,		# Final closing time is 11:45 PM.
 		minute=0)
 	while closing_time != final_closing_time:
 		closing_times.append(
@@ -285,29 +285,42 @@ def import_file(path):
 		elif row_slot is None or row_slot == "":
 			return False
 		else:
-			make_error(row_slot+' is invalid. Please put Yes or leave blank.', row_index)
+			make_error(str(row_slot) + ' is invalid. Please put Yes or leave blank.', row_index)
 			return False # To prevent program from breaking too early
 
 	def required(field_name, field_val, row_index):
 		field_val = field_val.strip()
 		if not field_val:
-			errors.append(field_name + " is a required field (row " \
+			errors.append(str(field_name) + " is a required field (row " \
 				+ str(row_index+1) + ").")
 
 	def make_error(exception_text, row_index):
-		errors.append(exception_text + " (row " + str(row_index+1) + ").")
+		errors.append(str(exception_text) + " (row " + str(row_index+1) + ").")
 
 	def check_length(field_name, field_val, length, row_index):
 		field_val = field_val.strip()
 		if field_val and len(field_val) > length:
-			errors.append(field_val + " is longer than the max length of " \
+			errors.append(str(field_val) + " is longer than the max length of " \
 				+ str(length) + " characters (row " + str(row_index+1) + ").")
 
 	def check_time_format(field_val, row_index):
 		check = re.compile('^\d{1,2}:\d{2}$')
 		if check.match(field_val) is None:
-			errors.append(field_val + " is not a proper time format. Please " \
-				+ "use military time - e.g., 8:00 or 17:00. (row " + str(row_index+1) + ").")
+			errors.append(str(field_val) + " is not a proper time format. Please " \
+				+ "use military time - e.g., 8:00 or 17:00. (row " + str(row_index + 1) + ").")
+			return False
+		colon_index = field_val.index(":")
+		hours = int(field_val[0:colon_index])
+		if hours < 0 or hours > 23:
+			errors.append(str(field_val) + " has an invalid hour number. A \
+				valid hour number is between 0 and 23. (row " + \
+				str(row_index + 1) + ").")
+			return False
+		minutes = int(field_val[colon_index+1:])
+		if minutes < 0 or minutes > 59 or minutes % 15 != 0:
+			errors.append(str(field_val) + " has an invalid minute number. A \
+				valid minute number is either 0, 15, 30, or 45. (row " + \
+				str(row_index + 1) + ").")
 			return False
 		return True
 
@@ -329,7 +342,7 @@ def import_file(path):
 					.filter_by(enum=location_type_table).first() 
 
 				if location_type is None and location_type_table is not None:
-					make_error('The location_type '+location_type_table+' is invalid', i)
+					make_error('The location_type ' + location_type_table + ' is invalid', i)
 
 				# Extract food resource's name.
 				name = str(row[2]) # Required.
@@ -358,7 +371,7 @@ def import_file(path):
 				# Ensures zip_code is exactly 5 digits
 				zip_code_strip = address_zip_code.strip()
 				if zip_code_strip and len(zip_code_strip) is not 5:
-					make_error('The zip_code '+zip_code_strip+' is not the right length. \
+					make_error('The zip_code ' + str(zip_code_strip) + ' is not the right length. \
 						Please ensure that it is 5 digits.', i)
 
 				# Create food resource's Address.
@@ -400,31 +413,47 @@ def import_file(path):
 					days_open.append(convert_string_to_boolean(str(row[j]), i)) 
 
 				# Extract the food resource's hours of operation.
-				daily_hours = []
-				for j in range(25, 39): # [25, 39)
+				all_daily_hours = [None] * 7
+				for i in range(0, 7):
+					all_daily_hours[i] = []
+				are_all_times_valid = True
+				first_time_column = 25
+				last_time_column = 165
+				for j in range(first_time_column, last_time_column):
 					time_string = str(row[j]).strip()
+					day_of_week = (j - first_time_column) / 20
 					if not time_string:
-						daily_hours.append("")
+						all_daily_hours[day_of_week].append("")
 					else:
 						if check_time_format(time_string, i):
-							daily_hours.append(get_time_from_string(time_string))
+							all_daily_hours[day_of_week].append(get_time_from_string(time_string))
+						else:
+							are_all_times_valid = False
 
 				# Create food resource's timeslots.
 				timeslots = []
-				for j, day_is_open in enumerate(days_open):
-					if day_is_open:
-						opening_time_1 = daily_hours[j*2]
-						closing_time_1 = daily_hours[j*2+1]
-						if opening_time_1 and closing_time_1:
-							if opening_time_1 >= closing_time_1:
-								make_error("Opening time must be before closing time", i)
-							timeslot = TimeSlot(
-								day_of_week=j, 
-								start_time=opening_time_1, 
-								end_time=closing_time_1
-							)
-							db.session.add(timeslot)
-							timeslots.append(timeslot)
+				if are_all_times_valid:
+					# Iterate through all day of the week.
+					for j, daily_hours in enumerate(all_daily_hours):
+						if days_open[j]:
+							# Iterate through 10 possible timeslots per day.
+							for k in range(0, 10):
+								opening_time = daily_hours[k*2]
+								closing_time = daily_hours[k*2+1]
+								if opening_time and closing_time:
+									if opening_time >= closing_time:
+										make_error("Opening time (" + \
+											str(opening_time.strftime('%H:%M')) + \
+											") must be before closing time (" + \
+											str(closing_time.strftime('%H:%M')) + 
+											")", i)
+									timeslot = TimeSlot(
+										day_of_week=j, 
+										start_time=opening_time, 
+										end_time=closing_time
+									)
+									db.session.add(timeslot)
+									timeslots.append(timeslot)
 
 				# Checks database to see if identical resource exists
 				duplicate = FoodResource.query.filter_by(

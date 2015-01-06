@@ -28,8 +28,8 @@
 	    	<div class="row">
 	    		<div id="sample_table_div"></div>
 	  		</div>
-	  		<a role="button" href="https://docs.google.com/uc?authuser=0&id=0B1JCetguAr9fcFF3Mjh2ckhNWWs&export=download" class="button button radius medium" id="sample-download-button">Download Import CSV</a>
-	    	<a role="button" href="https://drive.google.com/file/d/0B1JCetguAr9fcFF3Mjh2ckhNWWs/view?usp=sharing" class="button button radius medium" id="sample-download-button">View Import CSV</a>
+	  		<a role="button" href="https://docs.google.com/uc?authuser=0&id=0B3772_wowlyabl83a09LMG03elE&export=download" class="button button radius medium" id="sample-download-button">Download Import CSV</a>
+	    	<a role="button" href="https://drive.google.com/file/d/0B3772_wowlyabl83a09LMG03elE/view?usp=sharing" class="button button radius medium" id="sample-download-button">View Import CSV</a>
 	  	</div>
 		<div class="row">
 			<form action="/_csv_input"
@@ -66,39 +66,279 @@
     google.setOnLoadCallback(drawChart);
     function drawChart() {
 
-      var tableData = google.visualization.arrayToDataTable([
-      		['Table 1','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','',''],
-          ['','Type (SHARE_HOST_SITE, FARMERS_MARKET, FOOD_CUPBOARD, SENIOR_MEAL, SOUP_KITCHEN,  WIC_OFFICE, or new type already added by an admin)',
-			'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 'State', 'Zip Code', 'Phone Number (optional)', 
-			'Website (optional)', 'Description (optional)', 'Families and children? (either \'Yes\' or leave blank)', 
-			'Seniors? (either \'Yes\' or leave blank)', 'Wheelchair accessible? (either \'Yes\' or leave blank)', 
-			'Accepts SNAP? (either \'Yes\' or leave blank)', 'Accepts FMNP Vouchers? (either \'Yes\' or leave blank)', 
-			'Accepts Philly Food Bucks? (either \'Yes\' or leave blank)', 'Hours Available? (either \'Yes\' or leave blank)', 
-			'Open Sunday? (either \'Yes\' or leave blank)', 'Open Monday? (either \'Yes\' or leave blank)', 
-			'Open Tuesday? (either \'Yes\' or leave blank)',	'Open Wednesday? (either \'Yes\' or leave blank)', 
-			'Open Thursday? (either \'Yes\' or leave blank)', 'Open Friday? (either \'Yes\' or leave blank)', 
-			'Open Saturday? (either \'Yes\' or leave blank)', 'Sunday Opening Time (military time - e.g., 8:00 or 17:00)',
-			'Sunday Closing Time (military time - e.g., 8:00 or 17:00)', 'Monday Opening Time (military time - e.g., 8:00 or 17:00)', 
-			'Monday Closing Time (military time - e.g., 8:00 or 17:00)', 
-			'Tuesday Opening Time (military time - e.g., 8:00 or 17:00)', 'Tuesday Closing Time (military time - e.g., 8:00 or 17:00)',
-			'Wednesday Opening Time (military time - e.g., 8:00 or 17:00)', 
-			'Wednesday Closing Time (military time - e.g., 8:00 or 17:00)', 
-			'Thursday Opening Time (military time - e.g., 8:00 or 17:00)', 'Thursday Closing Time (military time - e.g., 8:00 or 17:00)', 'Friday Opening Time (military time - e.g., 8:00 or 17:00)', 'Friday Closing Time (military time - e.g., 8:00 or 17:00)', 'Saturday Opening Time (military time - e.g., 8:00 or 17:00)', 'Saturday Closing Time (military time - e.g., 8:00 or 17:00)'],
-			['1','FARMERS_MARKET','Fair Food Farmstand', '51 N. 12th St', 'Reading Terminal Market', 'Philadelphia', 'PA', '19107', '', '', 'Open year round', '', '', '', 'Yes', '', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes',	'Yes', 'Yes', 'Yes', 'Yes', '9:00','17:00', '8:00', '18:00', '8:00', '18:00','8:00', '18:00', '8:00', '18:00', '8:00', '18:00', '8:00', '18:00'],  
+ 	var tableData = google.visualization.arrayToDataTable([
+  		['Table 1','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','',''],
+      	['','Type (SHARE_HOST_SITE, FARMERS_MARKET, FOOD_CUPBOARD, ' +
+	      	'SENIOR_MEAL, SOUP_KITCHEN,  WIC_OFFICE, or new type already ' + 
+	      		'added by an admin)',
+			'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 
+			'State', 'Zip Code', 'Phone Number (optional)', 
+			'Website (optional)', 'Description (optional)', 
+			'Families and children? (either \'Yes\' or leave blank)', 
+			'Seniors? (either \'Yes\' or leave blank)', 
+			'Wheelchair accessible? (either \'Yes\' or leave blank)', 
+			'Accepts SNAP? (either \'Yes\' or leave blank)', 
+			'Accepts FMNP Vouchers? (either \'Yes\' or leave blank)', 
+			'Accepts Philly Food Bucks? (either \'Yes\' or leave blank)', 
+			'Hours Available? (either \'Yes\' or leave blank)', 
+			'Open Sunday? (either \'Yes\' or leave blank)', 
+			'Open Monday? (either \'Yes\' or leave blank)', 
+			'Open Tuesday? (either \'Yes\' or leave blank)',
+			'Open Wednesday? (either \'Yes\' or leave blank)',
+			'Open Thursday? (either \'Yes\' or leave blank)', 
+			'Open Friday? (either \'Yes\' or leave blank)',
+			'Open Saturday? (either \'Yes\' or leave blank)', 
+			/* Sunday opening and closing times */
+			'Sunday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
+			/* Monday opening and closing times */ 
+			'Monday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Monday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
+			/* Tuesday opening and closing times */
+			'Tuesday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #10 (military time - e.g., 8:00 or 17:00)',
+			/* Wednesday opening and closing times */
+			'Wednesday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
+			/* Thursday opening and closing times */
+			'Thursday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
+			/* Thursday opening and closing times */
+			'Friday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Friday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
+			/* Saturday opening and closing times */
+			'Saturday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #10 (military time - e.g., 8:00 or 17:00)'],
+			['1','FARMERS_MARKET','Fair Food Farmstand', '51 N. 12th St', 
+				'Reading Terminal Market', 'Philadelphia', 'PA', '19107', '', 
+				'', 'Open year round', '', '', '', 'Yes', '', 'Yes', 'Yes', 
+				'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 
+				/* Sunday opening and closing times */
+				'9:00', '17:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Monday opening and closing times */
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Tuesday opening and closing times */ 
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Wednesday opening and closing times */
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Thursday opening and closing times */
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Friday opening and closing times */ 
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Saturday opening and closing times */
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', ''],  
         ]);
 
-      var tableOptions = {
-        alternatingRowStyle: true,
-        sort: 'disable',
-        width: '100%',
-      };
+	var tableOptions = {
+		alternatingRowStyle: true,
+		sort: 'disable',
+		width: '100%',
+	};
 
-      var table = new google.visualization.Table(document.getElementById('sample_table_div'));
-      table.draw(tableData, tableOptions);
+	var table = new google.visualization
+		.Table(document.getElementById('sample_table_div'));
+	table.draw(tableData, tableOptions);
     }
 </script>
 
 <script>
+
 // Config dropzone
 Dropzone.options.myAwesomeDropzone = {
   paramName: "file", 
@@ -110,7 +350,6 @@ Dropzone.options.myAwesomeDropzone = {
   init: function() {
     this.on("success", function(file, response) {
     	var inst = $.remodal.lookup[$('[data-remodal-id=success-modal]').data('remodal')];
-
         // open the success modal
         inst.open();
 
@@ -136,7 +375,7 @@ Dropzone.options.myAwesomeDropzone = {
 
         $('#modal-error-list').html(htmlString);
 
-		// when modal is closed, redirect to files page
+		// When modal is closed, redirect to files page.
 		$(document).on('close', '#error-modal', function () {
 		    console.log('close');
 		    window.location = "{{ url_for('files') }}";

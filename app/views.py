@@ -111,6 +111,11 @@ def new(id=None):
 			if id is not None:
 				fr = FoodResource.query.filter_by(id=id).first()
 				if fr:
+					for phone_number in fr.phone_numbers:
+						db.session.delete(phone_number)
+					for timeslot in fr.timeslots:
+						db.session.delete(timeslot)
+					db.session.delete(fr.address)
 					db.session.delete(fr)
 
 			# Commit all database changes. 
@@ -201,10 +206,6 @@ def admin():
 				food_resource_type.food_resources.remove(food_resource)
 
 	contacts = FoodResourceContact.query.all()
-	for contact in contacts:
-		for food_resource in contact.food_resource:
-			print food_resource.food_resource_type
-			#print food_resource.food_resource_type.name_singular
 
 	return render_template('admin_resources.html', 
 		food_resource_contacts=contacts, 
@@ -649,58 +650,80 @@ def download():
 	resources = FoodResource.query.filter_by(is_approved = True).all()
 
 	outcsv.writerow(['Table 1'])
-	outcsv.writerow(['','Type (' + get_string_of_all_food_resource_types() + ')',
-	 'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 'State', 'Zip Code', 'Phone Number (optional)', 
-	 'Website (optional)', 'Description (optional)', 'Families and children? (either \'Yes\' or leave blank)', 
-	 'Seniors? (either \'Yes\' or leave blank)', 'Wheelchair accessible? (either \'Yes\' or leave blank)', 
-	 'Accepts SNAP? (either \'Yes\' or leave blank)', 'Accepts FMNP Vouchers? (either \'Yes\' or leave blank)', 
-	 'Accepts Philly Food Bucks? (either \'Yes\' or leave blank)', 'Hours Available? (either \'Yes\' or leave blank)', 
-	 'Open Sunday? (either \'Yes\' or leave blank)', 'Open Monday? (either \'Yes\' or leave blank)', 
-	 'Open Tuesday? (either \'Yes\' or leave blank)',	'Open Wednesday? (either \'Yes\' or leave blank)', 
-	 'Open Thursday? (either \'Yes\' or leave blank)', 'Open Friday? (either \'Yes\' or leave blank)', 
-	 'Open Saturday? (either \'Yes\' or leave blank)', 'Sunday Opening Time (military time - e.g., 8:00 or 17:00)',
-	 'Sunday Closing Time (military time - e.g., 8:00 or 17:00)', 'Monday Opening Time (military time - e.g., 8:00 or 17:00)', 
-	 'Monday Closing Time (military time - e.g., 8:00 or 17:00)', 
-	 'Tuesday Opening Time (military time - e.g., 8:00 or 17:00)', 'Tuesday Closing Time (military time - e.g., 8:00 or 17:00)',
-	 'Wednesday Opening Time (military time - e.g., 8:00 or 17:00)', 
-	 'Wednesday Closing Time (military time - e.g., 8:00 or 17:00)', 
-	 'Thursday Opening Time (military time - e.g., 8:00 or 17:00)', 'Thursday Closing Time (military time - e.g., 8:00 or 17:00)', 
-	 'Friday Opening Time (military time - e.g., 8:00 or 17:00)', 'Friday Closing Time (military time - e.g., 8:00 or 17:00)', 
-	 'Saturday Opening Time (military time - e.g., 8:00 or 17:00)', 'Saturday Closing Time (military time - e.g., 8:00 or 17:00)'])
-	
-	def does_timeslot_exist(timeslots, index):
-		try:
-			return (timeslots[index] is not None)
-		except IndexError:
-			return False
+	data = ['','Type (' + get_string_of_all_food_resource_types() + ')',
+		'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 
+		'State', 'Zip Code', 'Phone Number (optional)', 
+		'Website (optional)', 'Description (optional)', 
+		'Families and children? (either \'Yes\' or leave blank)', 
+		'Seniors? (either \'Yes\' or leave blank)', 
+		'Wheelchair accessible? (either \'Yes\' or leave blank)', 
+		'Accepts SNAP? (either \'Yes\' or leave blank)', 
+		'Accepts FMNP Vouchers? (either \'Yes\' or leave blank)', 
+		'Accepts Philly Food Bucks? (either \'Yes\' or leave blank)', 
+		'Hours Available? (either \'Yes\' or leave blank)', 
+		'Open Sunday? (either \'Yes\' or leave blank)', 
+		'Open Monday? (either \'Yes\' or leave blank)', 
+		'Open Tuesday? (either \'Yes\' or leave blank)',
+		'Open Wednesday? (either \'Yes\' or leave blank)', 
+		'Open Thursday? (either \'Yes\' or leave blank)', 
+		'Open Friday? (either \'Yes\' or leave blank)', 
+		'Open Saturday? (either \'Yes\' or leave blank)']
+	for day_of_week in ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
+		"Friday", "Saturday"]:
+		for i in range(1, 11): 
+			data.append(str(day_of_week) + ' Opening Time #' + str(i) + 
+				' (military time - e.g., 8:00 or 17:00)') 
+			data.append(str(day_of_week) + ' Closing Time #' + str(i) + 
+				' (military time - e.g., 8:00 or 17:00)')
+	outcsv.writerow(data)
 
-	row_counter = 1
-	for resource in resources:
-		timeslots = resource.timeslots
-		outcsv.writerow([row_counter,resource.food_resource_type.enum, resource.name, resource.address.line1, resource.address.line2, 
-			resource.address.city, resource.address.state, resource.address.zip_code, resource.phone_numbers[0].number, 
-			resource.url, resource.description, 'Yes' if resource.is_for_family_and_children else '', 
-			'Yes' if resource.is_for_seniors else '', 'Yes' if resource.is_wheelchair_accessible else '', 
-			'Yes' if resource.is_accepts_snap else '', 'Accepts FMNP Vouchers?', 'Accepts Philly Food Bucks?', 
-			'Yes' if resource.are_hours_available else '', 'Yes' if does_timeslot_exist(timeslots, 0) else '', 
-			'Yes' if does_timeslot_exist(timeslots, 1) else '', 'Yes' if does_timeslot_exist(timeslots, 2) else '', 
-			'Yes' if does_timeslot_exist(timeslots, 3) else '', 'Yes' if does_timeslot_exist(timeslots, 4) else '', 
-			'Yes' if does_timeslot_exist(timeslots, 5) else '', 'Yes' if does_timeslot_exist(timeslots, 6) else '', 
-			timeslots[0].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 0) else '', 
-			timeslots[0].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 0) else '', 
-			timeslots[1].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 1) else '', 
-			timeslots[1].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 1) else '', 
-			timeslots[2].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 2) else '', 
-			timeslots[2].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 2) else '', 
-			timeslots[3].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 3) else '', 
-			timeslots[3].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 3) else '', 
-			timeslots[4].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 4) else '', 
-			timeslots[4].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 4) else '', 
-			timeslots[5].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 5) else '', 
-			timeslots[5].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 5) else '', 
-			timeslots[6].start_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 6) else '', 
-			timeslots[6].end_time.strftime('%H:%M') if does_timeslot_exist(timeslots, 6) else ''])
-		row_counter = row_counter + 1
+	for i, resource in enumerate(resources):
+		# 2-dimensional array to hold all timeslots.
+		# Index 0 corresponds to a list of Sunday's timeslots, 
+		# index 1 corresponds to a list of Monday's timeslots, etc.
+		all_timeslots = [None] * 7
+		for j in range(0, 7):
+			all_timeslots[j] = []
+		for timeslot in resource.timeslots:
+			all_timeslots[timeslot.day_of_week].append(timeslot)
+		data = [
+			str(i + 1), 
+			resource.food_resource_type.enum, 
+			resource.name, 
+			resource.address.line1, 
+			resource.address.line2, 
+			resource.address.city, 
+			resource.address.state, 
+			resource.address.zip_code, 
+			resource.phone_numbers[0].number, 
+			resource.url, 
+			resource.description, 
+			'Yes' if resource.is_for_family_and_children else '', 
+			'Yes' if resource.is_for_seniors else '', 
+			'Yes' if resource.is_wheelchair_accessible else '', 
+			'Yes' if resource.is_accepts_snap else '', 
+			'Accepts FMNP Vouchers?', 
+			'Accepts Philly Food Bucks?', 
+			'Yes' if resource.are_hours_available else '', 
+			'Yes' if len(all_timeslots[0]) != 0 else '', 
+			'Yes' if len(all_timeslots[1]) != 0 else '', 
+			'Yes' if len(all_timeslots[2]) != 0 else '', 
+			'Yes' if len(all_timeslots[3]) != 0 else '', 
+			'Yes' if len(all_timeslots[4]) != 0 else '', 
+			'Yes' if len(all_timeslots[5]) != 0 else '', 
+			'Yes' if len(all_timeslots[6]) != 0 else '']
+		for day_of_week_timeslots in all_timeslots: # 7 days of the week.
+			for j in range (0, 10): # [0, 10) - 10 possible timeslots per day.
+				if j >= len(day_of_week_timeslots) or \
+					day_of_week_timeslots[j] is None:
+					data.append('') # Start time is empty.
+					data.append('') # End time is empty.
+				else:
+					data.append(day_of_week_timeslots[j] \
+						.start_time.strftime('%H:%M'))
+					data.append(day_of_week_timeslots[j] \
+						.end_time.strftime('%H:%M'))
+		outcsv.writerow(data)
 
 	def generate():
 		with open('.mydump.csv', 'rb') as f:
