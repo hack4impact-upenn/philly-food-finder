@@ -292,28 +292,28 @@ def import_file(path):
 		elif row_slot is None or row_slot == "":
 			return False
 		else:
-			make_error(row_slot+' is invalid. Please put Yes or leave blank.', row_index)
+			make_error(str(row_slot) + ' is invalid. Please put Yes or leave blank.', row_index)
 			return False # To prevent program from breaking too early
 
 	def required(field_name, field_val, row_index):
 		field_val = field_val.strip()
 		if not field_val:
-			errors.append(field_name + " is a required field (row " \
+			errors.append(str(field_name) + " is a required field (row " \
 				+ str(row_index+1) + ").")
 
 	def make_error(exception_text, row_index):
-		errors.append(exception_text + " (row " + str(row_index+1) + ").")
+		errors.append(str(exception_text) + " (row " + str(row_index+1) + ").")
 
 	def check_length(field_name, field_val, length, row_index):
 		field_val = field_val.strip()
 		if field_val and len(field_val) > length:
-			errors.append(field_val + " is longer than the max length of " \
+			errors.append(str(field_val) + " is longer than the max length of " \
 				+ str(length) + " characters (row " + str(row_index+1) + ").")
 
 	def check_time_format(field_val, row_index):
 		check = re.compile('^\d{1,2}:\d{2}$')
 		if check.match(field_val) is None:
-			errors.append(field_val + " is not a proper time format. Please " \
+			errors.append(str(field_val) + " is not a proper time format. Please " \
 				+ "use military time - e.g., 8:00 or 17:00. (row " + str(row_index+1) + ").")
 			return False
 		return True
@@ -336,7 +336,7 @@ def import_file(path):
 					.filter_by(enum=location_type_table).first() 
 
 				if location_type is None and location_type_table is not None:
-					make_error('The location_type '+location_type_table+' is invalid', i)
+					make_error('The location_type ' + location_type_table + ' is invalid', i)
 
 				# Extract food resource's name.
 				name = str(row[2]) # Required.
@@ -365,7 +365,7 @@ def import_file(path):
 				# Ensures zip_code is exactly 5 digits
 				zip_code_strip = address_zip_code.strip()
 				if zip_code_strip and len(zip_code_strip) is not 5:
-					make_error('The zip_code '+zip_code_strip+' is not the right length. \
+					make_error('The zip_code ' + str(zip_code_strip) + ' is not the right length. \
 						Please ensure that it is 5 digits.', i)
 
 				# Create food resource's Address.
@@ -408,7 +408,7 @@ def import_file(path):
 
 				# Extract the food resource's hours of operation.
 				daily_hours = []
-				for j in range(25, 39): # [25, 39)
+				for j in range(25, 164): # [25, 164)
 					time_string = str(row[j]).strip()
 					if not time_string:
 						daily_hours.append("")
@@ -418,20 +418,27 @@ def import_file(path):
 
 				# Create food resource's timeslots.
 				timeslots = []
+				# Iterate through all day of the week.
 				for j, day_is_open in enumerate(days_open):
 					if day_is_open:
-						opening_time_1 = daily_hours[j*2]
-						closing_time_1 = daily_hours[j*2+1]
-						if opening_time_1 and closing_time_1:
-							if opening_time_1 >= closing_time_1:
-								make_error("Opening time must be before closing time", i)
-							timeslot = TimeSlot(
-								day_of_week=j, 
-								start_time=opening_time_1, 
-								end_time=closing_time_1
-							)
-							db.session.add(timeslot)
-							timeslots.append(timeslot)
+						# Iterate through 10 possible timeslots per day.
+						for k in range(0, 10):
+							opening_time = daily_hours[j*10+k*2]
+							closing_time = daily_hours[j*10+k*2+1]
+							if opening_time and closing_time:
+								if opening_time >= closing_time:
+									make_error("Opening time (" + \
+										str(opening_time.strftime('%H:%M')) + \
+										") must be before closing time (" + \
+										str(closing_time.strftime('%H:%M')) + 
+										")", i)
+								timeslot = TimeSlot(
+									day_of_week=j, 
+									start_time=opening_time, 
+									end_time=closing_time
+								)
+								db.session.add(timeslot)
+								timeslots.append(timeslot)
 
 				# Create food resource.
 				food_resource = FoodResource(
