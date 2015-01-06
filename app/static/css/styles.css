@@ -369,10 +369,6 @@ img {
   margin: 5px;
 }
 
-#footer-spacer {
-  margin-bottom: 10em;
-}
-
 #chart_div {
     display: inline-block;
     width: 100%;
@@ -421,6 +417,33 @@ img {
 
 #about-header {
   color: #f8a11d;
+}
+
+/* footer */
+#footer-spacer {
+  margin-bottom: 2em;
+}
+
+.footer {
+  font-size: .874rem;
+  margin-bottom: 3%;
+}
+
+#hr-helper {
+  color: #F7F9F9;
+  font-size: .01em;
+}
+
+#footer-pics {
+  text-align: right;
+}
+
+.footer-li {
+  display: inline-block;
+}
+
+.footer-img{
+  height: 5%;
 }
 
 /* Edit Food Resources Page */
@@ -497,9 +520,8 @@ table thead tr th, table thead tr td {
 }
 
 .no-resources-message {
-  font-style: italic;
-  font-size: 0.8em;
   margin: 0.4em;
+  margin-left: 1.375em;
   line-height: 1.2em; 
 }
 
