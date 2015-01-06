@@ -4,7 +4,7 @@
 {% block content %}
 <body id = "add_p">
   <div class="row">
-      <h1 class="page-header">{{ title }}</h1>
+      <h1 class="page-header admin-header">{{ title }}</h1>
       <hr align="center">
   </div>
 
@@ -25,6 +25,16 @@
 		      	</label>
 		    </div>
 		</div>
+
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+				<div class="required-disclaimer">
+					Required fields.
+				</div>
+			</div>
+		</div>	
 
 	   <!-- Food Resource Name -->
 	    {% set field = form.name %}
@@ -381,7 +391,7 @@
 		{% set field = form.additional_information %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
+		     columns large-centered" >
 		    {% if field.flags.required %}
 		      	<label>{{ field.label(class_='required') }}
 		    {% else %}
@@ -406,7 +416,7 @@
 		{% set field = form.is_for_family_and_children %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
+		     columns large-centered" >
 		    {% if field.flags.required %}
 		      	<label>{{ field.label(class_='required') }}
 		    {% else %}
@@ -431,7 +441,7 @@
 		{% set field = form.is_for_seniors %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
+		     columns large-centered" >
 		    {% if field.flags.required %}
 		      	<label>{{ field.label(class_='required') }}
 		    {% else %}
@@ -456,7 +466,7 @@
 		{% set field = form.is_wheelchair_accessible %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
+		     columns large-centered" >
 		    {% if field.flags.required %}
 		      	<label>{{ field.label(class_='required') }}
 		    {% else %}
@@ -481,7 +491,7 @@
 		{% set field = form.is_accepts_snap %}
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
+		     columns large-centered" >
 		    {% if field.flags.required %}
 		      	<label>{{ field.label(class_='required') }}
 		    {% else %}
@@ -502,15 +512,6 @@
 		      	</label>
 		    </div>
 		</div>
-
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-				<div class="required-disclaimer">
-					Required fields.
-				</div>
-			</div>
-		</div>	
 
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered

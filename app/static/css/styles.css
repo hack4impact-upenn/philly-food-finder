@@ -25,29 +25,12 @@ body#map_p {
   background-color: #F7F9F9;
 }
 
-body#info_p {
-  /*background-color: #009933;*/
-  color: #FFF;
-}
-
 .h1 {
   color: #FFF;
 }
 
 .h2 {
   color: #FFF;
-}
-
-body#info_p {
-  /*background-color: rgba(248, 160, 26, .5);  light orange */
-}
-
-body#about_p {
-  /*background-color: rgba(254, 217, 0, .5);  light yellow */
-}
-
-body#contact_p {
-  /*background-color: rgba(0, 171, 75, .5);  light green */
 }
 
 body#resources_p {
@@ -140,12 +123,16 @@ input::-moz-placeholder {
   margin-top: 10px;
 }
 
+#submit-button {
+  margin-top: 20px;
+}
+
 /* button styling */
 button, .button{
   background-color: #000;
   border-color: #666666;
   color: #FFF;
-  opacity: 0.8;
+  opacity: 0.95;
   
 }
 
@@ -167,7 +154,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 .top-bar {
   background: #FFF;
   height: 70px;
-  opacity: 0.8;
+  opacity: 0.95;
 }
 
 .top-bar .name {
@@ -198,7 +185,6 @@ button:hover, button:focus, .button:hover, .button:focus {
   text-transform: none;
   letter-spacing: 4px;
   text-align: center;
-
 }
 
 .top-bar-section li:not(.has-form) a:not(.button) {
@@ -217,16 +203,14 @@ button:hover, button:focus, .button:hover, .button:focus {
 .top-bar-section .dropdown li:not(.has-form):not(.active) > a:not(.button) {
   background: #FFF;
   color: #2D4FA0;
-  font-size: 1.6rem;
+  font-size: 1.275rem;
   font-weight: 200;
   text-transform: lowercase;  
   letter-spacing: 2px;
   text-align: center;
   padding: 5;
   z-index: 1;
-}
-
-.top-bar-section .dropdown li:not(.has-form):not(.active) > a:not(.button) {
+  line-height: 25px;
 }
 
 .top-bar-section .dropdown li:not(.has-form) > a:not(.button) {
@@ -373,7 +357,6 @@ img {
     width: 100%;
     height: 100%;
     margin-bottom: 1em;
->>>>>>> 4daacd1061f5f57d26b3fe09e1b550f4c9bfada5
 }
 
 /* Display non-squashed map controls */
@@ -388,6 +371,10 @@ img {
 
 .info-header {
   color: #009933;
+}
+
+.admin-header {
+  color: #ef3d23;
 }
 
 #map-header {
@@ -409,10 +396,6 @@ img {
 }
 
 /* Edit Food Resources Page */
-#edit-resources-header {
-  color: #ef3d23;
-}
-
 .resource {
   font-weight: 200;
   letter-spacing: .2px;
@@ -534,8 +517,7 @@ li {
 }
 
 .form-field-description {
-  font-size: .7em;
-  font-style: italic;
+  font-size: .8em;
 }
 
 .form-field-description {
