@@ -250,7 +250,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 .top-bar-section ul li:hover:not(.has-form) > a {
-  color: #009933;
+  color: #2D4FA0; /* for now, keep navy */
 }
 
 /* admin dropdown */
@@ -258,7 +258,15 @@ button:hover, button:focus, .button:hover, .button:focus {
   background: #ef3d23;
 }
 
-.top-bar-section .drop-admin ul li:hover:not(.has-form) > a {
+.drop-admin .top-bar-section ul li:hover:not(.has-form) > a {
+  color: #ef3d23;
+}
+
+.drop-admin {
+  color: #FFF;
+}
+
+#drop-admin-active:active {
   color: #ef3d23;
 }
 
