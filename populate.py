@@ -103,6 +103,7 @@ f0.location_type = "FARMERS_MARKET"
 f0.food_resource_type = frt_farmers_market
 f0.is_for_family_and_children = True
 f0.is_for_seniors = True
+f0.are_hours_available = True
 
 a0 = Address()
 a0.line1 = "43rd Street and Baltimore Avenue"
@@ -145,6 +146,7 @@ f1.location_type = "SENIOR_MEAL"
 f1.food_resource_type = frt_senior_meals
 f1.is_for_family_and_children = False
 f1.is_for_seniors = True
+f1.are_hours_available = True
 
 a1 = Address()
 a1.line1 = "3160 Chestnut Street"
@@ -187,6 +189,7 @@ f2.location_type = "FOOD_CUPBOARD"
 f2.food_resource_type = frt_food_cupboard
 f2.is_for_family_and_children = False
 f2.is_for_seniors = True
+f2.are_hours_available = True
 
 a2 = Address()
 a2.line1 = "3560 Spruce St"
@@ -229,6 +232,7 @@ f3.location_type = "SHARE"
 f3.food_resource_type = frt_share_host_site
 f3.is_for_family_and_children = False
 f3.is_for_seniors = True
+f3.are_hours_available = True
 
 a3 = Address()
 a3.line1 = "1610 Sansom St"
@@ -271,6 +275,7 @@ f4.location_type = "SOUP_KITCHEN"
 f4.food_resource_type = frt_soup_kitchen
 f4.is_for_family_and_children = False
 f4.is_for_seniors = True
+f4.are_hours_available = True
 
 a4 = Address()
 a4.line1 = "2146 E Susquehanna Ave"
@@ -313,6 +318,7 @@ f5.location_type = "WIC_OFFICE"
 f5.food_resource_type = frt_wic_office
 f5.is_for_family_and_children = False
 f5.is_for_seniors = True
+f5.are_hours_available = True
 
 a5 = Address()
 a5.line1 = "1300 W Lehigh Ave"
@@ -376,6 +382,7 @@ timeslots_list_6 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f6.timeslots = timeslots_list_6
+f6.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f6)
@@ -415,6 +422,7 @@ timeslots_list_7 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f7.timeslots = timeslots_list_7
+f7.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f7)
@@ -454,6 +462,7 @@ timeslots_list_8 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f8.timeslots = timeslots_list_8
+f8.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f8)
@@ -493,6 +502,7 @@ timeslots_list_9 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f9.timeslots = timeslots_list_9
+f9.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f9)
@@ -532,6 +542,7 @@ timeslots_list_10 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f10.timeslots = timeslots_list_10
+f10.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f10)
@@ -571,6 +582,7 @@ timeslots_list_11 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f11.timeslots = timeslots_list_11
+f11.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f11)
