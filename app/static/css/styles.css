@@ -158,6 +158,10 @@ button:hover, button:focus, .button:hover, .button:focus {
   margin-top: 0.5em;
 }
 
+#download-buttons {
+  margin-top: 0.5em;
+}
+
 /* HEADER - top-bar */
 
 .top-bar {
