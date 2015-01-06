@@ -314,7 +314,20 @@ def import_file(path):
 		check = re.compile('^\d{1,2}:\d{2}$')
 		if check.match(field_val) is None:
 			errors.append(str(field_val) + " is not a proper time format. Please " \
-				+ "use military time - e.g., 8:00 or 17:00. (row " + str(row_index+1) + ").")
+				+ "use military time - e.g., 8:00 or 17:00. (row " + str(row_index + 1) + ").")
+			return False
+		colon_index = field_val.index(":")
+		hours = int(field_val[0:colon_index])
+		if hours < 0 or hours > 23:
+			errors.append(str(field_val) + " has an invalid hour number. A \
+				valid hour number is between 0 and 23. (row " + \
+				str(row_index + 1) + ").")
+			return False
+		minutes = int(field_val[colon_index+1:])
+		if minutes < 0 or minutes > 59 or minutes % 15 != 0:
+			errors.append(str(field_val) + " has an invalid minute number. A \
+				valid minute number is either 0, 15, 30, or 45. (row " + \
+				str(row_index + 1) + ").")
 			return False
 		return True
 
@@ -408,6 +421,7 @@ def import_file(path):
 
 				# Extract the food resource's hours of operation.
 				daily_hours = []
+				are_all_times_valid = True
 				for j in range(25, 164): # [25, 164)
 					time_string = str(row[j]).strip()
 					if not time_string:
@@ -415,30 +429,33 @@ def import_file(path):
 					else:
 						if check_time_format(time_string, i):
 							daily_hours.append(get_time_from_string(time_string))
+						else:
+							are_all_times_valid = False
 
 				# Create food resource's timeslots.
 				timeslots = []
-				# Iterate through all day of the week.
-				for j, day_is_open in enumerate(days_open):
-					if day_is_open:
-						# Iterate through 10 possible timeslots per day.
-						for k in range(0, 10):
-							opening_time = daily_hours[j*10+k*2]
-							closing_time = daily_hours[j*10+k*2+1]
-							if opening_time and closing_time:
-								if opening_time >= closing_time:
-									make_error("Opening time (" + \
-										str(opening_time.strftime('%H:%M')) + \
-										") must be before closing time (" + \
-										str(closing_time.strftime('%H:%M')) + 
-										")", i)
-								timeslot = TimeSlot(
-									day_of_week=j, 
-									start_time=opening_time, 
-									end_time=closing_time
-								)
-								db.session.add(timeslot)
-								timeslots.append(timeslot)
+				if are_all_times_valid:
+					# Iterate through all day of the week.
+					for j, day_is_open in enumerate(days_open):
+						if day_is_open:
+							# Iterate through 10 possible timeslots per day.
+							for k in range(0, 10):
+								opening_time = daily_hours[j*10+k*2]
+								closing_time = daily_hours[j*10+k*2+1]
+								if opening_time and closing_time:
+									if opening_time >= closing_time:
+										make_error("Opening time (" + \
+											str(opening_time.strftime('%H:%M')) + \
+											") must be before closing time (" + \
+											str(closing_time.strftime('%H:%M')) + 
+											")", i)
+									timeslot = TimeSlot(
+										day_of_week=j, 
+										start_time=opening_time, 
+										end_time=closing_time
+									)
+									db.session.add(timeslot)
+									timeslots.append(timeslot)
 
 				# Create food resource.
 				food_resource = FoodResource(
