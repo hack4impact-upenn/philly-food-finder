@@ -508,7 +508,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					'</div>' + 
 					'<div class="row">' + 
 						'<div class="small-6 columns">' + 
-							'Description:' + 
+							'<b>Description:</b>' + 
 						'</div>' + 
 						'<div class="small-6 columns">' + 
 							resource["description"] + 
