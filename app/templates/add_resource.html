@@ -47,6 +47,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 	            </label>
 			</div>
 		</div>
@@ -72,6 +73,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -97,6 +99,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -122,6 +125,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -147,6 +151,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -172,6 +177,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -197,6 +203,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -222,6 +229,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -247,6 +255,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -279,6 +288,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 				</label>
 			</div>
 		</div>
@@ -286,6 +296,7 @@
 		{% for multi_timeslot_form in form.daily_timeslots %}
 		{% set day_of_week = days_of_week[loop.index0] %}
 		{% set is_open = form.is_open[loop.index0].is_open %}
+		{% set day_of_week_index = loop.index0 %}
 
 		{{ form.is_open[loop.index0].form.hidden_tag() }}
 		{{ multi_timeslot_form.form.hidden_tag() }}
@@ -294,7 +305,7 @@
 			    <div class="large-8 medium-8 medium-centered small-8 small-centered
 			     columns large-centered">
 			    	<div class="row">
-			      		<div class="large-4 small-4 columns" id="middle-padding-section">
+			      		<div class="small-4 columns" id="middle-padding-section">
 			      			<label>{{ day_of_week.name }}
 					        	<dd class="error">{{ is_open()|safe }}
 					        	{% if is_open.errors %}
@@ -304,45 +315,64 @@
 					                    {% endif %}
 					                {% endfor %}
 					            {% endif %}
+					            </dd>
 			      			</label>
 			      		</div>
+			      		<div class="small-8 columns time-pickers" id="middle-padding-section">
+			      			{% set field = multi_timeslot_form.num_timeslots %}
+			      			<div class="row">
+			      				<div class="large-12 small-12 columns" id="middle-padding-section">
+			      					{% if multi_timeslot_form.num_timeslots.flags.required %}
+								      	<label>{{ field.label(class_='required') }}
+								    {% else %}
+										<label>{{ field.label }}
+								    {% endif %}
+										<dd class="error">{{ field()|safe }}
+										{% if field.errors %}
+											{% for e in field.errors %}
+												{% if e %}
+													<small class="error">{{ e }}</small>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+										</dd>
+									</label>
+								</div>
+			      			</div>
 			      		{% for timeslot_form in multi_timeslot_form.timeslots %} 
+		      			{% set timeslot_index = loop.index0 %}
 			      			{{ timeslot_form.form.hidden_tag() }}
-				      		<div class="large-8 small-8 columns time-pickers" id="middle-padding-section">
-					      		<div class="row">
-						      		<div class="large-6 small-6 columns" id="middle-padding-section">
-						      			<label>{{ timeslot_form.starts_at.label }}
-								        	<dd class="error">{{ timeslot_form.starts_at()|safe }}
-								        	{% if timeslot_form.starts_at.errors %}
-								                {% for e in timeslot_form.starts_at.errors %}
-								                    {% if e %}
-								                        <small class="error">{{ e }}</small>
-								                    {% endif %}
-								                {% endfor %}
-								            {% endif %}
-						      			</label>
-						      		</div>
-						      		<div class="large-6 small-6 columns" id="middle-padding-section">
-						      			<label>{{ timeslot_form.ends_at.label }}
-								        	<dd class="error">{{ timeslot_form.ends_at()|safe }}
-								        	{% if timeslot_form.ends_at.errors %}
-								                {% for e in timeslot_form.ends_at.errors %}
-								                    {% if e %}
-								                        <small class="error">{{ e }}</small>
-								                    {% endif %}
-								                {% endfor %}
-								            {% endif %}
-						      			</label>
-						      		</div>
-						      	</div>
-						      	<div class="row {{ day_of_week.index }}-add-another-time-picker">
-						      		<div class="small-12 columns">
-						      			Add another timeslot
-						      		</div>
-						      	</div>
-				      		</div>
-			      		{% endfor %}
-			      	</div>
+				      		<div class="row" id="daily_timeslots-{{ day_of_week_index }}-timeslots-{{ timeslot_index }}">
+								<div class="large-6 small-6 columns" id="middle-padding-section">
+									<label>{{ timeslot_form.starts_at.label }}
+										<dd class="error">{{ timeslot_form.starts_at()|safe }}
+										{% if timeslot_form.starts_at.errors %}
+											{% for e in timeslot_form.starts_at.errors %}
+												{% if e %}
+													<small class="error">{{ e }}</small>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+										</dd>
+									</label>
+								</div>
+								<div class="large-6 small-6 columns" id="middle-padding-section">
+									<label>{{ timeslot_form.ends_at.label }}
+										<dd class="error">{{ timeslot_form.ends_at()|safe }}
+										{% if timeslot_form.ends_at.errors %}
+											{% for e in timeslot_form.ends_at.errors %}
+												{% if e %}
+													<small class="error">{{ e }}</small>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+										</dd>
+									</label>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
 		   	  </div>
 			</div>
 
@@ -368,6 +398,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 		      	</label>
 		    </div>
 		</div>
@@ -392,6 +423,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 		      	</label>
 		    </div>
 		</div>
@@ -416,6 +448,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 		      	</label>
 		    </div>
 		</div>
@@ -440,6 +473,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 		      	</label>
 		    </div>
 		</div>
@@ -464,6 +498,7 @@
 		                    {% endif %}
 		                {% endfor %}
 		            {% endif %}
+		            </dd>
 		      	</label>
 		    </div>
 		</div>
@@ -485,5 +520,12 @@
 		</div>
 	</form>
 </body>
+
+<script>
+	$(document).ready(function() {
+		updateVisibleTimeslots(); 
+		onChangeNumberOfTimeslots(); 
+	}); 
+</script>
 
 {% endblock %}

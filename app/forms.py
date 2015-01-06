@@ -23,7 +23,22 @@ class IsOpenForm(Form):
         is_open.label = label
 
 class MultiTimeSlotForm(Form):
-    timeslots = FieldList(FormField(TimeSlotForm), min_entries=1)
+    timeslots = FieldList(FormField(TimeSlotForm), min_entries=10, 
+        max_entries=10)
+    num_timeslots = TextField(
+        label = 'Number of timeslots (1-10)',
+        validators = [
+            InputRequired("Please indicate a number of timeslots between 1 and \
+                10.")
+        ], 
+        default = 1
+    )
+
+    def validate_num_timeslots(form, field):
+        regex = re.compile('^-?[0-9]+$')
+        if len(str(field.data)) == 0 or not regex.match(str(field.data)) or \
+            int(field.data) < 1 or int(field.data) > 10:
+            raise ValidationError('Value must be an integer between 1 and 10.')
 
 # Information about a new food resource. 
 class AddNewFoodResourceForm(Form):

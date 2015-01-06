@@ -8,6 +8,93 @@ from pytz import timezone
 from models import *
 import re
 import csv
+from app import db
+
+def create_food_resource_from_form(form, additional_errors):
+	food_resource_type = form.location_type.data
+	all_timeslots = []
+
+	if form.are_hours_available.data == "yes":
+		are_hours_available = True
+	else:
+		are_hours_available = False
+
+	# Create the food resource's timeslots.
+	num_timeslots_checked_per_day = [0] * 7
+	are_timeslots_valid = True
+	if are_hours_available: 
+		for i, timeslots in enumerate(form.daily_timeslots):
+			for timeslot in timeslots.timeslots:
+				# Check if food resource is open on the i-th day of the 
+				# week.
+				is_open = True
+				if form.is_open[i].is_open.data == "closed":
+					is_open = False
+
+				# Check if all relevant timeslots have already been checked
+				are_all_timeslots_checked = False
+				day_of_week_index = i
+				if num_timeslots_checked_per_day[day_of_week_index] == \
+					int(form.daily_timeslots[day_of_week_index] \
+						.num_timeslots.data):
+					are_all_timeslots_checked = True
+
+				# Create timeslots only if the food resource is open on the
+				# i-th day of the week.
+				if is_open and not are_all_timeslots_checked:
+					num_timeslots_checked_per_day[day_of_week_index] += 1
+					start_time = \
+						get_time_from_string(timeslot.starts_at.data)
+					end_time = get_time_from_string(timeslot.ends_at.data)
+					timeslot = TimeSlot(day_of_week=i, 
+						start_time=start_time, end_time=end_time)
+					all_timeslots.append(timeslot)
+
+					# Check that timeslot is valid.
+					if start_time >= end_time: 
+						are_timeslots_valid = False
+						additional_errors.append("Opening time must be \
+							before closing time.")
+					else:
+						db.session.add(timeslot)
+
+	# Create the food resource's remaining attributes. 
+	if are_timeslots_valid:
+
+		# Create food resource's address.
+		address = Address(line1=form.address_line1.data, 
+			line2=form.address_line2.data, 
+			city=form.address_city.data, 
+			state=form.address_state.data, 
+			zip_code=form.address_zip_code.data)
+		db.session.add(address)
+
+		# Create food resource's phone number.
+		phone_numbers = []
+		home_number = PhoneNumber(number=form.phone_number.data)
+		db.session.add(home_number)
+		phone_numbers.append(home_number)
+
+		# Create food resource's type.
+		enum = form.location_type.data
+		food_resource_type = FoodResourceType.query.filter_by(enum=enum) \
+			.first()
+
+		# Create food resource and store all data in it.
+		food_resource = FoodResource(
+			name=form.name.data, 
+			phone_numbers=phone_numbers,
+			description=form.additional_information.data,
+			timeslots=all_timeslots,
+			address=address, 
+			is_for_family_and_children = \
+				form.is_for_family_and_children.data,
+			is_for_seniors = form.is_for_seniors.data,
+			is_wheelchair_accessible = form.is_wheelchair_accessible.data,  
+			is_accepts_snap = form.is_accepts_snap.data, 
+			are_hours_available = are_hours_available,
+			food_resource_type = food_resource_type)
+		return food_resource
 
 def get_string_of_all_food_resource_types():
 	possible_types_text = ""
