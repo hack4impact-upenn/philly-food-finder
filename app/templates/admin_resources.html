@@ -279,7 +279,7 @@
 
 					<!-- Expand or collapse all resources -->
 					<div class="right">
-			    <div class="small-12 columns">
+			    <div class="small-12 columns" id="right-search">
 		          <div class="button radius small" id="expand-all-resources-button">Expand All</div>
 		          <div class="button radius small" id="collapse-all-resources-button">Collapse All</div>
 			    </div></div>
@@ -338,146 +338,150 @@
 					</div>
 					<!-- Resource content --> 
 					<div class="row admin-food-resource" id="{{ resource.id }}-food-resource-table">
-						<div class="large-8 small-12 columns">
-							<div class="row">
-								<div class="small-6 columns">
-									Name:
+						<div class="row">
+							<div class="small-6 columns">
+								<div class="row">
+									<div class="small-6 columns">
+										<b>Name:</b>
+									</div>
+									<div class="small-6 columns">
+										{{ resource.name }}
+									</div>
 								</div>
-								<div class="small-6 columns">
-									{{ resource.name }}
-								</div>
-							</div>
-							<div class="row">
-								<div class="small-6 columns">
-									Address:
-								</div>
-								<div class="small-6 columns">
-									{% if resource.address.line1 %}
-										{{ resource.address.line1 }}
-									{% endif %}
-									{% if resource.address.line2 %}
+								<div class="row">
+									<div class="small-6 columns">
+										<b>Address:</b>
+									</div>
+									<div class="small-6 columns">
+										{% if resource.address.line1 %}
+											{{ resource.address.line1 }}
+										{% endif %}
+										{% if resource.address.line2 %}
+											<br>
+											{{ resource.address.line2 }}
+										{% endif %}	
 										<br>
-										{{ resource.address.line2 }}
-									{% endif %}	
-									<br>
-									{{ resource.address.city }}, 
-									{{ resource.address.state }} 
-									{{ resource.address.zip_code }}
+										{{ resource.address.city }}, 
+										{{ resource.address.state }} 
+										{{ resource.address.zip_code }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-6 columns">
+										<b>Zip Code:</b>
+									</div>
+									<div class="small-6 columns">
+										{{ resource.address.zip_code }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-6 columns">
+										<b>Phone Number:</b>
+									</div>
+									<div class="small-6 columns">
+										{{ resource.phone_numbers[0].number }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-6 columns">
+										<b>Website:</b>
+									</div>
+									<div class="small-6 columns">
+										{% if resource.url %}
+											<a href="{{ resource.url }}">{{ resource.url }}</a>
+										{% else %}
+											None listed.
+										{% endif %}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-6 columns">
+										<b>Description:</b>
+									</div>
+									<div class="small-6 columns">
+										{% if resource.description %}
+											{{ resource.description }}
+										{% else %}
+											No description.
+										{% endif %}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-6 columns">
+										<b>Family and children?</b>
+									</div>
+									<div class="small-6 columns">
+										{% if resource.is_for_family_and_children %}
+											Yes
+										{% else %}
+											No
+										{% endif %}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-6 columns">
+										<b>Seniors?</b>
+									</div>
+									<div class="small-6 columns">
+										{% if resource.is_for_seniors %}
+											Yes
+										{% else %}
+											No
+										{% endif %}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-6 columns">
+										<b>Wheelchair accessible?</b>
+									</div>
+									<div class="small-6 columns">
+										{% if resource.is_wheelchair_accessible %}
+											Yes
+										{% else %}
+											No
+										{% endif %}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-6 columns">
+										<b>Accepts SNAP?</b>
+									</div>
+									<div class="small-6 columns">
+										{% if resource.is_accepts_snap %}
+											Yes
+										{% else %}
+											No
+										{% endif %}
+									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="small-6 columns">
-									Zip Code:
-								</div>
-								<div class="small-6 columns">
-									{{ resource.address.zip_code }}
-								</div>
-							</div>
-							<div class="row">
-								<div class="small-6 columns">
-									Phone Number:
-								</div>
-								<div class="small-6 columns">
-									{{ resource.phone_numbers[0].number }}
-								</div>
-							</div>
-							<div class="row">
-								<div class="small-6 columns">
-									Website:
-								</div>
-								<div class="small-6 columns">
-									{% if resource.url %}
-										<a href="{{ resource.url }}">{{ resource.url }}</a>
-									{% else %}
-										None listed.
-									{% endif %}
-								</div>
-							</div>
-							<div class="row">
-								<div class="small-6 columns">
-									Description:
-								</div>
-								<div class="small-6 columns">
-									{% if resource.description %}
-										{{ resource.description }}
-									{% else %}
-										No description.
-									{% endif %}
-								</div>
-							</div>
-							<div class="row">
-								<div class="small-6 columns">
-									Family and children?
-								</div>
-								<div class="small-6 columns">
-									{% if resource.is_for_family_and_children %}
-										Yes
-									{% else %}
-										No
-									{% endif %}
-								</div>
-							</div>
-							<div class="row">
-								<div class="small-6 columns">
-									Seniors?
-								</div>
-								<div class="small-6 columns">
-									{% if resource.is_for_seniors %}
-										Yes
-									{% else %}
-										No
-									{% endif %}
-								</div>
-							</div>
-							<div class="row">
-								<div class="small-6 columns">
-									Wheelchair accessible?
-								</div>
-								<div class="small-6 columns">
-									{% if resource.is_wheelchair_accessible %}
-										Yes
-									{% else %}
-										No
-									{% endif %}
-								</div>
-							</div>
-							<div class="row">
-								<div class="small-6 columns">
-									Accepts SNAP?
-								</div>
-								<div class="small-6 columns">
-									{% if resource.is_accepts_snap %}
-										Yes
-									{% else %}
-										No
-									{% endif %}
-								</div>
-							</div>
-							<div class="row">
-								<div class="small-6 columns">
-									Hours: 
-								</div>
-								<div class="small-6 columns">
-									{% if resource.are_hours_available %}
-										{% for day in days_of_week %}
-											<div class="row">
-												<div class="small-6 columns">
-													{{ day['name'] }}
+							<div class="small-6 columns">
+								<div class="row">
+									<div class="small-3 columns">
+										<b>Hours: </b>
+									</div>
+									<div class="small-9 columns">
+										{% if resource.are_hours_available %}
+											{% for day in days_of_week %}
+												<div class="row">
+													<div class="small-6 columns">
+														{{ day['name'] }}
+													</div>
+													<div class="small-6 columns">
+														{% for timeslot in resource.timeslots %}
+															{% if timeslot.day_of_week == day['index'] %}
+																{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
+																<br>
+															{% endif %}
+														{% endfor %}
+													</div>
 												</div>
-												<div class="small-6 columns">
-													{% for timeslot in resource.timeslots %}
-														{% if timeslot.day_of_week == day['index'] %}
-															{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
-															<br>
-														{% endif %}
-													{% endfor %}
-												</div>
-											</div>
-										{% endfor %}
-									{% else %}
-										No hours available.
-									{% endif %}
-								</div> 
+											{% endfor %}
+										{% else %}
+											No hours available.
+										{% endif %}
+									</div> 
+								</div>
 							</div>
 						</div>
 					</div>

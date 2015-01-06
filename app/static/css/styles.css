@@ -336,7 +336,7 @@ button:hover, button:focus, .button:hover, .button:focus {
   background: #FFF;
 }
 
-img {
+#fpac-logo {
   height: 50;
 }
 
@@ -426,6 +426,9 @@ img {
 
 .footer {
   font-size: .874rem;
+}
+
+.fbottom {
   margin-bottom: 3%;
 }
 
@@ -463,6 +466,14 @@ img {
 
 #resources-table {
 
+}
+
+#right-search {
+  padding-right: 0;
+}
+
+b {
+  font-weight: 400;
 }
 
 table thead tr th, table thead tr td {
