@@ -420,15 +420,20 @@ def import_file(path):
 					days_open.append(convert_string_to_boolean(str(row[j]), i)) 
 
 				# Extract the food resource's hours of operation.
-				daily_hours = []
+				all_daily_hours = [None] * 7
+				for i in range(0, 7):
+					all_daily_hours[i] = []
 				are_all_times_valid = True
-				for j in range(25, 164): # [25, 164)
+				first_time_column = 25
+				last_time_column = 165
+				for j in range(first_time_column, last_time_column):
 					time_string = str(row[j]).strip()
+					day_of_week = (j - first_time_column) / 20
 					if not time_string:
-						daily_hours.append("")
+						all_daily_hours[day_of_week].append("")
 					else:
 						if check_time_format(time_string, i):
-							daily_hours.append(get_time_from_string(time_string))
+							all_daily_hours[day_of_week].append(get_time_from_string(time_string))
 						else:
 							are_all_times_valid = False
 
@@ -436,12 +441,12 @@ def import_file(path):
 				timeslots = []
 				if are_all_times_valid:
 					# Iterate through all day of the week.
-					for j, day_is_open in enumerate(days_open):
-						if day_is_open:
+					for j, daily_hours in enumerate(all_daily_hours):
+						if days_open[j]:
 							# Iterate through 10 possible timeslots per day.
 							for k in range(0, 10):
-								opening_time = daily_hours[j*10+k*2]
-								closing_time = daily_hours[j*10+k*2+1]
+								opening_time = daily_hours[k*2]
+								closing_time = daily_hours[k*2+1]
 								if opening_time and closing_time:
 									if opening_time >= closing_time:
 										make_error("Opening time (" + \
