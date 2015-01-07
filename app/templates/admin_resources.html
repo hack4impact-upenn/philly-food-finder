@@ -527,6 +527,8 @@
 		});
 
 		$("#apply-filters-resources-button").click(function() {
+			$('*').css({ 'cursor': 'wait' });
+
 			var hasZipCodeFilter = 0; // FALSE
 			var hasFamiliesAndChildrenFilter = 0; // FALSE
 			var hasSeniorsFilter = 0; // FALSE
@@ -580,6 +582,8 @@
         		has_open_now_filter: openNowFilter
         	},
         	function(data) {
+        		$('*').css({ 'cursor': 'default' });
+
         		clearTablesOfFoodResources();
 
         		var totalNumResources = 0;
@@ -632,6 +636,7 @@
 
 		// Approves a food resource without reloading page.
 		$("[id$='approve']").click(function() {
+			$('*').css({ 'cursor': 'wait' });
 			var id = $(this).attr('id');
 			var dashIndex = id.indexOf("-"); 
 			var foodResourceId = id.substring(0, dashIndex); 
@@ -639,6 +644,7 @@
 	        		id: foodResourceId
 	        	},
 	        	function(data) {
+	        		$('*').css({ 'cursor': 'default' });
 	        		hide("food-resource-pending-" + foodResourceId);
 	        		hide("food-resource-" + foodResourceId + "-table-pending");
 
@@ -652,9 +658,11 @@
 	}); 
 
 	function reloadFoodResourcesTables() {
+		$('*').css({ 'cursor': 'wait' });
 		$.getJSON($SCRIPT_ROOT + '/_admin_remove_filters', {
     	},
     	function(data) {
+    		$('*').css({ 'cursor': 'default' });
     		clearTablesOfFoodResources();
 
     		var totalNumResources = 0;
