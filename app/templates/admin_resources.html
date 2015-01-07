@@ -13,7 +13,7 @@
                         medium-centered small-centered columns">
   	<!-- Pending Food Resources --> 
 		<div class="row">
-	        <div class="large-10 medium-10 small-10 large-centered 
+	    <div class="large-10 medium-10 small-10 large-centered 
 	                        medium-centered small-centered columns">
 			    <h2 class="text-center page-header">Pending Food Resources</h2>
 			</div>
@@ -24,9 +24,7 @@
 	 			None.
 		</div></div>
 		{% else %}
-	  	<div class="large-centered 
-	         large-8 medium-centered medium-8 small-8 small-centered
-	         columns resources">
+	  	<div class="columns">
 		{% for contact in food_resource_contacts %}
 		{% set name_without_spaces = contact.name.replace(" ", "-") %}
 		<div id="{{ name_without_spaces }}">
@@ -43,7 +41,8 @@
 			<div class="admin-food-resource-type-pending" id="{{ name_without_spaces }}-table-pending">
 				{% for resource in contact.food_resource %}
 
-				<div class="resource"> 
+				<div class="resource">
+					<div class="resources"> 
 					<!-- Resource header --> 
 					  <div class= "row" id="food-resource-pending-{{ resource.id }}">
 						<div class="small-1 columns expand-food-resource-pending" id="food-resource-expand-pending-{{ resource.id }}">
@@ -65,7 +64,7 @@
 							<div class="small-6 columns">
 								<div class="row">
 									<div class="small-6 columns">
-										Name:
+										<b>Name:</b>
 									</div>
 									<div class="small-6 columns">
 										{{ resource.name }}
@@ -73,7 +72,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Resource Type:
+											<b>Resource Type:</b>
 										</div>
 										<div class="small-6 columns">
 											{{ resource.food_resource_type.name_singular }}
@@ -81,7 +80,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Submitted By:
+											<b>Submitted By:</b>
 										</div>
 										<div class="small-6 columns">
 											{% if contact.name %}
@@ -99,7 +98,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Notes:
+											<b>Notes:</b>
 										</div>
 										<div class="small-6 columns">
 											{% if resource.notes %}
@@ -111,7 +110,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Address:
+											<b>Address:</b>
 										</div>
 										<div class="small-6 columns">
 											{% if resource.address.line1 %}
@@ -129,7 +128,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Zip Code:
+											<b>Zip Code:</b>
 										</div>
 										<div class="small-6 columns">
 											{{ resource.address.zip_code }}
@@ -137,7 +136,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Phone Number:
+											<b>Phone Number:</b>
 										</div>
 										<div class="small-6 columns">
 											{{ resource.phone_numbers[0].number }}
@@ -145,7 +144,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Website:
+											<b>Website:</b>
 										</div>
 										<div class="small-6 columns">
 											{% if resource.url %}
@@ -157,7 +156,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Description:
+											<b>Description:</b>
 										</div>
 										<div class="small-6 columns">
 											{% if resource.description %}
@@ -169,7 +168,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Family and children?
+											<b>Family and children?</b>
 										</div>
 										<div class="small-6 columns">
 											{% if resource.is_for_family_and_children %}
@@ -181,7 +180,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Seniors?
+											<b>Seniors?</b>
 										</div>
 										<div class="small-6 columns">
 											{% if resource.is_for_seniors %}
@@ -193,7 +192,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Wheelchair accessible?
+											<b>Wheelchair accessible?</b>
 										</div>
 										<div class="small-6 columns">
 											{% if resource.is_wheelchair_accessible %}
@@ -205,7 +204,7 @@
 									</div>
 									<div class="row">
 										<div class="small-6 columns">
-											Accepts SNAP?
+											<b>Accepts SNAP?</b>
 										</div>
 										<div class="small-6 columns">
 											{% if resource.is_accepts_snap %}
@@ -219,7 +218,7 @@
 								<div class="small-6 columns">
 									<div class="row">
 									<div class="small-3 columns">
-										Hours: 
+										<b>Hours: </b>
 									</div>
 									<div class="small-9 columns">
 										{% if resource.are_hours_available %}
@@ -245,13 +244,14 @@
 							</div>
 						</div>
 					</div>
+					</div>
 				</div>
 				{% endfor %}
 			</div>
 		</div>
 			{% endfor %}
 		</div>
-	</div>
+
 {% endif %}
 
 			<div class="row">

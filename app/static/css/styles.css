@@ -446,7 +446,8 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 .footer-img{
-  height: 4%;
+  height: 25px;
+  width: auto;
 }
 
 /* Edit Food Resources Page */
@@ -500,6 +501,11 @@ table thead tr th, table thead tr td {
 .error {
   text-transform:none;
 }
+
+.admin-food-resource-pending {
+  background-color: #CCCCCC;
+}
+
 
 .admin-food-resource {
   background-color: #CCCCCC;
