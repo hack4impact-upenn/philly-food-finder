@@ -1,6 +1,8 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
 
+{% from "macros.html" import render_field with context %}
+
 {% block content %}
 <body id = "add_p">
   <div class="row">
@@ -403,105 +405,16 @@
 		    </div>
 		</div>
 
-		{% set field = form.is_for_family_and_children %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.is_for_family_and_children()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-		            </dd>
-		      	</label>
-		    </div>
-		</div>
-
-		{% set field = form.is_for_seniors %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.is_for_seniors()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-		            </dd>
-		      	</label>
-		    </div>
-		</div>
-
-		{% set field = form.is_wheelchair_accessible %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.is_wheelchair_accessible()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-		            </dd>
-		      	</label>
-		    </div>
-		</div>
-
-		{% set field = form.is_accepts_snap %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.is_accepts_snap()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-		            </dd>
-		      	</label>
-		    </div>
-		</div>
+		<!-- Boolean fields --> 
+		{{ render_field(form.requires_photo_id) }}
+		{{ render_field(form.requires_proof_of_address) }}
+		{{ render_field(form.requires_proof_of_income) }}
+		{{ render_field(form.requires_social_security_card) }}
+		{{ render_field(form.requires_referral) }}
+		{{ render_field(form.accepts_snap) }}
+		{{ render_field(form.accepts_fmnp_vouchers) }}
+		{{ render_field(form.accepts_philly_food_bucks) }}
+		{{ render_field(form.is_wheelchair_accessible) }}
 
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered

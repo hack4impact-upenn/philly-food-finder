@@ -125,14 +125,24 @@ class AddNewFoodResourceForm(Form):
             resource might find useful. For example, "Open every second \
             Saturday of the month," "Referral required," or "Call for hours."'
     )
-    is_for_family_and_children = BooleanField('Check off if this food resource \
-        is aimed towards family and children.')
-    is_for_seniors = BooleanField('Check off if this food resource is aimed \
-        towards seniors.')
+    requires_photo_id = BooleanField('Check off if this food resource \
+        requires a photo ID.')
+    requires_proof_of_address = BooleanField('Check off if this food resource \
+        requires proof of address.')
+    requires_proof_of_income = BooleanField('Check off if this food resource \
+        requires proof of income.')
+    requires_social_security_card = BooleanField('Check off if this food resource \
+        requires a social security card.')
+    requires_referral = BooleanField('Check off if this food resource \
+        requires a referral.')
+    accepts_snap = BooleanField('Check off if this food resource \
+        accepts SNAP.')
+    accepts_fmnp_vouchers = BooleanField('Check off if this food resource \
+        accepts FNMP Vouchers.')
+    accepts_philly_food_bucks = BooleanField('Check off if this food resource \
+        accepts Philly Food Bucks.')
     is_wheelchair_accessible = BooleanField('Check off if this food resource \
         is wheelchair accessible.')
-    is_accepts_snap = BooleanField('Check off if this food resource accepts \
-        SNAP.')
 
 # All information from AddNewFoodResourceForm plus information 
 # about the person submitting the food resource for evaluation. 
