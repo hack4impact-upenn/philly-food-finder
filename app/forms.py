@@ -150,8 +150,7 @@ class NonAdminAddNewFoodResourceForm(AddNewFoodResourceForm):
     your_email_address = TextField(
         label = 'Your Email Address', 
         validators = [
-            Email("Invalid email address."),
-            Length(1, 255)
+            Length(0, 255)
         ],
         description = "Please provide an email address at which we can contact \
             you if we have questions about your submitted food resource. Your \
@@ -178,7 +177,12 @@ class NonAdminAddNewFoodResourceForm(AddNewFoodResourceForm):
             site already in the database but its information is incorrect?'
     )   
 
-    recaptcha = RecaptchaField()  
+    recaptcha = RecaptchaField() 
+
+    def validate_your_email_address(form, field):
+        regex = re.compile('^.+@[^.].*\.[a-z]{2,10}$')
+        if len(str(field.data)) > 0 and not regex.match(str(field.data)):
+            raise ValidationError('Invalid email address.')
 
 # Form to invite new admin.
 # Subclassed from 'flask_user.forms.RegisterForm'
