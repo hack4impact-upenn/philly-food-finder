@@ -289,6 +289,7 @@ function removeFoodResourceType(element) {
 }
 
 function removeFoodResource(element) {
+	$('*').css({ 'cursor': 'wait' });
 	var id = element.attr('id');
 	var dashIndex = id.indexOf("-"); 
 	var foodResourceId = id.substring(0, dashIndex); 
@@ -296,6 +297,7 @@ function removeFoodResource(element) {
     		id: foodResourceId
     	},
     	function(data) {
+    		$('*').css({ 'cursor': 'default' });
     		if (data["is_approved"]) {
     			// Hide corresponding approved resource table.
         		hide("food-resource-" + foodResourceId);
