@@ -152,7 +152,7 @@ class FoodResourceContact(db.Model):
 		backref='food_resource_contact', lazy='select', uselist=True)
 
 class FoodResourceBoolean(db.Model):
-	id = db.Column(db.Integer, primary_key = True)
+	id = db.Column(db.Integer, primary_key=True)
 	value = db.Column(db.Boolean, default=False)
 	description_question = db.Column(db.String(300))
 	description_statement = db.Column(db.String(300))
@@ -162,7 +162,7 @@ class FoodResourceBoolean(db.Model):
 	def __init__(self, description_question, description_statement):
 		self.description_question = description_question
 		self.description_statement = description_statement
-		self.hyphenated_id = utils.get_hyphenated_string(description_statement)
+		self.hyphenated_id = utils.get_hyphenated_string(description_question)
 
 	def serialize_food_resource_boolean(self):
 		return {
@@ -202,7 +202,7 @@ class FoodResource(db.Model):
 		backref='food_resource', # Declare a new property of the FoodResourceBoolean class.
 		lazy='select', uselist=True)
 
-	# Fields for when non-admins submit resources
+	# Fields for when non-admins submit resources.
 	is_approved = db.Column(db.Boolean(), default=True)
 	food_resource_contact_id = db.Column(db.Integer, 
 		db.ForeignKey('food_resource_contact.id'))
@@ -210,44 +210,7 @@ class FoodResource(db.Model):
 
 	def __init__(self, *args, **kwargs):
 		super(db.Model, self).__init__(*args, **kwargs)
-		booleans = []
-		booleans.append(FoodResourceBoolean(
-			description_question="Requires a photo ID?", 
-			description_statement="Check off if this food resource requires a photo ID."
-		))
-		booleans.append(FoodResourceBoolean(
-			description_question="Requires proof of address?", 
-			description_statement="Check off if this food resource requires proof of address."
-		))
-		booleans.append(FoodResourceBoolean(
-			description_question="Requires proof of income?", 
-			description_statement="Check off if this food resource requires proof of income."
-        ))
-		booleans.append(FoodResourceBoolean(
-			description_question="Requires a Social Security card?", 
-			description_statement="Check off if this food resource requires a Social Security card."
-		))
-		booleans.append(FoodResourceBoolean(
-			description_question="Requires a referral?", 
-			description_statement="Check off if this food resource requires a referral."
-        ))
-		booleans.append(FoodResourceBoolean(
-			description_question="Accepts SNAP?", 
-			description_statement="Check off if this food resource accepts SNAP."
-		))
-		booleans.append(FoodResourceBoolean(
-			description_question="Accepts FMNP Vouchers?", 
-			description_statement="Check off if this food resource accepts FMNP Vouchers."
-		))
-		booleans.append(FoodResourceBoolean(
-			description_question="Accepts Philly Food Bucks?", 
-			description_statement="Check off if this food resource accepts Philly Food Bucks."
- 		))
-		booleans.append(FoodResourceBoolean(
-			description_question="Wheelchair accessible?", 
-			description_statement="Check off if this food resource is wheelchair accessible."
-		))
-		self.booleans = booleans
+		self.booleans = utils.get_food_resource_booleans()
 
 	def serialize_name_only(self):
 		return {
@@ -273,7 +236,6 @@ class FoodResource(db.Model):
 		if include_food_resource_type:
 			dict["food_resource_type"] = self.food_resource_type.serialize_food_resource_type()
 		return dict
-
 
 	def serialize_map_list(self):
 		return {

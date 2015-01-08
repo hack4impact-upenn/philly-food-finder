@@ -23,3 +23,18 @@
     </div>
 </div>
 {% endmacro %}
+
+{% macro render_food_resource_boolean(description, field) %}
+<div class="row">
+	<div class="small-9 columns">
+		{{ description }}
+	</div>
+	<div class="small-3 columns">
+		{% if field %}
+			Yes
+		{% else %}
+			No
+		{% endif %}
+	</div>
+</div>
+{% endmacro %}

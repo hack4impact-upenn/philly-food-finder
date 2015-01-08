@@ -125,7 +125,14 @@ class AddNewFoodResourceForm(Form):
 			resource might find useful. For example, "Open every second \
 			Saturday of the month," "Referral required," or "Call for hours."'
 	)
-	requires_photo_id = BooleanField('Check off if this food resource \
+	booleans = FieldList(BooleanField(''), min_entries=len(get_food_resource_booleans()))
+
+	def generate_booleans(self):
+		food_resource_booleans = get_food_resource_booleans()
+		for i, food_resource_boolean in enumerate(food_resource_booleans):
+			self.booleans[i].label=food_resource_boolean.description_statement
+
+	'''requires_photo_id = BooleanField('Check off if this food resource \
 		requires a photo ID.')
 	requires_proof_of_address = BooleanField('Check off if this food resource \
 		requires proof of address.')
@@ -142,7 +149,7 @@ class AddNewFoodResourceForm(Form):
 	accepts_philly_food_bucks = BooleanField('Check off if this food resource \
 		accepts Philly Food Bucks.')
 	is_wheelchair_accessible = BooleanField('Check off if this food resource \
-		is wheelchair accessible.')
+		is wheelchair accessible.')'''
 
 # All information from AddNewFoodResourceForm plus information 
 # about the person submitting the food resource for evaluation. 

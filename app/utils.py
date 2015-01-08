@@ -10,6 +10,46 @@ import re
 import csv
 from app import db
 
+def get_food_resource_booleans():
+	booleans = []
+	booleans.append(FoodResourceBoolean(
+		description_question="Requires a photo ID?", 
+		description_statement="Check off if this food resource requires a photo ID."
+	))
+	booleans.append(FoodResourceBoolean(
+		description_question="Requires proof of address?", 
+		description_statement="Check off if this food resource requires proof of address."
+	))
+	booleans.append(FoodResourceBoolean(
+		description_question="Requires proof of income?", 
+		description_statement="Check off if this food resource requires proof of income."
+    ))
+	booleans.append(FoodResourceBoolean(
+		description_question="Requires a Social Security card?", 
+		description_statement="Check off if this food resource requires a Social Security card."
+	))
+	booleans.append(FoodResourceBoolean(
+		description_question="Requires a referral?", 
+		description_statement="Check off if this food resource requires a referral."
+    ))
+	booleans.append(FoodResourceBoolean(
+		description_question="Accepts SNAP?", 
+		description_statement="Check off if this food resource accepts SNAP."
+	))
+	booleans.append(FoodResourceBoolean(
+		description_question="Accepts FMNP Vouchers?", 
+		description_statement="Check off if this food resource accepts FMNP Vouchers."
+	))
+	booleans.append(FoodResourceBoolean(
+		description_question="Accepts Philly Food Bucks?", 
+		description_statement="Check off if this food resource accepts Philly Food Bucks."
+		))
+	booleans.append(FoodResourceBoolean(
+		description_question="Wheelchair accessible?", 
+		description_statement="Check off if this food resource is wheelchair accessible."
+	))
+	return booleans
+
 def create_food_resource_from_form(form, additional_errors):
 	food_resource_type = form.location_type.data
 	all_timeslots = []
@@ -87,11 +127,15 @@ def create_food_resource_from_form(form, additional_errors):
 			description=form.additional_information.data,
 			timeslots=all_timeslots,
 			address=address, 
-			is_for_family_and_children = \
-				form.is_for_family_and_children.data,
-			is_for_seniors = form.is_for_seniors.data,
-			is_wheelchair_accessible = form.is_wheelchair_accessible.data,  
-			is_accepts_snap = form.is_accepts_snap.data, 
+			requires_photo_id = form.requires_photo_id.data,
+			requires_proof_of_address = form.requires_proof_of_address.data,
+			requires_proof_of_income = form.requires_proof_of_income.data,
+			requires_social_security_card = form.requires_social_security_card.data,
+			requires_referral = form.requires_referral.data,
+			is_wheelchair_accessible = form.is_wheelchair_accessible.data,
+			accepts_snap = form.accepts_snap.data,
+			accepts_fmnp_vouchers = form.accepts_fmnp_vouchers.data,
+			accepts_philly_food_bucks = form.accepts_philly_food_bucks.data,
 			are_hours_available = are_hours_available,
 			food_resource_type = food_resource_type)
 		return food_resource

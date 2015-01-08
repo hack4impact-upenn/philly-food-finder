@@ -25,6 +25,7 @@ def index():
 @login_required
 def new(id=None):
 	form = AddNewFoodResourceForm(request.form)
+	form.generate_booleans()
 
 	# Set timeslot choices.
 	for timeslots in form.daily_timeslots:
@@ -133,6 +134,7 @@ def new(id=None):
 @app.route('/propose-resource', methods=['GET', 'POST'])
 def guest_new_food_resource():
 	form = NonAdminAddNewFoodResourceForm(request.form)
+	form.generate_booleans()
 
 	# Set timeslot choices.
 	for timeslots in form.daily_timeslots:
@@ -206,11 +208,13 @@ def admin():
 				food_resource_type.food_resources.remove(food_resource)
 
 	contacts = FoodResourceContact.query.all()
+	food_resource_booleans = get_food_resource_booleans()
 
 	return render_template('admin_resources.html', 
 		food_resource_contacts=contacts, 
 		days_of_week=days_of_week,
-		food_resource_types=food_resource_types)
+		food_resource_types=food_resource_types,
+		food_resource_booleans=food_resource_booleans)
 
 @app.route('/admin')
 def admin_redirect():

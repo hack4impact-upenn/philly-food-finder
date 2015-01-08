@@ -155,15 +155,9 @@
 		{{ render_field(form.additional_information) }}
 
 		<!-- Boolean fields --> 
-		{{ render_field(form.requires_photo_id) }}
-		{{ render_field(form.requires_proof_of_address) }}
-		{{ render_field(form.requires_proof_of_income) }}
-		{{ render_field(form.requires_social_security_card) }}
-		{{ render_field(form.requires_referral) }}
-		{{ render_field(form.accepts_snap) }}
-		{{ render_field(form.accepts_fmnp_vouchers) }}
-		{{ render_field(form.accepts_philly_food_bucks) }}
-		{{ render_field(form.is_wheelchair_accessible) }}
+		{% for boolean in form.booleans %}
+			{{ render_field(boolean) }} 
+		{% endfor %}
 
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered

@@ -168,24 +168,10 @@
 							{% endif %}
 						</div>
 					</div>
-					{{ render_food_resource_boolean("Requires photo ID?", 
-						resource.requires_photo_id) }}
-					{{ render_food_resource_boolean("Requires proof of address?", 
-						resource.requires_proof_of_address) }}
-					{{ render_food_resource_boolean("Requires proof of income?", 
-						resource.requires_proof_of_income) }}
-					{{ render_food_resource_boolean("Requires proof of Social Security card?", 
-						resource.requires_social_security_card) }}
-					{{ render_food_resource_boolean("Requires referral?", 
-						resource.requires_referral) }}
-					{{ render_food_resource_boolean("Accepts SNAP?", 
-						resource.accepts_snap) }}
-					{{ render_food_resource_boolean("Accepts FNMP vouchers?", 
-						resource.accepts_fmnp_vouchers) }}
-					{{ render_food_resource_boolean("Accepts Philly Food Bucks?", 
-						resource.accepts_philly_food_bucks) }}
-					{{ render_food_resource_boolean("Wheelchair accessible?", 
-						resource.is_wheelchair_accessible) }}
+					{% for boolean in resource.booleans %}
+						{{ render_food_resource_boolean(boolean.description_question, 
+							boolean.value) }}
+					{% endfor %}
 				</div>
 				<div class="large-6 small-12 columns">
 					<div class="row">
@@ -233,14 +219,19 @@
   	<!-- Filter admin resources by certain criteria -->
   	<div class="row">
   		<div class="medium-10 small-12 columns">
-  			<label for="zip-code">Zip Code:</label>
-	  		<input type="text" id="zip-code" />
-	  		<input type="checkbox" id="filter-by-open-now"> Open Now
-	  		<input type="checkbox" id="filter-by-families-and-children"> Families and children
-	  		<input type="checkbox" id="filter-by-seniors"> Seniors
-	  		<input type="checkbox" id="filter-by-wheelchair-accessible"> Wheelchair accessible
-	  		<input type="checkbox" id="filter-by-accepts-snap"> Accepts SNAP
-  		</div>
+  			<div class="row">
+  				<div class="small-12 columns">
+  					<label for="zip-code">Zip Code:</label>
+	  				<input type="text" id="zip-code" />
+	  			</div>
+	  			<div class="small-12 columns"
+	  				<input type="checkbox" id="filter-by-open-now"> Open Now
+	  				{% for boolean in food_resource_booleans %}	  				
+		  			<input type="checkbox" id="filter-by-{{ boolean.hyphenated_id }}"> {{ boolean.description_question }}
+			  		{% endfor %}
+  				</div>
+  			</div>
+	  	</div>
   		<div class="medium-2 small-12 columns">
   			<div class="button radius small" id="apply-filters-resources-button">Apply Filters</div>
   			<div class="button radius small" id="clear-filters-resources-button">Clear Filters</div>
@@ -376,24 +367,10 @@
 							{% endif %}
 						</div>
 					</div>
-					{{ render_food_resource_boolean("Requires photo ID?", 
-						resource.requires_photo_id) }}
-					{{ render_food_resource_boolean("Requires proof of address?", 
-						resource.requires_proof_of_address) }}
-					{{ render_food_resource_boolean("Requires proof of income?", 
-						resource.requires_proof_of_income) }}
-					{{ render_food_resource_boolean("Requires proof of Social Security card?", 
-						resource.requires_social_security_card) }}
-					{{ render_food_resource_boolean("Requires referral?", 
-						resource.requires_referral) }}
-					{{ render_food_resource_boolean("Accepts SNAP?", 
-						resource.accepts_snap) }}
-					{{ render_food_resource_boolean("Accepts FNMP vouchers?", 
-						resource.accepts_fmnp_vouchers) }}
-					{{ render_food_resource_boolean("Accepts Philly Food Bucks?", 
-						resource.accepts_philly_food_bucks) }}
-					{{ render_food_resource_boolean("Wheelchair accessible?", 
-						resource.is_wheelchair_accessible) }}
+					{% for boolean in resource.booleans %}
+						{{ render_food_resource_boolean(boolean.description_question, 
+							boolean.value) }}
+					{% endfor %}
 				</div>
 				<div class="large-6 small-12 columns">
 					<div class="row">
