@@ -6,10 +6,22 @@ from wtforms.validators import InputRequired, Length, URL, Email, Optional, \
 	ValidationError
 from wtforms import TextField, TextAreaField, validators, PasswordField, \
 	StringField, BooleanField, SubmitField, HiddenField, SelectField, \
-	SelectField, FieldList, FormField
+	SelectField, FieldList, FormField, Label
 from flask_user.forms import RegisterForm, unique_email_validator
 from flask_user.translations import lazy_gettext as _
 from app.utils import *
+
+class BooleanForm(Form):
+	value = SelectField(
+		label = 'Default',
+		choices = [('no', 'No'), ('yes', 'Yes')], 
+		validators = [
+			InputRequired("Please choose an option.")
+		]
+	)
+
+	def set_label(self, label):
+		self.value.label = Label(self.value.id, label)
 
 class TimeSlotForm(Form):
 	starts_at = SelectField(u'Opens at') 
@@ -20,7 +32,7 @@ class IsOpenForm(Form):
 		choices=[('closed', 'Closed'), ('open', 'Open')])
 
 	def set_label(self, label):
-		is_open.label = label
+		self.is_open.label = Label(self.is_open.id, label)
 
 class MultiTimeSlotForm(Form):
 	timeslots = FieldList(FormField(TimeSlotForm), min_entries=10, 
@@ -125,31 +137,24 @@ class AddNewFoodResourceForm(Form):
 			resource might find useful. For example, "Open every second \
 			Saturday of the month," "Referral required," or "Call for hours."'
 	)
-	booleans = FieldList(BooleanField(''), min_entries=len(get_food_resource_booleans()))
+	booleans = FieldList(FormField(BooleanForm), min_entries=0)
 
 	def generate_booleans(self):
 		food_resource_booleans = get_food_resource_booleans()
 		for i, food_resource_boolean in enumerate(food_resource_booleans):
-			self.booleans[i].label=food_resource_boolean.description_statement
+			self.booleans.append_entry()
+			self.booleans[i].set_label(food_resource_boolean.description_statement)
 
-	'''requires_photo_id = BooleanField('Check off if this food resource \
-		requires a photo ID.')
-	requires_proof_of_address = BooleanField('Check off if this food resource \
-		requires proof of address.')
-	requires_proof_of_income = BooleanField('Check off if this food resource \
-		requires proof of income.')
-	requires_social_security_card = BooleanField('Check off if this food resource \
-		requires a social security card.')
-	requires_referral = BooleanField(label='Check off if this food resource \
-		requires a referral.')
-	accepts_snap = BooleanField('Check off if this food resource \
-		accepts SNAP.')
-	accepts_fmnp_vouchers = BooleanField('Check off if this food resource \
-		accepts FNMP Vouchers.')
-	accepts_philly_food_bucks = BooleanField('Check off if this food resource \
-		accepts Philly Food Bucks.')
-	is_wheelchair_accessible = BooleanField('Check off if this food resource \
-		is wheelchair accessible.')'''
+	def get_booleans(self):
+		food_resource_booleans = get_food_resource_booleans()
+		dict = {}
+		for i, boolean in enumerate(self.booleans):
+			key = food_resource_booleans[i].hyphenated_id
+			value = False
+			if boolean.value.data == 'yes':
+				value = True
+			dict[key] = value
+		return dict
 
 # All information from AddNewFoodResourceForm plus information 
 # about the person submitting the food resource for evaluation. 

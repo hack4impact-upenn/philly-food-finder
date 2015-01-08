@@ -156,7 +156,8 @@
 
 		<!-- Boolean fields --> 
 		{% for boolean in form.booleans %}
-			{{ render_field(boolean) }} 
+			{{ boolean.form.hidden_tag() }}
+			{{ render_field(boolean.value) }}
 		{% endfor %}
 
 		<div class="row">

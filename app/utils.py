@@ -14,39 +14,39 @@ def get_food_resource_booleans():
 	booleans = []
 	booleans.append(FoodResourceBoolean(
 		description_question="Requires a photo ID?", 
-		description_statement="Check off if this food resource requires a photo ID."
+		description_statement="Does this food resource require a photo ID?"
 	))
 	booleans.append(FoodResourceBoolean(
 		description_question="Requires proof of address?", 
-		description_statement="Check off if this food resource requires proof of address."
+		description_statement="Does this food resource require proof of address?"
 	))
 	booleans.append(FoodResourceBoolean(
 		description_question="Requires proof of income?", 
-		description_statement="Check off if this food resource requires proof of income."
+		description_statement="Does this food resource require proof of income?"
     ))
 	booleans.append(FoodResourceBoolean(
 		description_question="Requires a Social Security card?", 
-		description_statement="Check off if this food resource requires a Social Security card."
+		description_statement="Does this food resource require a Social Security card?"
 	))
 	booleans.append(FoodResourceBoolean(
 		description_question="Requires a referral?", 
-		description_statement="Check off if this food resource requires a referral."
+		description_statement="Does this food resource require a referral?"
     ))
 	booleans.append(FoodResourceBoolean(
 		description_question="Accepts SNAP?", 
-		description_statement="Check off if this food resource accepts SNAP."
+		description_statement="Does this food resource accept SNAP?"
 	))
 	booleans.append(FoodResourceBoolean(
 		description_question="Accepts FMNP Vouchers?", 
-		description_statement="Check off if this food resource accepts FMNP Vouchers."
+		description_statement="Does this food resource accept FMNP Vouchers?"
 	))
 	booleans.append(FoodResourceBoolean(
 		description_question="Accepts Philly Food Bucks?", 
-		description_statement="Check off if this food resource accepts Philly Food Bucks."
+		description_statement="Does this food resource accept Philly Food Bucks?"
 		))
 	booleans.append(FoodResourceBoolean(
 		description_question="Wheelchair accessible?", 
-		description_statement="Check off if this food resource is wheelchair accessible."
+		description_statement="Is this food resource wheelchair accessible?"
 	))
 	return booleans
 
@@ -121,23 +121,24 @@ def create_food_resource_from_form(form, additional_errors):
 			.first()
 
 		# Create food resource and store all data in it.
-		food_resource = FoodResource(
-			name=form.name.data, 
-			phone_numbers=phone_numbers,
-			description=form.additional_information.data,
-			timeslots=all_timeslots,
-			address=address, 
-			requires_photo_id = form.requires_photo_id.data,
-			requires_proof_of_address = form.requires_proof_of_address.data,
-			requires_proof_of_income = form.requires_proof_of_income.data,
-			requires_social_security_card = form.requires_social_security_card.data,
-			requires_referral = form.requires_referral.data,
-			is_wheelchair_accessible = form.is_wheelchair_accessible.data,
-			accepts_snap = form.accepts_snap.data,
-			accepts_fmnp_vouchers = form.accepts_fmnp_vouchers.data,
-			accepts_philly_food_bucks = form.accepts_philly_food_bucks.data,
-			are_hours_available = are_hours_available,
-			food_resource_type = food_resource_type)
+		food_resource = FoodResource()
+		food_resource.name = form.name.data
+		food_resource.phone_numbers = phone_numbers
+		food_resource.description = form.additional_information.data
+		food_resource.timeslots = all_timeslots
+		food_resource.address = address
+		food_resource.are_hours_available = are_hours_available
+		food_resource.food_resource_type = food_resource_type
+		form_booleans = form.get_booleans()
+		for key, value in form_booleans.iteritems():
+			food_resource_boolean = FoodResourceBoolean.query \
+				.filter_by(
+					food_resource_id=food_resource.id, 
+					hyphenated_id=key) \
+				.first()
+			if food_resource_boolean:
+				food_resource_boolean.value = value
+				db.session.add(food_resource_boolean)
 		return food_resource
 
 def get_string_of_all_food_resource_types():

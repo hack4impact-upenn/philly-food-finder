@@ -173,6 +173,12 @@ class FoodResourceBoolean(db.Model):
 			'hyphenated_id': self.hyphenated_id
 		}
 
+	def serialize_food_resource_boolean_truncated(self):
+		return {
+			'value': self.valud,
+			'hyphenated_id': self.hyphenated_id
+		}
+
 class FoodResource(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String(100))

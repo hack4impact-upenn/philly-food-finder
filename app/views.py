@@ -25,7 +25,6 @@ def index():
 @login_required
 def new(id=None):
 	form = AddNewFoodResourceForm(request.form)
-	form.generate_booleans()
 
 	# Set timeslot choices.
 	for timeslots in form.daily_timeslots:
@@ -54,6 +53,8 @@ def new(id=None):
 
 	# GET request.
 	if request.method == 'GET':
+		form.generate_booleans()
+
 		if id is not None:
 			# Populate form with information about existing food resource. 
 			food_resource = FoodResource.query.filter_by(id=id).first()
@@ -70,12 +71,6 @@ def new(id=None):
 			form.phone_number.data = food_resource.phone_numbers[0].number
 			form.website.data = food_resource.url
 			form.additional_information.data = food_resource.description
-			form.is_for_family_and_children.data = \
-				food_resource.is_for_family_and_children
-			form.is_for_seniors.data = food_resource.is_for_seniors
-			form.is_wheelchair_accessible.data = \
-				food_resource.is_wheelchair_accessible
-			form.is_accepts_snap.data = food_resource.is_accepts_snap
 			form.location_type.data = food_resource.food_resource_type.enum
 
 			# Data that must be interpreted before being rendered.
@@ -100,6 +95,12 @@ def new(id=None):
 				form.is_open[day_of_week_index].is_open.data = "open"
 				form.daily_timeslots[day_of_week_index].num_timeslots.data = \
 					num_timeslots_per_day[timeslot.day_of_week]
+
+			for i, boolean in enumerate(food_resource.booleans):
+				if boolean.value == True:
+					form.booleans[i].value.data = 'yes'
+				else:
+					form.booleans[i].value.data = 'no'
 
 	# POST request.
 	additional_errors = []
@@ -134,7 +135,6 @@ def new(id=None):
 @app.route('/propose-resource', methods=['GET', 'POST'])
 def guest_new_food_resource():
 	form = NonAdminAddNewFoodResourceForm(request.form)
-	form.generate_booleans()
 
 	# Set timeslot choices.
 	for timeslots in form.daily_timeslots:
@@ -156,6 +156,7 @@ def guest_new_food_resource():
 	# Initialize location type.
 	if request.method == 'GET':
 		form.location_type.data = food_resource_types_choices[0][0]
+		form.generate_booleans()
 
 	additional_errors = []
 	if request.method == 'POST' and form.validate(): 
