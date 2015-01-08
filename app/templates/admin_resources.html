@@ -224,10 +224,10 @@
   					<label for="zip-code">Zip Code:</label>
 	  				<input type="text" id="zip-code" />
 	  			</div>
-	  			<div class="small-12 columns"
+	  			<div class="small-12 columns">
 	  				<input type="checkbox" id="filter-by-open-now"> Open Now
 	  				{% for boolean in food_resource_booleans %}	  				
-		  			<input type="checkbox" id="filter-by-{{ boolean.hyphenated_id }}"> {{ boolean.description_question }}
+		  			<input type="checkbox" id="filter-by-boolean-{{ boolean.hyphenated_id }}"/> {{ boolean.description_question }}
 			  		{% endfor %}
   				</div>
   			</div>
@@ -448,14 +448,8 @@
 		$("#apply-filters-resources-button").click(function() {
 			$('*').css({ 'cursor': 'wait' });
 
-			var hasZipCodeFilter = 0; // FALSE
-			var hasFamiliesAndChildrenFilter = 0; // FALSE
-			var hasSeniorsFilter = 0; // FALSE
-			var hasWheelchairAccessibleFilter = 0; // FALSE
-			var hasAcceptsSnapFilter = 0; // FALSE
-			var openNowFilter = 0; // FALSE
-
 			// Check that zip code is properly formed.
+			var hasZipCodeFilter = 0; // FALSE
 			var regex = /^(\d{5})?$/; // 5-digit number or an empty string.
 			var zipCode = $("#zip-code").val().trim(); 
 			if (regex.test(zipCode)) {
@@ -472,33 +466,28 @@
 			}
 
 			// Determine which checkboxes are checked.
+			var booleans = [];
+			$("[id^='filter-by-boolean-']").each(function(index) {
+				if ($(this).is(':checked')) {
+					booleans[booleans.length] = 1; // TRUE
+				}
+				else {
+					booleans[booleans.length] = 0; // FALSE
+				}
+			}); 
+
+			// Determine whether 'Open Now' filter has been chosen.
+			var openNowFilter = 0; // FALSE
 			if ($('[id="filter-by-open-now"]:checked')
 				.length > 0) {
 				openNowFilter = 1; // TRUE 
-			}
-			if ($('[id="filter-by-families-and-children"]:checked')
-				.length > 0) {
-				hasFamiliesAndChildrenFilter = 1; // TRUE 
-			}
-			if ($('[id="filter-by-seniors"]:checked').length > 0) {
-				hasSeniorsFilter = 1; // TRUE 
-			}
-			if ($('[id="filter-by-wheelchair-accessible"]:checked')
-				.length > 0) {
-				hasWheelchairAccessibleFilter = 1; // TRUE 
-			}
-			if ($('[id="filter-by-accepts-snap"]:checked').length > 0) {
-				hasAcceptsSnapFilter = 1; // TRUE 
 			}
 
 			$.getJSON($SCRIPT_ROOT + '/_admin_apply_filters', {
         		has_zip_code_filter: hasZipCodeFilter,
         		zip_code: zipCode,
-        		has_families_and_children_filter: hasFamiliesAndChildrenFilter, 
-        		has_seniors_filter: hasSeniorsFilter, 
-        		has_wheelchair_accessible_filter: hasWheelchairAccessibleFilter, 
-        		has_accepts_snap_filter: hasAcceptsSnapFilter,
-        		has_open_now_filter: openNowFilter
+        		has_open_now_filter: openNowFilter,
+        		booleans: JSON.stringify(booleans)
         	},
         	function(data) {
         		$('*').css({ 'cursor': 'default' });
@@ -582,6 +571,7 @@
     	},
     	function(data) {
     		$('*').css({ 'cursor': 'default' });
+
     		clearTablesOfFoodResources();
 
     		var totalNumResources = 0;
@@ -619,11 +609,7 @@
     		setTotalNumResources(totalNumResources); 
 
     		// Clear checkboxes and text box.
-    		$('#filter-by-open-now').attr('checked', false);
-			$('#filter-by-families-and-children').attr('checked', false);
-			$('#filter-by-seniors').attr('checked', false);
-			$('#filter-by-wheelchair-accessible').attr('checked', false);
-			$('#filter-by-accepts-snap').attr('checked', false);
+    		$("[id^='filter-by-']").attr('checked', false);
 			$("#zip-code").val("");
 
     		// Hide all food resource tables initially.

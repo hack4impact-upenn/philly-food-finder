@@ -513,85 +513,30 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 						'<div class="small-9 columns">' + 
 							resource["description"] + 
 						'</div>' + 
-					'</div>' + 
-					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Family and children?' + 
-						'</div>' + 
-						'<div class="small-9 columns">'; 
+					'</div>'; 
 
-		// Display whether the food resource is suitable for family and 
-		// children. 
-		if (resource["is_for_family_and_children"] == true) {
-			html += 
+		// Display boolean information.
+		for (var j = 0; j < resource["booleans"].length; j++) {
+			html +=	'<div class="row">' + 
+						'<div class="small-9 columns">' + 
+							resource["booleans"][j]["description_question"] + 
+						'</div>' + 
+						'<div class="small-3 columns">'; 
+
+			if (resource["booleans"][j]["value"] == true) {
+				html += 
 							'Yes'; 
-		}
-		else {
-			html += 
+			}
+			else {
+				html += 
 							'No'; 
-		}
-
-		html += 
-						'</div>' + 
-					'</div>' + 
-					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Seniors?' + 
-						'</div>' + 
-						'<div class="small-9 columns">'; 
-
-		// Display whether the food resource is suitable for seniors. 
-		if (resource["is_for_seniors"] == true) {
+			}
 			html += 
-							'Yes'; 
-		}
-		else {
-			html += 
-							'No'; 
+						'</div>' + 
+					'</div>'; 
 		}
 		
-		html +=  
-						'</div>' + 
-					'</div>' + 
-					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Wheelchair accessible?' + 
-						'</div>' + 
-						'<div class="small-9 columns">'; 
-
-		// Display whether the food resource is wheelchair accessible.
-		if (resource["is_wheelchair_accessible"] == true) {
-			html += 
-							'Yes'; 
-		}
-		else {
-			html += 
-							'No';  
-		}
-		
-		html += 
-						'</div>' + 
-					'</div>' + 
-					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Accepts SNAP?' + 
-						'</div>' + 
-						'<div class="small-9 columns">'; 
-
-		// Display whether the food resource accepts SNAP.
-		if (resource["is_accepts_snap"] == true) {
-			html += 
-							'Yes';  
-		}
-		else {
-			html += 
-							'No'; 
-		}
-
-		html += 
-						'</div>' + 
-					'</div>' + 
-				'</div>' + 
+		html +=	'</div>' + 
 				'<div class="large-6 small-12 columns">' + 
 					'<div class="row">' + 
 						'<div class="small-3 columns">' + 

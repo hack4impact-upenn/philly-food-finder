@@ -167,7 +167,7 @@ class FoodResourceBoolean(db.Model):
 	def serialize_food_resource_boolean(self):
 		return {
 			'id': self.id,
-			'value': self.valud,
+			'value': self.value,
 			'description_question': self.description_question,
 			'description_statement': self.description_statement,
 			'hyphenated_id': self.hyphenated_id

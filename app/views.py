@@ -15,6 +15,7 @@ from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
 from tempfile import NamedTemporaryFile
 import csv, time
+import json
 
 @app.route('/')
 def index():
@@ -372,15 +373,8 @@ def get_filtered_food_resource_data():
 	# Collect boolean paramaters passed via JSON.
 	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
 	zip_code = request.args.get('zip_code', 0, type=int)
-	has_families_and_children_filter = request.args.get(
-		'has_families_and_children_filter', 0, type=int) 
-	has_seniors_filter = request.args.get('has_seniors_filter', 0, type=int) 
-	has_wheelchair_accessible_filter = request.args.get(
-		'has_wheelchair_accessible_filter', 0, type=int) 
-	has_accepts_snap_filter = request.args.get(
-		'has_accepts_snap_filter', 0, type=int) 
-	has_open_now_filter = request.args.get(
-		'has_open_now_filter', 0, type=int) 
+	has_open_now_filter = request.args.get('has_open_now_filter', 0, type=int) 
+	booleans_array = json.loads(request.args.get('booleans'))
 
 	# Create empty arrays to hold food resources.
 	all_resources = []
@@ -416,17 +410,16 @@ def get_filtered_food_resource_data():
 
 	# Filter each list by other boolean criteria.
 	for list_to_filter in all_resources:
-		filter_food_resources(list_to_filter, has_families_and_children_filter, 
-			has_seniors_filter, has_wheelchair_accessible_filter,
-			has_accepts_snap_filter, has_open_now_filter)
+		filter_food_resources(list_to_filter, has_open_now_filter, 
+			booleans_array)
 
-	json = []
+	json_array = []
 	for i, list in enumerate(all_resources):
-		json.append([])
+		json_array.append([])
 		for food_resource in list:
-			json[i].append(food_resource.serialize_food_resource())
+			json_array[i].append(food_resource.serialize_food_resource())
 
-	return jsonify(days_of_week=days_of_week, food_resources=json)
+	return jsonify(days_of_week=days_of_week, food_resources=json_array)
 
 @app.route('/map')
 def map():

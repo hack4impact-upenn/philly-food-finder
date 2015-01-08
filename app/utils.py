@@ -298,25 +298,16 @@ def get_food_resources_by_location_type_and_zip_code(list_to_populate,
 		.order_by(FoodResource.name).all():
 		list_to_populate.append(food_resource)
 
-def filter_food_resources(list_to_filter, has_families_and_children_filter, 
-	has_seniors_filter, has_wheelchair_accessible_filter,
-	has_accepts_snap_filter, has_open_now_filter):
+def filter_food_resources(list_to_filter, has_open_now_filter, booleans_array):
 	for food_resource in list(list_to_filter):
-		if has_families_and_children_filter and \
-			food_resource.is_for_family_and_children == False:
+		for i, boolean in enumerate(booleans_array):
+			print food_resource.booleans[i]
+			if boolean == True and food_resource.booleans[i].value == False:
+				list_to_filter.remove(food_resource)
+		if has_open_now_filter and not \
+			is_open(food_resource):
 			list_to_filter.remove(food_resource)
-		elif has_seniors_filter and \
-			food_resource.is_for_seniors == False:
-			list_to_filter.remove(food_resource)
-		elif has_wheelchair_accessible_filter and \
-			food_resource.is_wheelchair_accessible == False:
-			list_to_filter.remove(food_resource)
-		elif has_accepts_snap_filter and \
-			food_resource.is_accepts_snap == False:
-			list_to_filter.remove(food_resource)
-		elif has_open_now_filter and not \
-		is_open(food_resource):
-			list_to_filter.remove(food_resource)
+		print "\n"
 
 def import_file(path):
 
