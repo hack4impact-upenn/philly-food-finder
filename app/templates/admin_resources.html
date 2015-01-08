@@ -1,6 +1,8 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
 
+{% from "macros.html" import render_food_resource_boolean with context %}
+
 {% block content %}
 <body id = "resources_p">
 	<div class="row">
@@ -166,54 +168,24 @@
 							{% endif %}
 						</div>
 					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Family and children?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_for_family_and_children %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Seniors?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_for_seniors %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Wheelchair accessible?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_wheelchair_accessible %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Accepts SNAP?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_accepts_snap %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
+					{{ render_food_resource_boolean("Requires photo ID?", 
+						resource.requires_photo_id) }}
+					{{ render_food_resource_boolean("Requires proof of address?", 
+						resource.requires_proof_of_address) }}
+					{{ render_food_resource_boolean("Requires proof of income?", 
+						resource.requires_proof_of_income) }}
+					{{ render_food_resource_boolean("Requires proof of Social Security card?", 
+						resource.requires_social_security_card) }}
+					{{ render_food_resource_boolean("Requires referral?", 
+						resource.requires_referral) }}
+					{{ render_food_resource_boolean("Accepts SNAP?", 
+						resource.accepts_snap) }}
+					{{ render_food_resource_boolean("Accepts FNMP vouchers?", 
+						resource.accepts_fmnp_vouchers) }}
+					{{ render_food_resource_boolean("Accepts Philly Food Bucks?", 
+						resource.accepts_philly_food_bucks) }}
+					{{ render_food_resource_boolean("Wheelchair accessible?", 
+						resource.is_wheelchair_accessible) }}
 				</div>
 				<div class="large-6 small-12 columns">
 					<div class="row">
@@ -404,54 +376,24 @@
 							{% endif %}
 						</div>
 					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Family and children?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_for_family_and_children %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Seniors?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_for_seniors %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Wheelchair accessible?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_wheelchair_accessible %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Accepts SNAP?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_accepts_snap %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
+					{{ render_food_resource_boolean("Requires photo ID?", 
+						resource.requires_photo_id) }}
+					{{ render_food_resource_boolean("Requires proof of address?", 
+						resource.requires_proof_of_address) }}
+					{{ render_food_resource_boolean("Requires proof of income?", 
+						resource.requires_proof_of_income) }}
+					{{ render_food_resource_boolean("Requires proof of Social Security card?", 
+						resource.requires_social_security_card) }}
+					{{ render_food_resource_boolean("Requires referral?", 
+						resource.requires_referral) }}
+					{{ render_food_resource_boolean("Accepts SNAP?", 
+						resource.accepts_snap) }}
+					{{ render_food_resource_boolean("Accepts FNMP vouchers?", 
+						resource.accepts_fmnp_vouchers) }}
+					{{ render_food_resource_boolean("Accepts Philly Food Bucks?", 
+						resource.accepts_philly_food_bucks) }}
+					{{ render_food_resource_boolean("Wheelchair accessible?", 
+						resource.is_wheelchair_accessible) }}
 				</div>
 				<div class="large-6 small-12 columns">
 					<div class="row">
