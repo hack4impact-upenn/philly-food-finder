@@ -175,10 +175,15 @@ class FoodResource(db.Model):
 		order_by='TimeSlot.start_time')
 
 	# Boolean fields
-	is_for_family_and_children = db.Column(db.Boolean, default=False)
-	is_for_seniors = db.Column(db.Boolean, default=False)
+	requires_photo_id = db.Column(db.Boolean, default=False)
+	requires_proof_of_address = db.Column(db.Boolean, default=False)
+	requires_proof_of_income = db.Column(db.Boolean, default=False)
+	requires_social_security_card = db.Column(db.Boolean, default=False)
+	requires_referral = db.Column(db.Boolean, default=False)
 	is_wheelchair_accessible = db.Column(db.Boolean, default=False)
-	is_accepts_snap = db.Column(db.Boolean, default=False)
+	accepts_snap = db.Column(db.Boolean, default=False)
+	accepts_fmnp_vouchers = db.Column(db.Boolean, default=False)
+	accepts_philly_food_bucks = db.Column(db.Boolean, default=False)
 
 	# Fields for when non-admins submit resources
 	is_approved = db.Column(db.Boolean(), default=True)
