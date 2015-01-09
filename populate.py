@@ -13,7 +13,7 @@ db.create_all()
 cp_yellow = ColoredPin(
     color_name="Yellow",
     hex_color="fdd800", 
-    pin_image_name="mb_yellow.png"
+    pin_image_name="mbb_yellow.png"
 )
 db.session.add(cp_yellow)
 
@@ -51,6 +51,90 @@ cp_purple = ColoredPin(
     pin_image_name="mbb_purple.png"
 )
 db.session.add(cp_purple)
+
+cp_black = ColoredPin(
+    color_name="Black",
+    hex_color="676767", 
+    pin_image_name="mbb_black.png"
+)
+db.session.add(cp_black)
+
+cp_aqua = ColoredPin(
+    color_name="Aqua",
+    hex_color="82D1DA", 
+    pin_image_name="mbb_aqua.png"
+)
+db.session.add(cp_aqua)
+
+cp_grey = ColoredPin(
+    color_name="Grey",
+    hex_color="CCCCCC", 
+    pin_image_name="mbb_grey.png"
+)
+db.session.add(cp_grey)
+
+cp_lavender = ColoredPin(
+    color_name="Lavender",
+    hex_color="6F6AB0", 
+    pin_image_name="mbb_lavender.png"
+)
+db.session.add(cp_lavender)
+
+cp_light_green = ColoredPin(
+    color_name="Light_Green",
+    hex_color="BFD849", 
+    pin_image_name="mbb_light_green.png"
+)
+db.session.add(cp_light_green)
+
+cp_magenta = ColoredPin(
+    color_name="Magenta",
+    hex_color="B86CAC", 
+    pin_image_name="mbb_magenta.png"
+)
+db.session.add(cp_magenta)
+
+cp_maroon = ColoredPin(
+    color_name="Maroon",
+    hex_color="8B181B", 
+    pin_image_name="mbb_maroon.png"
+)
+db.session.add(cp_maroon)
+
+cp_navy = ColoredPin(
+    color_name="Navy",
+    hex_color="2D4FA0", 
+    pin_image_name="mbb_navy.png"
+)
+db.session.add(cp_navy)
+
+cp_periwinkle = ColoredPin(
+    color_name="Periwinkle",
+    hex_color="A099CB", 
+    pin_image_name="mbb_periwinkle.png"
+)
+db.session.add(cp_periwinkle)
+
+cp_pink = ColoredPin(
+    color_name="Pink",
+    hex_color="F69799", 
+    pin_image_name="mbb_pink.png"
+)
+db.session.add(cp_pink)
+
+cp_sky_blue = ColoredPin(
+    color_name="Sky_Blue",
+    hex_color="9FC9EB", 
+    pin_image_name="mbb_sky_blue.png"
+)
+db.session.add(cp_sky_blue)
+
+cp_turquoise = ColoredPin(
+    color_name="Turquoise",
+    hex_color="039B81", 
+    pin_image_name="mbb_turquoise.png"
+)
+db.session.add(cp_turquoise)
 
 # Create food resource types.
 frt_farmers_market = FoodResourceType(

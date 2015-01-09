@@ -4,7 +4,7 @@
 {% block content %}
 <body id = "add_p">
   <div class="row">
-      <h1 class="page-header">Propose a Food Resource</h1>
+      <h1 class="page-header admin-header">Propose a Food Resource</h1>
       <hr align="center">
   </div>
 
@@ -18,6 +18,16 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+				<div class="required-disclaimer">
+					Required fields.
+				</div>
+			</div>
+		</div>
 
 	    <!-- Additional Errors -->
 	    <div class="row">
@@ -609,15 +619,6 @@
 		            {% endif %}
 		            </dd>
 				</label>
-			</div>
-		</div>
-
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-				<div class="required-disclaimer">
-					Required fields.
-				</div>
 			</div>
 		</div>
 

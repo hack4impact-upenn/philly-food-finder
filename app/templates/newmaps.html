@@ -116,15 +116,17 @@
         <hr align="center">
     </div>
     <div class="row">
-        <div class="large-centered large-10 medium-centered medium-8 small-8 small-centered columns content">
+        <div class="large-centered large-10 medium-centered medium-10 small-10 small-centered columns content">
             <form method="post" id="geocoding_form">
                 <div class="small-12 columns">
                     <label for="address">Zip Code:</label>
                     <input type="text" id="address" name="address" />
-                </div>
-                <div class="small-12 columns">
-                    <input type="checkbox" id="map-filter-by-families-and-children"> Families and children
-                    <input type="checkbox" id="map-filter-by-seniors"> Seniors
+
+                    <ul id="checkboxes">
+                      <li id="checkbox-li"><input type="checkbox" id="map-filter-by-families-and-children"> Families and children</li>
+                      <li id="checkbox-li"><input type="checkbox" id="map-filter-by-seniors"> Seniors</li>
+                    </ul>
+
                 </div>
                 <div class="small-12 columns">
                     <input type="submit" class="button radius small" value="Search" id="map-search-button" />
@@ -136,15 +138,18 @@
                 </div>
             </form>      
             <div id="map-container">
-                <div id="map"></div>
+                <div class="large-4" id="map"></div>
             </div> 
             <div id="map-key">
+
                 {% for food_resource_type in food_resource_types %}
-                <div class="small-12 medium-4 columns pin-definition">
+                <div class="small-6 medium-4 columns pin-definition">
                     <img src="../static/img/{{ food_resource_type.colored_pin.pin_image_name }}" alt="{{ food_resource_type.colored_pin.color_name}} Pin"/>
                     {{ food_resource_type.name_singular }}
                 </div>
                 {% endfor %}
+            </div>
+            <div id="footer-spacer">
             </div>
         </div>
     </div> 

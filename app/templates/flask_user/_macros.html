@@ -15,8 +15,7 @@
     
     {% macro render_checkbox_field(field, label=None) -%}
     {% if not label %}{% set label=field.label.text %}{% endif %}
-    <div class="checkbox large-6 medium-6 small-6 columns large-centered 
-	                    	medium-centered">
+    <div class="checkbox">
         <label type="checkbox">
             {{ field(type='checkbox', **kwargs) }} {{ label }}
         </label>

@@ -437,23 +437,25 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 						'class="food-resource-update-button">Remove</a>' + 
 					'</div>' + 
 			'</div>' + 
+
 			'<!-- Resource content -->' +  
 			'<div class="row admin-food-resource" id="' + resource["id"] 
 				+ '-food-resource-table">' + 
-				'<div class="large-6 small-12 columns">' + 
+			'<div class="row">' + 
+				'<div class="small-6 columns">' + 
 					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Name:' + 
+						'<div class="small-6 columns">' + 
+							'<b>Name:</b>' + 
 						'</div>' + 
-						'<div class="small-9 columns">' + 
+						'<div class="small-6 columns">' + 
 							resource["name"] + 
 						'</div>' + 
 					'</div>' + 
 					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Address:' + 
+						'<div class="small-6 columns">' + 
+							'<b>Address:</b>' + 
 						'</div>' + 
-						'<div class="small-9 columns">' + 
+						'<div class="small-6 columns">' + 
 							resource["address"]["line1"] +  
 							'<br>'; 
 
@@ -471,26 +473,26 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 						'</div>' + 
 					'</div>' + 
 					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Zip Code:' + 
+						'<div class="small-6 columns">' + 
+							'<b>Zip Code:</b>' + 
 						'</div>' + 
-						'<div class="small-9 columns">' + 
+						'<div class="small-6 columns">' + 
 							resource["address"]["zip_code"] +  
 						'</div>' + 
 					'</div>' + 
 					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Phone Number:' + 
+						'<div class="small-6 columns">' + 
+							'<b>Phone Number:</b>' + 
 						'</div>' + 
-						'<div class="small-9 columns">' + 
+						'<div class="small-6 columns">' + 
 							resource["phone_number"]["number"] +  
 						'</div>' + 
 					'</div>' + 
 					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Website:' + 
+						'<div class="small-6 columns">' + 
+							'<b>Website:</b>' + 
 						'</div>' + 
-						'<div class="small-9 columns">';
+						'<div class="small-6 columns">';
 
 		// Append URL of the food resource if it exists. 
 		if (resource["url"]) {
@@ -507,18 +509,18 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 						'</div>' + 
 					'</div>' + 
 					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Description:' + 
+						'<div class="small-6 columns">' + 
+							'<b>Description:</b>' + 
 						'</div>' + 
-						'<div class="small-9 columns">' + 
+						'<div class="small-6 columns">' + 
 							resource["description"] + 
 						'</div>' + 
 					'</div>' + 
 					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Family and children?' + 
+						'<div class="small-6 columns">' + 
+							'<b>Family and children?</b>' + 
 						'</div>' + 
-						'<div class="small-9 columns">'; 
+						'<div class="small-6 columns">'; 
 
 		// Display whether the food resource is suitable for family and 
 		// children. 
@@ -535,10 +537,10 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 						'</div>' + 
 					'</div>' + 
 					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Seniors?' + 
+						'<div class="small-6 columns">' + 
+							'<b>Seniors?</b>' + 
 						'</div>' + 
-						'<div class="small-9 columns">'; 
+						'<div class="small-6 columns">'; 
 
 		// Display whether the food resource is suitable for seniors. 
 		if (resource["is_for_seniors"] == true) {
@@ -554,10 +556,10 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 						'</div>' + 
 					'</div>' + 
 					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Wheelchair accessible?' + 
+						'<div class="small-6 columns">' + 
+							'<b>Wheelchair accessible?</b>' + 
 						'</div>' + 
-						'<div class="small-9 columns">'; 
+						'<div class="small-6 columns">'; 
 
 		// Display whether the food resource is wheelchair accessible.
 		if (resource["is_wheelchair_accessible"] == true) {
@@ -573,10 +575,10 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 						'</div>' + 
 					'</div>' + 
 					'<div class="row">' + 
-						'<div class="small-3 columns">' + 
-							'Accepts SNAP?' + 
+						'<div class="small-6 columns">' + 
+							'<b>Accepts SNAP?</b>' + 
 						'</div>' + 
-						'<div class="small-9 columns">'; 
+						'<div class="small-6 columns">'; 
 
 		// Display whether the food resource accepts SNAP.
 		if (resource["is_accepts_snap"] == true) {
@@ -592,10 +594,10 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 						'</div>' + 
 					'</div>' + 
 				'</div>' + 
-				'<div class="large-6 small-12 columns">' + 
+				'<div class="small-6 columns">' + 
 					'<div class="row">' + 
 						'<div class="small-3 columns">' + 
-							'Hours:' + 
+							'<b>Hours:</b>' + 
 						'</div>' + 
 						'<div class="small-9 columns">'; 
 						
@@ -630,6 +632,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 		}
 
 		html += 
+							'</div>' + 
 						'</div>' + 
 					'</div>' + 
 				'</div>' + 
