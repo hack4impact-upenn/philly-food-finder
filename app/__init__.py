@@ -59,7 +59,7 @@ class ConfigClass(object):
 
     # Flask-WTF settings
     RECAPTCHA_PUBLIC_KEY = '6LfRvf8SAAAAAJ4rnEu4hNukozjLnhaQ04LGbC7z'
-    RECAPTCHA_PRIVATE_KEY = ''
+    RECAPTCHA_PRIVATE_KEY = '6LfRvf8SAAAAAFooOH7oUdqco7NkMS2NBGmpzzxO'
 
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')

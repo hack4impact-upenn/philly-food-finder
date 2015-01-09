@@ -62,7 +62,7 @@
            data-options="sticky_on: large">
         <ul class="title-area">
           <li class="name">
-            <h1><a href="#"><img src="{{ url_for('static', filename='img/FPAC_logo.svg') }}"/></a></h1>
+            <h1><a href="#"><img src="{{ url_for('static', filename='img/FPAC_logo.svg') }}" id="fpac-logo"/></a></h1>
           </li>
           <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a>
           </li>
@@ -71,31 +71,34 @@
         <section class="top-bar-section">
           <ul class="left">
             <li><a href="{{ url_for('map') }}" id="l_map">map</a></li>
-            <li class="has-dropdown">
+
+            <li class="has-dropdown drop-resources">
               <a href="" id="l_resources">resources</a>
                 <ul class="dropdown">
+                  <li><a href="{{ url_for('neighborhood') }}">Neighborhood<br> Guide</a></li>
                   <li><a href="{{ url_for('farmers') }}">Farmers’ Markets</a></li>
-                  <li><a href="{{ url_for('neighborhood') }}">Neighborhood Guide</a></li>
                   <li><a href="{{ url_for('seniors') }}">Seniors</a></li>
                   <li><a href="{{ url_for('share') }}">SHARE Host Sites</a></li>  
                   <li><a href="{{ url_for('snap') }}">SNAP</a></li>
                   <li><a href="{{ url_for('summer_meals') }}">Summer Meals</a></li>
                   <li><a href="{{ url_for('wic') }}">WIC</a></li>                
+
                 </ul>
             </li>
             <li><a href="{{ url_for('about') }}" id="l_about">about</a></li>
             <li><a href="{{ url_for('contact') }}" id="l_contact">contact</a></li>
 
             {% if current_user.is_authenticated() %}
-            <li class="has-dropdown">
+            <li class="has-dropdown drop-admin">
               <a href="{{ url_for('admin') }}" id="l_admin">admin</a>
-                <ul class="dropdown">
-                  <li><a href="{{ url_for('admin') }}">Manage Food Resources</a></li>
-                  <li><a href="{{ url_for('new') }}">Add Food Resource</a></li>
-                  <li><a href="{{ url_for('view_food_resource_types') }}">Manage Food Resource Types</a></li>
-                  <li><a href="{{ url_for('new_food_resource_type') }}">Add Food Resource Type</a></li>
+
+                <ul class="drop-admin dropdown">
+                  <li><a href="{{ url_for('admin') }}">Manage<br>Food Resources</a></li>
+                  <li><a href="{{ url_for('new') }}">Add<br>Food Resource</a></li>
+                  <li><a href="{{ url_for('view_food_resource_types') }}">Manage Food<br>Resource Types</a></li>
+                  <li><a href="{{ url_for('new_food_resource_type') }}">Add Food<br>Resource Type</a></li>
                   <li><a href="{{ url_for('user.register') }}">Invite Admins</a></li>
-                  <li><a href="{{ url_for('files') }}">Bulk Import and Export</a></li>
+                  <li><a href="{{ url_for('files') }}">Bulk Import<br>and Export</a></li>
                   <li><a href="{{ url_for('analytics') }}">Admin Analytics</a></li>
                   <li><a href="{{ url_for('user.change_password') }}">Change Password</a></li>
                 </ul>
@@ -124,10 +127,28 @@
 
     {% endblock %}
 
-
-    {% block content_faq %}
-
-    {% endblock %}
+    <div class="row">
+        <h4 id="hr-helper">.</h4>
+        <hr align="center">
+    </div>
+    <div class="footer row">
+      <div class="small-12 small-centered columns">
+        Do you manage a food resource? Would you like to add your new or updated information to our site? Submit your food resource's information
+        <a href="/propose-resource">here</a>.
+     </div>
+    </div>
+    <div class="footer fbottom row">
+      <div class="small-10 columns">
+        Developed by Hack4Impact in partnership with the Philadelphia Mayor's Food Policy Advisory Council and the Greater Philadelphia Coalition Against Hunger
+      </div>
+      <div class="small-2 columns right">
+        <ul id="footer-pics">
+          <li class="footer-li"> <a href="http://hack4impact.weebly.com/"><img class="footer-img" src="{{ url_for('static', filename='img/h4i_logo.png') }}" alt="Hack4Impact"/></a></li>
+          <li class="footer-li"> <a href="http://phillyfpac.org/"><img class="footer-img" src="{{ url_for('static', filename='img/fpac-f_logo.png') }}" alt="Food Policy Advisory Council"></a></li>
+          <li class="footer-li"> <a href="http://www.hungercoalition.org/"><img class="footer-img" src="{{ url_for('static', filename='img/gpcah_logo.png') }}" alt="Greater Philadelphia Coalition Against Hunger"></a></li>
+        </ul>
+      </div>
+    </div></div>
 
   </body>
 </html>

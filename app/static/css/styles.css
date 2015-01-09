@@ -1,8 +1,11 @@
 
 /* #ef3d23 - red */
 /* #f8a11d - orange */
+/* rgba(248, 160, 26, .5) - light orange */
 /* #fdd800 - yellow */
+/* rgba(254, 217, 0, .5) - light yellow */
 /* #009933 - green */
+/* rgba(0, 171, 75, .5) - light green */
 /* #0f85c7 - blue */
 /* #84459b - purple */
 /* #343434 - black */
@@ -16,23 +19,20 @@
 body {
   background-color: #F7F9F9;
   letter-spacing: .3px;
+  font-weight: 200;
+  font-family: "Helvetica Neue";
 }
 
 body#map_p {
   background-color: #F7F9F9;
 }
 
-body#faq_p {
-  background-color: #009933;
+.h1 {
   color: #FFF;
 }
 
-body#about_p {
-  background-color: #f8a11d;
-}
-
-body#contact_p {
-  background-color: #fdd800;
+.h2 {
+  color: #FFF;
 }
 
 body#resources_p {
@@ -52,6 +52,7 @@ hr {
   margin: 0.67em 50;
 }
 
+/* formatting for WYSIWYG editor */ 
 #editor1 {
   font-weight: 300;
   letter-spacing: .4px;
@@ -75,9 +76,11 @@ hr {
 }
 
 label {
-  font-size: 1rem;
+  font-size: 1.275rem;
   color: #343434;
-  font-weight: 400;
+  font-weight: 200;
+  margin-top: .275rem;
+  margin-bottom: .1rem;
 }
 
 .row {
@@ -124,30 +127,48 @@ input::-moz-placeholder {
   margin-top: 10px;
 }
 
+.submit-button {
+  margin-top: 20px;
+}
+
 /* button styling */
 button, .button{
-  background-color: #FFF;
+  background-color: #000;
   border-color: #666666;
-  color: #000;
-  opacity: 0.8;
-  
+  color: #FFF;
+  opacity: 0.95;
+}
+
+button.small, .button.small {
+  font-size: .875rem;
+  font-weight: 200;
+  letter-spacing: 0.5px;
 }
 
 button:hover, button:focus, .button:hover, .button:focus {
-  background-color: #000;
-  color: #FFF;
+  background-color: #FFF;
+  color: #000;
 }
 
 /*button.radius, .button.radius {
   margin-bottom: 100px;
 }*/
 
+.search-buttons {
+  margin-top: 0.5em;
+}
+
+#download-buttons {
+  margin-top: 0.5em;
+}
+
 /* HEADER - top-bar */
 
 .top-bar {
   background: #FFF;
   height: 70px;
-  opacity: 0.8;
+  opacity: 0.95;
+  z-index: 1;
 }
 
 .top-bar .name {
@@ -173,13 +194,85 @@ button:hover, button:focus, .button:hover, .button:focus {
   display: inline-block;
   width: 100%;
   color: #2D4FA0;
-  font-size: 2rem;
+  font-size: 1.875rem;
   font-weight: 200;
   text-transform: none;
   letter-spacing: 4px;
   text-align: center;
-  margin-right: 10px;
-/*  margin-left: 10px;*/
+}
+
+.top-bar-section li:not(.has-form) a:not(.button) {
+  background: #FFF;
+}
+
+.top-bar-section li:not(.has-form) a:not(.button):hover {
+  background: #FFF;
+}
+
+.top-bar-section li:not(.has-form) a:active {
+  background: #FFF;
+}
+
+/* dropdown menu */
+.top-bar-section .dropdown li:not(.has-form):not(.active) > a:not(.button) {
+  background: #FFF;
+  color: #2D4FA0;
+  font-size: 1.275rem;
+  font-weight: 200;
+  text-transform: lowercase;  
+  letter-spacing: 2px;
+  text-align: center;
+  padding: 5;
+  z-index: 1;
+  line-height: 25px;
+}
+
+.top-bar-section .dropdown li:not(.has-form) > a:not(.button) {
+  background: #FFF;
+}
+
+/* arrow next to drop down */
+.top-bar-section .has-dropdown > a:after {
+  border-color: #2D4FA0 transparent transparent transparent;
+  top: 37px;
+}
+
+/* dropdown - items */
+.top-bar-section .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
+  background-color: #555555;
+  color: #FFF; 
+}
+
+/* dropdown - top button */
+.top-bar-section ul li:hover:not(.has-form) > a {
+  background-color: #555555;
+  background: #FFF; 
+}
+
+/* resources dropdown */
+.top-bar-section .drop-resources .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
+  background: #009933;
+}
+
+.top-bar-section ul li:hover:not(.has-form) > a {
+  color: #2D4FA0; /* for now, keep navy */
+}
+
+/* admin dropdown */
+.top-bar-section .drop-admin .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
+  background: #ef3d23;
+}
+
+.drop-admin .top-bar-section ul li:hover:not(.has-form) > a {
+  color: #ef3d23;
+}
+
+.drop-admin {
+  color: #FFF;
+}
+
+#drop-admin-active:active {
+  color: #ef3d23;
 }
 
 /* buttons - not hover */
@@ -187,11 +280,6 @@ button:hover, button:focus, .button:hover, .button:focus {
   padding: 15 15;
   line-height: 40px;  /* bar height */
   background-color: #FFF;
-}
-
-.top-bar-section li:not(.has-form) a:not(.button):hover {
-  background-color: #FFF;
-  color: #FFF;
 }
 
 .top-bar-section ul li>a:hover {
@@ -218,8 +306,13 @@ button:hover, button:focus, .button:hover, .button:focus {
   color: #0585C7;
 }
 
-#l_faq:hover {
+#l_resources:hover {
   color: #09ab4b;
+}
+
+#l_resources:focus {
+  color: #09ab4b;
+  background: #FFF;
 }
 
 #l_about:hover {
@@ -238,7 +331,12 @@ button:hover, button:focus, .button:hover, .button:focus {
   color: #ef3d23;
 }
 
-img {
+#l_admin:focus {
+  color: #ef3d23;
+  background: #FFF;
+}
+
+#fpac-logo {
   height: 50;
 }
 
@@ -246,9 +344,29 @@ img {
     display: inline-block;
     width: 100%;
     height: 70%;
-    margin-bottom: 1em;
+    margin: .875em;
+    margin-top: 2em;
+    margin-bottom: 2em;
     border-style: solid;
     border-color: #999999; /* gray */
+}
+
+#checkboxes {
+  list-style-type: none;
+  display:inline;
+  margin: 0px;
+  font-weight: 200;
+}
+
+/* display checkboxes in one line if screen is big, otherwise stack */
+@media only screen and (min-width: 54.063em) {
+  .checkbox-li {
+    display: inline;
+  }
+}
+
+#checkbox-li {
+  margin: 5px;
 }
 
 #chart_div {
@@ -275,40 +393,92 @@ img {
   color: #FFF;
 }
 
-#FAQ-header {
-  color: #FFF;
+.info-header {
+  color: #009933;
 }
 
-#FAQ-line {
-  border: #FFF;
-  background: #FFF;
+.admin-header {
+  color: #ef3d23;
 }
 
 #map-header {
   color: #0f85c7;
 }
 
-/* Edit Food Resources Page */
-#edit-resources-header {
-  color: #ef3d23;
+/*
+#contact-line {
+  border: #fdd800;
+  background: #fdd800;;
+}*/
+
+#contact-header {
+  color: #fdd800;
 }
 
+#about-header {
+  color: #f8a11d;
+}
+
+/* footer */
+#footer-spacer {
+  margin-bottom: 2em;
+}
+
+.footer {
+  font-size: .874rem;
+}
+
+.fbottom {
+  margin-bottom: 3%;
+}
+
+#hr-helper {
+  color: #F7F9F9;
+  font-size: .01em;
+}
+
+#footer-pics {
+  text-align: right;
+}
+
+.footer-li {
+  display: inline-block;
+}
+
+.footer-img{
+  height: 25px;
+  width: auto;
+}
+
+/* Edit Food Resources Page */
 .resource {
   font-weight: 200;
   letter-spacing: .2px;
 }
 
 .row .row {
-  margin: 10;
+  margin: 0;
 }
 
 .resources {
   background-color: #EEEEEE;
-  padding: 0;
+  padding: 0.5%;
+}
+
+#resources-table {
+
+}
+
+#right-search {
+  padding-right: 0;
+}
+
+b {
+  font-weight: 400;
 }
 
 table thead tr th, table thead tr td {
-  font-size: 0.9rem;
+  font-size: 1.075rem;
   font-weight: 200;
   color: #222222;
   letter-spacing: .5px;
@@ -331,6 +501,11 @@ table thead tr th, table thead tr td {
 .error {
   text-transform:none;
 }
+
+.admin-food-resource-pending {
+  background-color: #CCCCCC;
+}
+
 
 .admin-food-resource {
   background-color: #CCCCCC;
@@ -362,9 +537,8 @@ table thead tr th, table thead tr td {
 }
 
 .no-resources-message {
-  font-style: italic;
-  font-size: 0.8em;
   margin: 0.4em;
+  margin-left: 1.375em;
   line-height: 1.2em; 
 }
 
@@ -373,7 +547,12 @@ table thead tr th, table thead tr td {
 }
 
 input[type=checkbox] {
-  margin-left:10px;
+  margin-top:15px;
+  margin-bottom:15px;
+}
+
+input[type="text"] {
+  margin:0;
 }
 
 .pin-definition {
@@ -414,8 +593,7 @@ li {
 }
 
 .form-field-description {
-  font-size: .7em;
-  font-style: italic;
+  font-size: .725em;
 }
 
 .form-field-description {
@@ -432,6 +610,12 @@ li {
 .required-disclaimer {
   color: #999999;
 }
+
+/* pop-up modal 
+.remodal, .remodal * {
+  font-family: "Helvetica Neue";
+}
+*/
 
 /* Dropzone styling */
 
@@ -457,10 +641,12 @@ li {
   color: #fff;
   text-align: center;
   padding: 1em;
-  margin: 1% 5%;
-  min-height: 300px;
-  max-height: 300px;
+  margin: 0;
+  margin-bottom: 1%;
+  min-height: 200px;
+  max-height: 200px;
   transition: all ease 0.4s;
+  overflow: -moz-scrollbars-horizontal;
   overflow: scroll;
   overflow-x: hidden;
 }
@@ -492,6 +678,7 @@ li {
 .dropzone.dz-started .dz-message {
   display: none;
 }
+
 .dropzone .dz-preview,
 .dropzone-previews .dz-preview {
   background: rgba(255,255,255,0.8);
@@ -622,7 +809,7 @@ li {
   display: block;
 }
 .dz-message {
-  padding-top: 100px;
+  padding-top: 70px;
   text-transform: uppercase;
   font-size: 120%;
 }
