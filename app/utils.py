@@ -131,15 +131,11 @@ def create_food_resource_from_form(form, additional_errors):
 		food_resource.are_hours_available = are_hours_available
 		food_resource.food_resource_type = food_resource_type
 		form_booleans = form.get_booleans()
-		for key, value in form_booleans.iteritems():
-			food_resource_boolean = FoodResourceBoolean.query \
-				.filter_by(
-					food_resource_id=food_resource.id, 
-					hyphenated_id=key) \
-				.first()
-			if food_resource_boolean:
-				food_resource_boolean.value = value
-				db.session.add(food_resource_boolean)
+		for food_resource_boolean in food_resource.booleans:
+			for key, value in form_booleans.iteritems():
+				if food_resource_boolean.hyphenated_id == key:
+					food_resource_boolean.value = value
+					db.session.add(food_resource_boolean)
 		return food_resource
 
 def get_string_of_all_food_resource_types():
@@ -302,14 +298,12 @@ def get_food_resources_by_location_type_and_zip_code(list_to_populate,
 def filter_food_resources(list_to_filter, has_open_now_filter, booleans_array):
 	for food_resource in list(list_to_filter):
 		for i, boolean in enumerate(booleans_array):
-			print food_resource.booleans[i]
 			if boolean == True and food_resource.booleans[i].value == False:
 				if food_resource in list_to_filter:
 					list_to_filter.remove(food_resource)
 		if has_open_now_filter and not \
 			is_open(food_resource):
 			list_to_filter.remove(food_resource)
-		print "\n"
 
 def import_file(path, charset='utf-8'):
 
@@ -382,7 +376,6 @@ def import_file(path, charset='utf-8'):
 		for i, row in enumerate(spamreader):
 			if row:
 				if i >= 2: 
-					print i
 					# Extract food resource's location type.
 					location_type_table = decode_string(row[1], "location_type", i) # Required.
 
