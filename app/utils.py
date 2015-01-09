@@ -367,8 +367,12 @@ def import_file(path, charset='utf-8'):
 		try:
 			new = str(s).decode(charset)
 		except Exception as e:
-			make_error(str(e), i)
-			make_error("The field '" + field_name + "' cannot be decoded", i)
+			make_error("The field '" + field_name + "' cannot be decoded. \
+				To fix this problem, try retyping the contents of this field. \
+				A common culprit for this kind of error is the aprostraphe \
+				('). Make sure that all of your apostraphes are perfectly \
+				vertically straight rather than curly. (Yes, these are \
+				different characters.)", i)
 		return new
 
 
