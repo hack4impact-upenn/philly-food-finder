@@ -445,7 +445,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 				'<div class="small-6 columns">' + 
 					'<div class="row">' + 
 						'<div class="small-6 columns">' + 
-							'<b>Name:</b>' + 
+							'<div class="admin-resources-category">Name:</div>' + 
 						'</div>' + 
 						'<div class="small-6 columns">' + 
 							resource["name"] + 
@@ -453,7 +453,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					'</div>' + 
 					'<div class="row">' + 
 						'<div class="small-6 columns">' + 
-							'<b>Address:</b>' + 
+							'<div class="admin-resources-category">Address:</div>' + 
 						'</div>' + 
 						'<div class="small-6 columns">' + 
 							resource["address"]["line1"] +  
@@ -474,7 +474,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					'</div>' + 
 					'<div class="row">' + 
 						'<div class="small-6 columns">' + 
-							'<b>Zip Code:</b>' + 
+							'<div class="admin-resources-category">Zip Code:</div>' + 
 						'</div>' + 
 						'<div class="small-6 columns">' + 
 							resource["address"]["zip_code"] +  
@@ -482,7 +482,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					'</div>' + 
 					'<div class="row">' + 
 						'<div class="small-6 columns">' + 
-							'<b>Phone Number:</b>' + 
+							'<div class="admin-resources-category">Phone Number:</div>' + 
 						'</div>' + 
 						'<div class="small-6 columns">' + 
 							resource["phone_number"]["number"] +  
@@ -490,7 +490,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					'</div>' + 
 					'<div class="row">' + 
 						'<div class="small-6 columns">' + 
-							'<b>Website:</b>' + 
+							'<div class="admin-resources-category">Website:</div>' + 
 						'</div>' + 
 						'<div class="small-6 columns">';
 
@@ -510,7 +510,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 					'</div>' + 
 					'<div class="row">' + 
 						'<div class="small-6 columns">' + 
-							'<b>Description:</b>' + 
+							'<div class="admin-resources-category">Description:</div>' + 
 						'</div>' + 
 						'<div class="small-6 columns">' + 
 							resource["description"] + 
@@ -521,7 +521,9 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 		for (var j = 0; j < resource["booleans"].length; j++) {
 			html +=	'<div class="row">' + 
 						'<div class="small-9 columns">' + 
-							resource["booleans"][j]["description_question"] + 
+							'<div class="admin-resources-category">' +
+								resource["booleans"][j]["description_question"] + 
+							'</div>' + 
 						'</div>' + 
 						'<div class="small-3 columns">'; 
 
@@ -542,7 +544,7 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 				'<div class="large-6 small-12 columns">' + 
 					'<div class="row">' + 
 						'<div class="small-3 columns">' + 
-							'<b>Hours:</b>' + 
+							'<div class="admin-resources-category">Hours:</div>' + 
 						'</div>' + 
 						'<div class="small-9 columns">'; 
 						
@@ -552,10 +554,12 @@ function getResourcesHtml(resourceInfoId, resourceInfoLowercaseNamePlural,
 				var day = daysOfWeek[j];
 				html += 
 							'<div class="row">' + 
-								'<div class="small-6 columns">' + 
-									day["name"] + 
+								'<div class="small-4 columns">' + 
+									'<div class="admin-resources-category">' +
+										day["name"] + ":" + 
+									'</div>' +
 								'</div>' + 
-								'<div class="small-6 columns">';
+								'<div class="small-8 columns">';
 
 				for (var k = 0; k < resource["timeslots"].length; k++) {
 					var timeslot = resource["timeslots"][k]; 
