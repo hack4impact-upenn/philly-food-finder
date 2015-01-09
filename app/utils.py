@@ -48,6 +48,7 @@ def get_food_resource_booleans():
 		description_question="Wheelchair accessible?", 
 		description_statement="Is this food resource wheelchair accessible?"
 	))
+	# Add any new booleans to END of list.
 	return booleans
 
 def create_food_resource_from_form(form, additional_errors):
@@ -303,7 +304,8 @@ def filter_food_resources(list_to_filter, has_open_now_filter, booleans_array):
 		for i, boolean in enumerate(booleans_array):
 			print food_resource.booleans[i]
 			if boolean == True and food_resource.booleans[i].value == False:
-				list_to_filter.remove(food_resource)
+				if food_resource in list_to_filter:
+					list_to_filter.remove(food_resource)
 		if has_open_now_filter and not \
 			is_open(food_resource):
 			list_to_filter.remove(food_resource)
@@ -311,7 +313,7 @@ def filter_food_resources(list_to_filter, has_open_now_filter, booleans_array):
 
 def import_file(path):
 
-	# If there are errors, they will be returned to the user
+	# If there are errors, they will be returned to the user.
 	errors = []
 
 	# Helper functions
@@ -364,165 +366,167 @@ def import_file(path):
 
 		spamreader = csv.reader(csvfile)
 		for i, row in enumerate(spamreader):
+			if row:
+				if i >= 2: 
+					# Extract food resource's location type.
+					location_type_table = row[1] # Required.
+					
+					# Extract food resource's name.
+					name = str(row[2]) # Required.					
 
-			if i >= 2: 
-				# Extract food resource's location type.
-				location_type_table = row[1] # Required.
-				required("location_type", location_type_table, i)
+					# If a row contains either a location type or a name, then the row will be 
+					# analyzed for validity.
+					if len(location_type_table.strip()) > 0 or len(name.strip()) > 0:
+						
+						# Verify that name and location type are valid.
+						required("location_type", location_type_table, i)
+						required("name", name, i)
+						check_length("name", name, 100, i)
 
-				# Ignore any rows that don't have a food resource type.
-				#if location_type:
+						# Create food resource's FoodResourceType.
+						location_type = FoodResourceType.query \
+							.filter_by(enum=location_type_table).first() 
 
-				# Create food resource's FoodResourceType.
-				location_type = FoodResourceType.query \
-					.filter_by(enum=location_type_table).first() 
+						if location_type is None and location_type_table is not None:
+							make_error('The location_type ' + location_type_table + ' is invalid', i)
 
-				if location_type is None and location_type_table is not None:
-					make_error('The location_type ' + location_type_table + ' is invalid', i)
+						# Extract food resource's address.
+						address_line1 = str(row[3]) # Required.
+						required("address_line1", address_line1, i)
+						check_length("address_line1", address_line1, 100, i)
 
-				# Extract food resource's name.
-				name = str(row[2]) # Required.
-				required("name", name, i)
-				check_length("name", name, 100, i)
+						address_line2 = str(row[4]) # Optional.
+						check_length("address_line2", address_line2, 100, i)
 
-				# Extract food resource's address.
-				address_line1 = str(row[3]) # Required.
-				required("address_line1", address_line1, i)
-				check_length("address_line1", address_line1, 100, i)
+						address_city = str(row[5]) # Required.
+						required("address_city", address_city, i)
+						check_length("address_city", address_city, 35, i)
 
-				address_line2 = str(row[4]) # Optional.
-				check_length("address_line2", address_line2, 100, i)
+						address_state = str(row[6]) # Required.
+						required("address_state", address_state, i)
+						check_length("address_state", address_state, 2, i)
 
-				address_city = str(row[5]) # Required.
-				required("address_city", address_city, i)
-				check_length("address_city", address_city, 35, i)
+						address_zip_code = str(row[7]) # Required.
+						required("address_zip_code", address_zip_code, i)
 
-				address_state = str(row[6]) # Required.
-				required("address_state", address_state, i)
-				check_length("address_state", address_state, 2, i)
+						# Ensures zip_code is exactly 5 digits.
+						zip_code_strip = address_zip_code.strip()
+						if zip_code_strip and len(zip_code_strip) is not 5:
+							make_error('The zip_code ' + str(zip_code_strip) + ' is not the right length. \
+								Please ensure that it is 5 digits.', i)
 
-				address_zip_code = str(row[7]) # Required.
-				required("address_zip_code", address_zip_code, i)
+						# Create food resource's Address.
+						address = Address(
+							line1=address_line1, 
+							line2=address_line2,
+							city=address_city,
+							state=address_state,
+							zip_code=address_zip_code)
+						db.session.add(address)
 
-				# Ensures zip_code is exactly 5 digits
-				zip_code_strip = address_zip_code.strip()
-				if zip_code_strip and len(zip_code_strip) is not 5:
-					make_error('The zip_code ' + str(zip_code_strip) + ' is not the right length. \
-						Please ensure that it is 5 digits.', i)
+						# Extract food resource's phone number.
+						phone_numbers = []
+						number = str(row[8])
+						check_length("phone_number", number, 35, i)
 
-				# Create food resource's Address.
-				address = Address(
-					line1=address_line1, 
-					line2=address_line2,
-					city=address_city,
-					state=address_state,
-					zip_code=address_zip_code)
-				db.session.add(address)
+						phone_number = PhoneNumber(number=number)
+						phone_numbers.append(phone_number)
+						db.session.add(phone_number)
 
-				# Extract food resource's phone number.
-				phone_numbers = []
-				number = str(row[8])
-				check_length("phone_number", number, 35, i)
+						# Extract food resource's website.
+						website = str(row[9])
 
-				phone_number = PhoneNumber(number=number)
-				phone_numbers.append(phone_number)
-				db.session.add(phone_number)
+						# Extract food resource's description.
+						description = str(row[10])
 
-				# Extract food resource's website.
-				website = str(row[9])
+						# Extract food resource's boolean characteristics.
+						row_num = 11
+						booleans = []
+						food_resource_booleans = get_food_resource_booleans()
+						for food_resource_boolean in food_resource_booleans:
+							booleans.append(convert_string_to_boolean(str(row[row_num]), i))
+							row_num += 1
 
-				# Extract food resource's description.
-				description = str(row[10])
+						are_hours_available = convert_string_to_boolean(str(row[row_num]), i)
+						row_num += 1
 
-				# Extract food resource's boolean characteristics.
-				is_for_family_and_children = convert_string_to_boolean(str(row[11]), i)
-				is_for_seniors = convert_string_to_boolean(str(row[12]), i) 
-				is_wheelchair_accessible = convert_string_to_boolean(str(row[13]), i)
-				is_accepts_snap = convert_string_to_boolean(str(row[14]), i)
-				is_accepts_fmnp = convert_string_to_boolean(str(row[15]), i)
-				is_accepts_philly_food_bucks = convert_string_to_boolean(str(row[16]), i)
-				are_hours_available = convert_string_to_boolean(str(row[17]), i)
+						# Extract the days on which the food resource is open.
+						days_open = []
+						first_day_open_column = row_num
+						row_num += 7
+						last_day_open_column = row_num
+						for j in range(first_day_open_column, last_day_open_column): 
+							days_open.append(convert_string_to_boolean(str(row[j]), i)) 
 
-				# Extract the days on which the food resource is open.
-				days_open = []
-				for j in range(18, 25): # [18, 25)
-					days_open.append(convert_string_to_boolean(str(row[j]), i)) 
+						# Extract the food resource's hours of operation.
+						all_daily_hours = [None] * 7
+						for j in range(0, 7):
+							all_daily_hours[j] = []
+						are_all_times_valid = True
+						first_time_column = row_num
+						row_num += 140
+						last_time_column = row_num
+						for j in range(first_time_column, last_time_column):
+							time_string = str(row[j]).strip()
+							day_of_week = (j - first_time_column) / 20
+							if not time_string:
+								all_daily_hours[day_of_week].append("")
+							else:
+								if check_time_format(time_string, i):
+									all_daily_hours[day_of_week].append(get_time_from_string(time_string))
+								else:
+									are_all_times_valid = False
 
-				# Extract the food resource's hours of operation.
-				all_daily_hours = [None] * 7
-				for i in range(0, 7):
-					all_daily_hours[i] = []
-				are_all_times_valid = True
-				first_time_column = 25
-				last_time_column = 165
-				for j in range(first_time_column, last_time_column):
-					time_string = str(row[j]).strip()
-					day_of_week = (j - first_time_column) / 20
-					if not time_string:
-						all_daily_hours[day_of_week].append("")
-					else:
-						if check_time_format(time_string, i):
-							all_daily_hours[day_of_week].append(get_time_from_string(time_string))
-						else:
-							are_all_times_valid = False
+						# Create food resource's timeslots.
+						timeslots = []
+						if are_all_times_valid:
+							# Iterate through all day of the week.
+							for j, daily_hours in enumerate(all_daily_hours):
+								if days_open[j]:
+									# Iterate through 10 possible timeslots per day.
+									for k in range(0, 10):
+										opening_time = daily_hours[k*2]
+										closing_time = daily_hours[k*2+1]
+										if opening_time and closing_time:
+											if opening_time >= closing_time:
+												make_error("Opening time (" + \
+													str(opening_time.strftime('%H:%M')) + \
+													") must be before closing time (" + \
+													str(closing_time.strftime('%H:%M')) + 
+													")", i)
+											timeslot = TimeSlot(
+												day_of_week=j, 
+												start_time=opening_time, 
+												end_time=closing_time
+											)
+											db.session.add(timeslot)
+											timeslots.append(timeslot)
 
-				# Create food resource's timeslots.
-				timeslots = []
-				if are_all_times_valid:
-					# Iterate through all day of the week.
-					for j, daily_hours in enumerate(all_daily_hours):
-						if days_open[j]:
-							# Iterate through 10 possible timeslots per day.
-							for k in range(0, 10):
-								opening_time = daily_hours[k*2]
-								closing_time = daily_hours[k*2+1]
-								if opening_time and closing_time:
-									if opening_time >= closing_time:
-										make_error("Opening time (" + \
-											str(opening_time.strftime('%H:%M')) + \
-											") must be before closing time (" + \
-											str(closing_time.strftime('%H:%M')) + 
-											")", i)
-									timeslot = TimeSlot(
-										day_of_week=j, 
-										start_time=opening_time, 
-										end_time=closing_time
-									)
-									db.session.add(timeslot)
-									timeslots.append(timeslot)
+						# Checks database to see if identical resource exists
+						duplicate = FoodResource.query.filter_by(
+							name = name, 
+							url = website,
+							description = description,
+							are_hours_available = are_hours_available).first()
 
-				# Checks database to see if identical resource exists
-				duplicate = FoodResource.query.filter_by(
-					name = name, 
-					url = website,
-					description = description,
-					are_hours_available = are_hours_available,
-					is_for_family_and_children = is_for_family_and_children,
-					is_for_seniors = is_for_seniors,
-					is_wheelchair_accessible = is_wheelchair_accessible,
-					is_accepts_snap = is_accepts_snap).first()
+						if duplicate:
+							make_error("Identical resource (" + name + ") already exists in database.", i)
 
-				if duplicate:
-					make_error("Identical resource (" + name + ") already exists in database.", i)
+						# Create food resource.
+						food_resource = FoodResource()
+						food_resource.name = name
+						food_resource.phone_numbers = phone_numbers
+						food_resource.url = website
+						food_resource.description = description
+						food_resource.food_resource_type = location_type
+						food_resource.address = address
+						food_resource.are_hours_available = are_hours_available
+						food_resource.timeslots = timeslots
+						for j, boolean in enumerate(food_resource.booleans):
+							boolean.value = booleans[j]
 
-				# Create food resource.
-				food_resource = FoodResource(
-					name = name, 
-					phone_numbers = phone_numbers,
-					url = website,
-					description = description,
-					food_resource_type = location_type,
-					address = address,
-					are_hours_available = are_hours_available,
-					timeslots = timeslots,
-					is_for_family_and_children = is_for_family_and_children,
-					is_for_seniors = is_for_seniors,
-					is_wheelchair_accessible = is_wheelchair_accessible,
-					is_accepts_snap = is_accepts_snap
-				)
-
-				# Stage database changes. 
-				db.session.add(food_resource)
+						# Stage database changes. 
+						db.session.add(food_resource)
 				
 	# Commits only after completing iteration and if no errors
 	if len(errors) is 0:

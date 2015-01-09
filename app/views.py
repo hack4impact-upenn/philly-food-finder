@@ -614,7 +614,9 @@ def share():
 @app.route('/admin/files')
 @login_required
 def files():
-	return render_template('file_inputoutput.html')
+	food_resource_booleans = get_food_resource_booleans()
+	return render_template('file_inputoutput.html',
+		food_resource_booleans=food_resource_booleans)
 
 @app.route('/_csv_input', methods=['GET', 'POST'])
 @login_required
@@ -628,6 +630,7 @@ def csv_input():
 			errors = import_file(path)
 		except Exception as e:
 			errors = [str(e)]
+			print str(e)
 
 		if errors is None or len(errors) is 0:
 			return jsonify(message = "success")
@@ -646,26 +649,24 @@ def download():
 	outcsv = csv.writer(outfile)
 
 	resources = FoodResource.query.filter_by(is_approved = True).all()
+	food_resource_booleans = get_food_resource_booleans()
 
 	outcsv.writerow(['Table 1'])
 	data = ['','Type (' + get_string_of_all_food_resource_types() + ')',
 		'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 
 		'State', 'Zip Code', 'Phone Number (optional)', 
-		'Website (optional)', 'Description (optional)', 
-		'Families and children? (either \'Yes\' or leave blank)', 
-		'Seniors? (either \'Yes\' or leave blank)', 
-		'Wheelchair accessible? (either \'Yes\' or leave blank)', 
-		'Accepts SNAP? (either \'Yes\' or leave blank)', 
-		'Accepts FMNP Vouchers? (either \'Yes\' or leave blank)', 
-		'Accepts Philly Food Bucks? (either \'Yes\' or leave blank)', 
-		'Hours Available? (either \'Yes\' or leave blank)', 
-		'Open Sunday? (either \'Yes\' or leave blank)', 
-		'Open Monday? (either \'Yes\' or leave blank)', 
-		'Open Tuesday? (either \'Yes\' or leave blank)',
-		'Open Wednesday? (either \'Yes\' or leave blank)', 
-		'Open Thursday? (either \'Yes\' or leave blank)', 
-		'Open Friday? (either \'Yes\' or leave blank)', 
-		'Open Saturday? (either \'Yes\' or leave blank)']
+		'Website (optional)', 'Description (optional)']
+	for food_resource_boolean in food_resource_booleans:
+		data.append(str(food_resource_boolean.description_question) + 
+			' (either \'Yes\' or leave blank)')
+	data.append('Hours Available? (either \'Yes\' or leave blank)') 
+	data.append('Open Sunday? (either \'Yes\' or leave blank)') 
+	data.append('Open Monday? (either \'Yes\' or leave blank)')
+	data.append('Open Tuesday? (either \'Yes\' or leave blank)')
+	data.append('Open Wednesday? (either \'Yes\' or leave blank)') 
+	data.append('Open Thursday? (either \'Yes\' or leave blank)') 
+	data.append('Open Friday? (either \'Yes\' or leave blank)')
+	data.append('Open Saturday? (either \'Yes\' or leave blank)')
 	for day_of_week in ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
 		"Friday", "Saturday"]:
 		for i in range(1, 11): 
@@ -695,21 +696,17 @@ def download():
 			resource.address.zip_code, 
 			resource.phone_numbers[0].number, 
 			resource.url, 
-			resource.description, 
-			'Yes' if resource.is_for_family_and_children else '', 
-			'Yes' if resource.is_for_seniors else '', 
-			'Yes' if resource.is_wheelchair_accessible else '', 
-			'Yes' if resource.is_accepts_snap else '', 
-			'Accepts FMNP Vouchers?', 
-			'Accepts Philly Food Bucks?', 
-			'Yes' if resource.are_hours_available else '', 
-			'Yes' if len(all_timeslots[0]) != 0 else '', 
-			'Yes' if len(all_timeslots[1]) != 0 else '', 
-			'Yes' if len(all_timeslots[2]) != 0 else '', 
-			'Yes' if len(all_timeslots[3]) != 0 else '', 
-			'Yes' if len(all_timeslots[4]) != 0 else '', 
-			'Yes' if len(all_timeslots[5]) != 0 else '', 
-			'Yes' if len(all_timeslots[6]) != 0 else '']
+			resource.description]
+		for boolean in resource.booleans: 
+			data.append('Yes' if boolean.value else '')  
+		data.append('Yes' if resource.are_hours_available else '') 
+		data.append('Yes' if len(all_timeslots[0]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[1]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[2]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[3]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[4]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[5]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[6]) != 0 else '')
 		for day_of_week_timeslots in all_timeslots: # 7 days of the week.
 			for j in range (0, 10): # [0, 10) - 10 possible timeslots per day.
 				if j >= len(day_of_week_timeslots) or \

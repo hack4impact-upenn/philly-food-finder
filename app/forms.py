@@ -17,7 +17,8 @@ class BooleanForm(Form):
 		choices = [('no', 'No'), ('yes', 'Yes')], 
 		validators = [
 			InputRequired("Please choose an option.")
-		]
+		], 
+		description = "If you don't know, choose 'No.'"
 	)
 
 	def set_label(self, label):
