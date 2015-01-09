@@ -52,13 +52,6 @@ cp_purple = ColoredPin(
 )
 db.session.add(cp_purple)
 
-cp_black = ColoredPin(
-    color_name="Black",
-    hex_color="676767", 
-    pin_image_name="mbb_black.png"
-)
-db.session.add(cp_black)
-
 cp_aqua = ColoredPin(
     color_name="Aqua",
     hex_color="82D1DA", 
@@ -81,7 +74,7 @@ cp_lavender = ColoredPin(
 db.session.add(cp_lavender)
 
 cp_light_green = ColoredPin(
-    color_name="Light_Green",
+    color_name="Light Green",
     hex_color="BFD849", 
     pin_image_name="mbb_light_green.png"
 )
@@ -123,7 +116,7 @@ cp_pink = ColoredPin(
 db.session.add(cp_pink)
 
 cp_sky_blue = ColoredPin(
-    color_name="Sky_Blue",
+    color_name="Sky Blue",
     hex_color="9FC9EB", 
     pin_image_name="mbb_sky_blue.png"
 )
