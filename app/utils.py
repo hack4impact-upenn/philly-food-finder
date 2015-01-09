@@ -311,7 +311,7 @@ def filter_food_resources(list_to_filter, has_open_now_filter, booleans_array):
 			list_to_filter.remove(food_resource)
 		print "\n"
 
-def import_file(path):
+def import_file(path, charset='utf-8'):
 
 	# If there are errors, they will be returned to the user.
 	errors = []
@@ -323,44 +323,54 @@ def import_file(path):
 		elif row_slot is None or row_slot == "":
 			return False
 		else:
-			make_error(str(row_slot) + ' is invalid. Please put Yes or leave blank.', row_index)
+			make_error('\'' + str(row_slot) + '\' is invalid. Please put \'Yes\' or leave blank.', row_index)
 			return False # To prevent program from breaking too early
 
 	def required(field_name, field_val, row_index):
 		field_val = field_val.strip()
 		if not field_val:
-			errors.append(str(field_name) + " is a required field (row " \
-				+ str(row_index+1) + ").")
+			errors.append("'" + str(field_name) + "' is a required field (row " \
+				+ str(row_index) + ").")
 
 	def make_error(exception_text, row_index):
-		errors.append(str(exception_text) + " (row " + str(row_index+1) + ").")
+		errors.append(str(exception_text) + " (row " + str(row_index) + ").")
 
 	def check_length(field_name, field_val, length, row_index):
 		field_val = field_val.strip()
 		if field_val and len(field_val) > length:
 			errors.append(str(field_val) + " is longer than the max length of " \
-				+ str(length) + " characters (row " + str(row_index+1) + ").")
+				+ str(length) + " characters (row " + str(row_index) + ").")
 
 	def check_time_format(field_val, row_index):
 		check = re.compile('^\d{1,2}:\d{2}$')
 		if check.match(field_val) is None:
 			errors.append(str(field_val) + " is not a proper time format. Please " \
-				+ "use military time - e.g., 8:00 or 17:00. (row " + str(row_index + 1) + ").")
+				+ "use military time - e.g., 8:00 or 17:00. (row " + str(row_index) + ").")
 			return False
 		colon_index = field_val.index(":")
 		hours = int(field_val[0:colon_index])
 		if hours < 0 or hours > 23:
 			errors.append(str(field_val) + " has an invalid hour number. A \
 				valid hour number is between 0 and 23. (row " + \
-				str(row_index + 1) + ").")
+				str(row_index) + ").")
 			return False
 		minutes = int(field_val[colon_index+1:])
 		if minutes < 0 or minutes > 59 or minutes % 15 != 0:
 			errors.append(str(field_val) + " has an invalid minute number. A \
 				valid minute number is either 0, 15, 30, or 45. (row " + \
-				str(row_index + 1) + ").")
+				str(row_index) + ").")
 			return False
 		return True
+
+	def decode_string(s, field_name, row_index):
+		new = ""
+		try:
+			new = str(s).decode(charset)
+		except Exception as e:
+			make_error(str(e), i)
+			make_error("The field '" + field_name + "' cannot be decoded", i)
+		return new
+
 
 	with open(path, 'rU') as csvfile:
 
@@ -368,11 +378,12 @@ def import_file(path):
 		for i, row in enumerate(spamreader):
 			if row:
 				if i >= 2: 
+					print i
 					# Extract food resource's location type.
-					location_type_table = row[1] # Required.
-					
+					location_type_table = decode_string(row[1], "location_type", i) # Required.
+
 					# Extract food resource's name.
-					name = str(row[2]) # Required.					
+					name = decode_string(row[2], "name", i) # Required.			
 
 					# If a row contains either a location type or a name, then the row will be 
 					# analyzed for validity.
@@ -391,22 +402,22 @@ def import_file(path):
 							make_error('The location_type ' + location_type_table + ' is invalid', i)
 
 						# Extract food resource's address.
-						address_line1 = str(row[3]) # Required.
+						address_line1 = decode_string(row[3], "address_line1", i) # Required.
 						required("address_line1", address_line1, i)
 						check_length("address_line1", address_line1, 100, i)
 
-						address_line2 = str(row[4]) # Optional.
+						address_line2 = decode_string(row[4], "address_line2", i) # Optional.
 						check_length("address_line2", address_line2, 100, i)
 
-						address_city = str(row[5]) # Required.
+						address_city = decode_string(row[5], "address_city", i) # Required.
 						required("address_city", address_city, i)
 						check_length("address_city", address_city, 35, i)
 
-						address_state = str(row[6]) # Required.
+						address_state = decode_string(row[6], "address_state", i) # Required.
 						required("address_state", address_state, i)
 						check_length("address_state", address_state, 2, i)
 
-						address_zip_code = str(row[7]) # Required.
+						address_zip_code = decode_string(row[7], "address_zip_code", i) # Required.
 						required("address_zip_code", address_zip_code, i)
 
 						# Ensures zip_code is exactly 5 digits.
@@ -426,7 +437,7 @@ def import_file(path):
 
 						# Extract food resource's phone number.
 						phone_numbers = []
-						number = str(row[8])
+						number = decode_string(row[8], "phone_number", i)
 						check_length("phone_number", number, 35, i)
 
 						phone_number = PhoneNumber(number=number)
@@ -434,10 +445,10 @@ def import_file(path):
 						db.session.add(phone_number)
 
 						# Extract food resource's website.
-						website = str(row[9])
+						website = decode_string(row[9], "website", i)
 
 						# Extract food resource's description.
-						description = str(row[10])
+						description = decode_string(row[10], "description", i)
 
 						# Extract food resource's boolean characteristics.
 						row_num = 11
@@ -503,14 +514,25 @@ def import_file(path):
 											timeslots.append(timeslot)
 
 						# Checks database to see if identical resource exists
-						duplicate = FoodResource.query.filter_by(
-							name = name, 
-							url = website,
-							description = description,
-							are_hours_available = are_hours_available).first()
+						duplicate = db.session.query(FoodResource) \
+							.join(FoodResource.address) \
+							.filter(
+								FoodResource.name==name, 
+								FoodResource.url==website, 
+								FoodResource.description==description,
+								Address.line1==address_line1,
+								Address.line2==address_line2,
+								Address.city==address_city,
+								Address.state==address_state,
+								Address.zip_code==address_zip_code
+								).first()
 
 						if duplicate:
-							make_error("Identical resource (" + name + ") already exists in database.", i)
+							make_error("Identical resource (" + 
+								duplicate.name + ") already exists in database. \
+							It may be either an approved food resource, a \
+							pending food resource, or a food resource that's \
+							in this spreadsheet.", i)
 
 						# Create food resource.
 						food_resource = FoodResource()
