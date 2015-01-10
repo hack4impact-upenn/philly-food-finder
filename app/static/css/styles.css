@@ -360,7 +360,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 /* display checkboxes in one line if screen is big, otherwise stack */
 @media only screen and (min-width: 54.063em) {
-  #checkbox-li {
+  .checkbox-li {
     display: inline;
   }
 }
@@ -854,4 +854,8 @@ li {
   to {
     background-position: -7px -400px;
   }
+}
+
+.admin-resources-category {
+  font-weight: 400;
 }

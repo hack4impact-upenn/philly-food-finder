@@ -83,19 +83,20 @@
 	  		'','','','','','','','','','','','','','','','','','','','','','',
 	  		'','','','','','','','','','','','','','','','','','','','','','',
 	  		'','','','','','','','','','','','','','','','','','','','','','',
-	  		'','','','','','','','','','','','',''],
+	  		'','','','','','',
+	  	{% for food_resource_boolean in food_resource_booleans %}
+	  		'',
+	  	{% endfor %}
+	  		''],
       	['','Type (SHARE_HOST_SITE, FARMERS_MARKET, FOOD_CUPBOARD, ' +
 	      	'SENIOR_MEAL, SOUP_KITCHEN,  WIC_OFFICE, or new type already ' + 
 	      		'added by an admin)',
 			'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 
 			'State', 'Zip Code', 'Phone Number (optional)', 
 			'Website (optional)', 'Description (optional)', 
-			'Families and children? (either \'Yes\' or leave blank)', 
-			'Seniors? (either \'Yes\' or leave blank)', 
-			'Wheelchair accessible? (either \'Yes\' or leave blank)', 
-			'Accepts SNAP? (either \'Yes\' or leave blank)', 
-			'Accepts FMNP Vouchers? (either \'Yes\' or leave blank)', 
-			'Accepts Philly Food Bucks? (either \'Yes\' or leave blank)', 
+		{% for food_resource_boolean in food_resource_booleans %}
+			'{{ food_resource_boolean.description_question }} (either \'Yes\' or leave blank)',
+		{% endfor %} 
 			'Hours Available? (either \'Yes\' or leave blank)', 
 			'Open Sunday? (either \'Yes\' or leave blank)', 
 			'Open Monday? (either \'Yes\' or leave blank)', 
@@ -253,8 +254,15 @@
 			'Saturday Closing Time #10 (military time - e.g., 8:00 or 17:00)'],
 			['1','FARMERS_MARKET','Fair Food Farmstand', '51 N. 12th St', 
 				'Reading Terminal Market', 'Philadelphia', 'PA', '19107', '', 
-				'', 'Open year round', '', '', '', 'Yes', '', 'Yes', 'Yes', 
-				'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 
+				'', 'Open year round',
+			{% for food_resource_boolean in food_resource_booleans %}
+				{% if loop.index0 % 3 == 0 or loop.index0 % 5 == 0 %}
+					'Yes',
+				{% else %}
+					'',
+				{% endif %}
+			{% endfor %}  
+				'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 
 				/* Sunday opening and closing times */
 				'9:00', '17:00', 
 				'', '',
