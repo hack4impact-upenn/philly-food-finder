@@ -8,7 +8,7 @@ from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import *
 from datetime import time, date
-from utils import generate_password, import_file
+from utils import *
 from flask_user import login_required, signals
 from flask_user.emails import send_email
 from flask_user.views import _endpoint_url, _send_registered_email
@@ -16,6 +16,7 @@ from flask_login import current_user, login_user, logout_user
 from tempfile import NamedTemporaryFile
 import csv, time
 import json
+from operator import itemgetter
 
 @app.route('/')
 def index():
@@ -573,10 +574,66 @@ def about():
 @app.route('/admin/analytics')
 @login_required
 def analytics():
-	zip_codes_all_query = ZipSearch.query.order_by(ZipSearch.search_count.desc())
-	zip_codes_all = ZipSearch.query.order_by(ZipSearch.search_count.desc()).all()
-	zip_codes_limit = zip_codes_all_query.limit(10)
-	return render_template('charts.html', zip_codes_all = zip_codes_all, zip_codes_limit = zip_codes_limit)
+	return render_template('charts.html')
+
+@app.route('/_admin/_analytics')
+@login_required
+def dynamic_analytics():
+	data_type = request.args.get("data_type")
+	today = date.today()
+	print data_type
+	if data_type:
+		zip_code_query = []
+		if data_type == 'all-time':
+			zip_code_query = ZipSearch.query \
+				.order_by(ZipSearch.zip_code.desc(), ZipSearch.search_count.desc()) \
+				.limit(10).all()
+		else: 
+			if data_type == "this-month":
+				first = get_first_day_of_month(today)
+				last = today
+			elif data_type == 'last-month':
+				first = get_first_day_of_previous_month(today)
+				last = get_last_day_of_previous_month(today)
+			elif data_type == 'today':
+				first = today
+				last = today
+			elif data_type == 'last-7-days':
+				first = today - timedelta(days=7)
+				last = today
+			elif data_type == 'last-30-days':
+				first = today - timedelta(days=30)
+				last = today
+			elif data_type == 'last-60-days':
+				first = today - timedelta(days=60)
+				last = today
+			elif data_type == 'last-90-days':
+				first = today - timedelta(days=90)
+				last = today
+			elif data_type == 'last-12-months':
+				first = today - timedelta(months=365)
+				last = today
+			elif data_type == 'custom-date-range':
+				print "merp"
+			elif data_type == 'all-time':
+				print "merp"
+			zip_code_query = ZipSearch.query.filter(ZipSearch.date.between(first, last)) \
+				.order_by(ZipSearch.zip_code.desc(), ZipSearch.search_count.desc()) \
+				.limit(10).all()
+		dict = {}
+		if len(zip_code_query) > 0:
+			for zip_code in zip_code_query:
+				if zip_code.zip_code in dict:
+					dict[zip_code.zip_code] += zip_code.search_count
+				else:
+					dict[zip_code.zip_code] = zip_code.search_count
+		dict_list = []
+		for key, value in dict.iteritems():
+			temp = [key,value]
+			dict_list.append(temp)
+		dict_list = sorted(dict_list, key=itemgetter(1), reverse=True)
+		return jsonify(zip_codes=dict_list)
+	return jsonify(data="failed")
 
 @app.route('/contact')
 def contact():

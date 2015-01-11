@@ -316,3 +316,11 @@ class ZipSearch(db.Model):
 	zip_code = db.Column(db.String(5))
 	search_count = db.Column(db.Integer)
 	date = db.Column(db.Date)
+
+	def serialize_zip_search(self):
+		return {
+			'id': self.id,
+			'zip_code': self.zip_code,
+			'search_count': self.search_count,
+			'date': str(self.date)
+		}

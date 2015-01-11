@@ -439,6 +439,7 @@
 				$(this).css('border', "none");
 			});
 		{% endfor %}
+
 		$("#all-num-resources").each(function(index) {
 			var totalNumResources = 0;
 			{% for food_resource_type in food_resource_types %}
@@ -446,6 +447,7 @@
 			{% endfor %}
 			setTotalNumResources(totalNumResources);
 		});
+
 		$("#apply-filters-resources-button").click(function() {
 			$('*').css({ 'cursor': 'wait' });
 			// Check that zip code is properly formed.
@@ -464,6 +466,7 @@
 					.html("Zip code must consist of exactly 5 digits (0-9).");
 				return; 
 			}
+
 			// Determine which checkboxes are checked.
 			var booleans = [];
 			$("[id^='filter-by-boolean-']").each(function(index) {
@@ -474,12 +477,14 @@
 					booleans[booleans.length] = 0; // FALSE
 				}
 			}); 
+
 			// Determine whether 'Open Now' filter has been chosen.
 			var openNowFilter = 0; // FALSE
 			if ($('[id="filter-by-open-now"]:checked')
 				.length > 0) {
 				openNowFilter = 1; // TRUE 
 			}
+
 			$.getJSON($SCRIPT_ROOT + '/_admin_apply_filters', {
         		has_zip_code_filter: hasZipCodeFilter,
         		zip_code: zipCode,
@@ -536,6 +541,7 @@
 				onClickRemoveFoodResource();  
         	});  
 		}); 
+
 		// Approves a food resource without reloading page.
 		$("[id$='approve']").click(function() {
 			$('*').css({ 'cursor': 'wait' });
@@ -556,6 +562,7 @@
 			reloadFoodResourcesTables();
 		}); 
 	}); 
+
 	function reloadFoodResourcesTables() {
 		$('*').css({ 'cursor': 'wait' });
 		$.getJSON($SCRIPT_ROOT + '/_admin_remove_filters', {
