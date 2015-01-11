@@ -12,6 +12,47 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="small-4 small-centered columns">
+            <select id='search-range'>
+                <option value="this-month">This Month</option>
+                <option value="last-month">Last Month</option>
+                <option value="this-quarter">This Quarter</option>
+                <option value="last-quarter">Last Quarter</option>
+                <option disabled>────────────────────</option>
+                <option value="last-30-days">Last 30 Days</option>
+                <option value="last-60-days">Last 60 Days</option>
+                <option value="last-90-days">Last 90 Days</option>
+                <option value="last-12-months">Last 12 Months</option>
+                <option disabled>────────────────────</option>
+                <option value="custom-date-range">Custom Date Range</option>
+                <option disabled>────────────────────</option>
+                <option value="all-time">All Time</option>
+            </select>
+        </div>
+    </div>
+    <div class="row" id="date-range">
+        <div class="small-4 small-centered columns">
+            <form>
+                <div class="row">
+                    <div class="small-6 columns">
+                        Start: 
+                        <input type="text" name="start-date" placeholder="12/5/2014">
+                    </div>
+                    <div class="small-6 columns">
+                        End: 
+                        <input type="text" name="end-date" placeholder="1/5/2015">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-12 columns">
+                        <input type="submit" class="button radius small" value="Submit">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     {% if zip_codes_all|count == 0 %}
     <div class="row">
         <div class="large-8 medium-8 small-8 large-centered medium-centered small-centered columns">
@@ -23,7 +64,7 @@
         <div id="chart_div"></div>
     </div>
     <div class="row">
-        <h2 class="text-center">Raw Data</h2>
+        <h2 class="text-center page-header">Raw Data</h2>
     </div>
     <div class="row">
         <div id="table_div"></div>
@@ -52,7 +93,7 @@
 
 
 <script type="text/javascript">
-    google.load("visualization", "1", {packages:["corechart","table"]});
+    google.load("visualization", "1", { packages:["corechart","table"] });
     google.setOnLoadCallback(drawChart);
 
     function drawChart() {
