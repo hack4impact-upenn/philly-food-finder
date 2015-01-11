@@ -7,7 +7,7 @@ from flask import render_template, flash, redirect, session, url_for, request, \
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import *
-from datetime import time
+from datetime import time, date
 from utils import generate_password, import_file
 from flask_user import login_required, signals
 from flask_user.emails import send_email
@@ -472,18 +472,25 @@ def remove_food_resource_type():
 @app.route('/_search_query', methods=['GET', 'POST'])
 def save_search_query():
 	# Only record searches for regular users
-	if(current_user.is_authenticated()):
-		return
-	zip_code = request.form.get('zipCode')
-	if(zip_code):
-		zip_requested = ZipSearch.query.filter_by(zip_code = zip_code).first()
-		if(zip_requested):
+	if current_user.is_authenticated():
+		return 'Did not record a search'
+	zip_code = request.form.get('zipCode').strip()
+	if (zip_code):
+		zip_requested = ZipSearch.query \
+			.filter_by( \
+				zip_code=zip_code, \
+				date=date.today()) \
+			.first()
+		if (zip_requested):
 			zip_requested.search_count = zip_requested.search_count + 1
 		else:
-			zip_requested = ZipSearch(zip_code = zip_code, search_count = 1)
+			zip_requested = ZipSearch(zip_code=zip_code, search_count=1, \
+				date=date.today())
 			db.session.add(zip_requested)
 		db.session.commit()
-	return 'Recorded a search for' + zip_code
+		return 'Recorded a search for ' + zip_code
+	else:
+		return 'Did not record a search'
 
 @app.route('/_remove')
 @login_required
@@ -630,7 +637,6 @@ def csv_input():
 			errors = import_file(path)
 		except Exception as e:
 			errors = [str(e)]
-			print str(e)
 
 		if errors is None or len(errors) is 0:
 			return jsonify(message = "success")

@@ -312,5 +312,7 @@ class HTML(db.Model):
 	value = db.Column(db.Text)
 
 class ZipSearch(db.Model):
-	zip_code = db.Column(db.String(5), primary_key = True)
+	id = db.Column(db.Integer, primary_key = True)
+	zip_code = db.Column(db.String(5))
 	search_count = db.Column(db.Integer)
+	date = db.Column(db.Date)
