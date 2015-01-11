@@ -1,7 +1,7 @@
 # Necessary set-up.
 from app import db
 from app.models import *
-from datetime import time
+from datetime import time, date
 
 # Drop all database tables.
 db.drop_all()
@@ -695,4 +695,13 @@ db.session.add(p8)
 db.session.add(p9)
 db.session.add(p10)
 db.session.add(p11)
+db.session.commit()
+
+# Create sample searches.
+zip = ZipSearch(zip_code='19104', search_count=10, date=date.today())
+db.session.add(zip)
+zip = ZipSearch(zip_code='19104', search_count=7, date=date.today())
+db.session.add(zip)
+zip = ZipSearch(zip_code='19129', search_count=3, date=date.today())
+db.session.add(zip)
 db.session.commit()
