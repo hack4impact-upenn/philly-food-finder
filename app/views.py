@@ -555,10 +555,9 @@ def get_filtered_food_resource_data():
 
 @app.route('/map')
 def map():
-	food_resource_types = FoodResourceType.query \
-		.order_by(FoodResourceType.name_singular).all()
+	foodResourceTypes = FoodResourceType.query.order_by(FoodResourceType.name_singular).all()
 	return render_template('newmaps.html', 
-		food_resource_types=food_resource_types)
+		food_resource_types=foodResourceTypes)
 
 @app.route('/_map')
 def address_food_resources():
@@ -571,10 +570,8 @@ def address_food_resources():
 
 @app.route('/_newmap')
 def initialize_food_resources():
-	resources = []
-	currentResource = FoodResource.query.all()
-	resources.append(currentResource)
-	return jsonify(resources=[i.serialize_map_list() for i in addresses])
+	food_resources = db.session.query(FoodResource).join(FoodResource.address).filter(FoodResource.is_approved==True).all()
+	return jsonify(resources=[i.serialize_food_resource() for i in food_resources])
 
 @app.route('/_edit', methods=['GET', 'POST'])
 def save_page():
@@ -607,8 +604,8 @@ def remove_food_resource_type():
 	return jsonify(success="success")
 
 
-@app.route('/_search_query', methods=['GET', 'POST'])
-def save_search_query():
+@app.route('/_search_query_zipcode', methods=['GET', 'POST'])
+def save_search_query_zipcode():
 	# Only record searches for regular users
 	if(current_user.is_authenticated()):
 		return
