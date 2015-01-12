@@ -437,6 +437,13 @@ def address_food_resources():
 		.order_by(FoodResource.name).all()
 	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
 
+@app.route('/_newmap')
+def initialize_food_resources():
+	resources = []
+	currentResource = FoodResource.query.all()
+	resources.append(currentResource)
+	return jsonify(resources=[i.serialize_map_list() for i in addresses])
+
 @app.route('/_edit', methods=['GET', 'POST'])
 @login_required
 def save_page():
