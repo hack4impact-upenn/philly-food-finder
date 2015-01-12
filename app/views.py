@@ -16,10 +16,6 @@ from flask_login import current_user, login_user, logout_user
 from tempfile import NamedTemporaryFile
 import csv, time
 
-@app.route('/')
-def index():
-	return render_template('base.html')
-
 @app.route('/admin/new', methods=['GET', 'POST'])
 @app.route('/admin/edit/<id>', methods=['GET', 'POST'])
 @login_required
@@ -423,6 +419,7 @@ def get_filtered_food_resource_data():
 
 	return jsonify(days_of_week=days_of_week, food_resources=json)
 
+@app.route('/')
 @app.route('/map')
 def map():
 	food_resource_types = FoodResourceType.query \
