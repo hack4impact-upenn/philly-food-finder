@@ -31,36 +31,29 @@
             </select>
         </div>
     </div>
-    <div class="row" id="date-range">
-        <div class="small-4 small-centered columns">
-            <form>
-                <div class="row">
-                    <div class="small-6 columns">
-                        Start: 
-                        <input type="text" name="start-date" placeholder="12/5/2014">
-                    </div>
-                    <div class="small-6 columns">
-                        End: 
-                        <input type="text" name="end-date" placeholder="1/5/2015">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="small-12 columns">
-                        <input type="submit" class="button radius small" value="Submit">
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <div class="row">
         <div id="chart_div"></div>
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+            <div class="no-data">
+                No data to display.
+            </div>
+        </div>
     </div>
     <div class="row">
         <h2 class="text-center page-header">Raw Data</h2>
     </div>
     <div class="row">
         <div id="table_div"></div>
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+            <div class="no-data">
+                No data to display.
+            </div>
+        </div>
     </div>
 
     <div class="row">
@@ -83,32 +76,110 @@
         </div>
     </div>
 
-<script>
-    $(document).ready(function() {
-        $("#chart-search-range").change(function() {
-            var dataType = $(this).val(); 
-            updateChart(dataType);
-        }); 
-    }); 
-</script>
+    <div class="remodal" data-remodal-id="modal">
+        <h1>Custom Date Range</h1>
+        <p>
+            Enter your custom date range. 
+            <div class="row">
+                <div class="small-6 columns">
+                    Start: 
+                    <input type="text" name="start-date" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="small-6 columns">
+                    End: 
+                    <input type="text" name="end-date" placeholder="dd/mm/yyyy">
+                </div>
+            </div>
+            <div class="row">
+                <div class="small-12 columns">
+                    <div id="date-errors"></div>
+                </div>
+            </div>
+        </p>
+        <a class="remodal-cancel" href="#">Cancel</a>
+        <div class="button radius small" id="custom-date-range-apply-button">Apply</div>
+    </div>
 
-<script type="text/javascript">
+<script>
+    var previousOption = "all-time";
+    $(document).ready(function() {
+        
+        var inst = $.remodal.lookup[$('[data-remodal-id=modal]').data('remodal')];
+
+        $("#chart-search-range").change(function() {
+            var dataType = $(this).val();
+            if (dataType == "custom-date-range") {
+                inst.open();
+                $(document).on('cancel', '.remodal', function () {
+                    $("#chart-search-range").val(previousOption);
+                });
+                $(document).on('close', '.remodal', function () {
+                    $("#chart-search-range").val(previousOption);
+                }); 
+            } else {
+                previousOption = dataType;
+                updateChart(dataType); 
+            }
+        }); 
+
+        $("#custom-date-range-apply-button").click(function() {
+            var startDate = $("[name='start-date']").val();
+            var endDate = $("[name='end-date']").val();
+            var errorsDiv = $("#date-errors");
+            errorsDiv.empty();
+            var errorsFound = false; 
+            if (!isValidDateFormat(startDate)) {
+                errorsDiv.append("Start date is invalid.<br>");
+                errorsFound = true; 
+            }
+            if (!isValidDateFormat(endDate)) {
+                errorsDiv.append("End date is invalid.<br>");
+                errorsFound = true; 
+            }
+            if (!isValidDateRange(startDate, endDate)) {
+                errorsDiv.append("Date range is invalid.<br>");
+                errorsFound = true; 
+            }
+            if (!errorsFound) {
+                previousOption = "custom-date-range";
+                updateChart("custom-date-range", startDate, endDate); 
+                inst.close(); 
+            }
+        });
+    }); 
+
     google.load("visualization", "1", { packages:["corechart","table"] });
     google.setOnLoadCallback(updateChartDefault);
 
     function updateChartDefault() {
-        updateChart("all-time");
+        updateChart(previousOption);
     }
 
-    function updateChart(dataType) {
+    function updateChart(dataType, startDate, endDate) {
         $('*').css({ 'cursor': 'wait' });
+        startDate = startDate || ""; 
+        endDate = endDate || "";
         $.getJSON($SCRIPT_ROOT + '/_admin/_analytics', {
-            data_type: dataType
+            data_type: dataType, 
+            start_date: startDate, 
+            end_date: endDate
         },
         function(data) {
             $('*').css({ 'cursor': 'default' });
-            zipCodes = data["zip_codes"];
-            drawChart(zipCodes);
+            if ("zip_codes" in data) {
+                zipCodes = data["zip_codes"];
+                if (zipCodes.length == 0) {
+                    $("#chart_div").hide();
+                    $("#table_div").hide(); 
+                    $(".no-data").show(); 
+                }
+                else {
+                    $(".no-data").hide(); 
+                    $("#chart_div").show();
+                    $("#table_div").show();
+                    drawChart(zipCodes);
+                }
+            }
         }); 
     }
 
@@ -124,7 +195,7 @@
         var chartOptions = {
             backgroundColor: { fill:'transparent' },
             legend: { position: 'none' },
-            chartArea: { top:'5%' },
+            chartArea: { top:'5%', width:'85%', height:'75%' }
         };
 
         var tableOptions = {

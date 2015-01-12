@@ -589,6 +589,8 @@ def dynamic_analytics():
 				.order_by(ZipSearch.zip_code.desc(), ZipSearch.search_count.desc()) \
 				.limit(10).all()
 		else: 
+			first = None
+			last = None
 			if data_type == "this-month":
 				first = get_first_day_of_month(today)
 				last = today
@@ -611,15 +613,22 @@ def dynamic_analytics():
 				first = today - timedelta(days=90)
 				last = today
 			elif data_type == 'last-12-months':
-				first = today - timedelta(months=365)
+				first = today - timedelta(days=365)
 				last = today
 			elif data_type == 'custom-date-range':
-				print "merp"
-			elif data_type == 'all-time':
-				print "merp"
-			zip_code_query = ZipSearch.query.filter(ZipSearch.date.between(first, last)) \
-				.order_by(ZipSearch.zip_code.desc(), ZipSearch.search_count.desc()) \
-				.limit(10).all()
+				start_date = request.args.get("start_date")
+				end_date = request.args.get("end_date")
+				if start_date and end_date: 
+					struct = time.strptime(start_date, "%m/%d/%Y")
+					first = date(year=struct.tm_year, month=struct.tm_mon, day=struct.tm_mday)
+					struct = time.strptime(end_date, "%m/%d/%Y")
+					last = date(year=struct.tm_year, month=struct.tm_mon, day=struct.tm_mday)
+				else:
+					return jsonify(data="failed")
+			if first and last: 
+				zip_code_query = ZipSearch.query.filter(ZipSearch.date.between(first, last)) \
+					.order_by(ZipSearch.zip_code.desc(), ZipSearch.search_count.desc()) \
+					.limit(10).all()
 		dict = {}
 		if len(zip_code_query) > 0:
 			for zip_code in zip_code_query:

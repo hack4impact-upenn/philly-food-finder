@@ -266,11 +266,63 @@ function onClickRemoveFoodResourceType() {
 	var foodResourceTypeToRemove = "";
 	$("[id$='-remove-food-resource-type']").click(function() {
 		foodResourceTypeToRemove = $(this);
-		console.log(foodResourceTypeToRemove); 
 		$(document).on('confirm', '.remodal', function () {
 		    removeFoodResourceType(foodResourceTypeToRemove);
 		});	
 	}); 
+}
+
+function isValidDateRange(s1, s2) {
+	var date1 = getDate(s1); 
+	var date2 = getDate(s2); 
+	if (!date1 || !date2) {
+		return false; 
+	}
+	if (date1 > date2) {
+		return false;
+	}
+	return true; 
+}
+
+function isValidDateFormat(s) {
+	var date = getDate(s);
+	if (date == false) {
+		return false; 
+	}
+	return true; 
+}
+
+function getDate(s) {
+	var parts = s.split("/");
+	if (parts.length > 3) {
+		return false; 
+	}
+	if (parts[0].length == 0 || parts[0].length > 2 
+		|| parts[1].length == 0 || parts[1].length > 2
+		|| parts[2].length != 4) {
+		return false; 
+	}
+	var dt = "";
+
+	// Check for an improperly formatted date.
+	var dt = new Date(parseInt(parts[0], 10), 
+		parseInt(parts[1], 10) - 1,
+		parseInt(parts[2], 10));
+
+	if (Object.prototype.toString.call(dt) === "[object Date]" ) {
+		if (isNaN(dt.getTime())) {  
+			return false; 
+		}
+	}
+	else {
+		return false; 
+	}
+
+	// Check for a nonexistant date.
+	if (isNaN(Date.parse(s))) {
+		return false; 
+	}
+	return dt; 
 }
 
 function removeFoodResourceType(element) {
