@@ -15,6 +15,7 @@ from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
 from tempfile import NamedTemporaryFile
 import csv, time
+import json
 
 @app.route('/admin/new', methods=['GET', 'POST'])
 @app.route('/admin/edit/<id>', methods=['GET', 'POST'])
@@ -49,6 +50,8 @@ def new(id=None):
 
 	# GET request.
 	if request.method == 'GET':
+		form.generate_booleans()
+
 		if id is not None:
 			# Populate form with information about existing food resource. 
 			food_resource = FoodResource.query.filter_by(id=id).first()
@@ -65,12 +68,6 @@ def new(id=None):
 			form.phone_number.data = food_resource.phone_numbers[0].number
 			form.website.data = food_resource.url
 			form.additional_information.data = food_resource.description
-			form.is_for_family_and_children.data = \
-				food_resource.is_for_family_and_children
-			form.is_for_seniors.data = food_resource.is_for_seniors
-			form.is_wheelchair_accessible.data = \
-				food_resource.is_wheelchair_accessible
-			form.is_accepts_snap.data = food_resource.is_accepts_snap
 			form.location_type.data = food_resource.food_resource_type.enum
 
 			# Data that must be interpreted before being rendered.
@@ -95,6 +92,12 @@ def new(id=None):
 				form.is_open[day_of_week_index].is_open.data = "open"
 				form.daily_timeslots[day_of_week_index].num_timeslots.data = \
 					num_timeslots_per_day[timeslot.day_of_week]
+
+			for i, boolean in enumerate(food_resource.booleans):
+				if boolean.value == True:
+					form.booleans[i].value.data = 'yes'
+				else:
+					form.booleans[i].value.data = 'no'
 
 	# POST request.
 	additional_errors = []
@@ -150,6 +153,7 @@ def guest_new_food_resource():
 	# Initialize location type.
 	if request.method == 'GET':
 		form.location_type.data = food_resource_types_choices[0][0]
+		form.generate_booleans()
 
 	additional_errors = []
 	if request.method == 'POST' and form.validate(): 
@@ -202,11 +206,13 @@ def admin():
 				food_resource_type.food_resources.remove(food_resource)
 
 	contacts = FoodResourceContact.query.all()
+	food_resource_booleans = get_food_resource_booleans()
 
 	return render_template('admin_resources.html', 
 		food_resource_contacts=contacts, 
 		days_of_week=days_of_week,
-		food_resource_types=food_resource_types)
+		food_resource_types=food_resource_types,
+		food_resource_booleans=food_resource_booleans)
 
 @app.route('/admin')
 def admin_redirect():
@@ -363,15 +369,8 @@ def get_filtered_food_resource_data():
 	# Collect boolean paramaters passed via JSON.
 	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
 	zip_code = request.args.get('zip_code', 0, type=int)
-	has_families_and_children_filter = request.args.get(
-		'has_families_and_children_filter', 0, type=int) 
-	has_seniors_filter = request.args.get('has_seniors_filter', 0, type=int) 
-	has_wheelchair_accessible_filter = request.args.get(
-		'has_wheelchair_accessible_filter', 0, type=int) 
-	has_accepts_snap_filter = request.args.get(
-		'has_accepts_snap_filter', 0, type=int) 
-	has_open_now_filter = request.args.get(
-		'has_open_now_filter', 0, type=int) 
+	has_open_now_filter = request.args.get('has_open_now_filter', 0, type=int) 
+	booleans_array = json.loads(request.args.get('booleans'))
 
 	# Create empty arrays to hold food resources.
 	all_resources = []
@@ -407,17 +406,16 @@ def get_filtered_food_resource_data():
 
 	# Filter each list by other boolean criteria.
 	for list_to_filter in all_resources:
-		filter_food_resources(list_to_filter, has_families_and_children_filter, 
-			has_seniors_filter, has_wheelchair_accessible_filter,
-			has_accepts_snap_filter, has_open_now_filter)
+		filter_food_resources(list_to_filter, has_open_now_filter, 
+			booleans_array)
 
-	json = []
+	json_array = []
 	for i, list in enumerate(all_resources):
-		json.append([])
+		json_array.append([])
 		for food_resource in list:
-			json[i].append(food_resource.serialize_food_resource())
+			json_array[i].append(food_resource.serialize_food_resource())
 
-	return jsonify(days_of_week=days_of_week, food_resources=json)
+	return jsonify(days_of_week=days_of_week, food_resources=json_array)
 
 @app.route('/')
 @app.route('/map')
@@ -613,7 +611,9 @@ def share():
 @app.route('/admin/files')
 @login_required
 def files():
-	return render_template('file_inputoutput.html')
+	food_resource_booleans = get_food_resource_booleans()
+	return render_template('file_inputoutput.html',
+		food_resource_booleans=food_resource_booleans)
 
 @app.route('/_csv_input', methods=['GET', 'POST'])
 @login_required
@@ -627,6 +627,7 @@ def csv_input():
 			errors = import_file(path)
 		except Exception as e:
 			errors = [str(e)]
+			print str(e)
 
 		if errors is None or len(errors) is 0:
 			return jsonify(message = "success")
@@ -645,26 +646,24 @@ def download():
 	outcsv = csv.writer(outfile)
 
 	resources = FoodResource.query.filter_by(is_approved = True).all()
+	food_resource_booleans = get_food_resource_booleans()
 
 	outcsv.writerow(['Table 1'])
 	data = ['','Type (' + get_string_of_all_food_resource_types() + ')',
 		'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 
 		'State', 'Zip Code', 'Phone Number (optional)', 
-		'Website (optional)', 'Description (optional)', 
-		'Families and children? (either \'Yes\' or leave blank)', 
-		'Seniors? (either \'Yes\' or leave blank)', 
-		'Wheelchair accessible? (either \'Yes\' or leave blank)', 
-		'Accepts SNAP? (either \'Yes\' or leave blank)', 
-		'Accepts FMNP Vouchers? (either \'Yes\' or leave blank)', 
-		'Accepts Philly Food Bucks? (either \'Yes\' or leave blank)', 
-		'Hours Available? (either \'Yes\' or leave blank)', 
-		'Open Sunday? (either \'Yes\' or leave blank)', 
-		'Open Monday? (either \'Yes\' or leave blank)', 
-		'Open Tuesday? (either \'Yes\' or leave blank)',
-		'Open Wednesday? (either \'Yes\' or leave blank)', 
-		'Open Thursday? (either \'Yes\' or leave blank)', 
-		'Open Friday? (either \'Yes\' or leave blank)', 
-		'Open Saturday? (either \'Yes\' or leave blank)']
+		'Website (optional)', 'Description (optional)']
+	for food_resource_boolean in food_resource_booleans:
+		data.append(str(food_resource_boolean.description_question) + 
+			' (either \'Yes\' or leave blank)')
+	data.append('Hours Available? (either \'Yes\' or leave blank)') 
+	data.append('Open Sunday? (either \'Yes\' or leave blank)') 
+	data.append('Open Monday? (either \'Yes\' or leave blank)')
+	data.append('Open Tuesday? (either \'Yes\' or leave blank)')
+	data.append('Open Wednesday? (either \'Yes\' or leave blank)') 
+	data.append('Open Thursday? (either \'Yes\' or leave blank)') 
+	data.append('Open Friday? (either \'Yes\' or leave blank)')
+	data.append('Open Saturday? (either \'Yes\' or leave blank)')
 	for day_of_week in ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
 		"Friday", "Saturday"]:
 		for i in range(1, 11): 
@@ -694,21 +693,17 @@ def download():
 			resource.address.zip_code, 
 			resource.phone_numbers[0].number, 
 			resource.url, 
-			resource.description, 
-			'Yes' if resource.is_for_family_and_children else '', 
-			'Yes' if resource.is_for_seniors else '', 
-			'Yes' if resource.is_wheelchair_accessible else '', 
-			'Yes' if resource.is_accepts_snap else '', 
-			'Accepts FMNP Vouchers?', 
-			'Accepts Philly Food Bucks?', 
-			'Yes' if resource.are_hours_available else '', 
-			'Yes' if len(all_timeslots[0]) != 0 else '', 
-			'Yes' if len(all_timeslots[1]) != 0 else '', 
-			'Yes' if len(all_timeslots[2]) != 0 else '', 
-			'Yes' if len(all_timeslots[3]) != 0 else '', 
-			'Yes' if len(all_timeslots[4]) != 0 else '', 
-			'Yes' if len(all_timeslots[5]) != 0 else '', 
-			'Yes' if len(all_timeslots[6]) != 0 else '']
+			resource.description]
+		for boolean in resource.booleans: 
+			data.append('Yes' if boolean.value else '')  
+		data.append('Yes' if resource.are_hours_available else '') 
+		data.append('Yes' if len(all_timeslots[0]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[1]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[2]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[3]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[4]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[5]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[6]) != 0 else '')
 		for day_of_week_timeslots in all_timeslots: # 7 days of the week.
 			for j in range (0, 10): # [0, 10) - 10 possible timeslots per day.
 				if j >= len(day_of_week_timeslots) or \

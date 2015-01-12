@@ -5,40 +5,49 @@
 <body id = "files_p">
 	<div class="remodal-bg">
 		<div class="row">
-	    	<h1 class="page-header">Bulk Import and Export</h1>
+	    	<h1 class="page-header admin-header">Bulk Import and Export</h1>
 	     	<hr align="center">
 	  	</div>
-	  	<div class="row">
-	    	<h2 class="text-center">Resource Data Export</h2>
-	    	<div class="row">
-	    		<p>All Food Resource data in the database can be downloaded as a csv. This csv will be formatted precisely like the sample below.</p>
-	    	</div>
-	    	<div class="row">
-				<a role="button" href="{{ url_for('download') }}" class="button button radius medium" id="download-button">Download</a>
-			</div> 
+      <div class="row">
+        <div class="large-10 medium-10 small-10 large-centered 
+                        medium-centered small-centered columns">
+  	    	<h2 class="text-center page-header">Resource Data Export</h2>
+  	    	<div class="row">
+  	    		<p>All Food Resource data in the database can be downloaded as a csv. This csv will be formatted precisely like the sample below.</p>
+  	    	</div>
+  	    	<div class="row text-center">
+  				<a role="button" href="{{ url_for('download') }}" class="button radius medium" id="download-button">Download</a>
+  			</div>
+      </div>
 	  	</div>
-	  	<div class="row">
-	    	<h2 class="text-center">Resource Data Import</h2>
+	  	<div class="row"><div class="large-10 medium-10 small-10 large-centered 
+                        medium-centered small-centered columns">
+	    	<h2 class="text-center page-header">Resource Data Import</h2>
 	    	<div class="row">
 		    	<p> It is very important that the csv you import exactly matches the expected format. Please click the download button below to download the import csv. The instructions in this csv must be followed precisely. Do not change the formatting of this csv in any way.</p>
 	    	</div>
 	    	<div class="row">
-		    	<p>The import csv looks like this. Please input data exactly like in the sample below.</p>
+		    	<p>The import csv looks like this. Please input data exactly like in the sample below. (Scroll left within the table to see more.)</p>
 		    </div>
 	    	<div class="row">
 	    		<div id="sample_table_div"></div>
 	  		</div>
-	  		<a role="button" href="https://docs.google.com/uc?authuser=0&id=0B3772_wowlyabl83a09LMG03elE&export=download" class="button button radius medium" id="sample-download-button">Download Import CSV</a>
-	    	<a role="button" href="https://drive.google.com/file/d/0B3772_wowlyabl83a09LMG03elE/view?usp=sharing" class="button button radius medium" id="sample-download-button">View Import CSV</a>
-	  	</div>
-		<div class="row">
+
+        <div class="row text-center" id="download-buttons">
+	  		  <a role="button" href="https://docs.google.com/uc?authuser=0&id=0B1JCetguAr9fcFF3Mjh2ckhNWWs&export=download" class="button button radius medium" id="sample-download-button">Download Import CSV</a>
+	    	  <a role="button" href="https://drive.google.com/file/d/0B1JCetguAr9fcFF3Mjh2ckhNWWs/view?usp=sharing" class="button button radius medium" id="sample-download-button">View Import CSV</a>
+	  	  </div>
+      </div></div>
+		<div class="row"><div class="large-10 medium-10 small-10 large-centered 
+                        medium-centered small-centered columns">
+
+
 			<form action="/_csv_input"
 				  class="dropzone"
 				  id="my-awesome-dropzone"></form>
-		</div>	  
-		<div class="row">
-			<div class="button radius medium" id="upload-button">Upload</div>  
-		</div>  
+				  <div class="row text-center">
+      <div class="button radius medium" id="upload-button">Upload</div>  
+		</div></div>	  </div>
 	</div>
 
 	<div class="remodal" id="error-modal" data-remodal-id="error-modal" data-remodal-options="hashTracking: false">
@@ -74,19 +83,20 @@
 	  		'','','','','','','','','','','','','','','','','','','','','','',
 	  		'','','','','','','','','','','','','','','','','','','','','','',
 	  		'','','','','','','','','','','','','','','','','','','','','','',
-	  		'','','','','','','','','','','','',''],
+	  		'','','','','','',
+	  	{% for food_resource_boolean in food_resource_booleans %}
+	  		'',
+	  	{% endfor %}
+	  		''],
       	['','Type (SHARE_HOST_SITE, FARMERS_MARKET, FOOD_CUPBOARD, ' +
 	      	'SENIOR_MEAL, SOUP_KITCHEN,  WIC_OFFICE, or new type already ' + 
 	      		'added by an admin)',
 			'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 
 			'State', 'Zip Code', 'Phone Number (optional)', 
 			'Website (optional)', 'Description (optional)', 
-			'Families and children? (either \'Yes\' or leave blank)', 
-			'Seniors? (either \'Yes\' or leave blank)', 
-			'Wheelchair accessible? (either \'Yes\' or leave blank)', 
-			'Accepts SNAP? (either \'Yes\' or leave blank)', 
-			'Accepts FMNP Vouchers? (either \'Yes\' or leave blank)', 
-			'Accepts Philly Food Bucks? (either \'Yes\' or leave blank)', 
+		{% for food_resource_boolean in food_resource_booleans %}
+			'{{ food_resource_boolean.description_question }} (either \'Yes\' or leave blank)',
+		{% endfor %} 
 			'Hours Available? (either \'Yes\' or leave blank)', 
 			'Open Sunday? (either \'Yes\' or leave blank)', 
 			'Open Monday? (either \'Yes\' or leave blank)', 
@@ -244,8 +254,15 @@
 			'Saturday Closing Time #10 (military time - e.g., 8:00 or 17:00)'],
 			['1','FARMERS_MARKET','Fair Food Farmstand', '51 N. 12th St', 
 				'Reading Terminal Market', 'Philadelphia', 'PA', '19107', '', 
-				'', 'Open year round', '', '', '', 'Yes', '', 'Yes', 'Yes', 
-				'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 
+				'', 'Open year round',
+			{% for food_resource_boolean in food_resource_booleans %}
+				{% if loop.index0 % 3 == 0 or loop.index0 % 5 == 0 %}
+					'Yes',
+				{% else %}
+					'',
+				{% endif %}
+			{% endfor %}  
+				'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 
 				/* Sunday opening and closing times */
 				'9:00', '17:00', 
 				'', '',

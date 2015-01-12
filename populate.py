@@ -13,7 +13,7 @@ db.create_all()
 cp_yellow = ColoredPin(
     color_name="Yellow",
     hex_color="fdd800", 
-    pin_image_name="mb_yellow.png"
+    pin_image_name="mbb_yellow.png"
 )
 db.session.add(cp_yellow)
 
@@ -51,6 +51,83 @@ cp_purple = ColoredPin(
     pin_image_name="mbb_purple.png"
 )
 db.session.add(cp_purple)
+
+cp_aqua = ColoredPin(
+    color_name="Aqua",
+    hex_color="82D1DA", 
+    pin_image_name="mbb_aqua.png"
+)
+db.session.add(cp_aqua)
+
+cp_grey = ColoredPin(
+    color_name="Grey",
+    hex_color="CCCCCC", 
+    pin_image_name="mbb_grey.png"
+)
+db.session.add(cp_grey)
+
+cp_lavender = ColoredPin(
+    color_name="Lavender",
+    hex_color="6F6AB0", 
+    pin_image_name="mbb_lavender.png"
+)
+db.session.add(cp_lavender)
+
+cp_light_green = ColoredPin(
+    color_name="Light Green",
+    hex_color="BFD849", 
+    pin_image_name="mbb_light_green.png"
+)
+db.session.add(cp_light_green)
+
+cp_magenta = ColoredPin(
+    color_name="Magenta",
+    hex_color="B86CAC", 
+    pin_image_name="mbb_magenta.png"
+)
+db.session.add(cp_magenta)
+
+cp_maroon = ColoredPin(
+    color_name="Maroon",
+    hex_color="8B181B", 
+    pin_image_name="mbb_maroon.png"
+)
+db.session.add(cp_maroon)
+
+cp_navy = ColoredPin(
+    color_name="Navy",
+    hex_color="2D4FA0", 
+    pin_image_name="mbb_navy.png"
+)
+db.session.add(cp_navy)
+
+cp_periwinkle = ColoredPin(
+    color_name="Periwinkle",
+    hex_color="A099CB", 
+    pin_image_name="mbb_periwinkle.png"
+)
+db.session.add(cp_periwinkle)
+
+cp_pink = ColoredPin(
+    color_name="Pink",
+    hex_color="F69799", 
+    pin_image_name="mbb_pink.png"
+)
+db.session.add(cp_pink)
+
+cp_sky_blue = ColoredPin(
+    color_name="Sky Blue",
+    hex_color="9FC9EB", 
+    pin_image_name="mbb_sky_blue.png"
+)
+db.session.add(cp_sky_blue)
+
+cp_turquoise = ColoredPin(
+    color_name="Turquoise",
+    hex_color="039B81", 
+    pin_image_name="mbb_turquoise.png"
+)
+db.session.add(cp_turquoise)
 
 # Create food resource types.
 frt_farmers_market = FoodResourceType(
@@ -101,8 +178,6 @@ f0.phone_number = "123-456-7890"
 f0.description = "Open year round"
 f0.location_type = "FARMERS_MARKET"
 f0.food_resource_type = frt_farmers_market
-f0.is_for_family_and_children = True
-f0.is_for_seniors = True
 f0.are_hours_available = True
 
 a0 = Address()
@@ -144,8 +219,6 @@ db.session.add(num1)
 f1.description = "Fresh fruit and veggies!"
 f1.location_type = "SENIOR_MEAL"
 f1.food_resource_type = frt_senior_meals
-f1.is_for_family_and_children = False
-f1.is_for_seniors = True
 f1.are_hours_available = True
 
 a1 = Address()
@@ -187,8 +260,6 @@ db.session.add(num2)
 f2.description = "Food cupboard description"
 f2.location_type = "FOOD_CUPBOARD"
 f2.food_resource_type = frt_food_cupboard
-f2.is_for_family_and_children = False
-f2.is_for_seniors = True
 f2.are_hours_available = True
 
 a2 = Address()
@@ -230,8 +301,6 @@ db.session.add(num3)
 f3.description = "A description"
 f3.location_type = "SHARE"
 f3.food_resource_type = frt_share_host_site
-f3.is_for_family_and_children = False
-f3.is_for_seniors = True
 f3.are_hours_available = True
 
 a3 = Address()
@@ -273,8 +342,6 @@ db.session.add(num4)
 f4.description = "Another description"
 f4.location_type = "SOUP_KITCHEN"
 f4.food_resource_type = frt_soup_kitchen
-f4.is_for_family_and_children = False
-f4.is_for_seniors = True
 f4.are_hours_available = True
 
 a4 = Address()
@@ -316,8 +383,6 @@ db.session.add(num5)
 f5.description = "Another another description"
 f5.location_type = "WIC_OFFICE"
 f5.food_resource_type = frt_wic_office
-f5.is_for_family_and_children = False
-f5.is_for_seniors = True
 f5.are_hours_available = True
 
 a5 = Address()
@@ -358,7 +423,6 @@ f6.phone_numbers.append(num6)
 db.session.add(num6)
 f6.phone_number = "215-575-0444"
 f6.description = "Everyone deserves healthy food"
-f6.location_type = "FARMERS_MARKET"
 f6.food_resource_type = frt_farmers_market
 a6 = Address()
 a6.line1 = "1617 John F. Kennedy Blvd."
@@ -398,7 +462,6 @@ num7 = PhoneNumber(number = "888-998-6325")
 f7.phone_numbers.append(num7)
 db.session.add(num7)
 f7.description = "Fresh foods!"
-f7.location_type = "SENIOR_MEAL"
 f7.food_resource_type = frt_senior_meals
 a7 = Address()
 a7.line1 = "8446 Bayard Street"
@@ -438,7 +501,6 @@ num8 = PhoneNumber(number = "215-925-4584")
 f8.phone_numbers.append(num8)
 db.session.add(num8)
 f8.description = "Food cupboard description"
-f8.location_type = "FOOD_CUPBOARD"
 f8.food_resource_type = frt_food_cupboard
 a8 = Address()
 a8.line1 = "2441 Kensington Avenue"
@@ -478,7 +540,6 @@ num9 = PhoneNumber(number = "123-456-7890")
 f9.phone_numbers.append(num9)
 db.session.add(num9)
 f9.description = "A description"
-f9.location_type = "SHARE"
 f9.food_resource_type = frt_share_host_site
 a9 = Address()
 a9.line1 = "2901 Hunting Park Avenue"
@@ -518,7 +579,6 @@ num10 = PhoneNumber(number = "215-739-7394")
 f10.phone_numbers.append(num10)
 db.session.add(num10)
 f10.description = "Another description"
-f10.location_type = "SOUP_KITCHEN"
 f10.food_resource_type = frt_soup_kitchen
 a10 = Address()
 a10.line1 = "3616 S Galloway St"
@@ -558,7 +618,6 @@ num11 = PhoneNumber(number = "215-832-0831")
 f11.phone_numbers.append(num11)
 db.session.add(num11)
 f11.description = "Another another description"
-f11.location_type = "WIC_OFFICE"
 f11.food_resource_type = frt_wic_office
 a11 = Address()
 a11.line1 = "2100 Arch Street"

@@ -1,0 +1,40 @@
+{% macro render_field(field) %}
+<div class="row">
+    <div class="large-8 medium-8 medium-centered small-8 small-centered
+     columns large-centered" id="top-padding-section">
+    {% if field.flags.required %}
+      	<label>{{ field.label(class_='required') }}
+    {% else %}
+		<label>{{ field.label }}
+    {% endif %}
+    		<div class="form-field-description">
+      			{{ field.description }}
+      		</div>
+        	<dd class="error">{{ field()|safe }}
+        	{% if field.errors %}
+                {% for e in field.errors %}
+                    {% if e %}
+                        <small class="error">{{ e }}</small>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            </dd>
+      	</label>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro render_food_resource_boolean(description, field) %}
+<div class="row">
+	<div class="small-9 columns">
+		<div class="admin-resources-category">{{ description }}:</div>
+	</div>
+	<div class="small-3 columns">
+		{% if field %}
+			Yes
+		{% else %}
+			No
+		{% endif %}
+	</div>
+</div>
+{% endmacro %}
