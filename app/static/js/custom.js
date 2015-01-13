@@ -82,7 +82,7 @@ $(document).ready(function() {
     });
 
     $(".end-edit").click(function() {
-    	if ( editor1 ){
+    	if ( editor1 ) {
     		var json_data = {
     			page_name: $(".end-edit").attr("id"),
     			edit_data: CKEDITOR.instances.editor1.getData()

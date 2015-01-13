@@ -115,6 +115,27 @@
         <h1 class="page-header" id="map-header">Philly Food Finder</h1>
         <hr align="center">
     </div>
+
+    <!-- Editable content box for "Announcements" --> 
+    <div class="row">
+        <div class="large-centered 
+                  large-10 medium-centered medium-8 small-8 small-centered
+                  columns content">
+            <div id="editor1" contenteditable="false">
+                {{ html_string.value|safe }}
+            </div>
+        </div>
+    </div>
+    {% if current_user.is_authenticated() %}
+    <div class="row"> 
+      <div class="large-centered large-10 medium-centered medium-8 small-8 small-centered columns content">
+        <div class="button radius tiny start-edit">Edit</div>
+        <div class="button radius tiny end-edit" id="map-announcements">Save</div> 
+      </div> 
+    </div>
+    {% endif %}
+
+    <!-- Map filtering -->
     <div class="row">
         <div class="large-centered large-10 medium-centered medium-10 small-10 small-centered columns content">
             <form method="post" id="geocoding_form">
@@ -154,10 +175,11 @@
         </div>
     </div> 
 </body>
-{% endblock %}
 
-
-<!-- FAQ -->
-{% block content_faq %}
+{% if current_user.is_authenticated() %}
+<script>
+    $(".end-edit").hide();
+</script>
+{% endif %}
 
 {% endblock %}

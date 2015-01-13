@@ -23,8 +23,9 @@ from operator import itemgetter
 def map():
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_singular).all()
+	html_string = HTML.query.filter_by(page = 'map-announcements').first()
 	return render_template('newmaps.html', 
-		food_resource_types=food_resource_types)
+		food_resource_types=food_resource_types, html_string=html_string)
 
 @app.route('/_map')
 def address_food_resources():
@@ -440,11 +441,11 @@ def get_filtered_food_resource_data():
 def save_page():
 	data = request.form.get('edit_data')
 	name = request.form.get('page_name')
-	if(data):
+	if (data):
 		page = HTML.query.filter_by(page = name).first()
 		page.value = data
 		db.session.commit()
-	return 'Added' + data + 'to database.'
+	return 'Added ' + data + ' to database.'
 
 @app.route('/_remove_food_resource_type')
 def remove_food_resource_type():

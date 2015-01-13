@@ -859,3 +859,7 @@ li {
 .admin-resources-category {
   font-weight: 400;
 }
+
+#editor1 p {
+  margin-bottom: 0.25rem;
+}
