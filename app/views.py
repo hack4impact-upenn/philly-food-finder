@@ -19,8 +19,21 @@ import json
 from operator import itemgetter
 
 @app.route('/')
-def index():
-	return render_template('base.html')
+@app.route('/map')
+def map():
+	food_resource_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_singular).all()
+	return render_template('newmaps.html', 
+		food_resource_types=food_resource_types)
+
+@app.route('/_map')
+def address_food_resources():
+	zip_code = request.args.get('zip_code', 0, type=int)
+	food_resources = db.session.query(FoodResource) \
+		.join(FoodResource.address) \
+		.filter(Address.zip_code==zip_code, FoodResource.is_approved==True) \
+		.order_by(FoodResource.name).all()
+	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
 
 @app.route('/admin/new', methods=['GET', 'POST'])
 @app.route('/admin/edit/<id>', methods=['GET', 'POST'])
@@ -421,22 +434,6 @@ def get_filtered_food_resource_data():
 			json_array[i].append(food_resource.serialize_food_resource())
 
 	return jsonify(days_of_week=days_of_week, food_resources=json_array)
-
-@app.route('/map')
-def map():
-	food_resource_types = FoodResourceType.query \
-		.order_by(FoodResourceType.name_singular).all()
-	return render_template('newmaps.html', 
-		food_resource_types=food_resource_types)
-
-@app.route('/_map')
-def address_food_resources():
-	zip_code = request.args.get('zip_code', 0, type=int)
-	food_resources = db.session.query(FoodResource) \
-		.join(FoodResource.address) \
-		.filter(Address.zip_code==zip_code, FoodResource.is_approved==True) \
-		.order_by(FoodResource.name).all()
-	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
 
 @app.route('/_edit', methods=['GET', 'POST'])
 @login_required
