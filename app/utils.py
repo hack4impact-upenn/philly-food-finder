@@ -3,12 +3,24 @@ from datetime import time, datetime, timedelta
 from pytz import timezone
 from models import *
 import os, random, string
-from datetime import time
+from datetime import time, date
 from pytz import timezone
 from models import *
 import re
 import csv
 from app import db
+
+def get_first_day_of_month(day):
+	return date(day.year, day.month, 1)
+
+def get_last_day_of_previous_month(day):
+	first = get_first_day_of_month(day)
+	last = first - timedelta(days=1)
+	return last
+
+def get_first_day_of_previous_month(day):
+	last = get_last_day_of_previous_month(day)
+	return get_first_day_of_month(last)
 
 def get_food_resource_booleans():
 	booleans = []

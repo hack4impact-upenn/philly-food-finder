@@ -21,6 +21,7 @@ body {
   letter-spacing: .3px;
   font-weight: 200;
   font-family: "Helvetica Neue";
+  min-height:100%;
 }
 
 body#map_p {
@@ -37,7 +38,6 @@ body#map_p {
 
 body#resources_p {
   background-color: #F7F9F9;
-  padding-bottom: 70%;
 }
 
 body#add_p {

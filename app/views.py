@@ -7,8 +7,8 @@ from flask import render_template, flash, redirect, session, url_for, request, \
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import *
-from datetime import time
-from utils import generate_password, import_file
+from datetime import time, date
+from utils import *
 from flask_user import login_required, signals
 from flask_user.emails import send_email
 from flask_user.views import _endpoint_url, _send_registered_email
@@ -16,6 +16,7 @@ from flask_login import current_user, login_user, logout_user
 from tempfile import NamedTemporaryFile
 import csv, time
 import json
+from operator import itemgetter
 
 @app.route('/admin/new', methods=['GET', 'POST'])
 @app.route('/admin/edit/<id>', methods=['GET', 'POST'])
@@ -469,18 +470,25 @@ def remove_food_resource_type():
 @app.route('/_search_query', methods=['GET', 'POST'])
 def save_search_query():
 	# Only record searches for regular users
-	if(current_user.is_authenticated()):
-		return
-	zip_code = request.form.get('zipCode')
-	if(zip_code):
-		zip_requested = ZipSearch.query.filter_by(zip_code = zip_code).first()
-		if(zip_requested):
+	if current_user.is_authenticated():
+		return 'Did not record a search'
+	zip_code = request.form.get('zipCode').strip()
+	if (zip_code):
+		zip_requested = ZipSearch.query \
+			.filter_by( \
+				zip_code=zip_code, \
+				date=date.today()) \
+			.first()
+		if (zip_requested):
 			zip_requested.search_count = zip_requested.search_count + 1
 		else:
-			zip_requested = ZipSearch(zip_code = zip_code, search_count = 1)
+			zip_requested = ZipSearch(zip_code=zip_code, search_count=1, \
+				date=date.today())
 			db.session.add(zip_requested)
 		db.session.commit()
-	return 'Recorded a search for' + zip_code
+		return 'Recorded a search for ' + zip_code
+	else:
+		return 'Did not record a search'
 
 @app.route('/_remove')
 @login_required
@@ -563,10 +571,75 @@ def about():
 @app.route('/admin/analytics')
 @login_required
 def analytics():
-	zip_codes_all_query = ZipSearch.query.order_by(ZipSearch.search_count.desc())
-	zip_codes_all = ZipSearch.query.order_by(ZipSearch.search_count.desc()).all()
-	zip_codes_limit = zip_codes_all_query.limit(10)
-	return render_template('charts.html', zip_codes_all = zip_codes_all, zip_codes_limit = zip_codes_limit)
+	return render_template('charts.html')
+
+@app.route('/_admin/_analytics')
+@login_required
+def dynamic_analytics():
+	data_type = request.args.get("data_type")
+	today = date.today()
+	print data_type
+	if data_type:
+		zip_code_query = []
+		if data_type == 'all-time':
+			zip_code_query = ZipSearch.query \
+				.order_by(ZipSearch.zip_code.desc(), ZipSearch.search_count.desc()) \
+				.limit(10).all()
+		else: 
+			first = None
+			last = None
+			if data_type == "this-month":
+				first = get_first_day_of_month(today)
+				last = today
+			elif data_type == 'last-month':
+				first = get_first_day_of_previous_month(today)
+				last = get_last_day_of_previous_month(today)
+			elif data_type == 'today':
+				first = today
+				last = today
+			elif data_type == 'last-7-days':
+				first = today - timedelta(days=7)
+				last = today
+			elif data_type == 'last-30-days':
+				first = today - timedelta(days=30)
+				last = today
+			elif data_type == 'last-60-days':
+				first = today - timedelta(days=60)
+				last = today
+			elif data_type == 'last-90-days':
+				first = today - timedelta(days=90)
+				last = today
+			elif data_type == 'last-12-months':
+				first = today - timedelta(days=365)
+				last = today
+			elif data_type == 'custom-date-range':
+				start_date = request.args.get("start_date")
+				end_date = request.args.get("end_date")
+				if start_date and end_date: 
+					struct = time.strptime(start_date, "%m/%d/%Y")
+					first = date(year=struct.tm_year, month=struct.tm_mon, day=struct.tm_mday)
+					struct = time.strptime(end_date, "%m/%d/%Y")
+					last = date(year=struct.tm_year, month=struct.tm_mon, day=struct.tm_mday)
+				else:
+					return jsonify(data="failed")
+			if first and last: 
+				zip_code_query = ZipSearch.query.filter(ZipSearch.date.between(first, last)) \
+					.order_by(ZipSearch.zip_code.desc(), ZipSearch.search_count.desc()) \
+					.limit(10).all()
+		dict = {}
+		if len(zip_code_query) > 0:
+			for zip_code in zip_code_query:
+				if zip_code.zip_code in dict:
+					dict[zip_code.zip_code] += zip_code.search_count
+				else:
+					dict[zip_code.zip_code] = zip_code.search_count
+		dict_list = []
+		for key, value in dict.iteritems():
+			temp = [key,value]
+			dict_list.append(temp)
+		dict_list = sorted(dict_list, key=itemgetter(1), reverse=True)
+		return jsonify(zip_codes=dict_list)
+	return jsonify(data="failed")
 
 @app.route('/contact')
 def contact():
@@ -627,7 +700,6 @@ def csv_input():
 			errors = import_file(path)
 		except Exception as e:
 			errors = [str(e)]
-			print str(e)
 
 		if errors is None or len(errors) is 0:
 			return jsonify(message = "success")
