@@ -18,10 +18,6 @@ import csv, time
 import json
 from operator import itemgetter
 
-@app.route('/')
-def index():
-	return render_template('base.html')
-
 @app.route('/admin/new', methods=['GET', 'POST'])
 @app.route('/admin/edit/<id>', methods=['GET', 'POST'])
 @login_required
@@ -422,6 +418,7 @@ def get_filtered_food_resource_data():
 
 	return jsonify(days_of_week=days_of_week, food_resources=json_array)
 
+@app.route('/')
 @app.route('/map')
 def map():
 	foodResourceTypes = FoodResourceType.query.order_by(FoodResourceType.name_singular).all()
