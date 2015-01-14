@@ -1,7 +1,8 @@
 # Necessary set-up.
 from app import db
 from app.models import *
-from datetime import time
+from datetime import time, date
+from app.utils import *
 
 # Drop all database tables.
 db.drop_all()
@@ -13,7 +14,7 @@ db.create_all()
 cp_yellow = ColoredPin(
     color_name="Yellow",
     hex_color="fdd800", 
-    pin_image_name="mb_yellow.png"
+    pin_image_name="mbb_yellow.png"
 )
 db.session.add(cp_yellow)
 
@@ -51,6 +52,83 @@ cp_purple = ColoredPin(
     pin_image_name="mbb_purple.png"
 )
 db.session.add(cp_purple)
+
+cp_aqua = ColoredPin(
+    color_name="Aqua",
+    hex_color="82D1DA", 
+    pin_image_name="mbb_aqua.png"
+)
+db.session.add(cp_aqua)
+
+cp_grey = ColoredPin(
+    color_name="Grey",
+    hex_color="CCCCCC", 
+    pin_image_name="mbb_grey.png"
+)
+db.session.add(cp_grey)
+
+cp_lavender = ColoredPin(
+    color_name="Lavender",
+    hex_color="6F6AB0", 
+    pin_image_name="mbb_lavender.png"
+)
+db.session.add(cp_lavender)
+
+cp_light_green = ColoredPin(
+    color_name="Light Green",
+    hex_color="BFD849", 
+    pin_image_name="mbb_light_green.png"
+)
+db.session.add(cp_light_green)
+
+cp_magenta = ColoredPin(
+    color_name="Magenta",
+    hex_color="B86CAC", 
+    pin_image_name="mbb_magenta.png"
+)
+db.session.add(cp_magenta)
+
+cp_maroon = ColoredPin(
+    color_name="Maroon",
+    hex_color="8B181B", 
+    pin_image_name="mbb_maroon.png"
+)
+db.session.add(cp_maroon)
+
+cp_navy = ColoredPin(
+    color_name="Navy",
+    hex_color="2D4FA0", 
+    pin_image_name="mbb_navy.png"
+)
+db.session.add(cp_navy)
+
+cp_periwinkle = ColoredPin(
+    color_name="Periwinkle",
+    hex_color="A099CB", 
+    pin_image_name="mbb_periwinkle.png"
+)
+db.session.add(cp_periwinkle)
+
+cp_pink = ColoredPin(
+    color_name="Pink",
+    hex_color="F69799", 
+    pin_image_name="mbb_pink.png"
+)
+db.session.add(cp_pink)
+
+cp_sky_blue = ColoredPin(
+    color_name="Sky Blue",
+    hex_color="9FC9EB", 
+    pin_image_name="mbb_sky_blue.png"
+)
+db.session.add(cp_sky_blue)
+
+cp_turquoise = ColoredPin(
+    color_name="Turquoise",
+    hex_color="039B81", 
+    pin_image_name="mbb_turquoise.png"
+)
+db.session.add(cp_turquoise)
 
 # Create food resource types.
 frt_farmers_market = FoodResourceType(
@@ -101,8 +179,7 @@ f0.phone_number = "123-456-7890"
 f0.description = "Open year round"
 f0.location_type = "FARMERS_MARKET"
 f0.food_resource_type = frt_farmers_market
-f0.is_for_family_and_children = True
-f0.is_for_seniors = True
+f0.are_hours_available = True
 
 a0 = Address()
 a0.line1 = "43rd Street and Baltimore Avenue"
@@ -143,8 +220,7 @@ db.session.add(num1)
 f1.description = "Fresh fruit and veggies!"
 f1.location_type = "SENIOR_MEAL"
 f1.food_resource_type = frt_senior_meals
-f1.is_for_family_and_children = False
-f1.is_for_seniors = True
+f1.are_hours_available = True
 
 a1 = Address()
 a1.line1 = "3160 Chestnut Street"
@@ -185,8 +261,7 @@ db.session.add(num2)
 f2.description = "Food cupboard description"
 f2.location_type = "FOOD_CUPBOARD"
 f2.food_resource_type = frt_food_cupboard
-f2.is_for_family_and_children = False
-f2.is_for_seniors = True
+f2.are_hours_available = True
 
 a2 = Address()
 a2.line1 = "3560 Spruce St"
@@ -227,8 +302,7 @@ db.session.add(num3)
 f3.description = "A description"
 f3.location_type = "SHARE"
 f3.food_resource_type = frt_share_host_site
-f3.is_for_family_and_children = False
-f3.is_for_seniors = True
+f3.are_hours_available = True
 
 a3 = Address()
 a3.line1 = "1610 Sansom St"
@@ -269,8 +343,7 @@ db.session.add(num4)
 f4.description = "Another description"
 f4.location_type = "SOUP_KITCHEN"
 f4.food_resource_type = frt_soup_kitchen
-f4.is_for_family_and_children = False
-f4.is_for_seniors = True
+f4.are_hours_available = True
 
 a4 = Address()
 a4.line1 = "2146 E Susquehanna Ave"
@@ -311,8 +384,7 @@ db.session.add(num5)
 f5.description = "Another another description"
 f5.location_type = "WIC_OFFICE"
 f5.food_resource_type = frt_wic_office
-f5.is_for_family_and_children = False
-f5.is_for_seniors = True
+f5.are_hours_available = True
 
 a5 = Address()
 a5.line1 = "1300 W Lehigh Ave"
@@ -352,7 +424,6 @@ f6.phone_numbers.append(num6)
 db.session.add(num6)
 f6.phone_number = "215-575-0444"
 f6.description = "Everyone deserves healthy food"
-f6.location_type = "FARMERS_MARKET"
 f6.food_resource_type = frt_farmers_market
 a6 = Address()
 a6.line1 = "1617 John F. Kennedy Blvd."
@@ -376,6 +447,7 @@ timeslots_list_6 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f6.timeslots = timeslots_list_6
+f6.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f6)
@@ -391,7 +463,6 @@ num7 = PhoneNumber(number = "888-998-6325")
 f7.phone_numbers.append(num7)
 db.session.add(num7)
 f7.description = "Fresh foods!"
-f7.location_type = "SENIOR_MEAL"
 f7.food_resource_type = frt_senior_meals
 a7 = Address()
 a7.line1 = "8446 Bayard Street"
@@ -415,6 +486,7 @@ timeslots_list_7 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f7.timeslots = timeslots_list_7
+f7.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f7)
@@ -430,7 +502,6 @@ num8 = PhoneNumber(number = "215-925-4584")
 f8.phone_numbers.append(num8)
 db.session.add(num8)
 f8.description = "Food cupboard description"
-f8.location_type = "FOOD_CUPBOARD"
 f8.food_resource_type = frt_food_cupboard
 a8 = Address()
 a8.line1 = "2441 Kensington Avenue"
@@ -454,6 +525,7 @@ timeslots_list_8 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f8.timeslots = timeslots_list_8
+f8.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f8)
@@ -469,7 +541,6 @@ num9 = PhoneNumber(number = "123-456-7890")
 f9.phone_numbers.append(num9)
 db.session.add(num9)
 f9.description = "A description"
-f9.location_type = "SHARE"
 f9.food_resource_type = frt_share_host_site
 a9 = Address()
 a9.line1 = "2901 Hunting Park Avenue"
@@ -493,6 +564,7 @@ timeslots_list_9 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f9.timeslots = timeslots_list_9
+f9.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f9)
@@ -508,7 +580,6 @@ num10 = PhoneNumber(number = "215-739-7394")
 f10.phone_numbers.append(num10)
 db.session.add(num10)
 f10.description = "Another description"
-f10.location_type = "SOUP_KITCHEN"
 f10.food_resource_type = frt_soup_kitchen
 a10 = Address()
 a10.line1 = "3616 S Galloway St"
@@ -532,6 +603,7 @@ timeslots_list_10 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f10.timeslots = timeslots_list_10
+f10.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f10)
@@ -547,7 +619,6 @@ num11 = PhoneNumber(number = "215-832-0831")
 f11.phone_numbers.append(num11)
 db.session.add(num11)
 f11.description = "Another another description"
-f11.location_type = "WIC_OFFICE"
 f11.food_resource_type = frt_wic_office
 a11 = Address()
 a11.line1 = "2100 Arch Street"
@@ -571,6 +642,7 @@ timeslots_list_11 = \
     TimeSlot(day_of_week = 6, start_time = time(9,0), 
         end_time = time(20,45))]
 f11.timeslots = timeslots_list_11
+f11.are_hours_available = True
 
 # Add each new object to session and commit session. 
 db.session.add(f11)
@@ -609,6 +681,9 @@ p5 = HTML(page = 'snap-info-page', value = 'Hello SNAP!')
 p6 = HTML(page = 'summer-info-page', value = 'Hello Summer!')
 p7 = HTML(page = 'seniors-info-page', value = 'Hello Seniors!')
 p8 = HTML(page = 'contact-page', value = 'Hello contact!')
+p9 = HTML(page = 'farmers-info-page', value = 'Hello farmers!')
+p10 = HTML(page = 'neighborhood-info-page', value = 'Hello neighborhood!')
+p11 = HTML(page = 'share-info-page', value = 'Hello share!')
 
 # Add each new object to session and commit session. 
 db.session.add(p1)
@@ -618,4 +693,31 @@ db.session.add(p5)
 db.session.add(p6)
 db.session.add(p7)
 db.session.add(p8)
+db.session.add(p9)
+db.session.add(p10)
+db.session.add(p11)
+db.session.commit()
+
+# Create sample searches.
+today = date.today()
+# Searches from this month.
+zip = ZipSearch(zip_code='19104', search_count=10, date=today)
+db.session.add(zip)
+zip = ZipSearch(zip_code='19103', search_count=7, date=today)
+db.session.add(zip)
+zip = ZipSearch(zip_code='19129', search_count=3, date=today)
+db.session.add(zip)
+db.session.commit()
+# Searches from last month. 
+first = get_first_day_of_previous_month(today)
+last = get_last_day_of_previous_month(today)
+second = first + timedelta(days=1)
+zip = ZipSearch(zip_code='19104', search_count=10, date=first)
+db.session.add(zip)
+zip = ZipSearch(zip_code='02420', search_count=100, date=last)
+db.session.add(zip)
+zip = ZipSearch(zip_code='02420', search_count=3, date=first)
+db.session.add(zip)
+zip = ZipSearch(zip_code='11111', search_count=100, date=second)
+db.session.add(zip)
 db.session.commit()

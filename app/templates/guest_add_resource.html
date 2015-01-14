@@ -1,10 +1,12 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
 
+{% from "macros.html" import render_field with context %}
+
 {% block content %}
 <body id = "add_p">
   <div class="row">
-      <h1 class="page-header">Propose a Food Resource</h1>
+      <h1 class="page-header admin-header">Propose a Food Resource</h1>
       <hr align="center">
   </div>
 
@@ -18,6 +20,16 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+				<div class="required-disclaimer">
+					Required fields.
+				</div>
+			</div>
+		</div>
 
 	    <!-- Additional Errors -->
 	    <div class="row">
@@ -35,226 +47,31 @@
 		</div>
 
 	   <!-- Food Resource Name -->
-	    {% set field = form.name %}
-	    <div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		      		<dd class="error">{{ form.name()|safe }}
-		            {% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-	            </label>
-			</div>
-		</div>
+	    {{ render_field(form.name) }}
 
 		<!-- Food Resource Type -->
-		{% set field = form.location_type %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.location_type()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
-
+		{{ render_field(form.location_type) }}
 
 		<!-- Address Line 1 -->
-		{% set field = form.address_line1 %}
-	    <div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.address_line1()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		{{ render_field(form.address_line1) }}
 
+	  	<!-- Address Line 2 -->
+	  	{{ render_field(form.address_line2) }}
 
-	  <!-- Address Line 2 -->
-		{% set field = form.address_line2 %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.address_line2()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		<!-- Address City --> 
+		{{ render_field(form.address_city) }}
 
-		{% set field = form.address_city %}
-		<div class="row">
-			<div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.address_city()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		<!-- Address State --> 
+		{{ render_field(form.address_state) }}
 
-		{% set field = form.address_state %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.address_state()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		<!-- Address Zip Code --> 
+		{{ render_field(form.address_zip_code) }}
 
-		{% set field = form.address_zip_code %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		     {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.address_zip_code()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		<!-- Address Phone Number --> 
+		{{ render_field(form.phone_number) }}
 
-		{% set field = form.phone_number %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.phone_number()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
-
-		{% set field = form.website %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.website()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		<!-- Website --> 
+		{{ render_field(form.website) }}
 
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -264,33 +81,13 @@
 			</div>
 		</div>
 
-		{% set field = form.are_hours_available %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.are_hours_available()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		<!-- Are hours of operation available? -->
+		{{ render_field(form.are_hours_available) }}
 
 		{% for multi_timeslot_form in form.daily_timeslots %}
 		{% set day_of_week = days_of_week[loop.index0] %}
 		{% set is_open = form.is_open[loop.index0].is_open %}
+		{% set day_of_week_index = loop.index0 %}
 
 		{{ form.is_open[loop.index0].form.hidden_tag() }}
 		{{ multi_timeslot_form.form.hidden_tag() }}
@@ -299,7 +96,7 @@
 			    <div class="large-8 medium-8 medium-centered small-8 small-centered
 			     columns large-centered">
 			    	<div class="row">
-			      		<div class="large-4 small-4 columns" id="middle-padding-section">
+			      		<div class="small-4 columns" id="middle-padding-section">
 			      			<label>{{ day_of_week.name }}
 					        	<dd class="error">{{ is_open()|safe }}
 					        	{% if is_open.errors %}
@@ -309,293 +106,92 @@
 					                    {% endif %}
 					                {% endfor %}
 					            {% endif %}
+					            </dd>
 			      			</label>
 			      		</div>
+			      		<div class="small-8 columns time-pickers" id="middle-padding-section">
+			      			{% set field = multi_timeslot_form.num_timeslots %}
+			      			<div class="row">
+			      				<div class="large-12 small-12 columns" id="middle-padding-section">
+			      					{% if multi_timeslot_form.num_timeslots.flags.required %}
+								      	<label>{{ field.label(class_='required') }}
+								    {% else %}
+										<label>{{ field.label }}
+								    {% endif %}
+										<dd class="error">{{ field()|safe }}
+										{% if field.errors %}
+											{% for e in field.errors %}
+												{% if e %}
+													<small class="error">{{ e }}</small>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+										</dd>
+									</label>
+								</div>
+			      			</div>
 			      		{% for timeslot_form in multi_timeslot_form.timeslots %} 
+		      			{% set timeslot_index = loop.index0 %}
 			      			{{ timeslot_form.form.hidden_tag() }}
-				      		<div class="large-8 small-8 columns time-pickers" id="middle-padding-section">
-					      		<div class="row">
-						      		<div class="large-6 small-6 columns" id="middle-padding-section">
-						      			<label>{{ timeslot_form.starts_at.label }}
-								        	<dd class="error">{{ timeslot_form.starts_at()|safe }}
-								        	{% if timeslot_form.starts_at.errors %}
-								                {% for e in timeslot_form.starts_at.errors %}
-								                    {% if e %}
-								                        <small class="error">{{ e }}</small>
-								                    {% endif %}
-								                {% endfor %}
-								            {% endif %}
-						      			</label>
-						      		</div>
-						      		<div class="large-6 small-6 columns" id="middle-padding-section">
-						      			<label>{{ timeslot_form.ends_at.label }}
-								        	<dd class="error">{{ timeslot_form.ends_at()|safe }}
-								        	{% if timeslot_form.ends_at.errors %}
-								                {% for e in timeslot_form.ends_at.errors %}
-								                    {% if e %}
-								                        <small class="error">{{ e }}</small>
-								                    {% endif %}
-								                {% endfor %}
-								            {% endif %}
-						      			</label>
-						      		</div>
-						      	</div>
-						      	<div class="row {{ day_of_week.index }}-add-another-time-picker">
-						      		<div class="small-12 columns">
-						      			Add another timeslot
-						      		</div>
-						      	</div>
-				      		</div>
-			      		{% endfor %}
-			      	</div>
+				      		<div class="row" id="daily_timeslots-{{ day_of_week_index }}-timeslots-{{ timeslot_index }}">
+								<div class="small-6 columns" id="middle-padding-section">
+									<label>{{ timeslot_form.starts_at.label }}
+										<dd class="error">{{ timeslot_form.starts_at()|safe }}
+										{% if timeslot_form.starts_at.errors %}
+											{% for e in timeslot_form.starts_at.errors %}
+												{% if e %}
+													<small class="error">{{ e }}</small>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+										</dd>
+									</label>
+								</div>
+								<div class="small-6 columns" id="middle-padding-section">
+									<label>{{ timeslot_form.ends_at.label }}
+										<dd class="error">{{ timeslot_form.ends_at()|safe }}
+										{% if timeslot_form.ends_at.errors %}
+											{% for e in timeslot_form.ends_at.errors %}
+												{% if e %}
+													<small class="error">{{ e }}</small>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+										</dd>
+									</label>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
 		   	  </div>
 			</div>
 
 		{% endfor %}
 
-		{% set field = form.additional_information %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.additional_information()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-		      	</label>
-		    </div>
-		</div>
+		<!-- Additional information -->
+		{{ render_field(form.additional_information) }}
 
-		{% set field = form.is_for_family_and_children %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.is_for_family_and_children()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-		      	</label>
-		    </div>
-		</div>
-
-		{% set field = form.is_for_seniors %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.is_for_seniors()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-		      	</label>
-		    </div>
-		</div>
-
-		{% set field = form.is_wheelchair_accessible %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.is_wheelchair_accessible()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-		      	</label>
-		    </div>
-		</div>
-
-		{% set field = form.is_accepts_snap %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ form.is_accepts_snap()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-		      	</label>
-		    </div>
-		</div>
+		<!-- Boolean fields --> 
+		{% for boolean in form.booleans %}
+			{{ boolean.form.hidden_tag() }}
+			{{ render_field(boolean.value) }}
+		{% endfor %}
 
 		<!-- Guest Name -->
-		{% set field = form.your_name %}
-	    <div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ field()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		{{ render_field(form.your_name) }}
 
 		<!-- Guest Phone -->
-		{% set field = form.your_phone_number %}
-	    <div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ field()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		{{ render_field(form.your_phone_number) }}
 
 		<!-- Guest Email -->
-		{% set field = form.your_email_address %}
-	    <div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ field()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		{{ render_field(form.your_email_address) }}
 
 		<!-- Guest Notes -->
-		{% set field = form.notes %}
-	    <div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-		    {% if field.flags.required %}
-		      	<label>{{ field.label(class_='required') }}
-		    {% else %}
-				<label>{{ field.label }}
-		    {% endif %}
-		    		<div class="form-field-description">
-		      			{{ field.description }}
-		      		</div>
-		        	<dd class="error">{{ field()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-				</label>
-			</div>
-		</div>
+		{{ render_field(form.notes) }}
 
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
-				<div class="required-disclaimer">
-					Required fields.
-				</div>
-			</div>
-		</div>
-
-		{% set field = form.recaptcha %}
-		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="top-padding-section">
-		        	<dd class="error">{{ field()|safe }}
-		        	{% if field.errors %}
-		                {% for e in field.errors %}
-		                    {% if e %}
-		                        <small class="error">{{ e }}</small>
-		                    {% endif %}
-		                {% endfor %}
-		            {% endif %}
-		    </div>
-		</div>
+		<!-- Recaptcha -->
+		{{ render_field(form.recaptcha) }}
 
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -605,6 +201,13 @@
 		</div>
 	</form>
 </body>
+
+<script>
+	$(document).ready(function() {
+		updateVisibleTimeslots(); 
+		onChangeNumberOfTimeslots(); 
+	}); 
+</script>
 
 {% endblock %}
 

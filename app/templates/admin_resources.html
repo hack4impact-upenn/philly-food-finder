@@ -1,275 +1,241 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
 
+{% from "macros.html" import render_food_resource_boolean with context %}
+
 {% block content %}
 <body id = "resources_p">
 	<div class="row">
-		<h1 class="page-header" id="edit-resources-header">All Food Resources</h1>
+		<h1 class="page-header admin-header" id="edit-resources-header">Manage Food Resources</h1>
     	<hr align="center">
   	</div>
 
   	<!-- Pending Food Resources --> 
 	<div class="row">
-		<div class="small-12 columns">
-		    <h2>Pending Food Resources</h2>
-		    <hr align="center">
+		<div class="large-10 medium-10 small-10 large-centered medium-centered small-centered columns">
+		    <h2 class="text-center page-header">Pending Food Resources</h2>
 		</div>
 	</div>
 
 	{% if food_resource_contacts|count == 0 %}
  	<div class="row">
- 		<div class="small-12 columns">
+ 		<div class="large-10 medium-10 small-10 columns">
  			None.
 	    </div>
 	</div>
 	{% else %}
-  	<div class="large-centered 
-         large-8 medium-centered medium-8 small-8 small-centered
-         columns resources">
-	{% for contact in food_resource_contacts %}
-	{% set name_without_spaces = contact.name.replace(" ", "-") %}
-	<div id="{{ name_without_spaces }}">
-		<div class="block-header" id="{{ name_without_spaces }}-header">
-			<table>
-			  	<thead>
-			    	<tr>
-			      		<th width="200" class="expand-food-resource-type-pending" id="food-resource-type-expand-pending-{{ name_without_spaces }}">+</th>
-			      		<th width="100%">{{ contact.name }}</th>	
-			    	</tr>
-			  	</thead>
-			</table>
-		</div>
-		<div class="admin-food-resource-type-pending" id="{{ name_without_spaces }}-table-pending">
-			{% for resource in contact.food_resource %}
+	<div class="row">
+	  	<div class="small-12 small-centered columns resources">
+			{% for contact in food_resource_contacts %}
+			{% set name_without_spaces = contact.name.replace(" ", "-") %}
+			<div id="{{ name_without_spaces }}">
+				<div class="block-header" id="{{ name_without_spaces }}-header">
+					<table>
+					  	<thead>
+					    	<tr>
+					      		<th width="200" class="expand-food-resource-type-pending" id="food-resource-type-expand-pending-{{ name_without_spaces }}">+</th>
+					      		<th width="100%">{{ contact.name }}</th>	
+					    	</tr>
+					  	</thead>
+					</table>
+				</div>
+				<div class="admin-food-resource-type-pending" id="{{ name_without_spaces }}-table-pending">
+					
+					{% for resource in contact.food_resource %}
+					<div class="resource"> 
 
-			<div class="resource"> 
-
-			<!-- Resource header --> 
-			  <div class= "row" id="food-resource-pending-{{ resource.id }}">
-				<div class="small-1 columns expand-food-resource-pending" id="food-resource-expand-pending-{{ resource.id }}">
-					+
-				</div>
-				<div class="small-7 columns">
-					{{ resource.name }}
-				</div>
-				<div class="small-2 columns">
-					<div id="{{ resource.id }}-approve" class="food-resource-update-button">Approve</div>
-				</div>
-				<div class="small-2 columns">
-					<div id="{{ resource.id }}-remove" class="food-resource-update-button">Reject</div>
-				</div>
-			</div>
-			<!-- Resource content --> 
-			<div class="row admin-food-resource-pending" id="food-resource-{{ resource.id }}-table-pending">
-				<div class="large-6 small-12 columns">
-					<div class="row">
-						<div class="small-3 columns">
-							Name:
+						<!-- Resource header --> 
+						<div class= "row" id="food-resource-pending-{{ resource.id }}">
+							<div class="small-1 columns expand-food-resource-pending" id="food-resource-expand-pending-{{ resource.id }}">
+								+
+							</div>
+							<div class="small-7 columns">
+								{{ resource.name }}
+							</div>
+							<div class="small-2 columns">
+								<div id="{{ resource.id }}-approve" class="food-resource-update-button">Approve</div>
+							</div>
+							<div class="small-2 columns">
+								<a id="{{ resource.id }}-remove" class="food-resource-update-button" href="#modal">Reject</a>
+							</div>
 						</div>
-						<div class="small-9 columns">
-							{{ resource.name }}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Resource Type:
-						</div>
-						<div class="small-9 columns">
-							{{ resource.food_resource_type.name_singular }}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Submitted By:
-						</div>
-						<div class="small-9 columns">
-							{% if contact.name %}
-								{{ contact.name }}
-							{% endif %}
-							{% if contact.name %}
-								<br>
-								{{ contact.email }}
-							{% endif %}
-							{% if contact.phone_number %}
-								<br>
-								{{ contact.phone_number }}
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Notes:
-						</div>
-						<div class="small-9 columns">
-							{% if resource.notes %}
-								{{ resource.notes }}
-							{% else %}
-								None.
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Address:
-						</div>
-						<div class="small-9 columns">
-							{% if resource.address.line1 %}
-								{{ resource.address.line1 }}
-							{% endif %}
-							{% if resource.address.line2 %}
-								<br>
-								{{ resource.address.line2 }}
-							{% endif %}	
-							<br>
-							{{ resource.address.city }}, 
-							{{ resource.address.state }} 
-							{{ resource.address.zip_code }}
-						</div>
-					</div>
-
-
-					<div class="row">
-						<div class="small-3 columns">
-							Zip Code:
-						</div>
-						<div class="small-9 columns">
-							{{ resource.address.zip_code }}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Phone Number:
-						</div>
-						<div class="small-9 columns">
-							{{ resource.phone_numbers[0].number }}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Website:
-						</div>
-						<div class="small-9 columns">
-							{% if resource.url %}
-								<a href="{{ resource.url }}">{{ resource.url }}</a>
-							{% else %}
-								None listed.
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Description:
-						</div>
-						<div class="small-9 columns">
-							{% if resource.description %}
-								{{ resource.description }}
-							{% else %}
-								No description.
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Family and children?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_for_family_and_children %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Seniors?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_for_seniors %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Wheelchair accessible?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_wheelchair_accessible %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Accepts SNAP?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_accepts_snap %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-				</div>
-				<div class="large-6 small-12 columns">
-					<div class="row">
-						<div class="small-3 columns">
-							Hours: 
-						</div>
-						<div class="small-9 columns">
-							{% if resource.are_hours_available %}
-								{% for day in days_of_week %}
-									<div class="row">
-										<div class="small-6 columns">
-											{{ day['name'] }}
-										</div>
-										<div class="small-6 columns">
-											{% for timeslot in resource.timeslots %}
-												{% if timeslot.day_of_week == day['index'] %}
-													{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
-												{% endif %}
-											{% endfor %}
-										</div>
+						<!-- Resource content --> 
+						<div class="row admin-food-resource-pending" id="food-resource-{{ resource.id }}-table-pending">
+							<div class="large-6 small-12 columns">
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Name:</div>
 									</div>
+									<div class="small-9 columns">
+										{{ resource.name }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Resource Type:</div>
+									</div>
+									<div class="small-9 columns">
+										{{ resource.food_resource_type.name_singular }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Submitted By:</div>
+									</div>
+									<div class="small-9 columns">
+										{% if contact.name %}
+											{{ contact.name }}
+										{% endif %}
+										{% if contact.name %}
+											<br>
+											{{ contact.email }}
+										{% endif %}
+										{% if contact.phone_number %}
+											<br>
+											{{ contact.phone_number }}
+										{% endif %}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Notes:</div>
+									</div>
+									<div class="small-9 columns">
+										{% if resource.notes %}
+											{{ resource.notes }}
+										{% else %}
+											None.
+										{% endif %}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Address:</div>
+									</div>
+									<div class="small-9 columns">
+										{% if resource.address.line1 %}
+											{{ resource.address.line1 }}
+										{% endif %}
+										{% if resource.address.line2 %}
+											<br>
+											{{ resource.address.line2 }}
+										{% endif %}	
+										<br>
+										{{ resource.address.city }}, 
+										{{ resource.address.state }} 
+										{{ resource.address.zip_code }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Zip Code:</div>
+									</div>
+									<div class="small-9 columns">
+										{{ resource.address.zip_code }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Phone Number:</div>
+									</div>
+									<div class="small-9 columns">
+										{{ resource.phone_numbers[0].number }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Website:</div>
+									</div>
+									<div class="small-9 columns">
+										{% if resource.url %}
+											<a href="{{ resource.url }}">{{ resource.url }}</a>
+										{% else %}
+											None listed.
+										{% endif %}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										Description:
+									</div>
+									<div class="small-9 columns">
+										{% if resource.description %}
+											{{ resource.description }}
+										{% else %}
+											No description.
+										{% endif %}
+									</div>
+								</div>
+								{% for boolean in resource.booleans %}
+									{{ render_food_resource_boolean(boolean.description_question, 
+										boolean.value) }}
 								{% endfor %}
-							{% else %}
-								No hours available.
-							{% endif %}
-						</div> 
+							</div>
+							<div class="large-6 small-12 columns">
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Hours:</div>
+									</div>
+									<div class="small-9 columns">
+										{% if resource.are_hours_available %}
+											{% for day in days_of_week %}
+												<div class="row">
+													<div class="small-4 columns">
+														<div class="admin-resources-category">{{ day['name'] }}:</div>
+													</div>
+													<div class="small-8 columns">
+														{% for timeslot in resource.timeslots %}
+															{% if timeslot.day_of_week == day['index'] %}
+																{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
+															{% endif %}
+														{% endfor %}
+													</div>
+												</div>
+											{% endfor %}
+										{% else %}
+											No hours available.
+										{% endif %}
+									</div> 
+								</div>
+							</div>
+						</div>
 					</div>
+					{% endfor %}
 				</div>
 			</div>
-		</div>
 			{% endfor %}
-		</div>
+		</div> 
 	</div>
-{% endfor %}
-</div> </div>
-{% endif %}
+	{% endif %}
 
 	<div class="row">
-		<div class="small-12 columns">
-		    <h2>Approved Food Resources</h2>
-		    <hr align="center">
+		<div class="large-10 medium-10 small-10 large-centered medium-centered small-centered columns">
+		    <h2 class="text-center page-header">Approved Food Resources</h2>
 		</div>
 	</div>
 
   	<!-- Filter admin resources by certain criteria -->
   	<div class="row">
   		<div class="medium-10 small-12 columns">
-  			<label for="zip-code">Zip Code:</label>
-	  		<input type="text" id="zip-code" />
-	  		<input type="checkbox" id="filter-by-families-and-children"> Families and children
-	  		<input type="checkbox" id="filter-by-seniors"> Seniors
-	  		<input type="checkbox" id="filter-by-wheelchair-accessible"> Wheelchair accessible
-	  		<input type="checkbox" id="filter-by-accepts-snap"> Accepts SNAP
-  		</div>
+  			<div class="row">
+  				<div class="small-12 columns">
+  					<label for="zip-code">Zip Code:</label>
+	  				<input type="text" id="zip-code" />
+	  			</div>
+	  			<div class="small-12 columns">
+	  				<ul id="checkboxes">
+  						<li class="checkbox-li">
+			  				<input type="checkbox" id="filter-by-open-now"> Open Now
+			  			</li>
+		  				{% for boolean in food_resource_booleans %}
+		  				<li class="checkbox-li">	  				
+			  				<input type="checkbox" id="filter-by-boolean-{{ boolean.hyphenated_id }}"/> {{ boolean.description_question }}
+			  			</li>
+				  		{% endfor %}
+			  		</ul>
+  				</div>
+  			</div>
+	  	</div>
   		<div class="medium-2 small-12 columns">
   			<div class="button radius small" id="apply-filters-resources-button">Apply Filters</div>
   			<div class="button radius small" id="clear-filters-resources-button">Clear Filters</div>
@@ -296,211 +262,172 @@
 	</div>
 
 	<!-- Display all resources in database. -->
-  	<div class="large-centered 
-                  large-8 medium-centered medium-8 small-8 small-centered
-                  columns resources">
+	<div class="row">
+	  	<div class="small-12 small-centered columns resources">
 
-	{% for food_resource_type in food_resource_types %}
-	<div id="{{ food_resource_type.hyphenated_id_plural }}">
-		<div class="block-header admin-food-resource-type-header" id="{{ food_resource_type.hyphenated_id_plural }}-header">
-			<table>
-			  	<thead>
-			    	<tr>
-			    		{% set total_num_resources = food_resource_type.food_resources|count %}
-			      		<th width="200" class="expand-food-resource-type" id="food-resource-type-expand-{{ food_resource_type.hyphenated_id_plural }}">+</th>
-			      		<th width="100%">{{ food_resource_type.name_plural }} (<div class="total-num-resources" id="{{ food_resource_type.hyphenated_id_plural }}-num-resources">{{ total_num_resources}}</div>) </th>	
-			    	</tr>
-			  	</thead>
-			</table>
-		</div>
-		<div id="{{ food_resource_type.hyphenated_id_plural }}-food-resource-type-table" class="admin-food-resource-type">
-			{% if food_resource_type.food_resources|count == 0 %}
-				<div class="no-resources-message">None to display.</div>
-			{% endif %}
+			{% for food_resource_type in food_resource_types %}
+			<div id="{{ food_resource_type.hyphenated_id_plural }}">
+				<div class="block-header admin-food-resource-type-header" id="{{ food_resource_type.hyphenated_id_plural }}-header">
+					<table>
+					  	<thead>
+					    	<tr>
+					    		{% set total_num_resources = food_resource_type.food_resources|count %}
+					      		<th width="200" class="expand-food-resource-type" id="food-resource-type-expand-{{ food_resource_type.hyphenated_id_plural }}">+</th>
+					      		<th width="100%">{{ food_resource_type.name_plural }} (<div class="total-num-resources" id="{{ food_resource_type.hyphenated_id_plural }}-num-resources">{{ total_num_resources}}</div>) </th>	
+					    	</tr>
+					  	</thead>
+					</table>
+				</div>
+				<div id="{{ food_resource_type.hyphenated_id_plural }}-food-resource-type-table" class="admin-food-resource-type">
+					{% if food_resource_type.food_resources|count == 0 %}
+						<div class="no-resources-message">None to display.</div>
+					{% endif %}
 
-			{% for resource in food_resource_type.food_resources %}
-			<div class="resource"> 
+					{% for resource in food_resource_type.food_resources %}
+					<div class="resource"> 
 
-			<!-- Resource header --> 
-			  <div class= "row" id="food-resource-{{ resource.id }}">
-				<div class="small-1 columns expand-food-resource" id="food-resource-expand-{{ resource.id }}">
-					+
-				</div>
-				<div class="small-7 columns">
-					{{ resource.name }}
-				</div>
-				<div class="small-2 columns">
-					<a href="{{ url_for('new', id=resource.id) }}" class="food-resource-update-button">Edit</a>
-				</div>
-				<div class="small-2 columns">
-					<div id="{{ resource.id }}-remove" class="food-resource-update-button">Remove</div>
-				</div>
-			</div>
-			<!-- Resource content --> 
-			<div class="row admin-food-resource" id="{{ resource.id }}-food-resource-table">
-				<div class="large-6 small-12 columns">
-					<div class="row">
-						<div class="small-3 columns">
-							Name:
+						<!-- Resource header --> 
+						  <div class= "row" id="food-resource-{{ resource.id }}">
+							<div class="small-1 columns expand-food-resource" id="food-resource-expand-{{ resource.id }}">
+								+
+							</div>
+							<div class="small-7 columns">
+								{{ resource.name }}
+							</div>
+							<div class="small-2 columns">
+								<a href="{{ url_for('new', id=resource.id) }}" class="food-resource-update-button">Edit</a>
+							</div>
+							<div class="small-2 columns">
+								<a id="{{ resource.id }}-remove" class="food-resource-update-button" href="#modal">Remove</a>
+							</div>
 						</div>
-						<div class="small-9 columns">
-							{{ resource.name }}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Resource Type:
-						</div>
-						<div class="small-9 columns">
-							{{ resource.food_resource_type.enum }}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Address:
-						</div>
-						<div class="small-9 columns">
-							{% if resource.address.line1 %}
-								{{ resource.address.line1 }}
-							{% endif %}
-							{% if resource.address.line2 %}
-								<br>
-								{{ resource.address.line2 }}
-							{% endif %}	
-							<br>
-							{{ resource.address.city }}, 
-							{{ resource.address.state }} 
-							{{ resource.address.zip_code }}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Zip Code:
-						</div>
-						<div class="small-9 columns">
-							{{ resource.address.zip_code }}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Phone Number:
-						</div>
-						<div class="small-9 columns">
-							{{ resource.phone_numbers[0].number }}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Website:
-						</div>
-						<div class="small-9 columns">
-							{% if resource.url %}
-								<a href="{{ resource.url }}">{{ resource.url }}</a>
-							{% else %}
-								None listed.
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Description:
-						</div>
-						<div class="small-9 columns">
-							{% if resource.description %}
-								{{ resource.description }}
-							{% else %}
-								No description.
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Family and children?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_for_family_and_children %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Seniors?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_for_seniors %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Wheelchair accessible?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_wheelchair_accessible %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-					<div class="row">
-						<div class="small-3 columns">
-							Accepts SNAP?
-						</div>
-						<div class="small-9 columns">
-							{% if resource.is_accepts_snap %}
-								Yes
-							{% else %}
-								No
-							{% endif %}
-						</div>
-					</div>
-				</div>
-				<div class="large-6 small-12 columns">
-					<div class="row">
-						<div class="small-3 columns">
-							Hours: 
-						</div>
-						<div class="small-9 columns">
-							{% if resource.are_hours_available %}
-								{% for day in days_of_week %}
-									<div class="row">
-										<div class="small-6 columns">
-											{{ day['name'] }}
-										</div>
-										<div class="small-6 columns">
-											{% for timeslot in resource.timeslots %}
-												{% if timeslot.day_of_week == day['index'] %}
-													{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
-												{% endif %}
-											{% endfor %}
-										</div>
+						<!-- Resource content --> 
+						<div class="row admin-food-resource" id="{{ resource.id }}-food-resource-table">
+							<div class="large-6 small-12 columns">
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Name:</div>
 									</div>
+									<div class="small-9 columns">
+										{{ resource.name }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Address:</div>
+									</div>
+									<div class="small-9 columns">
+										{% if resource.address.line1 %}
+											{{ resource.address.line1 }}
+										{% endif %}
+										{% if resource.address.line2 %}
+											<br>
+											{{ resource.address.line2 }}
+										{% endif %}	
+										<br>
+										{{ resource.address.city }}, 
+										{{ resource.address.state }} 
+										{{ resource.address.zip_code }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Zip Code:</div>
+									</div>
+									<div class="small-9 columns">
+										{{ resource.address.zip_code }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Phone Number:</div>
+									</div>
+									<div class="small-9 columns">
+										{{ resource.phone_numbers[0].number }}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Website:</div>
+									</div>
+									<div class="small-9 columns">
+										{% if resource.url %}
+											<a href="{{ resource.url }}">{{ resource.url }}</a>
+										{% else %}
+											None listed.
+										{% endif %}
+									</div>
+								</div>
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Description:</div>
+									</div>
+									<div class="small-9 columns">
+										{% if resource.description %}
+											{{ resource.description }}
+										{% else %}
+											No description.
+										{% endif %}
+									</div>
+								</div>
+								{% for boolean in resource.booleans %}
+									{{ render_food_resource_boolean(boolean.description_question, 
+										boolean.value) }}
 								{% endfor %}
-							{% else %}
-								No hours available.
-							{% endif %}
-						</div> 
+							</div>
+							<div class="large-6 small-12 columns">
+								<div class="row">
+									<div class="small-3 columns">
+										<div class="admin-resources-category">Hours:</div>
+									</div>
+									<div class="small-9 columns">
+										{% if resource.are_hours_available %}
+											{% for day in days_of_week %}
+												<div class="row">
+													<div class="small-4 columns">
+														<div class="admin-resources-category">{{ day['name'] }}:</div>
+													</div>
+													<div class="small-8 columns">
+														{% for timeslot in resource.timeslots %}
+															{% if timeslot.day_of_week == day['index'] %}
+																{{ timeslot.start_time.strftime('%I:%M %p') }} - {{ timeslot.end_time.strftime('%I:%M %p') }}
+																<br>
+															{% endif %}
+														{% endfor %}
+													</div>
+												</div>
+											{% endfor %}
+										{% else %}
+											No hours available.
+										{% endif %}
+									</div> 
+								</div>
+							</div>
+						</div>
 					</div>
+					{% endfor %}
 				</div>
 			</div>
-		</div>
 			{% endfor %}
-		</div>
+		</div> 
 	</div>
-{% endfor %}
-</div> </div>
+
+<div class="remodal" data-remodal-id="modal">
+    <h1>Confirm</h1>
+    <p>
+    	Are you sure you want to delete this food resource?
+    	<br>
+    	This action cannot be undone.
+    </p>
+    <br>
+    <a class="remodal-cancel" href="#">No</a>
+    <a class="remodal-confirm" href="#">Yes</a>
+</div>
+
 </body>
 
 <script>
 	$(document).ready(function() {
-
 		// Dynamically set background colors of table headers. 
 		{% for food_resource_type in food_resource_types %}
 			$("#{{ food_resource_type.hyphenated_id_plural }}-header table thead").each(function(index) {
@@ -522,13 +449,9 @@
 		});
 
 		$("#apply-filters-resources-button").click(function() {
-			var hasZipCodeFilter = 0; // FALSE
-			var hasFamiliesAndChildrenFilter = 0; // FALSE
-			var hasSeniorsFilter = 0; // FALSE
-			var hasWheelchairAccessibleFilter = 0; // FALSE
-			var hasAcceptsSnapFilter = 0; // FALSE
-
+			$('*').css({ 'cursor': 'wait' });
 			// Check that zip code is properly formed.
+			var hasZipCodeFilter = 0; // FALSE
 			var regex = /^(\d{5})?$/; // 5-digit number or an empty string.
 			var zipCode = $("#zip-code").val().trim(); 
 			if (regex.test(zipCode)) {
@@ -545,32 +468,32 @@
 			}
 
 			// Determine which checkboxes are checked.
-			if ($('[id="filter-by-families-and-children"]:checked')
+			var booleans = [];
+			$("[id^='filter-by-boolean-']").each(function(index) {
+				if ($(this).is(':checked')) {
+					booleans[booleans.length] = 1; // TRUE
+				}
+				else {
+					booleans[booleans.length] = 0; // FALSE
+				}
+			}); 
+
+			// Determine whether 'Open Now' filter has been chosen.
+			var openNowFilter = 0; // FALSE
+			if ($('[id="filter-by-open-now"]:checked')
 				.length > 0) {
-				hasFamiliesAndChildrenFilter = 1; // TRUE 
-			}
-			if ($('[id="filter-by-seniors"]:checked').length > 0) {
-				hasSeniorsFilter = 1; // TRUE 
-			}
-			if ($('[id="filter-by-wheelchair-accessible"]:checked')
-				.length > 0) {
-				hasWheelchairAccessibleFilter = 1; // TRUE 
-			}
-			if ($('[id="filter-by-accepts-snap"]:checked').length > 0) {
-				hasAcceptsSnapFilter = 1; // TRUE 
+				openNowFilter = 1; // TRUE 
 			}
 
 			$.getJSON($SCRIPT_ROOT + '/_admin_apply_filters', {
         		has_zip_code_filter: hasZipCodeFilter,
         		zip_code: zipCode,
-        		has_families_and_children_filter: hasFamiliesAndChildrenFilter, 
-        		has_seniors_filter: hasSeniorsFilter, 
-        		has_wheelchair_accessible_filter: hasWheelchairAccessibleFilter, 
-        		has_accepts_snap_filter: hasAcceptsSnapFilter
+        		has_open_now_filter: openNowFilter,
+        		booleans: JSON.stringify(booleans)
         	},
         	function(data) {
+        		$('*').css({ 'cursor': 'default' });
         		clearTablesOfFoodResources();
-
         		var totalNumResources = 0;
         		var i = 0;  
         		{% for food_resource_type in food_resource_types %}
@@ -615,12 +538,13 @@
 				toggleAdminFoodResourceVisibility();
 
 				// Remove a food resource without reloading page.
-				removeFoodResource();  
+				onClickRemoveFoodResource();  
         	});  
 		}); 
 
 		// Approves a food resource without reloading page.
 		$("[id$='approve']").click(function() {
+			$('*').css({ 'cursor': 'wait' });
 			var id = $(this).attr('id');
 			var dashIndex = id.indexOf("-"); 
 			var foodResourceId = id.substring(0, dashIndex); 
@@ -628,24 +552,24 @@
 	        		id: foodResourceId
 	        	},
 	        	function(data) {
+	        		$('*').css({ 'cursor': 'default' });
 	        		hide("food-resource-pending-" + foodResourceId);
 	        		hide("food-resource-" + foodResourceId + "-table-pending");
-
 	        		reloadFoodResourcesTables();
 	        	});  
-		});
-
+		});		
 		$("#clear-filters-resources-button").click(function() {
 			reloadFoodResourcesTables();
 		}); 
 	}); 
 
 	function reloadFoodResourcesTables() {
+		$('*').css({ 'cursor': 'wait' });
 		$.getJSON($SCRIPT_ROOT + '/_admin_remove_filters', {
     	},
     	function(data) {
+    		$('*').css({ 'cursor': 'default' });
     		clearTablesOfFoodResources();
-
     		var totalNumResources = 0;
     		var i = 0;  
     		{% for food_resource_type in food_resource_types %}
@@ -678,14 +602,12 @@
 
     		// Reset the total number of resources count to reflect the cleared 
     		// filters. 
-    		setTotalNumResources(totalNumResources); 
+    		setTotalNumResources(totalNumResources);
 
     		// Clear checkboxes and text box.
-			$('#filter-by-families-and-children').attr('checked', false);
-			$('#filter-by-seniors').attr('checked', false);
-			$('#filter-by-wheelchair-accessible').attr('checked', false);
-			$('#filter-by-accepts-snap').attr('checked', false);
+    		$("[id^='filter-by-']").attr('checked', false);
 			$("#zip-code").val("");
+			$("#filter-error").html("");
 
     		// Hide all food resource tables initially.
 			$(".admin-food-resource-type").hide(); 
@@ -696,7 +618,7 @@
 			toggleAdminFoodResourceVisibility(); 
 
 			// Remove a food resource without reloading page.
-			removeFoodResource(); 
+			onClickRemoveFoodResource();
     	});
 	}
 </script>

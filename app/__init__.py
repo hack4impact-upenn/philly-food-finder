@@ -20,7 +20,7 @@ class ConfigClass(object):
     MAIL_PASSWORD =           os.getenv('MAIL_PASSWORD',        
         '')
     DEFAULT_MAIL_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',  
-        '"Foodle" <phillyhungercoalition@gmail.com>')
+        '"Philly Food Finder" <phillyhungercoalition@gmail.com>')
     MAIL_SERVER =             os.getenv('MAIL_SERVER',          
         'smtp.gmail.com')
     MAIL_PORT =           int(os.getenv('MAIL_PORT',            '465'))
@@ -33,7 +33,7 @@ class ConfigClass(object):
     USER_ENABLE_CHANGE_USERNAME    = False
     USER_ENABLE_FORGOT_PASSWORD    = True
     USER_ENABLE_CHANGE_PASSWORD    = True
-    USER_APP_NAME        = 'Foodle'                # Used by email templates
+    USER_APP_NAME        = 'Philly Food Finder'                
     USER_PASSWORD_HASH		= 'sha512_crypt'
     USER_PASSWORD_HASH_MODE          = 'passlib'
     USER_CONFIRM_EMAIL_EXPIRATION    = 9223372036854775807
@@ -59,7 +59,7 @@ class ConfigClass(object):
 
     # Flask-WTF settings
     RECAPTCHA_PUBLIC_KEY = '6LfRvf8SAAAAAJ4rnEu4hNukozjLnhaQ04LGbC7z'
-    RECAPTCHA_PRIVATE_KEY = ''
+    RECAPTCHA_PRIVATE_KEY = '6LfRvf8SAAAAAFooOH7oUdqco7NkMS2NBGmpzzxO'
 
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')

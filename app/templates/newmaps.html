@@ -210,7 +210,7 @@
         <hr align="center">
     </div>
     <div class="row">
-        <div class="large-centered large-10 medium-centered medium-8 small-8 small-centered columns content">
+        <div class="large-centered large-10 medium-centered medium-10 small-10 small-centered columns content">
             <form method="post" id="geocoding_form">
                 <div class="small-12 columns">
                     <label for="address">Zip Code:</label>
@@ -232,17 +232,20 @@
                 </div>
             </form>      
             <div id="map-container">
-                <div id="map"></div>
+                <div class="large-4" id="map"></div>
             </div> 
             <div id="marker-info">Click on a Food Resource for More Information! <br></div>
             <div id="directions-link"><a class="linkInsert" href="http://www.maps.google.com" target="_blank">Get Directions!</a></div>
             <div id="map-key">
+
                 {% for food_resource_type in food_resource_types %}
-                <div class="small-12 medium-4 columns pin-definition">
+                <div class="small-6 medium-4 columns pin-definition">
                     <img src="../static/img/{{ food_resource_type.colored_pin.pin_image_name }}" alt="{{ food_resource_type.colored_pin.color_name}} Pin"/>
                     {{ food_resource_type.name_singular }}
                 </div>
                 {% endfor %}
+            </div>
+            <div id="footer-spacer">
             </div>
         </div>
     </div> 

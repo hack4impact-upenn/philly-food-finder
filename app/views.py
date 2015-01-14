@@ -3,15 +3,20 @@ from utils import *
 from models import *
 from forms import *
 from flask import render_template, flash, redirect, session, url_for, request, \
-	g, jsonify, current_app
+	g, jsonify, current_app, Response
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import *
-from datetime import time
-from utils import generate_password
+from datetime import time, date
+from utils import *
 from flask_user import login_required, signals
+from flask_user.emails import send_email
 from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
+from tempfile import NamedTemporaryFile
+import csv, time
+import json
+from operator import itemgetter
 
 @app.route('/')
 def index():
@@ -49,131 +54,73 @@ def new(id=None):
 		title = "Edit Food Resource"
 
 	# GET request.
-	if request.method == 'GET' and id is not None:
+	if request.method == 'GET':
+		form.generate_booleans()
 
-		# Populate form with information about existing food resource. 
-		food_resource = FoodResource.query.filter_by(id=id).first()
-		if food_resource is None:
-			return render_template('404.html')
+		if id is not None:
+			# Populate form with information about existing food resource. 
+			food_resource = FoodResource.query.filter_by(id=id).first()
+			if food_resource is None:
+				return render_template('404.html')
 
-		# Data that can be directly retrieved from the database.
-		form.name.data = food_resource.name
-		form.address_line1.data = food_resource.address.line1
-		form.address_line2.data = food_resource.address.line2
-		form.address_city.data = food_resource.address.city
-		form.address_state.data = food_resource.address.state
-		form.address_zip_code.data = food_resource.address.zip_code
-		form.phone_number.data = food_resource.phone_numbers[0].number
-		form.website.data = food_resource.url
-		form.additional_information.data = food_resource.description
-		form.is_for_family_and_children.data = \
-			food_resource.is_for_family_and_children
-		form.is_for_seniors.data = food_resource.is_for_seniors
-		form.is_wheelchair_accessible.data = \
-			food_resource.is_wheelchair_accessible
-		form.is_accepts_snap.data = food_resource.is_accepts_snap
-		form.location_type.data = food_resource.food_resource_type.enum
+			# Data that can be directly retrieved from the database.
+			form.name.data = food_resource.name
+			form.address_line1.data = food_resource.address.line1
+			form.address_line2.data = food_resource.address.line2
+			form.address_city.data = food_resource.address.city
+			form.address_state.data = food_resource.address.state
+			form.address_zip_code.data = food_resource.address.zip_code
+			form.phone_number.data = food_resource.phone_numbers[0].number
+			form.website.data = food_resource.url
+			form.additional_information.data = food_resource.description
+			form.location_type.data = food_resource.food_resource_type.enum
 
-		# Data that must be interpreted before being rendered.
-		if food_resource.are_hours_available == True:
-			form.are_hours_available.data = "yes"
-		else:
-			form.are_hours_available.data = "no"
+			# Data that must be interpreted before being rendered.
+			if food_resource.are_hours_available == True:
+				form.are_hours_available.data = "yes"
+			else:
+				form.are_hours_available.data = "no"
 
-		for timeslot in food_resource.timeslots:
-			index = timeslot.day_of_week
-			start_time = timeslot.start_time
-			end_time = timeslot.end_time
-			form.daily_timeslots[index].timeslots[0].starts_at.data = \
-				start_time.strftime("%H:%M")
-			form.daily_timeslots[index].timeslots[0].ends_at.data = \
-				end_time.strftime("%H:%M")
-			form.is_open[index].is_open.data = "open"
+			num_timeslots_per_day = [0] * 7
+			for timeslot in food_resource.timeslots:
+				day_of_week_index = timeslot.day_of_week
+				timeslot_index = num_timeslots_per_day[timeslot.day_of_week]
+				num_timeslots_per_day[timeslot.day_of_week] += 1
+				start_time = timeslot.start_time
+				end_time = timeslot.end_time
+				form.daily_timeslots[day_of_week_index] \
+					.timeslots[timeslot_index].starts_at.data = \
+						start_time.strftime("%H:%M")
+				form.daily_timeslots[day_of_week_index] \
+					.timeslots[timeslot_index].ends_at.data = \
+						end_time.strftime("%H:%M")
+				form.is_open[day_of_week_index].is_open.data = "open"
+				form.daily_timeslots[day_of_week_index].num_timeslots.data = \
+					num_timeslots_per_day[timeslot.day_of_week]
+
+			for i, boolean in enumerate(food_resource.booleans):
+				if boolean.value == True:
+					form.booleans[i].value.data = 'yes'
+				else:
+					form.booleans[i].value.data = 'no'
 
 	# POST request.
 	additional_errors = []
 	if request.method == 'POST' and form.validate(): 
-		food_resource_type = form.location_type.data
-		all_timeslots = []
+		food_resource = create_food_resource_from_form(form, additional_errors)
 
-		if form.are_hours_available.data == "yes":
-			are_hours_available = True
-		else:
-			are_hours_available = False
-
-		# Create the food resource's timeslots.
-		are_timeslots_valid = True
-		if are_hours_available: 
-			for i, timeslots in enumerate(form.daily_timeslots):
-				for timeslot in timeslots.timeslots:
-					# Check if food resource is open on the i-th day of the 
-					# week.
-					is_open = True
-					if form.is_open[i].is_open.data == "closed":
-						is_open = False
-
-					# Create timeslots only if the food resource is open on the
-					# i-th day of the week.
-					if is_open:
-						start_time = \
-							get_time_from_string(timeslot.starts_at.data)
-						end_time = get_time_from_string(timeslot.ends_at.data)
-						timeslot = TimeSlot(day_of_week=i, 
-							start_time=start_time, end_time=end_time)
-						all_timeslots.append(timeslot)
-
-						# Check that timeslot is valid.
-						if start_time >= end_time: 
-							are_timeslots_valid = False
-							additional_errors.append("Opening time must be \
-								before closing time.")
-						else:
-							db.session.add(timeslot)
-
-		# Create the food resource's remaining attributes. 
-		if are_timeslots_valid:
-
-			# If editing an existing food resource, delete its current record
-			# from the database. 
+		if (len(additional_errors) == 0):
+			# If a food resource is being edited, remove its old verion from the 
+			# database.
 			if id is not None:
 				fr = FoodResource.query.filter_by(id=id).first()
 				if fr:
+					for phone_number in fr.phone_numbers:
+						db.session.delete(phone_number)
+					for timeslot in fr.timeslots:
+						db.session.delete(timeslot)
+					db.session.delete(fr.address)
 					db.session.delete(fr)
-					db.session.commit()
-
-			# Create food resource's address.
-			address = Address(line1=form.address_line1.data, 
-				line2=form.address_line2.data, 
-				city=form.address_city.data, 
-				state=form.address_state.data, 
-				zip_code=form.address_zip_code.data)
-			db.session.add(address)
-
-			# Create food resource's phone number.
-			phone_numbers = []
-			home_number = PhoneNumber(number=form.phone_number.data)
-			db.session.add(home_number)
-			phone_numbers.append(home_number)
-
-			# Create food resource's type.
-			enum = form.location_type.data
-			food_resource_type = FoodResourceType.query.filter_by(enum=enum) \
-				.first()
-
-			# Create food resource and store all data in it.
-			food_resource = FoodResource(
-				name=form.name.data, 
-				phone_numbers=phone_numbers,
-				description=form.additional_information.data,
-				timeslots=all_timeslots,
-				address=address, 
-				is_for_family_and_children = \
-					form.is_for_family_and_children.data,
-				is_for_seniors = form.is_for_seniors.data,
-				is_wheelchair_accessible = form.is_wheelchair_accessible.data,	
-				is_accepts_snap = form.is_accepts_snap.data, 
-				are_hours_available = are_hours_available,
-				food_resource_type = food_resource_type)
 
 			# Commit all database changes. 
 			db.session.add(food_resource)
@@ -186,7 +133,7 @@ def new(id=None):
 		days_of_week=days_of_week,  
 		additional_errors=additional_errors, title=title)
 
-#Allows non-admins to add food resources
+# Allows non-admins to add food resources
 @app.route('/propose-resource', methods=['GET', 'POST'])
 def guest_new_food_resource():
 	form = NonAdminAddNewFoodResourceForm(request.form)
@@ -211,6 +158,7 @@ def guest_new_food_resource():
 	# Initialize location type.
 	if request.method == 'GET':
 		form.location_type.data = food_resource_types_choices[0][0]
+		form.generate_booleans()
 
 	additional_errors = []
 	if request.method == 'POST' and form.validate(): 
@@ -221,99 +169,24 @@ def guest_new_food_resource():
 		guest_phone_number = form.your_phone_number.data
 
 		# Check to see if this contact exists.
-		contact = FoodResourceContact.query.filter_by(
-			email = guest_email, name = guest_name).first()
+		contact = FoodResourceContact.query \
+			.filter_by(email=guest_email, name=guest_name).first()
 
-		if (contact is None):
+		if contact is None:
 			contact = FoodResourceContact(name=guest_name, 
 				email=guest_email, phone_number=guest_phone_number)
 			db.session.add(contact)
-			#db.session.commit()
 
-		if form.are_hours_available.data == "yes":
-			are_hours_available = True
-		else:
-			are_hours_available = False
+		food_resource = create_food_resource_from_form(form, additional_errors)
 
-		# Create the food resource's timeslots.
-		are_timeslots_valid = True
-		all_timeslots = []
-		if are_hours_available: 
-			for i, timeslots in enumerate(form.daily_timeslots):
-				for timeslot in timeslots.timeslots:
-
-					# Check if food resource is open on the i-th day of the 
-					# week.
-					is_open = True
-					if form.is_open[i].is_open.data == "closed":
-						is_open = False
-
-					# Create timeslots only if the food resource is open on the
-					# i-th day of the week.
-					if is_open:
-						start_time = \
-							get_time_from_string(timeslot.starts_at.data)
-						end_time = get_time_from_string(timeslot.ends_at.data)
-						timeslot = TimeSlot(day_of_week=i, 
-							start_time=start_time, end_time=end_time)
-						all_timeslots.append(timeslot)
-
-						# Check that timeslot is valid.
-						if start_time >= end_time: 
-							are_timeslots_valid = False
-							additional_errors.append("Opening time must be \
-								before closing time.")
-						else:
-							db.session.add(timeslot)
-
-		# Create the food resource's remaining attributes. 
-		if are_timeslots_valid:
-
-			# Create food resource's address.
-			address = Address(line1 = form.address_line1.data, 
-				line2 = form.address_line2.data, 
-				city = form.address_city.data, 
-				state = form.address_state.data, 
-				zip_code = form.address_zip_code.data)
-			db.session.add(address)
-
-			# Create food resource's phone number.
-			phone_numbers = []
-			home_number = PhoneNumber(number = form.phone_number.data)
-			db.session.add(home_number)
-			phone_numbers.append(home_number)
-
-			# Create food resource's type.
-			enum = form.location_type.data
-			food_resource_type = FoodResourceType.query.filter_by(enum=enum) \
-				.first()
-
-			# Create food resource and store all data in it.
-			food_resource = FoodResource(
-				name=form.name.data, 
-				phone_numbers=phone_numbers,
-				description=form.additional_information.data,
-				timeslots=all_timeslots,
-				address=address, 
-				is_for_family_and_children= \
-					form.is_for_family_and_children.data,
-				is_for_seniors=form.is_for_seniors.data,
-				is_wheelchair_accessible=form.is_wheelchair_accessible.data,	
-				is_accepts_snap=form.is_accepts_snap.data, 
-				are_hours_available=are_hours_available, 
-				food_resource_type=food_resource_type, 
-				is_approved=False, 
-				food_resource_contact=contact, 
-				notes=form.notes.data)
-			food_resource.food_resource_type = food_resource_type
+		if (len(additional_errors) == 0):
+			# Additional fields that are relevant for pending resources.
+			food_resource.is_approved = False
+			food_resource.food_resource_contact = contact
+			food_resource.notes = form.notes.data
 
 			# Commit all database changes. 
 			db.session.add(food_resource)
-			db.session.add(food_resource_type)
-			fr = FoodResource.query.filter_by(name=form.name.data).first()
-			print "**********"
-			print fr.food_resource_type.name_singular
-			print "----------"
 			db.session.commit()
 			return redirect(url_for('post_guest_add'))
 
@@ -338,15 +211,13 @@ def admin():
 				food_resource_type.food_resources.remove(food_resource)
 
 	contacts = FoodResourceContact.query.all()
-	for contact in contacts:
-		for food_resource in contact.food_resource:
-			print food_resource.food_resource_type
-			#print food_resource.food_resource_type.name_singular
+	food_resource_booleans = get_food_resource_booleans()
 
 	return render_template('admin_resources.html', 
 		food_resource_contacts=contacts, 
 		days_of_week=days_of_week,
-		food_resource_types=food_resource_types)
+		food_resource_types=food_resource_types,
+		food_resource_booleans=food_resource_booleans)
 
 @app.route('/admin')
 def admin_redirect():
@@ -402,8 +273,9 @@ def invite():
 				user_fields['is_active'] = True
 
 		# For all form fields
-		for field_name, field_value in register_form.data.items():	
-			# Store corresponding Form fields into the User object and/or UserProfile object
+		for field_name, field_value in register_form.data.items():  
+			# Store corresponding Form fields into the User object and/or 
+			# UserProfile object
 			if field_name in user_class_fields:
 				user_fields[field_name] = field_value
 			if db_adapter.UserEmailClass:
@@ -478,10 +350,12 @@ def invite():
 			register_form=register_form)
 
 @app.route('/_invite_sent')
+@login_required
 def invite_sent():
 	return render_template('invite_sent.html')
 
 @app.route("/_admin_remove_filters")
+@login_required
 def get_all_food_resource_data():
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_plural).all()
@@ -495,17 +369,13 @@ def get_all_food_resource_data():
 			food_resource_types])
 
 @app.route('/_admin_apply_filters')
+@login_required
 def get_filtered_food_resource_data():
 	# Collect boolean paramaters passed via JSON.
 	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
 	zip_code = request.args.get('zip_code', 0, type=int)
-	has_families_and_children_filter = request.args.get(
-		'has_families_and_children_filter', 0, type=int) 
-	has_seniors_filter = request.args.get('has_seniors_filter', 0, type=int) 
-	has_wheelchair_accessible_filter = request.args.get(
-		'has_wheelchair_accessible_filter', 0, type=int) 
-	has_accepts_snap_filter = request.args.get(
-		'has_accepts_snap_filter', 0, type=int) 
+	has_open_now_filter = request.args.get('has_open_now_filter', 0, type=int) 
+	booleans_array = json.loads(request.args.get('booleans'))
 
 	# Create empty arrays to hold food resources.
 	all_resources = []
@@ -541,17 +411,16 @@ def get_filtered_food_resource_data():
 
 	# Filter each list by other boolean criteria.
 	for list_to_filter in all_resources:
-		filter_food_resources(list_to_filter, has_families_and_children_filter, 
-			has_seniors_filter, has_wheelchair_accessible_filter,
-			has_accepts_snap_filter)
+		filter_food_resources(list_to_filter, has_open_now_filter, 
+			booleans_array)
 
-	json = []
+	json_array = []
 	for i, list in enumerate(all_resources):
-		json.append([])
+		json_array.append([])
 		for food_resource in list:
-			json[i].append(food_resource.serialize_food_resource())
+			json_array[i].append(food_resource.serialize_food_resource())
 
-	return jsonify(days_of_week=days_of_week, food_resources=json)
+	return jsonify(days_of_week=days_of_week, food_resources=json_array)
 
 @app.route('/map')
 def map():
@@ -574,6 +443,7 @@ def initialize_food_resources():
 	return jsonify(resources=[i.serialize_food_resource() for i in food_resources])
 
 @app.route('/_edit', methods=['GET', 'POST'])
+@login_required
 def save_page():
 	data = request.form.get('edit_data')
 	name = request.form.get('page_name')
@@ -607,23 +477,33 @@ def remove_food_resource_type():
 @app.route('/_search_query', methods=['GET', 'POST'])
 def save_search_query():
 	# Only record searches for regular users
-	if(current_user.is_authenticated()):
-		return
-	zip_code = request.form.get('zipCode')
-	if(zip_code):
-		zip_requested = ZipSearch.query.filter_by(zip_code = zip_code).first()
-		if(zip_requested):
+	if current_user.is_authenticated():
+		return 'Did not record a search'
+	zip_code = request.form.get('zipCode').strip()
+	if (zip_code):
+		zip_requested = ZipSearch.query \
+			.filter_by( \
+				zip_code=zip_code, \
+				date=date.today()) \
+			.first()
+		if (zip_requested):
 			zip_requested.search_count = zip_requested.search_count + 1
 		else:
-			zip_requested = ZipSearch(zip_code = zip_code, search_count = 1)
+			zip_requested = ZipSearch(zip_code=zip_code, search_count=1, \
+				date=date.today())
 			db.session.add(zip_requested)
 		db.session.commit()
-	return 'Recorded a search for' + zip_code
+		return 'Recorded a search for ' + zip_code
+	else:
+		return 'Did not record a search'
 
 @app.route('/_remove')
+@login_required
 def remove():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
+	if not food_resource:
+		return jsonify(message="failed")
 
 	# Determine whether the food resource being removed is approved or pending.
 	# Needed for front-end update after food resource is removed.
@@ -631,9 +511,22 @@ def remove():
 	if (food_resource.is_approved):
 		is_approved = True
 
+	contact = food_resource.food_resource_contact
+
+	if contact and contact.email:
+		send_email(
+			recipient = contact.email, 
+			subject = food_resource.name + ' has been rejected',
+			html_message = 'Dear ' + contact.name + ', \
+				<p>Your proposed resource <b>' + food_resource.name + 
+				'</b> was rejected. Please contact an admin to find out why.\
+				</p><br> Sincerely,<br>' + app.config['USER_APP_NAME'],
+			text_message = 'Your proposed resource ' + food_resource.name + 
+				' was rejected. Please contact an admin to find out why.'
+		)
+
 	# If the food resource has a contact and its contact has submitted no other 
 	# food resources to the database, remove him/her from the database.
-	contact = food_resource.food_resource_contact
 	if contact and len(contact.food_resource) <= 1:
 		db.session.delete(contact)
 
@@ -650,10 +543,23 @@ def remove():
 	return jsonify(is_approved=is_approved)
 
 @app.route('/_approve')
+@login_required
 def approve():
 	id = request.args.get("id", type=int)
 	food_resource = FoodResource.query.filter_by(id=id).first()
 	contact = food_resource.food_resource_contact
+
+	if contact.email:
+		send_email(
+			recipient = contact.email, 
+			subject = food_resource.name + ' has been approved',
+			html_message = 'Dear ' + contact.name + ',\
+			<p>Good news! Your proposed resource <b>' + food_resource.name + 
+				'</b> was approved. Thanks so much!</p><br> Sincerely,<br>' + 
+				app.config['USER_APP_NAME'],
+			text_message = 'Good news! Your proposed resource ' + 
+				food_resource.name + ' was approved. Thanks so much!'
+		)
 
 	if len(contact.food_resource) <= 1:
 		db.session.delete(contact)
@@ -672,9 +578,75 @@ def about():
 @app.route('/admin/analytics')
 @login_required
 def analytics():
-	zip_codes_all = ZipSearch.query.order_by(ZipSearch.search_count.desc())
-	zip_codes_limit = zip_codes_all.limit(10)
-	return render_template('charts.html', zip_codes_all = zip_codes_all, zip_codes_limit = zip_codes_limit)
+	return render_template('charts.html')
+
+@app.route('/_admin/_analytics')
+@login_required
+def dynamic_analytics():
+	data_type = request.args.get("data_type")
+	today = date.today()
+	print data_type
+	if data_type:
+		zip_code_query = []
+		if data_type == 'all-time':
+			zip_code_query = ZipSearch.query \
+				.order_by(ZipSearch.zip_code.desc(), ZipSearch.search_count.desc()) \
+				.limit(10).all()
+		else: 
+			first = None
+			last = None
+			if data_type == "this-month":
+				first = get_first_day_of_month(today)
+				last = today
+			elif data_type == 'last-month':
+				first = get_first_day_of_previous_month(today)
+				last = get_last_day_of_previous_month(today)
+			elif data_type == 'today':
+				first = today
+				last = today
+			elif data_type == 'last-7-days':
+				first = today - timedelta(days=7)
+				last = today
+			elif data_type == 'last-30-days':
+				first = today - timedelta(days=30)
+				last = today
+			elif data_type == 'last-60-days':
+				first = today - timedelta(days=60)
+				last = today
+			elif data_type == 'last-90-days':
+				first = today - timedelta(days=90)
+				last = today
+			elif data_type == 'last-12-months':
+				first = today - timedelta(days=365)
+				last = today
+			elif data_type == 'custom-date-range':
+				start_date = request.args.get("start_date")
+				end_date = request.args.get("end_date")
+				if start_date and end_date: 
+					struct = time.strptime(start_date, "%m/%d/%Y")
+					first = date(year=struct.tm_year, month=struct.tm_mon, day=struct.tm_mday)
+					struct = time.strptime(end_date, "%m/%d/%Y")
+					last = date(year=struct.tm_year, month=struct.tm_mon, day=struct.tm_mday)
+				else:
+					return jsonify(data="failed")
+			if first and last: 
+				zip_code_query = ZipSearch.query.filter(ZipSearch.date.between(first, last)) \
+					.order_by(ZipSearch.zip_code.desc(), ZipSearch.search_count.desc()) \
+					.limit(10).all()
+		dict = {}
+		if len(zip_code_query) > 0:
+			for zip_code in zip_code_query:
+				if zip_code.zip_code in dict:
+					dict[zip_code.zip_code] += zip_code.search_count
+				else:
+					dict[zip_code.zip_code] = zip_code.search_count
+		dict_list = []
+		for key, value in dict.iteritems():
+			temp = [key,value]
+			dict_list.append(temp)
+		dict_list = sorted(dict_list, key=itemgetter(1), reverse=True)
+		return jsonify(zip_codes=dict_list)
+	return jsonify(data="failed")
 
 @app.route('/contact')
 def contact():
@@ -700,6 +672,139 @@ def summer_meals():
 def seniors():
 	return render_template('seniors_info.html', 
 		html_string = HTML.query.filter_by(page = 'seniors-info-page').first())
+
+@app.route('/resources/farmers')
+def farmers():
+	return render_template('farmers_info.html', 
+		html_string = HTML.query.filter_by(page = 'farmers-info-page').first())
+
+@app.route('/resources/neighborhood')
+def neighborhood():
+	return render_template('neighborhood_info.html', 
+		html_string = HTML.query.filter_by(page = 'neighborhood-info-page').first())
+
+@app.route('/resources/share')
+def share():
+	return render_template('share_info.html', 
+		html_string = HTML.query.filter_by(page = 'share-info-page').first())
+
+@app.route('/admin/files')
+@login_required
+def files():
+	food_resource_booleans = get_food_resource_booleans()
+	return render_template('file_inputoutput.html',
+		food_resource_booleans=food_resource_booleans)
+
+@app.route('/_csv_input', methods=['GET', 'POST'])
+@login_required
+def csv_input():
+	file = request.files['file']
+	path = '.csv_input.csv'
+	file.save(path)
+
+	if file:
+		try:
+			errors = import_file(path)
+		except Exception as e:
+			errors = [str(e)]
+
+		if errors is None or len(errors) is 0:
+			return jsonify(message = "success")
+		else:
+			response = jsonify({
+				'status': 500,
+				'errors': errors
+			})
+			response.status_code = 500
+			return response
+
+@app.route('/_csv_download')
+@login_required
+def download():
+	outfile = open('.mydump.csv', 'wb')
+	outcsv = csv.writer(outfile)
+
+	resources = FoodResource.query.filter_by(is_approved = True).all()
+	food_resource_booleans = get_food_resource_booleans()
+
+	outcsv.writerow(['Table 1'])
+	data = ['','Type (' + get_string_of_all_food_resource_types() + ')',
+		'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 
+		'State', 'Zip Code', 'Phone Number (optional)', 
+		'Website (optional)', 'Description (optional)']
+	for food_resource_boolean in food_resource_booleans:
+		data.append(str(food_resource_boolean.description_question) + 
+			' (either \'Yes\' or leave blank)')
+	data.append('Hours Available? (either \'Yes\' or leave blank)') 
+	data.append('Open Sunday? (either \'Yes\' or leave blank)') 
+	data.append('Open Monday? (either \'Yes\' or leave blank)')
+	data.append('Open Tuesday? (either \'Yes\' or leave blank)')
+	data.append('Open Wednesday? (either \'Yes\' or leave blank)') 
+	data.append('Open Thursday? (either \'Yes\' or leave blank)') 
+	data.append('Open Friday? (either \'Yes\' or leave blank)')
+	data.append('Open Saturday? (either \'Yes\' or leave blank)')
+	for day_of_week in ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
+		"Friday", "Saturday"]:
+		for i in range(1, 11): 
+			data.append(str(day_of_week) + ' Opening Time #' + str(i) + 
+				' (military time - e.g., 8:00 or 17:00)') 
+			data.append(str(day_of_week) + ' Closing Time #' + str(i) + 
+				' (military time - e.g., 8:00 or 17:00)')
+	outcsv.writerow(data)
+
+	for i, resource in enumerate(resources):
+		# 2-dimensional array to hold all timeslots.
+		# Index 0 corresponds to a list of Sunday's timeslots, 
+		# index 1 corresponds to a list of Monday's timeslots, etc.
+		all_timeslots = [None] * 7
+		for j in range(0, 7):
+			all_timeslots[j] = []
+		for timeslot in resource.timeslots:
+			all_timeslots[timeslot.day_of_week].append(timeslot)
+		data = [
+			str(i + 1), 
+			resource.food_resource_type.enum, 
+			resource.name, 
+			resource.address.line1, 
+			resource.address.line2, 
+			resource.address.city, 
+			resource.address.state, 
+			resource.address.zip_code, 
+			resource.phone_numbers[0].number, 
+			resource.url, 
+			resource.description]
+		for boolean in resource.booleans: 
+			data.append('Yes' if boolean.value else '')  
+		data.append('Yes' if resource.are_hours_available else '') 
+		data.append('Yes' if len(all_timeslots[0]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[1]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[2]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[3]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[4]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[5]) != 0 else '') 
+		data.append('Yes' if len(all_timeslots[6]) != 0 else '')
+		for day_of_week_timeslots in all_timeslots: # 7 days of the week.
+			for j in range (0, 10): # [0, 10) - 10 possible timeslots per day.
+				if j >= len(day_of_week_timeslots) or \
+					day_of_week_timeslots[j] is None:
+					data.append('') # Start time is empty.
+					data.append('') # End time is empty.
+				else:
+					data.append(day_of_week_timeslots[j] \
+						.start_time.strftime('%H:%M'))
+					data.append(day_of_week_timeslots[j] \
+						.end_time.strftime('%H:%M'))
+		outcsv.writerow(data)
+
+	def generate():
+		with open('.mydump.csv', 'rb') as f:
+			for line in f:
+				yield line
+	
+	response = Response(generate(), mimetype='text/csv')
+	filename = 'resources_generated_at_' + str(datetime.now()) + '.csv'
+	response.headers["Content-Disposition"] = "attachment; filename="+filename
+	return response
 
 @app.route('/admin/food-resource-types')
 @login_required
