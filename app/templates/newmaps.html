@@ -110,7 +110,7 @@
           zipCode: zipCode
         };
         //cases for different checkboxes
-        var queryString = 'search_query'
+        var queryString = 'search_query' //creating the customized search query to be used in views.py for app.route
         if ($("#map-filter-by-seniors").is(':checked')) { queryString += '_seniors'; }
         if ($("#map-filter-by-seniors").is(':checked')) { queryString += '_family';}
         {
@@ -124,7 +124,7 @@
         {
           queryString += "_seniors";
         }                        
-        $.post(url = $SCRIPT_ROOT + '/_search_query_zipcode', data = json_data);
+        $.post(url = $SCRIPT_ROOT + '/_search_query', data = json_data);
         GMaps.geocode({
           address: $('#address').val().trim(),
           callback: function(results, status){
@@ -137,13 +137,14 @@
           zip_code: zipCode
         },
             function(data) {
-              
+ /*             
               for (var j = data["addresses"].length; j >=0; j--)
               {
                 var food_resource_id = data["addresses"][j]["food_resource_id"];
                 if (($("#map-filter-by-seniors").is(':checked')) && 
                   data["addresses"][j]["food_resource_id"]          )
-              }
+              }*/ 
+              //work is being done on filtering resources based on checkboxes; currently, I'm in the process of adding app.route for the different filtered categories
               if ($("#map-filter-by-seniors").is(':checked')) //filtering results by checkbox categories
               {
                 console.log("SENIORS");
@@ -172,9 +173,9 @@
                       var newMarker = results[0].geometry.location; 
                       myLat = newMarker.lat();
                       myLng = newMarker.lng();
-                      var addressInfo = results[0].formatted_address;
-                      var removedCommas = addressInfo.split(",").join("");
-                      var linkInfo = removedCommas.split(" ").join("+");
+                      var addressInfo = results[0].formatted_address;  //changing the format of the address to generate a google link with directions
+                      var removedCommas = addressInfo.replace(/,/g, "");
+                      var linkInfo = removedCommas.replace(/ /g, "+");
                       var completeLink = "https://maps.google.com?daddr=" + linkInfo;                      
                       markers.push({
                         lat : newMarker.lat(),
@@ -246,10 +247,4 @@
         </div>
     </div> 
 </body>
-{% endblock %}
-
-
-<!-- FAQ -->
-{% block content_faq %}
-
 {% endblock %}

@@ -604,8 +604,8 @@ def remove_food_resource_type():
 	return jsonify(success="success")
 
 
-@app.route('/_search_query_zipcode', methods=['GET', 'POST'])
-def save_search_query_zipcode():
+@app.route('/_search_query', methods=['GET', 'POST'])
+def save_search_query():
 	# Only record searches for regular users
 	if(current_user.is_authenticated()):
 		return
