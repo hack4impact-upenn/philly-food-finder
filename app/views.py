@@ -424,10 +424,9 @@ def get_filtered_food_resource_data():
 
 @app.route('/map')
 def map():
-	food_resource_types = FoodResourceType.query \
-		.order_by(FoodResourceType.name_singular).all()
+	foodResourceTypes = FoodResourceType.query.order_by(FoodResourceType.name_singular).all()
 	return render_template('newmaps.html', 
-		food_resource_types=food_resource_types)
+		food_resource_types=foodResourceTypes)
 
 @app.route('/_map')
 def address_food_resources():
@@ -437,6 +436,11 @@ def address_food_resources():
 		.filter(Address.zip_code==zip_code, FoodResource.is_approved==True) \
 		.order_by(FoodResource.name).all()
 	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
+
+@app.route('/_newmap')
+def initialize_food_resources():
+	food_resources = db.session.query(FoodResource).join(FoodResource.address).filter(FoodResource.is_approved==True).all()
+	return jsonify(resources=[i.serialize_food_resource() for i in food_resources])
 
 @app.route('/_edit', methods=['GET', 'POST'])
 @login_required
