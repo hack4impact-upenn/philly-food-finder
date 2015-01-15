@@ -138,22 +138,6 @@ class TimeSlot(db.Model):
 			data["end_time"] = self.end_time.strftime('%I:%M %p')
 		return data
 
-# Represents a start and end month for a resource. 
-# For example OpenMonthPair(3,5) means the resource is open from March to May.
-class OpenMonthPair(db.Model):
-	id = db.Column(db.Integer, primary_key = True)
-	start_month = db.Column(db.Integer)
-	end_month = db.Column(db.Integer)
-	resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
-
-	def serialize_open_month_pair(self):
-		return {
-			'id': self.id, 
-			'start_month': self.start_month, 
-			'end_month': self.end_month, 
-			'resource_id': self.resource_id
-		}
-
 class PhoneNumber(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	number = db.Column(db.String(35))
@@ -208,9 +192,6 @@ class FoodResource(db.Model):
 	phone_numbers = db.relationship('PhoneNumber', backref='food_resource', 
 		lazy='select', uselist=True)
 	url = db.Column(db.Text)
-	open_month_pairs = db.relationship('OpenMonthPair', backref='food_resource', 
-		lazy='select', uselist=True)
-	exceptions = db.Column(db.Text)
 	description = db.Column(db.Text)
 	food_resource_type_id = db.Column(db.Integer, 
 		db.ForeignKey('food_resource_type.id'))
@@ -260,9 +241,6 @@ class FoodResource(db.Model):
 			'name': self.name, 
 			'phone_number': self.phone_numbers[0].serialize_phone_numbers(),
 			'url': self.url, 
-			'open_month_pairs': 
-				[i.serialize_open_month_pair() for i in self.open_month_pairs],
-			'exceptions': self.exceptions, 
 			'description': self.description,
 			'address': self.address.serialize_address(),
 			'are_hours_available': self.are_hours_available, 
