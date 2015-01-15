@@ -37,11 +37,16 @@
 			</div>
 		</div>
 
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<h2 class="text-center page-header">Site Contact Information</h2>
+		      	This information will appear on the map within your site pin.
+			</div>
+		</div>
+
 	   	<!-- Food Resource Name -->
 	    {{ render_field(form.name) }}
-
-		<!-- Food Resource Type -->
-		{{ render_field(form.location_type) }}
 
 		<!-- Address Line 1 -->
 		{{ render_field(form.address_line1) }}
@@ -67,8 +72,17 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>Days/Hours of Operation
-				</label>
+		      	<h2 class="text-center page-header">Type of Food Resource</h2>
+			</div>
+		</div>
+
+		<!-- Food Resource Type -->
+		{{ render_field(form.location_type) }}
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<h2 class="text-center page-header">Days / Hours of Operation</h2>
 			</div>
 		</div>
 
@@ -162,14 +176,21 @@
 
 		{% endfor %}
 
-		<!-- Additional information -->
-		{{ render_field(form.additional_information) }}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<h2 class="text-center page-header">Additional Information</h2>
+			</div>
+		</div>
 
 		<!-- Boolean fields --> 
 		{% for boolean in form.booleans %}
 			{{ boolean.form.hidden_tag() }}
 			{{ render_field(boolean.value) }}
 		{% endfor %}
+
+		<!-- Additional information -->
+		{{ render_field(form.additional_information) }}
 
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
