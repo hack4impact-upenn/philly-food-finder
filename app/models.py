@@ -1,8 +1,9 @@
 from app import app, db
 from flask_user import UserMixin
-from datetime import datetime
+import datetime
 import utils
 from pygeocoder import Geocoder
+import time
 
 class ColoredPin(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -89,18 +90,20 @@ class Address(db.Model):
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
 
 	def createLatAndLong(self):
-		try:
-			address_string = str(self.line1) + ", "
-			if self.line2:
-				address_string += str(self.line2) + ", "
-			address_string += str(self.city) + ", " + str(self.state) + " " + str(self.zip_code)
-			results = Geocoder.geocode(address_string)
-
-			self.latitude = results[0].coordinates[0]
-			self.longitude = results[0].coordinates[1]
-			valid_address = True
-		except Exception as e:
-			print "Invalid address"
+		address_string = ""
+		addressEvaluated = False
+		while not addressEvaluated:
+			try:
+				address_string = str(self.line1) + ", "
+				address_string += str(self.city) + ", " + str(self.state) + " " + str(self.zip_code)
+				results = Geocoder.geocode(address_string)
+				self.latitude = str(results[0].coordinates[0])
+				self.longitude = str(results[0].coordinates[1])
+				self.valid_address = True
+				addressEvaluated = True
+			except Exception as e:
+				print "Invalid address"
+				time.sleep(2)
 
 	def serialize_address(self):
 		return {
@@ -315,7 +318,7 @@ class User(db.Model, UserMixin):
 
 	# This function is only for the tests in tests.py
 	def confirm_and_enable_debug(self):
-		self.confirmed_at = datetime.now()
+		self.confirmed_at = datetime.datetime.now()
 		self.is_enabled = True
 
 	def __init__(self, email, password, is_enabled, first_name = '', last_name = '', roles = [Role(name = 'Admin')]):

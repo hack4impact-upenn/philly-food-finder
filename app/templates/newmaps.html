@@ -9,6 +9,7 @@
   <script type="text/javascript">
     var map;
     $(document).ready(function(){
+      $('*').css({ 'cursor': 'wait' });
       map = new GMaps({     // create a new map
         el: 'map',
         lat: 39.9500,
@@ -18,6 +19,7 @@
             $.getJSON($SCRIPT_ROOT + '/_newmap',  
             // Pull all food resources in database to be displayed when the page is initially loaded.
             function(data) {
+              
               for (var i = 0; i < data["resources"].length; i++) {
                 (function() {
                     /* Extract information about each food resource location. */
@@ -42,26 +44,32 @@
                     var linkInfo = newAddress.split(" ").join("+");
                     var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
                     
-                    /* Add marker to map. */
-                    map.addMarker({
-                      lat : latitude,
-                      lng : longitude,
-                      title: newTitle,
-                      icon : { url: image,
-                              size: new google.maps.Size(50,50),
-                              scaledSize: new google.maps.Size(20,25)},
-                      click: function(e) { 
-                        // Create description and directions below map when marker is clicked.
-                        document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br>";
-                        $('.linkInsert').attr('href',completeLink);
-                      }
-                    });
+                    /* Only add address to map if its address is valid. */
+                    if (data["resources"][i]["address"]["valid_address"] != 0) {
+                      /* Add marker to map. */
+                      map.addMarker({
+                        lat : latitude,
+                        lng : longitude,
+                        title: newTitle,
+                        icon : { url: image,
+                                size: new google.maps.Size(50,50),
+                                scaledSize: new google.maps.Size(20,25)},
+                        click: function(e) { 
+                          // Create description and directions below map when marker is clicked.
+                          document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br>";
+                          $('.linkInsert').attr('href',completeLink);
+                        }
+                      });
+                    }
                     map.fitZoom();              //and fits map window to show all of them
                  }) ();
+                  
               }
+              $('*').css({ 'cursor': 'default' });
            });
 
       $('#geocoding_form').submit(function(e) {
+        $('*').css({ 'cursor': 'wait' });
         map.removeMarkers();
         e.preventDefault();
 
@@ -121,47 +129,55 @@
         },
         function(data) {
           for (var i = 0; i < data["addresses"].length; i++) {
+            for (var j = 0; j < data["addresses"][0].length; j++) {
               (function() {
-                var foodResource = data["addresses"][i][0];
-                var newAddress = foodResource["address"]["line1"] + ', ' 
-                  + foodResource["address"]["city"] + ', ' 
-                  + foodResource["address"]["state"] + " " + foodResource["address"]["zip_code"];
-                var newTitle = foodResource["name"];
-                var newDescription = newTitle + "<br>" 
-                  + foodResource["description"] + "<br>" 
-                  + "Contact Information: " 
-                  + foodResource["phone_number"]["number"];        
-                var newType = 
-                  foodResource["food_resource_type"]["enum"];
-                var filename = 
-                  foodResource["food_resource_type"]["colored_pin"]["pin_image_name"];
-                var image = "../static/img/" + filename; 
-                var latitude = foodResource["address"]["latitude"]; 
-                var longitude = foodResource["address"]["longitude"]; 
+                var foodResource = data["addresses"][i][j];
+                if (foodResource !== undefined) {
+                  var newAddress = foodResource["address"]["line1"] + ', ' 
+                    + foodResource["address"]["city"] + ', ' 
+                    + foodResource["address"]["state"] + " " + foodResource["address"]["zip_code"];
+                  var newTitle = foodResource["name"];
+                  var newDescription = newTitle + "<br>" 
+                    + foodResource["description"] + "<br>" 
+                    + "Contact Information: " 
+                    + foodResource["phone_number"]["number"];        
+                  var newType = 
+                    foodResource["food_resource_type"]["enum"];
+                  var filename = 
+                    foodResource["food_resource_type"]["colored_pin"]["pin_image_name"];
+                  var image = "../static/img/" + filename; 
+                  var latitude = foodResource["address"]["latitude"]; 
+                  var longitude = foodResource["address"]["longitude"]; 
 
-                /* Change the format of the address to generate a Google Maps link with directions. */
-                var removedCommas = newAddress.split(",").join("");
-                var linkInfo = newAddress.split(" ").join("+");
-                var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
+                  /* Change the format of the address to generate a Google Maps link with directions. */
+                  var removedCommas = newAddress.split(",").join("");
+                  var linkInfo = newAddress.split(" ").join("+");
+                  var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
 
-                /* Add each marker to map. */                     
-                map.addMarker({
-                  lat : latitude,
-                  lng : longitude,
-                  title: newTitle,
-                  icon : { url: image,
-                          size: new google.maps.Size(50,50),
-                          scaledSize: new google.maps.Size(20,25) },
-                  click: function(e) {
-                    document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br><br>";
-                    $('.linkInsert').attr('href', completeLink);
+                  /* Only add address to map if its address is valid. */
+                  if (foodResource["address"]["valid_address"] != 0) {
+                    /* Add each marker to map. */                     
+                    map.addMarker({
+                      lat : latitude,
+                      lng : longitude,
+                      title: newTitle,
+                      icon : { url: image,
+                              size: new google.maps.Size(50,50),
+                              scaledSize: new google.maps.Size(20,25) },
+                      click: function(e) {
+                        document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br><br>";
+                        $('.linkInsert').attr('href', completeLink);
+                      }
+                    }); 
                   }
-                }); 
-                map.fitZoom();  
+                  map.fitZoom(); 
+                } 
               }()); // Call anonymous function.
             }
-          });
-        } // End of updateMap().                         
+          }
+          $('*').css({ 'cursor': 'default' });
+        });
+      } // End of updateMap().                         
     </script>
 </div>
 
@@ -209,7 +225,6 @@
                 </div>                                            
                 <div class="small-12 columns">
                     <input type="submit" class="button radius small" value="Search" id="map-search-button" />
-                    <input type="submit" class="button radius small" value="Clear Filters" id="map-filter-button" />
                 </div>
                 <div class="row">
                     <div class="small-12 columns" id="map-search-error">

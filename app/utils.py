@@ -1,15 +1,15 @@
 import os, random, string, datetime
-from datetime import time, datetime, timedelta
+#from datetime import datetime, timedelta
+#import datetime
 from pytz import timezone
 from models import *
 import os, random, string
-from datetime import time, date
+#from datetime import date
 from pytz import timezone
 from models import *
 import re
 import csv
 from app import db
-from pygeocoder import Geocoder
 
 def getFilteredFoodResources(has_zip_code_filter, zip_code, has_open_now_filter, booleans_array):
 	# Create empty arrays to hold food resources.
@@ -52,11 +52,11 @@ def getFilteredFoodResources(has_zip_code_filter, zip_code, has_open_now_filter,
 	return all_resources
 
 def get_first_day_of_month(day):
-	return date(day.year, day.month, 1)
+	return datetime.date(day.year, day.month, 1)
 
 def get_last_day_of_previous_month(day):
 	first = get_first_day_of_month(day)
-	last = first - timedelta(days=1)
+	last = first - datetime.timedelta(days=1)
 	return last
 
 def get_first_day_of_previous_month(day):
@@ -241,7 +241,7 @@ def get_time_from_string(time_string):
 	colon_index = time_string.index(":")
 	time_hour = int(time_string[:colon_index])
 	time_minute = int(time_string[colon_index+1:])
-	return time(time_hour, time_minute)
+	return datetime.time(time_hour, time_minute)
 
 def is_open(resource, current_date = None):
 	timeslots = resource.timeslots
@@ -279,13 +279,13 @@ def is_open(resource, current_date = None):
 def get_possible_opening_times():
 	opening_times = []
 	# Year, month, and day are arbitrary, as only the time is needed.
-	opening_time = datetime( 
+	opening_time = datetime.datetime( 
 		year=2014, 	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=1,		# Arbitrary.
 		hour=0, 	# First opening time is 12:00 AM.
 		minute=0)
-	final_opening_time = datetime( 
+	final_opening_time = datetime.datetime( 
 		year=2014,	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=2,		# Arbitrary.
@@ -299,19 +299,19 @@ def get_possible_opening_times():
 			)
 		)
 		# Opening time is incremented in 15-minute intervals.
-		opening_time += timedelta(0, 15*60) # Number of seconds in 15 minutes.
+		opening_time += datetime.timedelta(0, 15*60) # Number of seconds in 15 minutes.
 	return opening_times
 
 def get_possible_closing_times():
 	closing_times = []
 	# Year, month, and day are arbitrary, as only the time is needed.
-	closing_time = datetime( 
+	closing_time = datetime.datetime( 
 		year=2014, 	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=1,		# Arbitrary.
 		hour=0, 	# First closing time is 12:00 AM.
 		minute=0)
-	final_closing_time = datetime( 
+	final_closing_time = datetime.datetime( 
 		year=2014,	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=2,		# Arbitrary.
@@ -325,7 +325,7 @@ def get_possible_closing_times():
 			)
 		)
 		# Closing time is incremented in 15-minute intervals.
-		closing_time += timedelta(0, 15*60) # Number of seconds in 15 minutes.
+		closing_time += datetime.timedelta(0, 15*60) # Number of seconds in 15 minutes.
 	return closing_times
 
 def get_food_resources_by_location_type(list_to_populate, location_type):

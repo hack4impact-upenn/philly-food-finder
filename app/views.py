@@ -7,7 +7,7 @@ from flask import render_template, flash, redirect, session, url_for, request, \
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import *
-from datetime import time, date
+from datetime import date
 from utils import *
 from flask_user import login_required, signals
 from flask_user.emails import send_email
