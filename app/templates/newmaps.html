@@ -9,7 +9,6 @@
   <script type="text/javascript">
     var map;
     $(document).ready(function(){
-      $('#address').val("merp");
       map = new GMaps({     // create a new map
         el: 'map',
         lat: 39.9500,
@@ -115,20 +114,18 @@
 
       function updateMap(zipCode, hasZipCodeFilter, booleansArray) {
         // Populate map with food resources from database.
-        console.log(zipCode + " " + hasZipCodeFilter + " " + booleansArray);
         $.getJSON($SCRIPT_ROOT + '/_map', {
           zip_code: zipCode, 
           has_zip_code_filter: hasZipCodeFilter,
           booleans: JSON.stringify(booleansArray) 
         },
         function(data) {
-          console.log(data);
           for (var i = 0; i < data["addresses"].length; i++) {
               (function() {
                 var foodResource = data["addresses"][i][0];
                 var newAddress = foodResource["address"]["line1"] + ', ' 
                   + foodResource["address"]["city"] + ', ' 
-                  + foodResource["address"]["state"] + " "  + foodResource["address"]["zip_code"];
+                  + foodResource["address"]["state"] + " " + foodResource["address"]["zip_code"];
                 var newTitle = foodResource["name"];
                 var newDescription = newTitle + "<br>" 
                   + foodResource["description"] + "<br>" 
@@ -139,42 +136,28 @@
                 var filename = 
                   foodResource["food_resource_type"]["colored_pin"]["pin_image_name"];
                 var image = "../static/img/" + filename; 
-                GMaps.geocode({
-                  address: newAddress,
-                  callback: function(results, status) {
-                    if (status == 'OK') {
-                      var newMarker = results[0].geometry.location; 
-                      myLat = newMarker.lat();
-                      myLng = newMarker.lng();
+                var latitude = foodResource["address"]["latitude"]; 
+                var longitude = foodResource["address"]["longitude"]; 
 
-                      /* Change the format of the address to generate a Google Maps link with directions. */
-                      var addressInfo = results[0].formatted_address;  
-                      var removedCommas = addressInfo.replace(/,/g, "");
-                      var linkInfo = removedCommas.replace(/ /g, "+");
-                      var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
+                /* Change the format of the address to generate a Google Maps link with directions. */
+                var removedCommas = newAddress.split(",").join("");
+                var linkInfo = newAddress.split(" ").join("+");
+                var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
 
-                      /* Add each marker to map. */                     
-                      map.addMarker({
-                        lat : newMarker.lat(),
-                        lng : newMarker.lng(),
-                        title: newTitle,
-                        icon : { url: image,
-                                size: new google.maps.Size(50,50),
-                                scaledSize: new google.maps.Size(20,25) },
-                        click: function(e) {
-                          document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br><br>";
-                          $('.linkInsert').attr('href', completeLink);
-                        }
-                      }); 
-                    }
-                    else {
-                      console.log("error");
-                      console.log(newAddress);
-                      console.log(status);
-                    }
-                    map.fitZoom();  
+                /* Add each marker to map. */                     
+                map.addMarker({
+                  lat : latitude,
+                  lng : longitude,
+                  title: newTitle,
+                  icon : { url: image,
+                          size: new google.maps.Size(50,50),
+                          scaledSize: new google.maps.Size(20,25) },
+                  click: function(e) {
+                    document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br><br>";
+                    $('.linkInsert').attr('href', completeLink);
                   }
                 }); 
+                map.fitZoom();  
               }()); // Call anonymous function.
             }
           });
