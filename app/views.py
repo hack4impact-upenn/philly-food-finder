@@ -894,3 +894,12 @@ def new_food_resource_type(id=None):
 		return redirect(url_for('view_food_resource_types'))
 
 	return render_template('add_resource_type.html', form=form, title=title)
+
+@app.route('/_delete')
+@login_required
+def delete_all_food_resources():
+	food_resources = FoodResource.query.all(); 
+	for food_resource in food_resources:
+		db.session.delete(food_resource)
+	db.session.commit()
+	return jsonify(message="success")

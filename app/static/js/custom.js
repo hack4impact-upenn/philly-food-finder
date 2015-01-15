@@ -390,7 +390,19 @@ function removeFoodResource(element) {
 }
 
 function onClickRemoveFoodResource() {
-	var foodResourceToRemove = "";
+	$("#delete-button").click(function() {
+		$(document).on('confirm', '.remodal', function () {
+		    $('*').css({ 'cursor': 'wait' });
+	        $.getJSON($SCRIPT_ROOT + '/_delete', 
+		        function(data) {
+		            $('*').css({ 'cursor': 'default' });
+		        }
+	        );
+		});	
+	}); 
+}
+
+function onClickDeleteAllFoodResources() {
 	$("[id$='remove']").click(function() {
 		foodResourceToRemove = $(this);
 		$(document).on('confirm', '.remodal', function () {

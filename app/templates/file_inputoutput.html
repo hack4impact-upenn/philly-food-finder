@@ -8,49 +8,74 @@
 	    	<h1 class="page-header admin-header">Bulk Import and Export</h1>
 	     	<hr align="center">
 	  	</div>
-      <div class="row">
-        <div class="large-10 medium-10 small-10 large-centered 
-                        medium-centered small-centered columns">
-  	    	<h2 class="text-center page-header">Resource Data Export</h2>
-  	    	<div class="row">
-  	    		<p>All Food Resource data in the database can be downloaded as a csv. This csv will be formatted precisely like the sample below.</p>
-  	    	</div>
-  	    	<div class="row text-center">
-  				<a role="button" href="{{ url_for('download') }}" class="button radius medium" id="download-button">Download</a>
-  			</div>
-      </div>
+      	<div class="row">
+        	<div class="large-10 medium-10 small-10 large-centered medium-centered small-centered columns">
+  	    		<h2 class="text-center page-header">Resource Data Export</h2>
+  	    		<div class="row">
+  	    			All Food Resource data in the database can be downloaded as a CSV. This CSV will be formatted precisely like the sample below.
+  	    		</div>
+	  	    	<div class="row text-center">
+	  				<a role="button" href="{{ url_for('download') }}" class="button radius medium" id="download-button">Download</a>
+	  			</div>
+      		</div>
 	  	</div>
-	  	<div class="row"><div class="large-10 medium-10 small-10 large-centered 
-                        medium-centered small-centered columns">
+	  	<div class="row"><div class="large-10 medium-10 small-10 large-centered medium-centered small-centered columns">
 	    	<h2 class="text-center page-header">Resource Data Import</h2>
-	    	<div class="row">
-		    	<p> It is very important that the CSV you import exactly matches the expected format. Please click the download button below to download the import csv. The instructions in this csv must be followed precisely. Do not change the formatting of this csv in any way.</p>
-	    	</div>
-	    	<div class="row">
-		    	<p>The import CSV looks like this. Please input data exactly like in the sample below. (Scroll left within the table to see more.)</p>
-		    </div>
-		    <div class="row">
-		    	<p>Be patient: Depending on how many resources you're importing, the import process may take several minutes.</p>
-		    </div>
+	    	<b>It is very important that the CSV you import <i>exactly</i> matches the expected format.</b> Please click the download button below to download the import csv. The instructions in this csv must be followed precisely. Do not change the formatting of this csv in any way.
+	    	<br><br>
+	    	The import CSV looks like this. Please input data exactly like in the sample below. (Scroll right within the table to see more.
+		    <br><br>
 	    	<div class="row">
 	    		<div id="sample_table_div"></div>
 	  		</div>
 
-        <div class="row text-center" id="download-buttons">
-	    	  <a role="button" href="https://drive.google.com/file/d/0B3772_wowlyaRW5BdEFMTDA2LWM/view?usp=sharing" class="button button radius medium" id="sample-download-button">View Import CSV</a>
-	  	  </div>
-      </div></div>
-		<div class="row"><div class="large-10 medium-10 small-10 large-centered 
-                        medium-centered small-centered columns">
+        	<div class="row text-center" id="download-buttons">
+	    	  <a role="button" href="https://drive.google.com/file/d/0B3772_wowlyaRW5BdEFMTDA2LWM/view?usp=sharing" class="button button radius medium" id="sample-download-button">Download Import CSV</a>
+	  	  	</div>
+      	</div>
+      </div>
+		<div class="row">
+			<div class="large-10 medium-10 small-10 large-centered medium-centered small-centered columns">
+				<div class="row">
+					<div class="small-12 columns">
+						<b>Be patient</b>: Depending on how many resources you're importing, the import process may take several minutes.
+					</div>
+				</div>
+				<div class="row">
+					<div class="small-12 columns">
+						<form action="/_csv_input"
+						  class="dropzone"
+						  id="my-awesome-dropzone"></form>
 
-
-			<form action="/_csv_input"
-				  class="dropzone"
-				  id="my-awesome-dropzone"></form>
-				  <div class="row text-center">
-      <div class="button radius medium" id="upload-button">Upload</div>  
-		</div></div>	  </div>
+					  	<div class="row text-center">
+		  					<div class="button radius medium" id="upload-button">Upload</div>  
+						</div>
+					</div>
+				</div>
+			</div>	  
+		</div>
 	</div>
+	<div class="row">
+		<div class="large-10 medium-10 small-10 large-centered medium-centered small-centered columns">
+			<div class="row">
+				<div class="small-12 columns">
+					<h2 class="text-center page-header">Delete All Food Resources</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="small-12 columns">
+					Click the button below to delete all food resources from the database. BEWARE: This action cannot be undone.
+				</div>
+			</div>
+			<div class="row">
+				<div class="small-12 columns">
+					<div class="text-center">
+  						<a role="button" href="#delete-modal" class="button radius medium" id="delete-button">Delete All Food Resources</a>
+  					</div>
+				</div>
+			</div>
+  		</div>
+  	</div>
 
 	<div class="remodal" id="error-modal" data-remodal-id="error-modal" data-remodal-options="hashTracking: false">
 	    <h1>Error</h1>
@@ -68,7 +93,19 @@
 	    <p>
 	      Your resources were successfully imported! You are being redirected to the admin page.
 	    </p>
-	</div>   
+	</div>  
+
+	<div class="remodal" id="delete-modal" data-remodal-id="delete-modal">
+	    <h1>Are you sure?</h1>
+     	<p>
+    		Are you sure you want to delete all food resources in the database?
+	    	<br>
+	    	This action cannot be undone.
+	    </p>
+	    <br>
+	    <a class="remodal-cancel" href="#">No</a>
+	    <a class="remodal-confirm" href="#">Yes</a>
+	</div>  
 
 </body>
 
