@@ -389,7 +389,7 @@ function removeFoodResource(element) {
     	});  
 }
 
-function onClickRemoveFoodResource() {
+function onClickDeleteAllFoodResources() {
 	$("#delete-button").click(function() {
 		$(document).on('confirm', '.remodal', function () {
 		    $('*').css({ 'cursor': 'wait' });
@@ -402,7 +402,7 @@ function onClickRemoveFoodResource() {
 	}); 
 }
 
-function onClickDeleteAllFoodResources() {
+function onClickRemoveFoodResource() {
 	$("[id$='remove']").click(function() {
 		foodResourceToRemove = $(this);
 		$(document).on('confirm', '.remodal', function () {
