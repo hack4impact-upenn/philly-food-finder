@@ -148,6 +148,8 @@ def create_food_resource_from_form(form, additional_errors):
 				if food_resource_boolean.hyphenated_id == key:
 					food_resource_boolean.value = value
 					db.session.add(food_resource_boolean)
+		# Read why this is done in models.py
+		food_resource.resource_type_singular = food_resource_type.name_singular
 		return food_resource
 
 def get_string_of_all_food_resource_types():

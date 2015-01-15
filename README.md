@@ -1,3 +1,5 @@
+The application is up and running at http://www.phillyfoodfinder.org.
+
 #About Us
 [Hack4Impact](http://hack4impact.weebly.com) is a student organization 
 at the University of Pennsylvania that connects nonprofits with student software 
@@ -12,12 +14,21 @@ need to lead healthy lives. The Coalition connects people with food assistance
 programs and nutrition education; provides resources to a network of food 
 pantries; and educates the public and policymakers about responsible solutions 
 that prevent people from going hungry. 
+
 #About The Project
+In Philadelphia county, 22% of residents are food-insecure. While there are food assistance programs -- including food pantries, soup kitchens, and senior meal sites -- available to Philadelphians, such resources may be difficult for those in need to learn about or find. Our task was to develop a central web-based tool where individuals can find all food resources that are available within their zip code.
+
+Philly Food Finder, our final web application, offers an intuitive map-based interface that visitors use to search for food resources by zip code and other optional criteria. We also developed a suite of administrative functions which allow the Philadelphia Food Policy Advisory Council (FPAC) to easily add and update food resources and other content on the website without writing any code. Moreover, managers of food resources within Philadelphia can submit their food resource’s information for inclusion in the website’s database. In order to develop Philly Food Finder, our team met weekly for three hours. Each team member also worked on their own for at least three hours per week. We divided weekly tasks between front- and back-end development. We hope that Philly Food Finder will be a great asset to FPAC and the greater Philadelphia community!
+
 ##Technologies Used For This Project 
 + [Flask](http://flask.pocoo.org) 
 + [Foundation](http://foundation.zurb.com)
 + [SQLAlchemy](http://www.sqlalchemy.org)
++ [jQuery](http://jquery.com/)
 + [gmaps.js](https://hpneo.github.io/gmaps/)
++ [CKEditor.js](http://ckeditor.com/)
++ [Dropzone.js](http://www.dropzonejs.com/)
++ [Remodal](http://vodkabears.github.io/remodal/)
 
 ##Languages Used For This Project 
 + Python
