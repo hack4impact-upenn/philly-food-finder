@@ -12,6 +12,7 @@
 /* #2D4FA0 - navy */ 
 /* #F7F9F9 - off white */
 /* #999999 - gray */
+/* #DDDDDD - light gray */
 
 
 /* background colors */
@@ -863,4 +864,18 @@ li {
 
 #editor1 p {
   margin-bottom: 0.25rem;
+}
+
+#food-resource-description {
+  background-color: #DDDDDD; /* light gray */
+  padding: 5px 5px 0 5px;
+  font-size: 0.8em;
+} 
+
+.rounded {
+  border-radius: 5px;
+  padding: 0 3px;
+  margin: 1px 0;
+  background-color: #ffffff;
+  display: inline-block
 }

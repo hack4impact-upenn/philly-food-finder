@@ -473,25 +473,34 @@ function getFoodResourceAddress(foodResource) {
 }
 
 function getFoodResourceDescriptionHtml(foodResource) {
-	var newAddress = foodResource["address"]["line1"] + ', ' 
-      + foodResource["address"]["city"] + ', ' 
-      + foodResource["address"]["state"] + " " + foodResource["address"]["zip_code"];
-    var newTitle = foodResource["name"];
+	var newDescription = "<div class='row'>" 
+    	+ "<div class='small-6 medium-4 columns'>"; 
 
-    var newDescription = "<b>" + newTitle + "</b>" + "<br>"
-      + "<u>Food Resource Type</u>: " + foodResource["food_resource_type"]["name_singular"] + "<br>" 
-      + "<u>Address</u>: " + newAddress + "<br>" 
-      + "<u>Phone number</u>: " + foodResource["phone_number"]["number"] + "<br>";
+    /* Add basic information about Food Resource */
+    var newAddress = foodResource["address"]["line1"] + ', ' 
+    	+ foodResource["address"]["city"] + ', ' 
+    	+ foodResource["address"]["state"] + " " + foodResource["address"]["zip_code"];
+    var newTitle = foodResource["name"];
+    newDescription += "<b><div class='rounded'>" + newTitle + "</div></b>" + "<br>"
+    	+ "<div class='rounded'>Food Resource Type:</div> " + foodResource["food_resource_type"]["name_singular"] + "<br>" 
+    	+ "<div class='rounded'>Address:</div> " + newAddress + "<br>" 
+    	+ "<div class='rounded'>Phone Number:</div> " + foodResource["phone_number"]["number"] + "<br>";
     if (foodResource["description"] != null) {
-      newDescription += "<u>Description</u>: " + foodResource["description"] + "<br>" ;
+      newDescription += "<div class='rounded'>Description:</div> " + foodResource["description"] + "<br>" ;
     } 
     if (foodResource["url"] != null) {
-      newDescription += "<u>Website:</u> " + foodResource["url"] + "<br>" ;
+      newDescription += "<div class='rounded'>Website:</div> " + foodResource["url"] + "<br>" ;
     } 
+
+    /* Column break */ 
+    newDescription += "</div>" + "<div class='small-6 medium-4 columns'>";
+
+    /* Add hours of operation. */
+    newDescription += "<div class='rounded'>Hours of Operation</div><br>"
     if (foodResource["are_hours_available"]) {
       var allTimeslots = foodResource["timeslots"];
       for (var j = 0; j < daysOfWeek.length; j++) {
-        var dayOfWeekName = daysOfWeek[j]; 
+        var dayOfWeekName = daysOfWeek[j];
         var dayTimeslots = $.grep(allTimeslots, function(e) { return e.day_of_week == j; });
         newDescription += "<u>" + dayOfWeekName + "</u>: "; 
         if (dayTimeslots.length == 0) {
@@ -500,14 +509,22 @@ function getFoodResourceDescriptionHtml(foodResource) {
         else {
           for (var k = 0; k < dayTimeslots.length; k++) {
             var timeslot = dayTimeslots[k]; 
-            newDescription += "<br>• " + timeslot["start_time"] + " - " + timeslot["end_time"];
+            newDescription += "<br>" + timeslot["start_time"] + " - " + timeslot["end_time"];
           }
           newDescription += "<br>";
         }
       }                      
     }
+    else {
+    	newDescription += "Not available.<br>"
+    }
+
+    /* Column break */ 
+    newDescription += "</div>" + "<div class='small-6 medium-4 columns'>";
+
+    /* Add boolean information. */
     if (foodResource["booleans"].length > 0) {
-      newDescription += "<u>Other attributes</u>: <br>"; 
+      newDescription += "<div class='rounded'>Other Attributes:</div> <br>"; 
       for (var j = 0; j < foodResource["booleans"].length; j++) {
         currentBoolean = foodResource["booleans"][j]; 
         if (currentBoolean["value"] == true) {
@@ -517,8 +534,12 @@ function getFoodResourceDescriptionHtml(foodResource) {
         }
       }
     }
-
+    newDescription += "</div></div>"
     return newDescription; 
+}
+
+function resetMarkerInfoDiv() {
+	$("#marker-info").html("Click on a pin for more information!");
 }
 
 function getNoResourcesHtml(resourceInfoId) {

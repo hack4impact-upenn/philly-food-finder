@@ -1,10 +1,7 @@
 import os, random, string, datetime
-#from datetime import datetime, timedelta
-#import datetime
 from pytz import timezone
 from models import *
 import os, random, string
-#from datetime import date
 from pytz import timezone
 from models import *
 import re
@@ -248,9 +245,9 @@ def get_time_from_string(time_string):
 def is_open(resource, current_date = None):
 	timeslots = resource.timeslots
 
-	if(current_date is None):
+	if (current_date is None):
 		eastern = timezone('US/Eastern')
-		current_date = datetime.now(eastern)
+		current_date = datetime.datetime.now(eastern)
 
 	weekday = 0
 	if current_date.weekday() == 0:

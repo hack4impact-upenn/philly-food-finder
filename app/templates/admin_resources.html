@@ -226,12 +226,16 @@
 	  			<div class="small-12 columns">
 	  				<ul id="checkboxes">
   						<li class="checkbox-li">
-			  				<input type="checkbox" id="filter-by-open-now"> Open Now
+  							<div class="small-6 columns">
+			  					<input type="checkbox" id="filter-by-open-now"> Open Now
+			  				</div>
 			  			</li>
 		  				{% for boolean in food_resource_booleans %}
-		  				<li class="checkbox-li">	  				
-			  				<input type="checkbox" id="filter-by-boolean-{{ boolean.hyphenated_id }}"/> {{ boolean.description_question }}
-			  			</li>
+		  				<div class="small-6 columns">
+			  				<li class="checkbox-li">	  				
+				  				<input type="checkbox" id="filter-by-boolean-{{ boolean.hyphenated_id }}"/> {{ boolean.description_question }}
+				  			</li>
+			  			</div>
 				  		{% endfor %}
 			  		</ul>
   				</div>
