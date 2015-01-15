@@ -24,8 +24,10 @@ def map():
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_singular).all()
 	html_string = HTML.query.filter_by(page = 'map-announcements').first()
+	food_resource_booleans = get_food_resource_booleans()
 	return render_template('newmaps.html', 
-		food_resource_types=food_resource_types, html_string=html_string)
+		food_resource_types=food_resource_types, html_string=html_string,
+		food_resource_booleans=food_resource_booleans)
 
 @app.route('/_map')
 def address_food_resources():
@@ -34,6 +36,7 @@ def address_food_resources():
 		.join(FoodResource.address) \
 		.filter(Address.zip_code==zip_code, FoodResource.is_approved==True) \
 		.order_by(FoodResource.name).all()
+	print len(food_resources)
 	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
 
 @app.route('/_newmap')

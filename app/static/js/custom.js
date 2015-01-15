@@ -420,6 +420,18 @@ function onChangeNumberOfTimeslots() {
 	}); 
 }
 
+function getCheckedBooleans() {
+	var booleans = [];
+	$("[id^='filter-by-boolean-']").each(function(index) {
+		if ($(this).is(':checked')) {
+			booleans[booleans.length] = 1; // TRUE
+		}
+		else {
+			booleans[booleans.length] = 0; // FALSE
+		}
+	});
+}
+
 function updateVisibleTimeslots() {
 	$("[id$='-num_timeslots']").each(function(index) {
 		var id = $(this).attr('id');
