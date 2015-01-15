@@ -882,9 +882,17 @@ li {
   padding: 0 3px;
   margin: 1px 0;
   background-color: #ffffff;
-  display: inline-block
+  display: inline-block;
 }
 
 .food-resource-name {
-  
+  font-size: 1.075rem;
+  font-weight: 200;
+  color: #222222;
+  letter-spacing: .5px;
+}
+
+#food-resource-info {
+  margin-bottom: 5px;
+  padding: 8px 10px;
 }

@@ -53,13 +53,6 @@ def address_food_resources():
 
 	return jsonify(addresses=json_array)
 
-@app.route('/_newmap')
-def initialize_food_resources():
-	food_resources = db.session.query(FoodResource) \
-		.join(FoodResource.address) \
-		.filter(FoodResource.is_approved==True).all()
-	return jsonify(resources=[i.serialize_food_resource() for i in food_resources])
-
 @app.route('/admin/new', methods=['GET', 'POST'])
 @app.route('/admin/edit/<id>', methods=['GET', 'POST'])
 @login_required

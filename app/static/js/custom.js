@@ -480,7 +480,7 @@ function updateFoodResourceDescriptionHeaderColor(foodResource) {
 function getFoodResourceDescriptionHtml(foodResource) {
 	/* First row is name of the food resource. */
 	var newDescription = "<div class='row' id='food-resource-info'>" 
-    	+ "<div class='small-6 medium-4 columns'>";
+    	+ "<div class='small-12 columns'>";
     var newTitle = foodResource["name"];     
 
     newDescription += "<div class='food-resource-name'>" + newTitle + "</div>";
