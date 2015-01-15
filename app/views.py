@@ -579,7 +579,6 @@ def analytics():
 def dynamic_analytics():
 	data_type = request.args.get("data_type")
 	today = date.today()
-	print data_type
 	if data_type:
 		zip_code_query = []
 		if data_type == 'all-time':
@@ -845,7 +844,6 @@ def new_food_resource_type(id=None):
 		food_resource_type = FoodResourceType.query.filter_by(id=id).first()
 		if food_resource_type is None:
 			return render_template('404.html')
-		print "merp"
 
 		# Pre-populate form fields with data from database.
 		form.name_singular.data = food_resource_type.name_singular
