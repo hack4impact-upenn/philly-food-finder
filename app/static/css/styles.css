@@ -529,6 +529,7 @@ table thead tr th, table thead tr td {
 #clear-filters-resources-button, 
 #map-search-button, 
 #map-filter-button {
+  margin-top: 5px;
   margin-bottom: 10px;
 }
 
@@ -547,8 +548,8 @@ table thead tr th, table thead tr td {
 }
 
 input[type=checkbox] {
-  margin-top:15px;
-  margin-bottom:15px;
+  margin-top:5px;
+  margin-bottom:5px;
 }
 
 input[type="text"] {

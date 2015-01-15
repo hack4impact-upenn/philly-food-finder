@@ -9,6 +9,7 @@
   <script type="text/javascript">
     var map;
     $(document).ready(function(){
+      $('#address').val("merp");
       map = new GMaps({     // create a new map
         el: 'map',
         lat: 39.9500,
@@ -66,13 +67,16 @@
               }
            });
 
-      $('#geocoding_form').submit(function(e){
+      $('#geocoding_form').submit(function(e) {
         map.removeMarkers();
         e.preventDefault();
+
+        booleansArray = getCheckedBooleans();
 
         GMaps.geocode({
           address: $('#address').val().trim(),
           callback: function(results, status) {
+            /* Given address is valid. */
             if (status == 'OK') {
 
               /* Add address marker to center of map. */
@@ -102,65 +106,84 @@
               };  
               $.post(url = $SCRIPT_ROOT + '/_search_query', data = json_data);
 
-              // Populate map with food resources from database.
-              $.getJSON($SCRIPT_ROOT + '/_map', {
-                zip_code: zipCode
-              },
-              function(data) {
-                for (var i = 0; i < data["addresses"].length; i++) {
-                  var newAddress = data["addresses"][i]["address"]["line1"] + ', ' 
-                    + data["addresses"][i]["address"]["city"] + ', ' 
-                    + data["addresses"][i]["address"]["state"] ;
-                    (function() {
-                      var newTitle = data["addresses"][i]["name"];
-                      var newDescription = newTitle + "<br>" 
-                        + data["addresses"][i]["description"] + "<br>" 
-                        + "Contact Information: " 
-                        + data["addresses"][i]["phone_number"]["number"];        
-                      var newType = 
-                        data["addresses"][i]["food_resource_type"]["enum"];
-                      var filename = 
-                        data["addresses"][i]["food_resource_type"]["colored_pin"]["pin_image_name"];
-                      var image = "../static/img/" + filename; 
-                      GMaps.geocode({
-                        address: newAddress,
-                        callback: function(results, status) {
-                          if (status == 'OK') {
-                            var newMarker = results[0].geometry.location; 
-                            myLat = newMarker.lat();
-                            myLng = newMarker.lng();
+              updateMap(zipCode, 1 /* TRUE */, booleansArray);
+            }
+            /* Given address is invalid. */
+            else {
+              var zipCode = "19104";
+              updateMap(zipCode, 0 /* FALSE */, booleansArray);
+            }
+          }
+        });
+      });  
+    })     
 
-                            /* Change the format of the address to generate a Google Maps link with directions. */
-                            var addressInfo = results[0].formatted_address;  
-                            var removedCommas = addressInfo.replace(/,/g, "");
-                            var linkInfo = removedCommas.replace(/ /g, "+");
-                            var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
+      function updateMap(zipCode, hasZipCodeFilter, booleansArray) {
+        // Populate map with food resources from database.
+        console.log(zipCode + " " + hasZipCodeFilter + " " + booleansArray);
+        $.getJSON($SCRIPT_ROOT + '/_map', {
+          zip_code: zipCode, 
+          has_zip_code_filter: hasZipCodeFilter,
+          booleans: JSON.stringify(booleansArray) 
+        },
+        function(data) {
+          console.log(data);
+          for (var i = 0; i < data["addresses"].length; i++) {
+              (function() {
+                var foodResource = data["addresses"][i][0];
+                var newAddress = foodResource["address"]["line1"] + ', ' 
+                  + foodResource["address"]["city"] + ', ' 
+                  + foodResource["address"]["state"] + " "  + foodResource["address"]["zip_code"];
+                var newTitle = foodResource["name"];
+                var newDescription = newTitle + "<br>" 
+                  + foodResource["description"] + "<br>" 
+                  + "Contact Information: " 
+                  + foodResource["phone_number"]["number"];        
+                var newType = 
+                  foodResource["food_resource_type"]["enum"];
+                var filename = 
+                  foodResource["food_resource_type"]["colored_pin"]["pin_image_name"];
+                var image = "../static/img/" + filename; 
+                GMaps.geocode({
+                  address: newAddress,
+                  callback: function(results, status) {
+                    if (status == 'OK') {
+                      var newMarker = results[0].geometry.location; 
+                      myLat = newMarker.lat();
+                      myLng = newMarker.lng();
 
-                            /* Add each marker to map. */                     
-                            map.addMarker({
-                              lat : newMarker.lat(),
-                              lng : newMarker.lng(),
-                              title: newTitle,
-                              icon : { url: image,
-                                      size: new google.maps.Size(50,50),
-                                      scaledSize: new google.maps.Size(20,25) },
-                              click: function(e) {
-                                document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br><br>";
-                                $('.linkInsert').attr('href',completeLink);
-                              }
-                            }); 
-                          }
-                          map.fitZoom();  
+                      /* Change the format of the address to generate a Google Maps link with directions. */
+                      var addressInfo = results[0].formatted_address;  
+                      var removedCommas = addressInfo.replace(/,/g, "");
+                      var linkInfo = removedCommas.replace(/ /g, "+");
+                      var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
+
+                      /* Add each marker to map. */                     
+                      map.addMarker({
+                        lat : newMarker.lat(),
+                        lng : newMarker.lng(),
+                        title: newTitle,
+                        icon : { url: image,
+                                size: new google.maps.Size(50,50),
+                                scaledSize: new google.maps.Size(20,25) },
+                        click: function(e) {
+                          document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br><br>";
+                          $('.linkInsert').attr('href', completeLink);
                         }
                       }); 
-                    }()); // Call anonymous function.
+                    }
+                    else {
+                      console.log("error");
+                      console.log(newAddress);
+                      console.log(status);
+                    }
+                    map.fitZoom();  
                   }
-                });
-              }
+                }); 
+              }()); // Call anonymous function.
             }
           });
-        });  
-      })                              
+        } // End of updateMap().                         
     </script>
 </div>
 

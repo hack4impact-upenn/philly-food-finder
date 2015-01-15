@@ -411,15 +411,6 @@ function isInteger (s) {
 	return String(s).search (isInteger_re) != -1;
 }
 
-function onChangeNumberOfTimeslots() {
-	$("[id$='-num_timeslots']").change(function() {
-		var id = $(this).attr('id');
-		var dayOfWeekIndex = id.split("-")[1];
-		var num = $(this).val(); 
-		updateVisibleTimeslots(dayOfWeekIndex, num);
-	}); 
-}
-
 function getCheckedBooleans() {
 	var booleans = [];
 	$("[id^='filter-by-boolean-']").each(function(index) {
@@ -430,6 +421,16 @@ function getCheckedBooleans() {
 			booleans[booleans.length] = 0; // FALSE
 		}
 	});
+	return booleans; 
+}
+
+function onChangeNumberOfTimeslots() {
+	$("[id$='-num_timeslots']").change(function() {
+		var id = $(this).attr('id');
+		var dayOfWeekIndex = id.split("-")[1];
+		var num = $(this).val(); 
+		updateVisibleTimeslots(dayOfWeekIndex, num);
+	}); 
 }
 
 function updateVisibleTimeslots() {

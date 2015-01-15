@@ -31,13 +31,26 @@ def map():
 
 @app.route('/_map')
 def address_food_resources():
-	zip_code = request.args.get('zip_code', 0, type=int)
-	food_resources = db.session.query(FoodResource) \
-		.join(FoodResource.address) \
-		.filter(Address.zip_code==zip_code, FoodResource.is_approved==True) \
-		.order_by(FoodResource.name).all()
-	print len(food_resources)
-	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
+	# Collect boolean paramaters passed via JSON.
+	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
+	zip_code = request.args.get('zip_code')
+	booleans_array = json.loads(request.args.get('booleans'))
+
+	food_resources = getFilteredFoodResources(
+		has_zip_code_filter=has_zip_code_filter, 
+		zip_code=zip_code, 
+		has_open_now_filter=False,
+		booleans_array=booleans_array)
+
+	json_array = []
+	for i, list in enumerate(food_resources):
+		if len(list) > 0:
+			json_array.append([])
+			index = len(json_array) - 1
+			for food_resource in list:
+				json_array[index].append(food_resource.serialize_food_resource())
+
+	return jsonify(addresses=json_array)
 
 @app.route('/_newmap')
 def initialize_food_resources():
@@ -397,7 +410,7 @@ def get_all_food_resource_data():
 def get_filtered_food_resource_data():
 	# Collect boolean paramaters passed via JSON.
 	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
-	zip_code = request.args.get('zip_code', 0, type=int)
+	zip_code = request.args.get('zip_code')
 	has_open_now_filter = request.args.get('has_open_now_filter', 0, type=int) 
 	booleans_array = json.loads(request.args.get('booleans'))
 

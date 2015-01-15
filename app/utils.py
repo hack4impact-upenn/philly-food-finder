@@ -10,6 +10,48 @@ import re
 import csv
 from app import db
 
+def getFilteredFoodResources(has_zip_code_filter, zip_code, has_open_now_filter, booleans_array):
+	# Create empty arrays to hold food resources.
+	all_resources = []
+	food_resource_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_plural).all()
+
+	print has_zip_code_filter == True
+
+	# Zip code is one of the filters.
+	if has_zip_code_filter:
+
+		# Iterate through all food resource types.
+		for i, food_resource_type in enumerate(food_resource_types):
+
+			# Filter for each kind of food resource with a specific zip code.
+			all_resources.append([])
+			get_food_resources_by_location_type_and_zip_code(
+				all_resources[i], # List to populate.
+				food_resource_type, # Location type by which to filter.
+				zip_code # Zip code by which to filter.
+			)
+
+	# Zip code is not one of the filters. 
+	else: 
+
+		# Iterate through all food resource types.
+		for i, food_resource_type in enumerate(food_resource_types):
+
+			# Filter for each kind of food resource without a specific zip code.
+			all_resources.append([])
+			get_food_resources_by_location_type(
+				all_resources[i], # List to populate.
+				food_resource_type # Location type by which to filter.
+			)
+
+	# Filter each list by other boolean criteria.
+	for list_to_filter in all_resources:
+		filter_food_resources(list_to_filter, has_open_now_filter, 
+			booleans_array)
+
+	return all_resources
+
 def get_first_day_of_month(day):
 	return date(day.year, day.month, 1)
 
@@ -313,7 +355,7 @@ def filter_food_resources(list_to_filter, has_open_now_filter, booleans_array):
 			if boolean == True and food_resource.booleans[i].value == False:
 				if food_resource in list_to_filter:
 					list_to_filter.remove(food_resource)
-		if has_open_now_filter and not \
+		if food_resource in list_to_filter and has_open_now_filter and not \
 			is_open(food_resource):
 			list_to_filter.remove(food_resource)
 
