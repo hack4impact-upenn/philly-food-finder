@@ -20,11 +20,11 @@
             // Pull all food resources in database to be displayed when the page is initially loaded.
             function(data) {
               for (var i = 0; i < data["resources"].length; i++) {
-                var newAddress = data["resources"][i]["address"]["line1"] + ', ' 
-                  + data["resources"][i]["address"]["city"] + ', ' 
-                  + data["resources"][i]["address"]["state"] ;
-
                 (function() {
+                    /* Extract information about each food resource location. */
+                    var newAddress = data["resources"][i]["address"]["line1"] + ', ' 
+                      + data["resources"][i]["address"]["city"] + ', ' 
+                      + data["resources"][i]["address"]["state"] + " " + data["resources"][i]["address"]["zip_code"];
                     var newTitle = data["resources"][i]["name"];
                     var newDescription = newTitle + "<br>" 
                       + data["resources"][i]["description"] + "<br>" 
@@ -35,35 +35,30 @@
                     var filename = 
                       data["resources"][i]["food_resource_type"]["colored_pin"]["pin_image_name"];
                     var image = "../static/img/" + filename; 
-                GMaps.geocode({
-                  address: newAddress,
-                  callback: function(results, status) {
-                    if (status == 'OK')
-                    {
-                      var newMarker = results[0].geometry.location; 
-                      var addressInfo = results[0].formatted_address;
-                      var removedCommas = addressInfo.split(",").join("");
-                      var linkInfo = removedCommas.split(" ").join("+");
-                      var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
-                      // Create link to be displayed on Google Maps for directions to the food resource.
-                      markers.push({
-                        lat : newMarker.lat(),
-                        lng : newMarker.lng(),
-                        title: newTitle,
-                        icon : { url: image,
-                                size: new google.maps.Size(50,50),
-                                scaledSize: new google.maps.Size(20,25)},
-                        click: function(e) { 
-                          // Create description and directions below map when marker is clicked.
-                          document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br>";
-                          $('.linkInsert').attr('href',completeLink);
-                        }
-                      }); 
-                    }
-                    map.addMarkers(markers);     //adds all markers to map  
+                    var latitude = data["resources"][i]["address"]["latitude"]; 
+                    var longitude = data["resources"][i]["address"]["longitude"];
+
+                    /* Create link to be displayed on Google Maps for directions to the food resource. */
+                    var removedCommas = newAddress.split(",").join("");
+                    var linkInfo = newAddress.split(" ").join("+");
+                    var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
+                    
+                    /* Add marker to map. */
+                    map.addMarker({
+                      lat : latitude,
+                      lng : longitude,
+                      title: newTitle,
+                      icon : { url: image,
+                              size: new google.maps.Size(50,50),
+                              scaledSize: new google.maps.Size(20,25)},
+                      click: function(e) { 
+                        // Create description and directions below map when marker is clicked.
+                        document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br>";
+                        $('.linkInsert').attr('href',completeLink);
+                      }
+                    });
                     map.fitZoom();              //and fits map window to show all of them
-                  }
-                  }); }) ();
+                 }) ();
               }
            });
 

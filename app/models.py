@@ -2,6 +2,7 @@ from app import app, db
 from flask_user import UserMixin
 from datetime import datetime
 import utils
+from pygeocoder import Geocoder
 
 class ColoredPin(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -82,7 +83,24 @@ class Address(db.Model):
 	city = db.Column(db.String(35))
 	state = db.Column(db.String(2))
 	zip_code = db.Column(db.String(5))
+	latitude = db.Column(db.String(50))
+	longitude = db.Column(db.String(50))
+	valid_address = db.Column(db.Boolean, default=False)
 	food_resource_id = db.Column(db.Integer, db.ForeignKey('food_resource.id'))
+
+	def createLatAndLong(self):
+		try:
+			address_string = str(self.line1) + ", "
+			if self.line2:
+				address_string += str(self.line2) + ", "
+			address_string += str(self.city) + ", " + str(self.state) + " " + str(self.zip_code)
+			results = Geocoder.geocode(address_string)
+
+			self.latitude = results[0].coordinates[0]
+			self.longitude = results[0].coordinates[1]
+			valid_address = True
+		except Exception as e:
+			print "Invalid address"
 
 	def serialize_address(self):
 		return {
@@ -92,6 +110,8 @@ class Address(db.Model):
 			'city': self.city,
 			'state': self.state,
 			'zip_code': self.zip_code,
+			'latitude': self.latitude, 
+			'longitude': self.longitude,
 			'food_resource_id': self.food_resource_id
 		}
 

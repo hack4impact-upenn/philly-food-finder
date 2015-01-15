@@ -9,14 +9,13 @@ from models import *
 import re
 import csv
 from app import db
+from pygeocoder import Geocoder
 
 def getFilteredFoodResources(has_zip_code_filter, zip_code, has_open_now_filter, booleans_array):
 	# Create empty arrays to hold food resources.
 	all_resources = []
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_plural).all()
-
-	print has_zip_code_filter == True
 
 	# Zip code is one of the filters.
 	if has_zip_code_filter:
@@ -162,6 +161,7 @@ def create_food_resource_from_form(form, additional_errors):
 			city=form.address_city.data, 
 			state=form.address_state.data, 
 			zip_code=form.address_zip_code.data)
+		address.createLatAndLong()
 		db.session.add(address)
 
 		# Create food resource's phone number.
@@ -484,6 +484,7 @@ def import_file(path, charset='utf-8'):
 							city=address_city,
 							state=address_state,
 							zip_code=address_zip_code)
+						address.createLatAndLong()
 						db.session.add(address)
 
 						# Extract food resource's phone number.

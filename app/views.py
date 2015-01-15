@@ -17,6 +17,7 @@ from tempfile import NamedTemporaryFile
 import csv, time
 import json
 from operator import itemgetter
+from pygeocoder import Geocoder
 
 @app.route('/')
 @app.route('/map')

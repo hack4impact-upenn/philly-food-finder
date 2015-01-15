@@ -186,6 +186,7 @@ a0.line1 = "43rd Street and Baltimore Avenue"
 a0.city = "Philadelphia"
 a0.state = "PA"
 a0.zip_code = "19104"
+a0.createLatAndLong()
 f0.address = a0
 timeslots_list_0 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -227,6 +228,7 @@ a1.line1 = "3160 Chestnut Street"
 a1.city = "Philadelphia"
 a1.state = "PA"
 a1.zip_code = "19104"
+a1.createLatAndLong()
 f1.address = a1
 timeslots_list_1 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -268,6 +270,7 @@ a2.line1 = "3560 Spruce St"
 a2.city = "Philadelphia"
 a2.state = "PA"
 a2.zip_code = "19104"
+a2.createLatAndLong()
 f2.address = a2
 timeslots_list_2 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -309,6 +312,7 @@ a3.line1 = "1610 Sansom St"
 a3.city = "Philadelphia"
 a3.state = "PA"
 a3.zip_code = "19103"
+a3.createLatAndLong()
 f3.address = a3
 timeslots_list_3 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -350,6 +354,7 @@ a4.line1 = "2146 E Susquehanna Ave"
 a4.city = "Philadelphia"
 a4.state = "PA"
 a4.zip_code = "19125"
+a4.createLatAndLong()
 f4.address = a4
 timeslots_list_4 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -391,6 +396,7 @@ a5.line1 = "1300 W Lehigh Ave"
 a5.city = "Philadelphia"
 a5.state = "PA"
 a5.zip_code = "19132"
+a5.createLatAndLong()
 f5.address = a5
 timeslots_list_5 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -430,6 +436,7 @@ a6.line1 = "1617 John F. Kennedy Blvd."
 a6.city = "Philadelphia"
 a6.state = "PA"
 a6.zip_code = "19103"
+a6.createLatAndLong()
 f6.address = a6
 timeslots_list_6 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -469,6 +476,7 @@ a7.line1 = "8446 Bayard Street"
 a7.city = "Philadelphia"
 a7.state = "PA"
 a7.zip_code = "19150"
+a7.createLatAndLong()
 f7.address = a7
 timeslots_list_7 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -508,6 +516,7 @@ a8.line1 = "2441 Kensington Avenue"
 a8.city = "Philadelphia"
 a8.state = "PA"
 a8.zip_code = "19125"
+a8.createLatAndLong()
 f8.address = a8
 timeslots_list_8 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -547,6 +556,7 @@ a9.line1 = "2901 Hunting Park Avenue"
 a9.city = "Philadelphia"
 a9.state = "PA"
 a9.zip_code = "19129"
+a9.createLatAndLong()
 f9.address = a9
 timeslots_list_9 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -586,6 +596,7 @@ a10.line1 = "3616 S Galloway St"
 a10.city = "Philadelphia"
 a10.state = "PA"
 a10.zip_code = "19148"
+a10.createLatAndLong()
 f10.address = a10
 timeslots_list_10 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
@@ -625,6 +636,7 @@ a11.line1 = "2100 Arch Street"
 a11.city = "Philadelphia"
 a11.state = "PA"
 a11.zip_code = "19103"
+a11.createLatAndLong()
 f11.address = a11
 timeslots_list_11 = \
     [TimeSlot(day_of_week = 0, start_time = time(8,0), 
