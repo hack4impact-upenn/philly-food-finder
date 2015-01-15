@@ -237,6 +237,13 @@ class FoodResource(db.Model):
 		db.ForeignKey('food_resource_contact.id'))
 	notes = db.Column(db.String(500))
 
+	# This is a workaround for a bug where the resource type
+	# would not display for pending resources on the admin manage
+	# page. This field is only used when a pending resource is 
+	# created and displayed on the admin manage page. Once the 
+	# resource is approved, this field is never used.
+	resource_type_singular = db.Column(db.String(200))
+
 	def __init__(self, *args, **kwargs):
 		super(db.Model, self).__init__(*args, **kwargs)
 		self.booleans = utils.get_food_resource_booleans()
