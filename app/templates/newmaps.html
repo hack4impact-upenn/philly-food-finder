@@ -21,23 +21,19 @@
             function(data) {
               
               for (var i = 0; i < data["resources"].length; i++) {
+                foodResource = data["resources"][i];
                 (function() {
                     /* Extract information about each food resource location. */
-                    var newAddress = data["resources"][i]["address"]["line1"] + ', ' 
-                      + data["resources"][i]["address"]["city"] + ', ' 
-                      + data["resources"][i]["address"]["state"] + " " + data["resources"][i]["address"]["zip_code"];
+                    var newAddress = getFoodResourceAddress(foodResource);
                     var newTitle = data["resources"][i]["name"];
-                    var newDescription = newTitle + "<br>" 
-                      + data["resources"][i]["description"] + "<br>" 
-                      + "Contact Information: " 
-                      + data["resources"][i]["phone_number"]["number"];      
-                    var newType = 
-                      data["resources"][i]["food_resource_type"]["enum"];
                     var filename = 
-                      data["resources"][i]["food_resource_type"]["colored_pin"]["pin_image_name"];
+                      foodResource["food_resource_type"]["colored_pin"]["pin_image_name"];
                     var image = "../static/img/" + filename; 
-                    var latitude = data["resources"][i]["address"]["latitude"]; 
-                    var longitude = data["resources"][i]["address"]["longitude"];
+                    var latitude = foodResource["address"]["latitude"]; 
+                    var longitude = foodResource["address"]["longitude"];
+
+                    /* Create description to be displayed when pin is clicked. */
+                    var newDescription = getFoodResourceDescriptionHtml(foodResource);
 
                     /* Create link to be displayed on Google Maps for directions to the food resource. */
                     var removedCommas = newAddress.split(",").join("");
@@ -55,13 +51,14 @@
                                 size: new google.maps.Size(50,50),
                                 scaledSize: new google.maps.Size(20,25)},
                         click: function(e) { 
-                          // Create description and directions below map when marker is clicked.
-                          document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br>";
+                          /* Create description and directions below map when marker is clicked. */
+                          document.getElementById("marker-info").innerHTML = newDescription;
                           $('.linkInsert').attr('href',completeLink);
                         }
                       });
                     }
-                    map.fitZoom();              //and fits map window to show all of them
+                    /* Fit map window to show all of markers. */
+                    map.fitZoom();              
                  }) ();
                   
               }
@@ -112,7 +109,7 @@
             }
             /* Given address is invalid. */
             else {
-              var zipCode = "19104";
+              var zipCode = "19104"; /* Arbitrary */
               updateMap(zipCode, 0 /* FALSE */, booleansArray);
             }
           }
@@ -133,21 +130,17 @@
               (function() {
                 var foodResource = data["addresses"][i][j];
                 if (foodResource !== undefined) {
-                  var newAddress = foodResource["address"]["line1"] + ', ' 
-                    + foodResource["address"]["city"] + ', ' 
-                    + foodResource["address"]["state"] + " " + foodResource["address"]["zip_code"];
+                  /* Extract information about each food resource location. */
+                  var newAddress = getFoodResourceAddress(foodResource);
                   var newTitle = foodResource["name"];
-                  var newDescription = newTitle + "<br>" 
-                    + foodResource["description"] + "<br>" 
-                    + "Contact Information: " 
-                    + foodResource["phone_number"]["number"];        
-                  var newType = 
-                    foodResource["food_resource_type"]["enum"];
                   var filename = 
                     foodResource["food_resource_type"]["colored_pin"]["pin_image_name"];
                   var image = "../static/img/" + filename; 
                   var latitude = foodResource["address"]["latitude"]; 
-                  var longitude = foodResource["address"]["longitude"]; 
+                  var longitude = foodResource["address"]["longitude"];
+
+                  /* Create description to be displayed when pin is clicked. */
+                  var newDescription = getFoodResourceDescriptionHtml(foodResource); 
 
                   /* Change the format of the address to generate a Google Maps link with directions. */
                   var removedCommas = newAddress.split(",").join("");
@@ -165,7 +158,7 @@
                               size: new google.maps.Size(50,50),
                               scaledSize: new google.maps.Size(20,25) },
                       click: function(e) {
-                        document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br><br>";
+                        document.getElementById("marker-info").innerHTML = myDescription;
                         $('.linkInsert').attr('href', completeLink);
                       }
                     }); 
@@ -232,14 +225,16 @@
                 </div>
             </form>      
             <div id="map-container">
-                <div class="large-4" id="map"></div>
+              <div class="row">
+                <div class="small-12 columns" id="map"></div>
+              </div>
             </div> 
 
             <!-- Information about the selected pin -->
             <div id="marker-info">Click on a pin for more information!<br></div>
             <div id="directions-link">
               <p>
-                <a class="linkInsert" href="http://www.maps.google.com" target="_blank">Get directions to the selected pin!</a>
+                <a class="linkInsert" href="http://www.maps.google.com" target="_blank">Get directions!</a>
               </p>
             </div>
 
