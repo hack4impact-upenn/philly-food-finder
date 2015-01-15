@@ -622,19 +622,19 @@ def dynamic_analytics():
 				first = today
 				last = today
 			elif data_type == 'last-7-days':
-				first = today - timedelta(days=7)
+				first = today - datetime.timedelta(days=7)
 				last = today
 			elif data_type == 'last-30-days':
-				first = today - timedelta(days=30)
+				first = today - datetime.timedelta(days=30)
 				last = today
 			elif data_type == 'last-60-days':
-				first = today - timedelta(days=60)
+				first = today - datetime.timedelta(days=60)
 				last = today
 			elif data_type == 'last-90-days':
-				first = today - timedelta(days=90)
+				first = today - datetime.timedelta(days=90)
 				last = today
 			elif data_type == 'last-12-months':
-				first = today - timedelta(days=365)
+				first = today - datetime.timedelta(days=365)
 				last = today
 			elif data_type == 'custom-date-range':
 				start_date = request.args.get("start_date")
@@ -819,7 +819,7 @@ def download():
 				yield line
 	
 	response = Response(generate(), mimetype='text/csv')
-	filename = 'resources_generated_at_' + str(datetime.now()) + '.csv'
+	filename = 'resources_generated_at_' + str(datetime.datetime.now()) + '.csv'
 	response.headers["Content-Disposition"] = "attachment; filename="+filename
 	return response
 
