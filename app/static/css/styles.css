@@ -872,10 +872,19 @@ li {
   font-size: 0.8em;
 } 
 
+#get-directions-link {
+  font-size: 0.8em;
+  cursor: pointer !important; 
+}
+
 .rounded {
   border-radius: 5px;
   padding: 0 3px;
   margin: 1px 0;
   background-color: #ffffff;
   display: inline-block
+}
+
+.food-resource-name {
+  
 }

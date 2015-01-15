@@ -1,8 +1,7 @@
 
 {% extends "base.html" %}
-//working with zip codes
-<!-- Map -->
-  {% block content %}
+
+{% block content %}
 <div class="large-centered 
                   large-10 medium-centered medium-8 small-8 small-centered
                   columns">
@@ -25,46 +24,51 @@
       /* Pull all food resources in database to be displayed when the page is initially loaded. */
       function(data) {
         for (var i = 0; i < data["resources"].length; i++) {
-          foodResource = data["resources"][i];
           (function() {
-              /* Extract information about each food resource location. */
-              var newAddress = getFoodResourceAddress(foodResource);
-              var newTitle = foodResource["name"];
-              var filename = 
-                foodResource["food_resource_type"]["colored_pin"]["pin_image_name"];
-              var image = "../static/img/" + filename; 
-              var latitude = foodResource["address"]["latitude"]; 
-              var longitude = foodResource["address"]["longitude"];
+            foodResource = data["resources"][i];
 
-              /* Create description to be displayed when pin is clicked. */
-              var newDescription = getFoodResourceDescriptionHtml(foodResource);
+            /* Extract information about each food resource location. */
+            var newAddress = getFoodResourceAddress(foodResource);
+            var newTitle = foodResource["name"];
+            var filename = 
+              foodResource["food_resource_type"]["colored_pin"]["pin_image_name"];
+            var image = "../static/img/" + filename; 
+            var latitude = foodResource["address"]["latitude"]; 
+            var longitude = foodResource["address"]["longitude"];
 
-              /* Create link to be displayed on Google Maps for directions to the food resource. */
-              var removedCommas = newAddress.split(",").join("");
-              var linkInfo = newAddress.split(" ").join("+");
-              var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
-              
-              /* Only add address to map if its address is valid. */
-              if (data["resources"][i]["address"]["valid_address"] != 0) {
-                /* Add marker to map. */
-                map.addMarker({
-                  lat : latitude,
-                  lng : longitude,
-                  title: newTitle,
-                  icon : { url: image,
-                          size: new google.maps.Size(50,50),
-                          scaledSize: new google.maps.Size(20,25)},
-                  click: function(e) { 
-                    /* Create description and directions below map when marker is clicked. */
-                    document.getElementById("marker-info").innerHTML = newDescription;
-                    $('.linkInsert').attr('href',completeLink);
-                  }
-                });
-              }
-              /* Fit map window to show all of markers. */
-              map.fitZoom();              
-           }) ();
-          }
+            /* Create description to be displayed when pin is clicked. */
+            var newDescription = getFoodResourceDescriptionHtml(foodResource);
+
+            /* Create link to be displayed on Google Maps for directions to the food resource. */
+            var removedCommas = newAddress.split(",").join("");
+            var linkInfo = newAddress.split(" ").join("+");
+            var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
+            
+            /* Only add address to map if its address is valid. */
+            if (foodResource["address"]["valid_address"] != 0) {
+              /* Add marker to map. */
+              map.addMarker({
+                lat : latitude,
+                lng : longitude,
+                title: newTitle,
+                icon : { url: image,
+                        size: new google.maps.Size(50, 50),
+                        scaledSize: new google.maps.Size(20, 25) },
+                click: function(e) { 
+                  /* Create description and directions below map when marker is clicked. */
+                  document.getElementById("marker-info").innerHTML = newDescription;
+                  $('.linkInsert').attr('href', completeLink);
+                  updateFoodResourceDescriptionHeaderColor(foodResource); 
+                  console.log(foodResource);
+                }
+              });
+            }
+
+            /* Fit map window to show all markers. */
+            map.fitZoom();   
+
+          } ()); // Call anonymous function.
+        }
 
         /* Map has finished loading, so return to default cursor. */
         $('*').css({ 'cursor': 'default' });
@@ -167,12 +171,16 @@
                     click: function(e) {
                       document.getElementById("marker-info").innerHTML = newDescription;
                       $('.linkInsert').attr('href', completeLink);
+                      updateFoodResourceDescriptionHeaderColor(foodResource); 
+                      console.log(foodResource);
                     }
                   }); 
                 }
+
+                /* Fit map window to show all markers. */
                 map.fitZoom(); 
               } 
-            }()); // Call anonymous function.
+            } ()); // Call anonymous function.
           }
         }
         $('*').css({ 'cursor': 'default' });
@@ -250,7 +258,7 @@
                   <div id="marker-info">Click on a pin for more information!<br></div>
                   <div id="directions-link">
                     <p>
-                      <a class="linkInsert" href="http://www.maps.google.com" target="_blank">Get directions!</a>
+                      <a id="get-directions-link" class="linkInsert" href="http://www.maps.google.com" target="_blank">Get directions!</a>
                     </p>
                   </div>
                 </div>

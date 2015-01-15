@@ -472,17 +472,30 @@ function getFoodResourceAddress(foodResource) {
         + foodResource["address"]["zip_code"];
 }
 
+function updateFoodResourceDescriptionHeaderColor(foodResource) {
+	var hexColor = foodResource["food_resource_type"]["colored_pin"]["hex_color"]; 
+    $("#food-resource-info").css("background-color", hexColor);	
+}
+
 function getFoodResourceDescriptionHtml(foodResource) {
-	var newDescription = "<div class='row'>" 
+	/* First row is name of the food resource. */
+	var newDescription = "<div class='row' id='food-resource-info'>" 
+    	+ "<div class='small-6 medium-4 columns'>";
+    var newTitle = foodResource["name"];     
+
+    newDescription += "<div class='food-resource-name'>" + newTitle + "</div>";
+    newDescription += "</div></div>"; 
+
+	/* Second row is food resource information. */
+    newDescription += "<div class='row'>" 
     	+ "<div class='small-6 medium-4 columns'>"; 
 
     /* Add basic information about Food Resource */
     var newAddress = foodResource["address"]["line1"] + ', ' 
     	+ foodResource["address"]["city"] + ', ' 
     	+ foodResource["address"]["state"] + " " + foodResource["address"]["zip_code"];
-    var newTitle = foodResource["name"];
-    newDescription += "<b><div class='rounded'>" + newTitle + "</div></b>" + "<br>"
-    	+ "<div class='rounded'>Food Resource Type:</div> " + foodResource["food_resource_type"]["name_singular"] + "<br>" 
+    newDescription += 
+    	"<div class='rounded'>Food Resource Type:</div> " + foodResource["food_resource_type"]["name_singular"] + "<br>" 
     	+ "<div class='rounded'>Address:</div> " + newAddress + "<br>" 
     	+ "<div class='rounded'>Phone Number:</div> " + foodResource["phone_number"]["number"] + "<br>";
     if (foodResource["description"] != null) {
