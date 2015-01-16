@@ -8,13 +8,15 @@ import re
 import csv
 from app import db
 
-def getFilteredFoodResources(has_zip_code_filter, zip_code, has_open_now_filter, booleans_array):
+def getFilteredFoodResources(has_zip_code_filter, zip_code, \
+	has_open_now_filter, booleans_array, start_index=None, end_index=None):
 	# Create empty arrays to hold food resources.
 	all_resources = []
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_plural).all()
 
 	# Zip code is one of the filters.
+	is_done = []
 	if has_zip_code_filter:
 
 		# Iterate through all food resource types.
@@ -22,11 +24,13 @@ def getFilteredFoodResources(has_zip_code_filter, zip_code, has_open_now_filter,
 
 			# Filter for each kind of food resource with a specific zip code.
 			all_resources.append([])
-			get_food_resources_by_location_type_and_zip_code(
+			is_done.append(get_food_resources_by_location_type_and_zip_code(
 				all_resources[i], # List to populate.
 				food_resource_type, # Location type by which to filter.
-				zip_code # Zip code by which to filter.
-			)
+				zip_code, # Zip code by which to filter.
+				start_index,
+				end_index
+			))
 
 	# Zip code is not one of the filters. 
 	else: 
@@ -36,17 +40,19 @@ def getFilteredFoodResources(has_zip_code_filter, zip_code, has_open_now_filter,
 
 			# Filter for each kind of food resource without a specific zip code.
 			all_resources.append([])
-			get_food_resources_by_location_type(
+			is_done.append(get_food_resources_by_location_type(
 				all_resources[i], # List to populate.
-				food_resource_type # Location type by which to filter.
-			)
+				food_resource_type, # Location type by which to filter.
+				start_index,
+				end_index
+			))
 
 	# Filter each list by other boolean criteria.
 	for list_to_filter in all_resources:
 		filter_food_resources(list_to_filter, has_open_now_filter, 
 			booleans_array)
 
-	return all_resources
+	return (all_resources, is_done)
 
 def get_first_day_of_month(day):
 	return datetime.date(day.year, day.month, 1)
@@ -327,26 +333,42 @@ def get_possible_closing_times():
 		closing_time += datetime.timedelta(0, 15*60) # Number of seconds in 15 minutes.
 	return closing_times
 
-def get_food_resources_by_location_type(list_to_populate, location_type):
-	for food_resource in db.session.query(FoodResource) \
-		.join(FoodResource.address) \
-		.filter(
-			FoodResource.food_resource_type==location_type,
-			FoodResource.is_approved==True) \
-		.order_by(FoodResource.name).all():
-		list_to_populate.append(food_resource)
+def get_food_resources_by_location_type(list_to_populate, location_type, start_index=None, end_index=None):
+	query = db.session.query(FoodResource) \
+			.join(FoodResource.address) \
+			.filter(
+				FoodResource.food_resource_type==location_type,
+				FoodResource.is_approved==True) \
+			.order_by(FoodResource.name).all()
+	if not start_index and not end_index:
+		for food_resource in query:
+			list_to_populate.append(food_resource)
+		return True
+	else:
+		for food_resource in query[start_index:end_index]:
+			list_to_populate.append(food_resource)
+		if end_index >= len(query):
+			return True
+		return False
 
 def get_food_resources_by_location_type_and_zip_code(list_to_populate, 
-	location_type, 
-	zip_code):
-	for food_resource in db.session.query(FoodResource) \
-		.join(FoodResource.address) \
-		.filter(
-			Address.zip_code==zip_code,
-			FoodResource.food_resource_type==location_type,
-			FoodResource.is_approved==True) \
-		.order_by(FoodResource.name).all():
-		list_to_populate.append(food_resource)
+	location_type, zip_code, start_index=None, end_index=None):
+	query = db.session.query(FoodResource) \
+			.join(FoodResource.address) \
+			.filter(
+				Address.zip_code==zip_code,
+				FoodResource.food_resource_type==location_type,
+				FoodResource.is_approved==True) \
+			.order_by(FoodResource.name).all()
+	if not start_index and not end_index:
+		for food_resource in query:
+			list_to_populate.append(food_resource)
+	else:
+		for food_resource in query[start_index:end_index]:
+			list_to_populate.append(food_resource)
+		if end_index >= len(query):
+			return True
+		return False
 
 def filter_food_resources(list_to_filter, has_open_now_filter, booleans_array):
 	for food_resource in list(list_to_filter):
