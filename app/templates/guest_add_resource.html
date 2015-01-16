@@ -21,6 +21,14 @@
             {% endfor %}
         {% endif %}
 
+        <div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+				If you are a food provider, please use this form to submit an update to an existing resource or to add a new resource to the map. Once you submit this information and your pin has been approved, your site’s resource will appear on the map.
+				<br><br>
+				If you have any questions, please send us an e-mail at <a href="mailto:phillyfoodinfo@gmail.com">phillyfoodinfo@gmail.com</a>.
+			</div>
+		</div>
 
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
@@ -46,11 +54,16 @@
 		    </div>
 		</div>
 
-	   <!-- Food Resource Name -->
-	    {{ render_field(form.name) }}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<h2 class="text-center page-header">Site Contact Information</h2>
+		      	This information will appear on the map within your site pin.
+			</div>
+		</div>
 
-		<!-- Food Resource Type -->
-		{{ render_field(form.location_type) }}
+	   	<!-- Food Resource Name -->
+	    {{ render_field(form.name) }}
 
 		<!-- Address Line 1 -->
 		{{ render_field(form.address_line1) }}
@@ -76,8 +89,17 @@
 		<div class="row">
 		    <div class="large-8 medium-8 medium-centered small-8 small-centered
 		     columns large-centered">
-		      	<label>Days/Hours of Operation
-				</label>
+		      	<h2 class="text-center page-header">Type of Food Resource</h2>
+			</div>
+		</div>
+
+		<!-- Food Resource Type -->
+		{{ render_field(form.location_type) }}
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<h2 class="text-center page-header">Days / Hours of Operation</h2>
 			</div>
 		</div>
 
@@ -169,14 +191,30 @@
 
 		{% endfor %}
 
-		<!-- Additional information -->
-		{{ render_field(form.additional_information) }}
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<h2 class="text-center page-header">Additional Information</h2>
+			</div>
+		</div>
 
 		<!-- Boolean fields --> 
 		{% for boolean in form.booleans %}
 			{{ boolean.form.hidden_tag() }}
 			{{ render_field(boolean.value) }}
 		{% endfor %}
+
+		<!-- Additional information -->
+		{{ render_field(form.additional_information) }}
+
+		<div class="row">
+		    <div class="large-8 medium-8 medium-centered small-8 small-centered
+		     columns large-centered">
+		      	<h2 class="text-center page-header">How can we contact you, if needed?</h2>
+		      	This will NOT appear on the map and will only be used if we need to 
+				contact you about information you submitted.
+			</div>
+		</div>
 
 		<!-- Guest Name -->
 		{{ render_field(form.your_name) }}

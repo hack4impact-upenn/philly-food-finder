@@ -1,8 +1,9 @@
 # Necessary set-up.
 from app import db
 from app.models import *
-from datetime import time, date
 from app.utils import *
+import datetime
+import time
 
 # Drop all database tables.
 db.drop_all()
@@ -186,22 +187,23 @@ a0.line1 = "43rd Street and Baltimore Avenue"
 a0.city = "Philadelphia"
 a0.state = "PA"
 a0.zip_code = "19104"
+a0.createLatAndLong()
 f0.address = a0
 timeslots_list_0 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f0.timeslots = timeslots_list_0
 
 # Add each new object to session and commit session. 
@@ -227,22 +229,23 @@ a1.line1 = "3160 Chestnut Street"
 a1.city = "Philadelphia"
 a1.state = "PA"
 a1.zip_code = "19104"
+a1.createLatAndLong()
 f1.address = a1
 timeslots_list_1 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(15,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(15,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f1.timeslots = timeslots_list_1
 
 # Add each new object to session and commit session. 
@@ -268,22 +271,23 @@ a2.line1 = "3560 Spruce St"
 a2.city = "Philadelphia"
 a2.state = "PA"
 a2.zip_code = "19104"
+a2.createLatAndLong()
 f2.address = a2
 timeslots_list_2 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f2.timeslots = timeslots_list_2
 
 # Add each new object to session and commit session. 
@@ -309,22 +313,23 @@ a3.line1 = "1610 Sansom St"
 a3.city = "Philadelphia"
 a3.state = "PA"
 a3.zip_code = "19103"
+a3.createLatAndLong()
 f3.address = a3
 timeslots_list_3 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f3.timeslots = timeslots_list_3
 
 # Add each new object to session and commit session. 
@@ -350,22 +355,23 @@ a4.line1 = "2146 E Susquehanna Ave"
 a4.city = "Philadelphia"
 a4.state = "PA"
 a4.zip_code = "19125"
+a4.createLatAndLong()
 f4.address = a4
 timeslots_list_4 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f4.timeslots = timeslots_list_4
 
 # Add each new object to session and commit session. 
@@ -391,22 +397,23 @@ a5.line1 = "1300 W Lehigh Ave"
 a5.city = "Philadelphia"
 a5.state = "PA"
 a5.zip_code = "19132"
+a5.createLatAndLong()
 f5.address = a5
 timeslots_list_5 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(15,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(15,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f5.timeslots = timeslots_list_5
 
 # Add each new object to session and commit session. 
@@ -430,22 +437,23 @@ a6.line1 = "1617 John F. Kennedy Blvd."
 a6.city = "Philadelphia"
 a6.state = "PA"
 a6.zip_code = "19103"
+a6.createLatAndLong()
 f6.address = a6
 timeslots_list_6 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f6.timeslots = timeslots_list_6
 f6.are_hours_available = True
 
@@ -469,22 +477,23 @@ a7.line1 = "8446 Bayard Street"
 a7.city = "Philadelphia"
 a7.state = "PA"
 a7.zip_code = "19150"
+a7.createLatAndLong()
 f7.address = a7
 timeslots_list_7 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f7.timeslots = timeslots_list_7
 f7.are_hours_available = True
 
@@ -508,22 +517,23 @@ a8.line1 = "2441 Kensington Avenue"
 a8.city = "Philadelphia"
 a8.state = "PA"
 a8.zip_code = "19125"
+a8.createLatAndLong()
 f8.address = a8
 timeslots_list_8 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f8.timeslots = timeslots_list_8
 f8.are_hours_available = True
 
@@ -547,22 +557,23 @@ a9.line1 = "2901 Hunting Park Avenue"
 a9.city = "Philadelphia"
 a9.state = "PA"
 a9.zip_code = "19129"
+a9.createLatAndLong()
 f9.address = a9
 timeslots_list_9 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f9.timeslots = timeslots_list_9
 f9.are_hours_available = True
 
@@ -586,22 +597,23 @@ a10.line1 = "3616 S Galloway St"
 a10.city = "Philadelphia"
 a10.state = "PA"
 a10.zip_code = "19148"
+a10.createLatAndLong()
 f10.address = a10
 timeslots_list_10 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f10.timeslots = timeslots_list_10
 f10.are_hours_available = True
 
@@ -625,22 +637,23 @@ a11.line1 = "2100 Arch Street"
 a11.city = "Philadelphia"
 a11.state = "PA"
 a11.zip_code = "19103"
+a11.createLatAndLong()
 f11.address = a11
 timeslots_list_11 = \
-    [TimeSlot(day_of_week = 0, start_time = time(8,0), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 1, start_time = time(7,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 2, start_time = time(7,30), 
-        end_time = time(18,30)),
-    TimeSlot(day_of_week = 3, start_time = time(8,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 4, start_time = time(10,0), 
-        end_time = time(19,30)),
-    TimeSlot(day_of_week = 5, start_time = time(8,15), 
-        end_time = time(18,45)),
-    TimeSlot(day_of_week = 6, start_time = time(9,0), 
-        end_time = time(20,45))]
+    [TimeSlot(day_of_week = 0, start_time = datetime.time(8,0), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 1, start_time = datetime.time(7,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 2, start_time = datetime.time(7,30), 
+        end_time = datetime.time(18,30)),
+    TimeSlot(day_of_week = 3, start_time = datetime.time(8,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 4, start_time = datetime.time(10,0), 
+        end_time = datetime.time(19,30)),
+    TimeSlot(day_of_week = 5, start_time = datetime.time(8,15), 
+        end_time = datetime.time(18,45)),
+    TimeSlot(day_of_week = 6, start_time = datetime.time(9,0), 
+        end_time = datetime.time(20,45))]
 f11.timeslots = timeslots_list_11
 f11.are_hours_available = True
 
@@ -676,6 +689,7 @@ db.session.commit()
 # Create HTML objects
 p1 = HTML(page = 'edit-page', value = 'Hello world!')
 p2 = HTML(page = 'about-page', value = 'Hello about!')
+p3 = HTML(page = 'map-announcements', value = 'Hello announcements!')
 p4 = HTML(page = 'wic-info-page', value = 'Hello WIC!')
 p5 = HTML(page = 'snap-info-page', value = 'Hello SNAP!')
 p6 = HTML(page = 'summer-info-page', value = 'Hello Summer!')
@@ -688,6 +702,7 @@ p11 = HTML(page = 'share-info-page', value = 'Hello share!')
 # Add each new object to session and commit session. 
 db.session.add(p1)
 db.session.add(p2)
+db.session.add(p3)
 db.session.add(p4)
 db.session.add(p5)
 db.session.add(p6)
@@ -699,7 +714,7 @@ db.session.add(p11)
 db.session.commit()
 
 # Create sample searches.
-today = date.today()
+today = datetime.date.today()
 # Searches from this month.
 zip = ZipSearch(zip_code='19104', search_count=10, date=today)
 db.session.add(zip)
@@ -711,7 +726,7 @@ db.session.commit()
 # Searches from last month. 
 first = get_first_day_of_previous_month(today)
 last = get_last_day_of_previous_month(today)
-second = first + timedelta(days=1)
+second = first + datetime.timedelta(days=1)
 zip = ZipSearch(zip_code='19104', search_count=10, date=first)
 db.session.add(zip)
 zip = ZipSearch(zip_code='02420', search_count=100, date=last)

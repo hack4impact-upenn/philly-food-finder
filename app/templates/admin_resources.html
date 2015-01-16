@@ -59,6 +59,7 @@
 								<a id="{{ resource.id }}-remove" class="food-resource-update-button" href="#modal">Reject</a>
 							</div>
 						</div>
+						
 						<!-- Resource content --> 
 						<div class="row admin-food-resource-pending" id="food-resource-{{ resource.id }}-table-pending">
 							<div class="large-6 small-12 columns">
@@ -225,12 +226,16 @@
 	  			<div class="small-12 columns">
 	  				<ul id="checkboxes">
   						<li class="checkbox-li">
-			  				<input type="checkbox" id="filter-by-open-now"> Open Now
+  							<div class="small-6 columns">
+			  					<input type="checkbox" id="filter-by-open-now"> Open Now
+			  				</div>
 			  			</li>
 		  				{% for boolean in food_resource_booleans %}
-		  				<li class="checkbox-li">	  				
-			  				<input type="checkbox" id="filter-by-boolean-{{ boolean.hyphenated_id }}"/> {{ boolean.description_question }}
-			  			</li>
+		  				<div class="small-6 columns">
+			  				<li class="checkbox-li">	  				
+				  				<input type="checkbox" id="filter-by-boolean-{{ boolean.hyphenated_id }}"/> {{ boolean.description_question }}
+				  			</li>
+			  			</div>
 				  		{% endfor %}
 			  		</ul>
   				</div>
@@ -301,6 +306,7 @@
 								<a id="{{ resource.id }}-remove" class="food-resource-update-button" href="#modal">Remove</a>
 							</div>
 						</div>
+
 						<!-- Resource content --> 
 						<div class="row admin-food-resource" id="{{ resource.id }}-food-resource-table">
 							<div class="large-6 small-12 columns">

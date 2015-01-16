@@ -16,7 +16,6 @@
     <script src="{{ url_for('static', filename='js/jquery.remodal.min.js') }}"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
    
-   
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Don't launch the Foundation JS until the DOM has loaded -->
@@ -97,9 +96,9 @@
                   <li><a href="{{ url_for('new') }}">Add<br>Food Resource</a></li>
                   <li><a href="{{ url_for('view_food_resource_types') }}">Manage Food<br>Resource Types</a></li>
                   <li><a href="{{ url_for('new_food_resource_type') }}">Add Food<br>Resource Type</a></li>
-                  <li><a href="{{ url_for('user.register') }}">Invite Admins</a></li>
                   <li><a href="{{ url_for('files') }}">Bulk Import<br>and Export</a></li>
-                  <li><a href="{{ url_for('analytics') }}">Admin Analytics</a></li>
+                  <li><a href="{{ url_for('analytics') }}">Analytics</a></li>
+                  <li><a href="{{ url_for('user.register') }}">Invite Admins</a></li>
                   <li><a href="{{ url_for('user.change_password') }}">Change Password</a></li>
                 </ul>
             </li>
@@ -139,7 +138,7 @@
     </div>
     <div class="footer fbottom row">
       <div class="small-10 columns">
-        Developed by <a href="http://hack4impact.weebly.com/">Hack4Impact</a> in partnership with the <a href="http://phillyfpac.org/">Philadelphia Mayor's Food Policy Advisory Council</a> and the <a href="http://www.hungercoalition.org/">Greater Philadelphia Coalition Against Hunger</a>.
+        Developed by <a href="http://hack4impact.org/">Hack4Impact</a> in partnership with the <a href="http://phillyfpac.org/">Philadelphia Mayor's Food Policy Advisory Council</a> and the <a href="http://www.hungercoalition.org/">Greater Philadelphia Coalition Against Hunger</a>.
       </div>
       <div class="small-2 columns right">
         <ul id="footer-pics">

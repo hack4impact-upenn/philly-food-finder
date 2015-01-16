@@ -60,7 +60,10 @@ class AddNewFoodResourceForm(Form):
 		label = 'Food Resource Type', 
 		validators = [
 			InputRequired("Please indicate the food resource's type.")
-		]
+		], 
+		description = "If your site has multiple types of resources, please \
+			choose one option below and describe the other(s) in the \
+			'Additional Information' section."
 	)
 	website = TextField(
 		label = 'Food Resource Website', 
@@ -75,10 +78,16 @@ class AddNewFoodResourceForm(Form):
 		label = 'Food Resource Name',
 		validators = [
 			InputRequired("Please provide the food resource's name.")
-		]
+		], 
+		description = "(ex. Bright Hope Baptist Church, Clark Park Farmers' Market, Philadelphia Senior Center)"
 	)
 	phone_number = TextField(
-		label = 'Phone Number')
+		label = 'Phone Number', 
+		validators = [
+			InputRequired("Please provide the food resource's phone number."),
+			Length(1, 35) # Same max length as in Phone Number model.
+		]
+	)
 	address_line1 = TextField(
 		label = 'Address Line 1', 
 		validators = [
@@ -119,7 +128,9 @@ class AddNewFoodResourceForm(Form):
 		validators = [
 			InputRequired("Please indicate whether hours of operation are \
 				available or not.")
-		]
+		], 
+		description = "If your site is only open for certain months of the \
+			year, please indicate that within 'Additional Information."
 	)
 
     # For each day of the week, is the food resource open or closed?
@@ -130,13 +141,16 @@ class AddNewFoodResourceForm(Form):
 		min_entries=7, max_entries=7)
 
 	additional_information = TextAreaField(
-		label = 'Any additional information?', 
+		label = 'Additional information to appear on the website', 
 		validators = [
 			Length(0, 300)
 		], 
-		description = 'Any additional information that visitors to this food \
-			resource might find useful. For example, "Open every second \
-			Saturday of the month," "Referral required," or "Call for hours."'
+		description = 'Please use this space for additional details to \
+			discuss anything you want to appear in the description of your \
+			site. ex. closed in August, only open on 3rd Saturday of the \
+			month, only serves zip 19146 and 19145, seniors only, \
+			staff speaks multiple languages (besides English), also \
+			provides legal services, etc.'
 	)
 	booleans = FieldList(FormField(BooleanForm), min_entries=0)
 

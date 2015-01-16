@@ -1,5 +1,6 @@
-$(document).ready(function() {
+var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+$(document).ready(function() {
 	// Hide all food resource tables initially.
 	$(".admin-food-resource-type").hide(); 
 	$(".admin-food-resource").hide();
@@ -82,7 +83,7 @@ $(document).ready(function() {
     });
 
     $(".end-edit").click(function() {
-    	if ( editor1 ){
+    	if ( editor1 ) {
     		var json_data = {
     			page_name: $(".end-edit").attr("id"),
     			edit_data: CKEDITOR.instances.editor1.getData()
@@ -388,8 +389,20 @@ function removeFoodResource(element) {
     	});  
 }
 
+function onClickDeleteAllFoodResources() {
+	$("#delete-button").click(function() {
+		$(document).on('confirm', '.remodal', function () {
+		    $('*').css({ 'cursor': 'wait' });
+	        $.getJSON($SCRIPT_ROOT + '/_delete', 
+		        function(data) {
+		            $('*').css({ 'cursor': 'default' });
+		        }
+	        );
+		});	
+	}); 
+}
+
 function onClickRemoveFoodResource() {
-	var foodResourceToRemove = "";
 	$("[id$='remove']").click(function() {
 		foodResourceToRemove = $(this);
 		$(document).on('confirm', '.remodal', function () {
@@ -409,6 +422,19 @@ function getIndividualNumResources(resourceType) {
 function isInteger (s) {
 	var isInteger_re = /^\s*(\+|-)?\d+\s*$/;
 	return String(s).search (isInteger_re) != -1;
+}
+
+function getCheckedBooleans() {
+	var booleans = [];
+	$("[id^='filter-by-boolean-']").each(function(index) {
+		if ($(this).is(':checked')) {
+			booleans[booleans.length] = 1; // TRUE
+		}
+		else {
+			booleans[booleans.length] = 0; // FALSE
+		}
+	});
+	return booleans; 
 }
 
 function onChangeNumberOfTimeslots() {
@@ -449,6 +475,96 @@ function setIndividualNumResources(num, resourceType) {
 function clearTablesOfFoodResources() {
 	$(".admin-food-resource-type").remove(); 
 	$(".expand-food-resource-type").html("+");
+}
+
+function getFoodResourceAddress(foodResource) {
+	return foodResource["address"]["line1"] + ', ' 
+    	+ foodResource["address"]["city"] + ', ' 
+        + foodResource["address"]["state"] + " " 
+        + foodResource["address"]["zip_code"];
+}
+
+function updateFoodResourceDescriptionHeaderColor(foodResource) {
+	var hexColor = foodResource["food_resource_type"]["colored_pin"]["hex_color"]; 
+    $("#food-resource-info").css("background-color", hexColor);	
+}
+
+function getFoodResourceDescriptionHtml(foodResource) {
+	/* First row is name of the food resource. */
+	var newDescription = "<div class='row' id='food-resource-info'>" 
+    	+ "<div class='small-12 columns'>";
+    var newTitle = foodResource["name"];     
+
+    newDescription += "<div class='food-resource-name'>" + newTitle + "</div>";
+    newDescription += "</div></div>"; 
+
+	/* Second row is food resource information. */
+    newDescription += "<div class='row'>" 
+    	+ "<div class='small-6 medium-4 columns'>"; 
+
+    /* Add basic information about Food Resource */
+    var newAddress = foodResource["address"]["line1"] + ', ' 
+    	+ foodResource["address"]["city"] + ', ' 
+    	+ foodResource["address"]["state"] + " " + foodResource["address"]["zip_code"];
+    newDescription += 
+    	"<div class='rounded'>Food Resource Type:</div> " + foodResource["food_resource_type"]["name_singular"] + "<br>" 
+    	+ "<div class='rounded'>Address:</div> " + newAddress + "<br>" 
+    	+ "<div class='rounded'>Phone Number:</div> " + foodResource["phone_number"]["number"] + "<br>";
+    if (foodResource["description"] != null) {
+      newDescription += "<div class='rounded'>Description:</div> " + foodResource["description"] + "<br>" ;
+    } 
+    if (foodResource["url"] != null) {
+      newDescription += "<div class='rounded'>Website:</div> " + foodResource["url"] + "<br>" ;
+    } 
+
+    /* Column break */ 
+    newDescription += "</div>" + "<div class='small-6 medium-4 columns'>";
+
+    /* Add hours of operation. */
+    newDescription += "<div class='rounded'>Hours of Operation</div><br>"
+    if (foodResource["are_hours_available"]) {
+      var allTimeslots = foodResource["timeslots"];
+      for (var j = 0; j < daysOfWeek.length; j++) {
+        var dayOfWeekName = daysOfWeek[j];
+        var dayTimeslots = $.grep(allTimeslots, function(e) { return e.day_of_week == j; });
+        newDescription += "<u>" + dayOfWeekName + "</u>: "; 
+        if (dayTimeslots.length == 0) {
+          newDescription += "Closed <br>";
+        }
+        else {
+          for (var k = 0; k < dayTimeslots.length; k++) {
+            var timeslot = dayTimeslots[k]; 
+            newDescription += "<br>" + timeslot["start_time"] + " - " + timeslot["end_time"];
+          }
+          newDescription += "<br>";
+        }
+      }                      
+    }
+    else {
+    	newDescription += "Not available.<br>"
+    }
+
+    /* Column break */ 
+    newDescription += "</div>" + "<div class='small-6 medium-4 columns'>";
+
+    /* Add boolean information. */
+    if (foodResource["booleans"].length > 0) {
+      newDescription += "<div class='rounded'>Other Attributes:</div> <br>"; 
+      for (var j = 0; j < foodResource["booleans"].length; j++) {
+        currentBoolean = foodResource["booleans"][j]; 
+        if (currentBoolean["value"] == true) {
+          /* Remove question mark. */
+          var booleanQuality = currentBoolean["description_question"].replace(/\?/g,'');
+          newDescription += "• " + booleanQuality + "<br>";  
+        }
+      }
+    }
+    newDescription += "</div></div>"
+    return newDescription; 
+}
+
+function resetMarkerInfoDiv() {
+	$("#marker-info").html("Click on a pin for more information!");
 }
 
 function getNoResourcesHtml(resourceInfoId) {

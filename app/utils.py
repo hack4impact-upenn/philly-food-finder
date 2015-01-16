@@ -1,21 +1,59 @@
 import os, random, string, datetime
-from datetime import time, datetime, timedelta
 from pytz import timezone
 from models import *
 import os, random, string
-from datetime import time, date
 from pytz import timezone
 from models import *
 import re
 import csv
 from app import db
 
+def getFilteredFoodResources(has_zip_code_filter, zip_code, has_open_now_filter, booleans_array):
+	# Create empty arrays to hold food resources.
+	all_resources = []
+	food_resource_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_plural).all()
+
+	# Zip code is one of the filters.
+	if has_zip_code_filter:
+
+		# Iterate through all food resource types.
+		for i, food_resource_type in enumerate(food_resource_types):
+
+			# Filter for each kind of food resource with a specific zip code.
+			all_resources.append([])
+			get_food_resources_by_location_type_and_zip_code(
+				all_resources[i], # List to populate.
+				food_resource_type, # Location type by which to filter.
+				zip_code # Zip code by which to filter.
+			)
+
+	# Zip code is not one of the filters. 
+	else: 
+
+		# Iterate through all food resource types.
+		for i, food_resource_type in enumerate(food_resource_types):
+
+			# Filter for each kind of food resource without a specific zip code.
+			all_resources.append([])
+			get_food_resources_by_location_type(
+				all_resources[i], # List to populate.
+				food_resource_type # Location type by which to filter.
+			)
+
+	# Filter each list by other boolean criteria.
+	for list_to_filter in all_resources:
+		filter_food_resources(list_to_filter, has_open_now_filter, 
+			booleans_array)
+
+	return all_resources
+
 def get_first_day_of_month(day):
-	return date(day.year, day.month, 1)
+	return datetime.date(day.year, day.month, 1)
 
 def get_last_day_of_previous_month(day):
 	first = get_first_day_of_month(day)
-	last = first - timedelta(days=1)
+	last = first - datetime.timedelta(days=1)
 	return last
 
 def get_first_day_of_previous_month(day):
@@ -120,6 +158,7 @@ def create_food_resource_from_form(form, additional_errors):
 			city=form.address_city.data, 
 			state=form.address_state.data, 
 			zip_code=form.address_zip_code.data)
+		address.createLatAndLong()
 		db.session.add(address)
 
 		# Create food resource's phone number.
@@ -201,14 +240,14 @@ def get_time_from_string(time_string):
 	colon_index = time_string.index(":")
 	time_hour = int(time_string[:colon_index])
 	time_minute = int(time_string[colon_index+1:])
-	return time(time_hour, time_minute)
+	return datetime.time(time_hour, time_minute)
 
 def is_open(resource, current_date = None):
 	timeslots = resource.timeslots
 
-	if(current_date is None):
+	if (current_date is None):
 		eastern = timezone('US/Eastern')
-		current_date = datetime.now(eastern)
+		current_date = datetime.datetime.now(eastern)
 
 	weekday = 0
 	if current_date.weekday() == 0:
@@ -239,13 +278,13 @@ def is_open(resource, current_date = None):
 def get_possible_opening_times():
 	opening_times = []
 	# Year, month, and day are arbitrary, as only the time is needed.
-	opening_time = datetime( 
+	opening_time = datetime.datetime( 
 		year=2014, 	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=1,		# Arbitrary.
 		hour=0, 	# First opening time is 12:00 AM.
 		minute=0)
-	final_opening_time = datetime( 
+	final_opening_time = datetime.datetime( 
 		year=2014,	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=2,		# Arbitrary.
@@ -259,19 +298,19 @@ def get_possible_opening_times():
 			)
 		)
 		# Opening time is incremented in 15-minute intervals.
-		opening_time += timedelta(0, 15*60) # Number of seconds in 15 minutes.
+		opening_time += datetime.timedelta(0, 15*60) # Number of seconds in 15 minutes.
 	return opening_times
 
 def get_possible_closing_times():
 	closing_times = []
 	# Year, month, and day are arbitrary, as only the time is needed.
-	closing_time = datetime( 
+	closing_time = datetime.datetime( 
 		year=2014, 	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=1,		# Arbitrary.
 		hour=0, 	# First closing time is 12:00 AM.
 		minute=0)
-	final_closing_time = datetime( 
+	final_closing_time = datetime.datetime( 
 		year=2014,	# Arbitrary.
 		month=1, 	# Arbitrary.
 		day=2,		# Arbitrary.
@@ -285,7 +324,7 @@ def get_possible_closing_times():
 			)
 		)
 		# Closing time is incremented in 15-minute intervals.
-		closing_time += timedelta(0, 15*60) # Number of seconds in 15 minutes.
+		closing_time += datetime.timedelta(0, 15*60) # Number of seconds in 15 minutes.
 	return closing_times
 
 def get_food_resources_by_location_type(list_to_populate, location_type):
@@ -315,7 +354,7 @@ def filter_food_resources(list_to_filter, has_open_now_filter, booleans_array):
 			if boolean == True and food_resource.booleans[i].value == False:
 				if food_resource in list_to_filter:
 					list_to_filter.remove(food_resource)
-		if has_open_now_filter and not \
+		if food_resource in list_to_filter and has_open_now_filter and not \
 			is_open(food_resource):
 			list_to_filter.remove(food_resource)
 
@@ -444,6 +483,7 @@ def import_file(path, charset='utf-8'):
 							city=address_city,
 							state=address_state,
 							zip_code=address_zip_code)
+						address.createLatAndLong()
 						db.session.add(address)
 
 						# Extract food resource's phone number.

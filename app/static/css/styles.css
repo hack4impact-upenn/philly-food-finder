@@ -12,6 +12,7 @@
 /* #2D4FA0 - navy */ 
 /* #F7F9F9 - off white */
 /* #999999 - gray */
+/* #DDDDDD - light gray */
 
 
 /* background colors */
@@ -529,6 +530,7 @@ table thead tr th, table thead tr td {
 #clear-filters-resources-button, 
 #map-search-button, 
 #map-filter-button {
+  margin-top: 5px;
   margin-bottom: 10px;
 }
 
@@ -547,8 +549,8 @@ table thead tr th, table thead tr td {
 }
 
 input[type=checkbox] {
-  margin-top:15px;
-  margin-bottom:15px;
+  margin-top:5px;
+  margin-bottom:5px;
 }
 
 input[type="text"] {
@@ -858,4 +860,39 @@ li {
 
 .admin-resources-category {
   font-weight: 400;
+}
+
+#editor1 p {
+  margin-bottom: 0.25rem;
+}
+
+#food-resource-description {
+  background-color: #DDDDDD; /* light gray */
+  padding: 5px 5px 0 5px;
+  font-size: 0.8em;
+} 
+
+#get-directions-link {
+  font-size: 0.8em;
+  cursor: pointer !important; 
+}
+
+.rounded {
+  border-radius: 5px;
+  padding: 0 3px;
+  margin: 1px 0;
+  background-color: #ffffff;
+  display: inline-block;
+}
+
+.food-resource-name {
+  font-size: 1.075rem;
+  font-weight: 200;
+  color: #222222;
+  letter-spacing: .5px;
+}
+
+#food-resource-info {
+  margin-bottom: 5px;
+  padding: 8px 10px;
 }

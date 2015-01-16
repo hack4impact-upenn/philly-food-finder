@@ -1,253 +1,250 @@
 
 {% extends "base.html" %}
-//working with zip codes
-<!-- Map -->
-  {% block content %}
-<div class="large-centered 
-                  large-10 medium-centered medium-8 small-8 small-centered
-                  columns">
-  <script type="text/javascript">
-    var map;
-    $(document).ready(function(){
-      map = new GMaps({     // create a new map
-        el: 'map',
-        lat: 39.9500,
-        lng: -75.1667
-      });
-      var markers = [];      // array of markers to be displayed on the map
-            $.getJSON($SCRIPT_ROOT + '/_newmap',  //pulls all food resources in database to be displayed when the page is initially loaded
-            function(data) {
-              for (var i = 0; i < data["resources"].length; i++) {
-                var newAddress = data["resources"][i]["address"]["line1"] + ', ' 
-                  + data["resources"][i]["address"]["city"] + ', ' 
-                  + data["resources"][i]["address"]["state"] ;
 
-                (function(){
-                    var newTitle = data["resources"][i]["name"];
-                    var newDescription = newTitle + "<br>" 
-                      + data["resources"][i]["description"] + "<br>" 
-                      + "Contact Information: " 
-                      + data["resources"][i]["phone_number"]["number"];      
-                    var newType = 
-                      data["resources"][i]["food_resource_type"]["enum"];
-                    var filename = 
-                      data["resources"][i]["food_resource_type"]["colored_pin"]["pin_image_name"];
-                    var image = "../static/img/" + filename; 
-                GMaps.geocode({
-                  address: newAddress,
-                  callback: function(results, status) {
-                    if (status == 'OK')
-                    {
-                      var newMarker = results[0].geometry.location; 
-                      var addressInfo = results[0].formatted_address;
-                      var removedCommas = addressInfo.split(",").join("");
-                      var linkInfo = removedCommas.split(" ").join("+");
-                      var completeLink = "https://maps.google.com?daddr=" + linkInfo; //creates link to be displayed on Google Maps for directions to the food resource
-                      myLat = newMarker.lat();
-                      myLng = newMarker.lng();
-                      markers.push({
-                        lat : newMarker.lat(),
-                        lng : newMarker.lng(),
-                        title: newTitle,
-                        icon : {url: image,
-                                size: new google.maps.Size(50,50),
-                                scaledSize: new google.maps.Size(20,25)},
-                        click: function(e) { //creates description and directions below map when marker is clicked
-                          document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br>";
-                          $('.linkInsert').attr('href',completeLink);
-                        }
-                      }); 
-                    }
-                    map.addMarkers(markers);     //adds all markers to map  
-                    map.fitZoom();              //and fits map window to show all of them
-                  }
-                  }); }) ();
+{% block content %}
+
+<script type="text/javascript">
+  resetMarkerInfoDiv(); 
+
+  var map;
+  $(document).ready(function() {
+    /* Create a new map. */
+    map = new GMaps({     
+      el: 'map',
+      lat: 39.9500,
+      lng: -75.1667
+    });
+
+    /* Pre-populate map with all food resources in database. */
+    $('*').css({ 'cursor': 'wait' });
+    booleansArray = getCheckedBooleans();
+    updateMap("19104", 0 /* FALSE */, booleansArray);
+    
+    /* When 'Search' button is clicked, repopulated map based on zip code and boolean filters. */
+    $('#geocoding_form').submit(function(e) {
+      $('*').css({ 'cursor': 'wait' });
+      map.removeMarkers();
+      e.preventDefault();
+
+      resetMarkerInfoDiv(); 
+
+      booleansArray = getCheckedBooleans();
+
+      GMaps.geocode({
+        address: $('#address').val().trim(),
+        callback: function(results, status) {
+          /* Given address is valid. */
+          if (status == 'OK') {
+
+            /* Add address marker to center of map. */
+            var marker = results[0].geometry.location;
+            var markerImage = "../static/img/mbb_black.png";
+            map.addMarker({
+              lat : marker.lat(),
+              lng : marker.lng(),
+              title: "Current Address",
+              icon : { url: markerImage,
+                size: new google.maps.Size(50,50),
+                scaledSize: new google.maps.Size(20,25) }
+            });
+
+            /* Center the map at the given zip code or address. */
+            map.setCenter(marker.lat(), marker.lng());
+
+            /* Save searched zip code in database. */
+            var zipCode = ""; 
+            for (var i = 0; i < results[0].address_components.length; i++) {
+              if (results[0].address_components[i].types[0] == "postal_code") {
+                zipCode = results[0].address_components[i].short_name;
               }
-           });
-      $('#geocoding_form').submit(function(e){
-        map.removeMarkers();
-        // Check that zip code is properly formed.
-        var regex = /^(\d{5})?$/; // 5-digit number or an empty string.
-        var zipCode = $("#address").val().trim(); 
-        console.log(zipCode);
-        e.preventDefault();
-        if (regex.test(zipCode)) {
-            $("#map-search-error").html("");
-        } else { //condition for when an address (not a zipcode) is inserted
-              var new_address = zipCode;
-              map.removeMarkers();
-                  GMaps.geocode({
-                  address: new_address,
-                  callback: function(results, status) {
-                    if (status == 'OK') //add a marker with the address given to mark the user's location
-                    {
-                      var newMarker = results[0].geometry.location; 
-                      myLat = newMarker.lat();
-                      myLng = newMarker.lng();
-                      markers.push({
-                        lat : newMarker.lat(),
-                        lng : newMarker.lng(),
-                        title: "Current Address"
-                      }); 
-                    }
-                    map.addMarkers(markers);  
-                    console.log(markers);    
-                    map.fitZoom();  
-                  }
-                  });
-          // Provide helpful error message to user.
-          // Clear any errors.
-
-          if (Number.isInteger(zipCode)) {
-          $("#map-search-error")
-            .html("<small class=error>Zip code must consist of exactly 5 digits (0-9).</small>");
-            return; }
-          
-
-        }
-        // Store search result in database
-        var json_data = {
-          zipCode: zipCode
-        };
-        //cases for different checkboxes
-        var queryString = 'search_query' //creating the customized search query to be used in views.py for app.route
-        if ($("#map-filter-by-seniors").is(':checked')) { queryString += '_seniors'; }
-        if ($("#map-filter-by-seniors").is(':checked')) { queryString += '_family';}
-        {
-          queryString += "_seniors";
-        }
-        if ($("#map-filter-by-seniors").is(':checked'))
-        {
-          queryString += "_seniors";
-        }
-        if ($("#map-filter-by-seniors").is(':checked'))
-        {
-          queryString += "_seniors";
-        }                        
-        $.post(url = $SCRIPT_ROOT + '/_search_query', data = json_data);
-        GMaps.geocode({
-          address: $('#address').val().trim(),
-          callback: function(results, status){
-            if(status=='OK'){
-              var markers = [];
-              var latlng = results[0].geometry.location;
-              map.setCenter(latlng.lat(), latlng.lng());
-              var zipCode = results[0].address_components[0].short_name;            
-            $.getJSON($SCRIPT_ROOT + '/_map', {
-          zip_code: zipCode
-        },
-            function(data) {
- /*             
-              for (var j = data["addresses"].length; j >=0; j--)
-              {
-                var food_resource_id = data["addresses"][j]["food_resource_id"];
-                if (($("#map-filter-by-seniors").is(':checked')) && 
-                  data["addresses"][j]["food_resource_id"]          )
-              }*/ 
-              //work is being done on filtering resources based on checkboxes; currently, I'm in the process of adding app.route for the different filtered categories
-              if ($("#map-filter-by-seniors").is(':checked')) //filtering results by checkbox categories
-              {
-                console.log("SENIORS");
-              }
-              for (var i = 0; i < data["addresses"].length; i++) {
-                var newAddress = data["addresses"][i]["address"]["line1"] + ', ' 
-                  + data["addresses"][i]["address"]["city"] + ', ' 
-                  + data["addresses"][i]["address"]["state"] ;
-                (function(){
-                    var newTitle = data["addresses"][i]["name"];
-
-                    var newDescription = newTitle + "<br>" 
-                      + data["addresses"][i]["description"] + "<br>" 
-                      + "Contact Information: " 
-                      + data["addresses"][i]["phone_number"]["number"];        
-                    var newType = 
-                      data["addresses"][i]["food_resource_type"]["enum"];
-                    var filename = 
-                      data["addresses"][i]["food_resource_type"]["colored_pin"]["pin_image_name"];
-                    var image = "../static/img/" + filename; 
-                GMaps.geocode({
-                  address: newAddress,
-                  callback: function(results, status) {
-                    if (status == 'OK')
-                    {
-                      var newMarker = results[0].geometry.location; 
-                      myLat = newMarker.lat();
-                      myLng = newMarker.lng();
-                      var addressInfo = results[0].formatted_address;  //changing the format of the address to generate a google link with directions
-                      var removedCommas = addressInfo.replace(/,/g, "");
-                      var linkInfo = removedCommas.replace(/ /g, "+");
-                      var completeLink = "https://maps.google.com?daddr=" + linkInfo;                      
-                      markers.push({
-                        lat : newMarker.lat(),
-                        lng : newMarker.lng(),
-                        title: newTitle,
-                        icon : {url: image,
-                                size: new google.maps.Size(50,50),
-                                scaledSize: new google.maps.Size(20,25)},
-                        click: function(e) {
-                          document.getElementById("marker-info").innerHTML = "Information About This Food Resource: <br>" + newDescription + "<br><br>";
-                          $('.linkInsert').attr('href',completeLink);
-                        }
-                      }); 
-                    }
-                    map.addMarkers(markers);      
-                    map.fitZoom();  
-                  }
-                  }); }) ();
-              }
-           });
             }
+            var json_data = {
+              zipCode: zipCode
+            };  
+            $.post(url = $SCRIPT_ROOT + '/_search_query', data = json_data);
+
+            updateMap(zipCode, 1 /* TRUE */, booleansArray);
           }
-        });
-      });  
-      })                              
-    </script>
-</div>
+          /* Given address is invalid. */
+          else {
+            var zipCode = "19104"; /* Arbitrary */
+            updateMap(zipCode, 0 /* FALSE */, booleansArray);
+          }
+        }
+      });
+    });  
+  });     
+
+  function updateMap(zipCode, hasZipCodeFilter, booleansArray) {
+    // Populate map with food resources from database.
+    $.getJSON($SCRIPT_ROOT + '/_map', {
+      zip_code: zipCode, 
+      has_zip_code_filter: hasZipCodeFilter,
+      booleans: JSON.stringify(booleansArray) 
+    },
+    function(data) {
+      for (var i = 0; i < data["addresses"].length; i++) {
+        for (var j = 0; j < data["addresses"][0].length; j++) {
+          (function() {
+            var foodResource = data["addresses"][i][j];
+            if (foodResource !== undefined) {
+              /* Extract information about each food resource location. */
+              var newAddress = getFoodResourceAddress(foodResource);
+              var newTitle = foodResource["name"];
+              var filename = 
+                foodResource["food_resource_type"]["colored_pin"]["pin_image_name"];
+              var image = "../static/img/" + filename; 
+              var latitude = foodResource["address"]["latitude"]; 
+              var longitude = foodResource["address"]["longitude"];
+
+              /* Create description to be displayed when pin is clicked. */
+              var newDescription = getFoodResourceDescriptionHtml(foodResource); 
+
+              /* Change the format of the address to generate a Google Maps link with directions. */
+              var removedCommas = newAddress.split(",").join("");
+              var linkInfo = newAddress.split(" ").join("+");
+              var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
+
+              /* Only add address to map if its address is valid. */
+              if (foodResource["address"]["valid_address"] != 0) {
+                /* Add each marker to map. */                     
+                map.addMarker({
+                  lat : latitude,
+                  lng : longitude,
+                  title: newTitle,
+                  icon : { url: image,
+                          size: new google.maps.Size(50,50),
+                          scaledSize: new google.maps.Size(20,25) },
+                  click: function(e) {
+                    document.getElementById("marker-info").innerHTML = newDescription;
+                    $('.linkInsert').attr('href', completeLink);
+                    updateFoodResourceDescriptionHeaderColor(foodResource); 
+                    console.log(foodResource);
+                  }
+                }); 
+              }
+
+              /* Fit map window to show all markers. */
+              map.fitZoom(); 
+            } 
+          } ()); // Call anonymous function.
+        }
+      }
+      $('*').css({ 'cursor': 'default' });
+    });
+  } // End of updateMap().                         
+</script>
 
 <body id = "map_p">
-    <div class="row">
-        <h1 class="page-header" id="map-header">Philly Food Finder</h1>
-        <hr align="center">
+  <div class="row">
+    <div class="small-12 columns">
+      <h1 class="page-header" id="map-header">Philly Food Finder</h1>
+      <hr align="center">
     </div>
-    <div class="row">
-        <div class="large-centered large-10 medium-centered medium-10 small-10 small-centered columns content">
-            <form method="post" id="geocoding_form">
-                <div class="small-12 columns">
-                    <label for="address">Zip Code:</label>
-                    <input type="text" id="address" name="address" />
-                </div>
-                <div class="small-12 columns">
-                    <input type="checkbox" id="map-filter-by-families-and-children"> Families and children
-                    <input type="checkbox" id="map-filter-by-seniors"> Seniors
-                    <input type="checkbox" id="map-filter-by-wheelchair-accessible"> Wheelchair Accessible
-                    <input type="checkbox" id="map-filter-by-accepts-snaps"> Accepts Snaps                                              
-                </div>                                             
-                <div class="small-12 columns">
-                    <input type="submit" class="button radius small" value="Search" id="map-search-button" />
-                    <input type="submit" class="button radius small" value="Clear Filters" id="map-filter-button" />
-                </div>
-                <div class="row">
-                    <div class="small-12 columns" id="map-search-error">
-                    </div>
-                </div>
-            </form>      
-            <div id="map-container">
-                <div class="large-4" id="map"></div>
-            </div> 
-            <div id="marker-info">Click on a Food Resource for More Information! <br></div>
-            <div id="directions-link"><a class="linkInsert" href="http://www.maps.google.com" target="_blank">Get Directions!</a></div>
-            <div id="map-key">
+  </div>
 
-                {% for food_resource_type in food_resource_types %}
-                <div class="small-6 medium-4 columns pin-definition">
-                    <img src="../static/img/{{ food_resource_type.colored_pin.pin_image_name }}" alt="{{ food_resource_type.colored_pin.color_name}} Pin"/>
-                    {{ food_resource_type.name_singular }}
-                </div>
-                {% endfor %}
-            </div>
-            <div id="footer-spacer">
-            </div>
-        </div>
+  <!-- Editable content box for "Announcements" --> 
+  <div class="row">
+      <div class="large-centered 
+                large-10 medium-centered medium-8 small-12 small-centered
+                columns content">
+          <div id="editor1" contenteditable="false">
+              {{ html_string.value|safe }}
+          </div>
+      </div>
+  </div>
+  {% if current_user.is_authenticated() %}
+  <div class="row"> 
+    <div class="large-centered 
+                large-10 medium-centered medium-8 small-10 small-centered
+                columns content">
+      <div class="button radius tiny start-edit">Edit</div>
+      <div class="button radius tiny end-edit" id="map-announcements">Save</div> 
     </div> 
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="small-12 small-centered columns">
+      In order to filter the food resources to be displayed on the map, provide a <b>zip code or address</b> and/or <b>select a combination of checkboxes</b>. In order to display all food resources in our database, clear all filters, and press "Search." If you choose to search by a zip code or address, a <b>black pin</b> will be placed in the center of the zip code or at the address. <b>Please be patient</b>: the map may take a few seconds to load. 
+    </div>
+  </div>
+
+  <!-- Map filtering -->
+  <div class="row">
+    <div class="small-12 columns content">
+      <form method="post" id="geocoding_form">
+        <div class="row">
+          <div class="small-12 columns">
+              <label for="address">Address or Zip Code:</label>
+              <input type="text" id="address" name="address" />
+          </div>
+        </div>
+        <div class="row">
+            <ul id="checkboxes">
+              {% for boolean in food_resource_booleans %}
+              <div class="large-4 small-6 columns">
+                <li class="checkbox-li">            
+                  <input type="checkbox" id="filter-by-boolean-{{ boolean.hyphenated_id }}"/> {{ boolean.description_question }}
+                </li>
+              </div>
+              {% endfor %}
+            </ul>
+        </div>    
+        <div class="row">                                        
+          <div class="small-12 columns">
+            <input type="submit" class="button radius small" value="Search" id="map-search-button" />
+          </div>
+        </div>
+      </form>      
+      <div id="map-container">
+        <div class="row">
+          <div class="small-12 columns" id="map"></div>
+        </div>
+      </div> 
+
+      <!-- Information about the selected pin -->
+      <div class="row">
+        <div class="small-12 columns">
+          <div id="food-resource-description">
+            <div id="marker-info">Click on a pin for more information!<br></div>
+            <div id="directions-link">
+              <p>
+                <a id="get-directions-link" class="linkInsert" href="http://www.maps.google.com" target="_blank">Get directions!</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map legend: Pin images with associated food resource types --> 
+      <div class="row">
+        <div class="small-12 columns">
+          <div id="map-key">
+              <div class="small-6 medium-4 columns pin-definition">
+                  <img src="../static/img/mbb_black.png" alt="Black Pin"/>
+                  Searched Location
+              </div>
+
+              {% for food_resource_type in food_resource_types %}
+              <div class="small-6 medium-4 columns pin-definition">
+                  <img src="../static/img/{{ food_resource_type.colored_pin.pin_image_name }}" alt="{{ food_resource_type.colored_pin.color_name}} Pin"/>
+                  {{ food_resource_type.name_singular }}
+              </div>
+              {% endfor %}
+          </div>
+          <div id="footer-spacer">
+          </div>
+        </div>
+      </div>
+    </div> 
+  </div>
 </body>
+
+{% if current_user.is_authenticated() %}
+<script>
+    $(".end-edit").hide();
+</script>
+{% endif %}
+
 {% endblock %}

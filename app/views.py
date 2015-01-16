@@ -7,7 +7,7 @@ from flask import render_template, flash, redirect, session, url_for, request, \
 from flask.ext.login import login_user, logout_user, current_user, \
 	login_required
 from variables import *
-from datetime import time, date
+from datetime import date
 from utils import *
 from flask_user import login_required, signals
 from flask_user.emails import send_email
@@ -17,6 +17,41 @@ from tempfile import NamedTemporaryFile
 import csv, time
 import json
 from operator import itemgetter
+from pygeocoder import Geocoder
+
+@app.route('/')
+@app.route('/map')
+def map():
+	food_resource_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_singular).all()
+	html_string = HTML.query.filter_by(page = 'map-announcements').first()
+	food_resource_booleans = get_food_resource_booleans()
+	return render_template('newmaps.html', 
+		food_resource_types=food_resource_types, html_string=html_string,
+		food_resource_booleans=food_resource_booleans)
+
+@app.route('/_map')
+def address_food_resources():
+	# Collect boolean paramaters passed via JSON.
+	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
+	zip_code = request.args.get('zip_code')
+	booleans_array = json.loads(request.args.get('booleans'))
+
+	food_resources = getFilteredFoodResources(
+		has_zip_code_filter=has_zip_code_filter, 
+		zip_code=zip_code, 
+		has_open_now_filter=False,
+		booleans_array=booleans_array)
+
+	json_array = []
+	for i, list in enumerate(food_resources):
+		if len(list) > 0:
+			json_array.append([])
+			index = len(json_array) - 1
+			for food_resource in list:
+				json_array[index].append(food_resource.serialize_food_resource())
+
+	return jsonify(addresses=json_array)
 
 @app.route('/admin/new', methods=['GET', 'POST'])
 @app.route('/admin/edit/<id>', methods=['GET', 'POST'])
@@ -369,7 +404,7 @@ def get_all_food_resource_data():
 def get_filtered_food_resource_data():
 	# Collect boolean paramaters passed via JSON.
 	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
-	zip_code = request.args.get('zip_code', 0, type=int)
+	zip_code = request.args.get('zip_code')
 	has_open_now_filter = request.args.get('has_open_now_filter', 0, type=int) 
 	booleans_array = json.loads(request.args.get('booleans'))
 
@@ -418,37 +453,16 @@ def get_filtered_food_resource_data():
 
 	return jsonify(days_of_week=days_of_week, food_resources=json_array)
 
-@app.route('/')
-@app.route('/map')
-def map():
-	foodResourceTypes = FoodResourceType.query.order_by(FoodResourceType.name_singular).all()
-	return render_template('newmaps.html', 
-		food_resource_types=foodResourceTypes)
-
-@app.route('/_map')
-def address_food_resources():
-	zip_code = request.args.get('zip_code', 0, type=int)
-	food_resources = db.session.query(FoodResource) \
-		.join(FoodResource.address) \
-		.filter(Address.zip_code==zip_code, FoodResource.is_approved==True) \
-		.order_by(FoodResource.name).all()
-	return jsonify(addresses=[i.serialize_food_resource() for i in food_resources])
-
-@app.route('/_newmap')
-def initialize_food_resources():
-	food_resources = db.session.query(FoodResource).join(FoodResource.address).filter(FoodResource.is_approved==True).all()
-	return jsonify(resources=[i.serialize_food_resource() for i in food_resources])
-
 @app.route('/_edit', methods=['GET', 'POST'])
 @login_required
 def save_page():
 	data = request.form.get('edit_data')
 	name = request.form.get('page_name')
-	if(data):
+	if (data):
 		page = HTML.query.filter_by(page = name).first()
 		page.value = data
 		db.session.commit()
-	return 'Added' + data + 'to database.'
+	return 'Added ' + data + ' to database.'
 
 @app.route('/_remove_food_resource_type')
 def remove_food_resource_type():
@@ -582,7 +596,6 @@ def analytics():
 def dynamic_analytics():
 	data_type = request.args.get("data_type")
 	today = date.today()
-	print data_type
 	if data_type:
 		zip_code_query = []
 		if data_type == 'all-time':
@@ -602,19 +615,19 @@ def dynamic_analytics():
 				first = today
 				last = today
 			elif data_type == 'last-7-days':
-				first = today - timedelta(days=7)
+				first = today - datetime.timedelta(days=7)
 				last = today
 			elif data_type == 'last-30-days':
-				first = today - timedelta(days=30)
+				first = today - datetime.timedelta(days=30)
 				last = today
 			elif data_type == 'last-60-days':
-				first = today - timedelta(days=60)
+				first = today - datetime.timedelta(days=60)
 				last = today
 			elif data_type == 'last-90-days':
-				first = today - timedelta(days=90)
+				first = today - datetime.timedelta(days=90)
 				last = today
 			elif data_type == 'last-12-months':
-				first = today - timedelta(days=365)
+				first = today - datetime.timedelta(days=365)
 				last = today
 			elif data_type == 'custom-date-range':
 				start_date = request.args.get("start_date")
@@ -799,7 +812,7 @@ def download():
 				yield line
 	
 	response = Response(generate(), mimetype='text/csv')
-	filename = 'resources_generated_at_' + str(datetime.now()) + '.csv'
+	filename = 'resources_generated_at_' + str(datetime.datetime.now()) + '.csv'
 	response.headers["Content-Disposition"] = "attachment; filename="+filename
 	return response
 
@@ -848,7 +861,6 @@ def new_food_resource_type(id=None):
 		food_resource_type = FoodResourceType.query.filter_by(id=id).first()
 		if food_resource_type is None:
 			return render_template('404.html')
-		print "merp"
 
 		# Pre-populate form fields with data from database.
 		form.name_singular.data = food_resource_type.name_singular
@@ -882,3 +894,12 @@ def new_food_resource_type(id=None):
 		return redirect(url_for('view_food_resource_types'))
 
 	return render_template('add_resource_type.html', form=form, title=title)
+
+@app.route('/_delete')
+@login_required
+def delete_all_food_resources():
+	food_resources = FoodResource.query.all(); 
+	for food_resource in food_resources:
+		db.session.delete(food_resource)
+	db.session.commit()
+	return jsonify(message="success")
