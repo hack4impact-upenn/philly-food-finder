@@ -428,7 +428,7 @@ def import_file(path, charset='utf-8'):
 		spamreader = csv.reader(csvfile)
 		for i, row in enumerate(spamreader):
 			if row:
-				if i >= 2: 
+				if i >= 1: 
 					# Extract food resource's location type.
 					location_type_table = decode_string(row[1], "location_type", i) # Required.
 
