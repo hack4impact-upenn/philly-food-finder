@@ -3,23 +3,38 @@
 
 {% block content %}
 
+<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/data.json"></script>
 <script type="text/javascript">
   resetMarkerInfoDiv(); 
 
   var map;
+
   $(document).ready(function() {
+    var center = new google.maps.LatLng(39.9500, -75.1667 );
+    var options = {
+      'zoom': 13,
+      'center': center,
+      'mapTypeId': google.maps.MapTypeId.ROADMAP
+    };
+
     /* Create a new map. */
-    map = new GMaps({     
+    /*map = new GMaps({     
       el: 'map',
       lat: 39.9500,
       lng: -75.1667
-    });
+    });*/
+
+    var map = new google.maps.Map(document.getElementById("map"), options);
+    var mcOptions = {gridSize: 50, maxZoom: 15};
+    var mc = new MarkerClusterer(map, [], mcOptions);
+    google.maps.event.addDomListener(window, 'load', initialize);
 
     /* Pre-populate map with all food resources in database. */
     $('*').css({ 'cursor': 'wait' });
     booleansArray = getCheckedBooleans();
-    updateMap("19104", 0 /* FALSE */, booleansArray);
+    //updateMap("19104", 0 /* FALSE */, booleansArray);
     
+    if (false) { 
     /* When 'Search' button is clicked, repopulated map based on zip code and boolean filters. */
     $('#geocoding_form').submit(function(e) {
       $('*').css({ 'cursor': 'wait' });
@@ -36,10 +51,10 @@
           /* Given address is valid. */
           if (status == 'OK') {
 
-            /* Add address marker to center of map. */
+            /Add address marker to center of map. */
             var marker = results[0].geometry.location;
             var markerImage = "../static/img/mbb_black.png";
-            map.addMarker({
+            /*map.addMarker({
               lat : marker.lat(),
               lng : marker.lng(),
               title: "Current Address",
@@ -72,8 +87,30 @@
           }
         }
       });
-    });  
-  });     
+    });}  
+  });
+
+        function initialize() {
+        var center = new google.maps.LatLng(37.4419, -122.1419);
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 3,
+          center: center,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var markers = [];
+        for (var i = 0; i < 100; i++) {
+          var dataPhoto = data.photos[i];
+          var latLng = new google.maps.LatLng(dataPhoto.latitude,
+              dataPhoto.longitude);
+          var marker = new google.maps.Marker({
+            position: latLng
+          });
+          markers.push(marker);
+        }
+        var markerCluster = new MarkerClusterer(map, markers);
+      }     
 
   function updateMap(zipCode, hasZipCodeFilter, booleansArray) {
     // Populate map with food resources from database.
