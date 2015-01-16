@@ -36,12 +36,16 @@ def address_food_resources():
 	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
 	zip_code = request.args.get('zip_code')
 	booleans_array = json.loads(request.args.get('booleans'))
+	start_index = request.args.get('start_index', 5, type=int)
+	end_index = request.args.get('end_index', 10, type=int)
 
-	food_resources = getFilteredFoodResources(
+	(food_resources, is_done) = getFilteredFoodResources(
 		has_zip_code_filter=has_zip_code_filter, 
 		zip_code=zip_code, 
 		has_open_now_filter=False,
-		booleans_array=booleans_array)
+		booleans_array=booleans_array,
+		start_index=start_index,
+		end_index=end_index)
 
 	json_array = []
 	for i, list in enumerate(food_resources):
@@ -51,7 +55,7 @@ def address_food_resources():
 			for food_resource in list:
 				json_array[index].append(food_resource.serialize_food_resource())
 
-	return jsonify(addresses=json_array)
+	return jsonify(addresses=json_array, is_done=is_done)
 
 @app.route('/admin/new', methods=['GET', 'POST'])
 @app.route('/admin/edit/<id>', methods=['GET', 'POST'])

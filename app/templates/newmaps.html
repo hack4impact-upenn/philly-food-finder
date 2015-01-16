@@ -7,6 +7,7 @@
   resetMarkerInfoDiv(); 
 
   var map;
+  var QUERY_SIZE = 50; 
   $(document).ready(function() {
     /* Create a new map. */
     map = new GMaps({     
@@ -18,7 +19,7 @@
     /* Pre-populate map with all food resources in database. */
     $('*').css({ 'cursor': 'wait' });
     booleansArray = getCheckedBooleans();
-    updateMap("19104", 0 /* FALSE */, booleansArray);
+    updateMap("19104", 0 /* FALSE */, booleansArray, 0, QUERY_SIZE);
     
     /* When 'Search' button is clicked, repopulated map based on zip code and boolean filters. */
     $('#geocoding_form').submit(function(e) {
@@ -63,26 +64,34 @@
             };  
             $.post(url = $SCRIPT_ROOT + '/_search_query', data = json_data);
 
-            updateMap(zipCode, 1 /* TRUE */, booleansArray);
+            var startIndex = 0; 
+            var endIndex = 5; 
+            updateMap(zipCode, 1, booleansArray, 0, QUERY_SIZE); /* TRUE */
           }
           /* Given address is invalid. */
           else {
             var zipCode = "19104"; /* Arbitrary */
-            updateMap(zipCode, 0 /* FALSE */, booleansArray);
+            var startIndex = 0; 
+            var endIndex = 5;
+            updateMap(zipCode, 0, booleansArray, 0, QUERY_SIZE); /* FALSE */
           }
         }
       });
     });  
   });     
 
-  function updateMap(zipCode, hasZipCodeFilter, booleansArray) {
+  function updateMap(zipCode, hasZipCodeFilter, booleansArray, startIndex, endIndex) {
+    var isDone; 
     // Populate map with food resources from database.
     $.getJSON($SCRIPT_ROOT + '/_map', {
       zip_code: zipCode, 
       has_zip_code_filter: hasZipCodeFilter,
-      booleans: JSON.stringify(booleansArray) 
+      start_index: startIndex,
+      end_index: endIndex,
+      booleans: JSON.stringify(booleansArray)
     },
     function(data) {
+      isDone = data["is_done"];
       for (var i = 0; i < data["addresses"].length; i++) {
         for (var j = 0; j < data["addresses"][0].length; j++) {
           (function() {
@@ -119,7 +128,6 @@
                     document.getElementById("marker-info").innerHTML = newDescription;
                     $('.linkInsert').attr('href', completeLink);
                     updateFoodResourceDescriptionHeaderColor(foodResource); 
-                    console.log(foodResource);
                   }
                 }); 
               }
@@ -130,7 +138,18 @@
           } ()); // Call anonymous function.
         }
       }
-      $('*').css({ 'cursor': 'default' });
+      var areAllDone = true; 
+      for (var i = 0; i < isDone.length; i++) {
+        if (isDone[i] == false) {
+          areAllDone = false; 
+        }
+      }
+      if (!areAllDone) {
+        updateMap(zipCode, hasZipCodeFilter, booleansArray, endIndex, endIndex + QUERY_SIZE); 
+      }
+      else {
+        $('*').css({ 'cursor': 'default' });
+      }
     });
   } // End of updateMap().                         
 </script>
