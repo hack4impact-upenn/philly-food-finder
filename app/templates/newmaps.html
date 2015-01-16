@@ -7,23 +7,42 @@
   resetMarkerInfoDiv(); 
 
   var map;
+  var markers = [];
+  var markerClusterer; 
+  var mcOptions; 
+
+  google.maps.Map.prototype.clearOverlays = function() {
+    for (var i = 0; i < markers.length; i++ ) {
+      markers[i].setMap(null);
+    }
+    markers.length = 0;
+    markers = []; 
+  }
+
+  function clearMarkers() {
+    map.clearOverlays();
+    markerClusterer.clearMarkers();
+  }
+
   $(document).ready(function() {
-    /* Create a new map. */
-    map = new GMaps({     
-      el: 'map',
-      lat: 39.9500,
-      lng: -75.1667
-    });
+    // Create map.
+    var center = new google.maps.LatLng(39.9500, -75.1667);
+    var options = {
+      'zoom': 13,
+      'center': center,
+      'mapTypeId': google.maps.MapTypeId.ROADMAP
+    };
+    map = new google.maps.Map(document.getElementById("map"), options);
+    mcOptions = {gridSize: 50, maxZoom: 15};
 
     /* Pre-populate map with all food resources in database. */
     $('*').css({ 'cursor': 'wait' });
     booleansArray = getCheckedBooleans();
     updateMap("19104", 0 /* FALSE */, booleansArray);
     
-    /* When 'Search' button is clicked, repopulated map based on zip code and boolean filters. */
-    $('#geocoding_form').submit(function(e) {
+    $('#map-search-button').click(function(e) {
       $('*').css({ 'cursor': 'wait' });
-      map.removeMarkers();
+      clearMarkers(); 
       e.preventDefault();
 
       resetMarkerInfoDiv(); 
@@ -33,25 +52,28 @@
       GMaps.geocode({
         address: $('#address').val().trim(),
         callback: function(results, status) {
-          /* Given address is valid. */
+          // Given address is valid. 
           if (status == 'OK') {
 
-            /* Add address marker to center of map. */
+            // Add address marker to center of map. 
             var marker = results[0].geometry.location;
             var markerImage = "../static/img/mbb_black.png";
-            map.addMarker({
-              lat : marker.lat(),
-              lng : marker.lng(),
-              title: "Current Address",
-              icon : { url: markerImage,
-                size: new google.maps.Size(50,50),
-                scaledSize: new google.maps.Size(20,25) }
+
+            // Create marker.
+            var latLng = new google.maps.LatLng(marker.lat(),
+              marker.lng());
+            var marker = new google.maps.Marker({
+              position: latLng, 
+              icon: { url: markerImage,
+                      size: new google.maps.Size(50,50),
+                      scaledSize: new google.maps.Size(20,25) },
             });
+            markers.push(marker);
 
-            /* Center the map at the given zip code or address. */
-            map.setCenter(marker.lat(), marker.lng());
+            // Center the map at the given zip code or address. 
+            map.setCenter(marker.getPosition());
 
-            /* Save searched zip code in database. */
+            // Save searched zip code in database. 
             var zipCode = ""; 
             for (var i = 0; i < results[0].address_components.length; i++) {
               if (results[0].address_components[i].types[0] == "postal_code") {
@@ -63,17 +85,17 @@
             };  
             $.post(url = $SCRIPT_ROOT + '/_search_query', data = json_data);
 
-            updateMap(zipCode, 1 /* TRUE */, booleansArray);
+            updateMap(zipCode, 1, booleansArray); // TRUE
           }
-          /* Given address is invalid. */
+          // Given address is invalid. 
           else {
-            var zipCode = "19104"; /* Arbitrary */
-            updateMap(zipCode, 0 /* FALSE */, booleansArray);
+            var zipCode = "19104"; // Arbitrary 
+            updateMap(zipCode, 0, booleansArray); // FALSE
           }
         }
       });
-    });  
-  });     
+    }); 
+  }); 
 
   function updateMap(zipCode, hasZipCodeFilter, booleansArray) {
     // Populate map with food resources from database.
@@ -107,29 +129,39 @@
 
               /* Only add address to map if its address is valid. */
               if (foodResource["address"]["valid_address"] != 0) {
-                /* Add each marker to map. */                     
-                map.addMarker({
-                  lat : latitude,
-                  lng : longitude,
-                  title: newTitle,
-                  icon : { url: image,
+                var latLng = new google.maps.LatLng(latitude,
+                  longitude);
+                var marker = new google.maps.Marker({
+                  position: latLng, 
+                  icon: { url: image,
                           size: new google.maps.Size(50,50),
                           scaledSize: new google.maps.Size(20,25) },
-                  click: function(e) {
-                    document.getElementById("marker-info").innerHTML = newDescription;
-                    $('.linkInsert').attr('href', completeLink);
-                    updateFoodResourceDescriptionHeaderColor(foodResource); 
-                    console.log(foodResource);
-                  }
-                }); 
-              }
+                  map: map
+                });
+                markers.push(marker);
 
-              /* Fit map window to show all markers. */
-              map.fitZoom(); 
+                google.maps.event.addListener(marker, 'click', function() {
+                  // Update map info content box with food resource's description.
+                  document.getElementById("marker-info").innerHTML = newDescription;
+                  $('.linkInsert').attr('href', completeLink);
+                  updateFoodResourceDescriptionHeaderColor(foodResource); 
+                  // Pan to the marker on the map.
+                  map.panTo(marker.getPosition());
+                });
+              }
             } 
           } ()); // Call anonymous function.
         }
       }
+      markerClusterer = new MarkerClusterer(map, markers);
+
+      // Fit the bounds of the map to the markers in the map.
+      var bounds = new google.maps.LatLngBounds();
+      for(i = 0; i < markers.length; i++) {
+        bounds.extend(markers[i].getPosition());
+      }
+      map.fitBounds(bounds);
+
       $('*').css({ 'cursor': 'default' });
     });
   } // End of updateMap().                         
@@ -173,30 +205,28 @@
   <!-- Map filtering -->
   <div class="row">
     <div class="small-12 columns content">
-      <form method="post" id="geocoding_form">
-        <div class="row">
-          <div class="small-12 columns">
-              <label for="address">Address or Zip Code:</label>
-              <input type="text" id="address" name="address" />
-          </div>
+      <div class="row">
+        <div class="small-12 columns">
+            <label for="address">Address or Zip Code:</label>
+            <input type="text" id="address" name="address" />
         </div>
-        <div class="row">
-            <ul id="checkboxes">
-              {% for boolean in food_resource_booleans %}
-              <div class="large-4 small-6 columns">
-                <li class="checkbox-li">            
-                  <input type="checkbox" id="filter-by-boolean-{{ boolean.hyphenated_id }}"/> {{ boolean.description_question }}
-                </li>
-              </div>
-              {% endfor %}
-            </ul>
-        </div>    
-        <div class="row">                                        
-          <div class="small-12 columns">
-            <input type="submit" class="button radius small" value="Search" id="map-search-button" />
-          </div>
+      </div>
+      <div class="row">
+          <ul id="checkboxes">
+            {% for boolean in food_resource_booleans %}
+            <div class="large-4 small-6 columns">
+              <li class="checkbox-li">            
+                <input type="checkbox" id="filter-by-boolean-{{ boolean.hyphenated_id }}"/> {{ boolean.description_question }}
+              </li>
+            </div>
+            {% endfor %}
+          </ul>
+      </div>    
+      <div class="row">                                        
+        <div class="small-12 columns">
+          <input type="submit" class="button radius small" value="Search" id="map-search-button" />
         </div>
-      </form>      
+      </div>
       <div id="map-container">
         <div class="row">
           <div class="small-12 columns" id="map"></div>

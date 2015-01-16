@@ -484,6 +484,33 @@ function getFoodResourceAddress(foodResource) {
         + foodResource["address"]["zip_code"];
 }
 
+// Sets the map on all markers in the array.
+// SOURCE: https://developers.google.com/maps/documentation/javascript/examples/marker-remove
+function setAllMap(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+
+// Removes the markers from the map, but keeps them in the array.
+// SOURCE: https://developers.google.com/maps/documentation/javascript/examples/marker-remove
+function clearMarkers() {
+  setAllMap(null);
+}
+
+// Shows any markers currently in the array.
+// SOURCE: https://developers.google.com/maps/documentation/javascript/examples/marker-remove
+function showMarkers() {
+  setAllMap(map);
+}
+
+// Deletes all markers in the array by removing references to them.
+// SOURCE: https://developers.google.com/maps/documentation/javascript/examples/marker-remove
+function deleteMarkers() {
+  clearMarkers();
+  markers = [];
+}	
+
 function updateFoodResourceDescriptionHeaderColor(foodResource) {
 	var hexColor = foodResource["food_resource_type"]["colored_pin"]["hex_color"]; 
     $("#food-resource-info").css("background-color", hexColor);	

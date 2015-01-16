@@ -15,7 +15,15 @@
     <script src="{{ url_for('static', filename='js/dropzone.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery.remodal.min.js') }}"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-   
+    <script type="text/javascript">
+      var script = '<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer';
+      if (document.location.search.indexOf('compiled') !== -1) {
+        script += '_compiled';
+      }
+      script += '.js"><' + '/script>';
+      document.write(script);
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Don't launch the Foundation JS until the DOM has loaded -->
