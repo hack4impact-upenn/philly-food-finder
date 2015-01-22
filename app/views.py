@@ -1,4 +1,4 @@
-from app import app, db, utils
+from app import app, db, utils, cache
 from utils import *
 from models import *
 from forms import *
@@ -183,7 +183,7 @@ def new(id=None):
 			db.session.commit()
 
 			# Clears cache
-			cache.delete_memoized('all_food_resources')
+			cache.delete_memoized(all_food_resources)
 
 			return redirect(url_for('admin'))
 
@@ -513,7 +513,7 @@ def remove_food_resource_type():
 	db.session.commit()
 
 	# Clears cache
-	cache.delete_memoized('all_food_resources')
+	cache.delete_memoized(all_food_resources)
 
 	return jsonify(success="success")
 
@@ -586,7 +586,7 @@ def remove():
 	db.session.commit()
 
 	# Clears cache
-	cache.delete_memoized('all_food_resources')
+	cache.delete_memoized(all_food_resources)
 
 	return jsonify(is_approved=is_approved)
 
@@ -618,7 +618,7 @@ def approve():
 	db.session.commit()
 
 	# Clears cache
-	cache.delete_memoized('all_food_resources')
+	cache.delete_memoized(all_food_resources)
 
 	return jsonify(message="success")
 
@@ -761,7 +761,7 @@ def csv_input():
 
 		if errors is None or len(errors) is 0:
 			# Clears cache
-			cache.delete_memoized('all_food_resources')
+			cache.delete_memoized(all_food_resources)
 
 			return jsonify(message = "success")
 		else:
@@ -922,6 +922,8 @@ def new_food_resource_type(id=None):
 				food_resource_type.name_plural = form.name_plural.data
 				food_resource_type.colored_pin = colored_pin
 				food_resource_type.recreate_fields()
+
+			cache.delete_memoized(all_food_resources)
 		
 		# Create a new food resource type.
 		else:
@@ -947,7 +949,7 @@ def delete_all_food_resources():
 		db.session.delete(food_resource)
 
 	# Clears cache
-	cache.delete_memoized('all_food_resources')
+	cache.delete_memoized(all_food_resources)
 
 	db.session.commit()
 	return jsonify(message="success")
