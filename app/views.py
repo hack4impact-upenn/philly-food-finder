@@ -1,4 +1,4 @@
-from app import app, db, utils, cache
+from app import app, db, utils
 from utils import *
 from models import *
 from forms import *
@@ -181,8 +181,6 @@ def new(id=None):
 			# Commit all database changes. 
 			db.session.add(food_resource)
 			db.session.commit()
-
-			
 
 			return redirect(url_for('admin'))
 
