@@ -2,8 +2,6 @@ from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 import os
 from flask_mail import Mail
-from flask.ext.cacheify import init_cacheify
-#from flask.ext.cache import Cache
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -70,8 +68,6 @@ app.config.from_object(__name__+'.ConfigClass')
 
 db = SQLAlchemy(app) 	# Initialize Flask-SQLAlchemy
 mail = Mail(app)		# Initialize Flask-Mail
-cache = init_cacheify(app)
-#cache = Cache(config={'CACHE_TYPE': 'memcached'})
 
 from app import views, models, forms
 from forms import InviteForm

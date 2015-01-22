@@ -62,7 +62,7 @@ def address_food_resources():
 
 	return jsonify(addresses=json_array, is_done=is_done)
 
-@cache.memoize()
+
 @app.route('/_map_all_no_filters')
 def all_food_resources():
 	# Collect boolean paramaters passed via JSON.
@@ -182,8 +182,7 @@ def new(id=None):
 			db.session.add(food_resource)
 			db.session.commit()
 
-			# Clears cache
-			cache.delete_memoized(all_food_resources)
+			
 
 			return redirect(url_for('admin'))
 
@@ -512,8 +511,6 @@ def remove_food_resource_type():
 	db.session.delete(food_resource_type)
 	db.session.commit()
 
-	# Clears cache
-	cache.delete_memoized(all_food_resources)
 
 	return jsonify(success="success")
 
@@ -585,9 +582,6 @@ def remove():
 	db.session.delete(food_resource)
 	db.session.commit()
 
-	# Clears cache
-	cache.delete_memoized(all_food_resources)
-
 	return jsonify(is_approved=is_approved)
 
 @app.route('/_approve')
@@ -616,9 +610,6 @@ def approve():
 
 	food_resource.is_approved = True
 	db.session.commit()
-
-	# Clears cache
-	cache.delete_memoized(all_food_resources)
 
 	return jsonify(message="success")
 
@@ -760,8 +751,6 @@ def csv_input():
 			errors = [str(e)]
 
 		if errors is None or len(errors) is 0:
-			# Clears cache
-			cache.delete_memoized(all_food_resources)
 
 			return jsonify(message = "success")
 		else:
@@ -922,8 +911,6 @@ def new_food_resource_type(id=None):
 				food_resource_type.name_plural = form.name_plural.data
 				food_resource_type.colored_pin = colored_pin
 				food_resource_type.recreate_fields()
-
-			cache.delete_memoized(all_food_resources)
 		
 		# Create a new food resource type.
 		else:
@@ -947,9 +934,6 @@ def delete_all_food_resources():
 	food_resources = FoodResource.query.all(); 
 	for food_resource in food_resources:
 		db.session.delete(food_resource)
-
-	# Clears cache
-	cache.delete_memoized(all_food_resources)
 
 	db.session.commit()
 	return jsonify(message="success")
