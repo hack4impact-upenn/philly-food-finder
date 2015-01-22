@@ -1,4 +1,4 @@
-from app import app, db, cache
+from app import app, db
 from flask_user import UserMixin
 import datetime
 import utils
@@ -229,14 +229,12 @@ class FoodResource(db.Model):
 		super(db.Model, self).__init__(*args, **kwargs)
 		self.booleans = utils.get_food_resource_booleans()
 
-	@cache.memoize()
 	def serialize_name_only(self):
 		return {
 			'name': self.name, 
 			'id': self.id
 		}
 
-	@cache.memoize()
 	def serialize_food_resource(self, include_food_resource_type=True):
 		dict = {
 			'id': self.id, 
@@ -253,7 +251,6 @@ class FoodResource(db.Model):
 			dict["food_resource_type"] = self.food_resource_type.serialize_food_resource_type()
 		return dict
 
-	@cache.memoize()
 	def serialize_map_list(self):
 		return {
 			'id': self.id,
