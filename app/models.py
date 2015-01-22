@@ -1,4 +1,4 @@
-from app import app, db
+from app import app, db, cache
 from flask_user import UserMixin
 import datetime
 import utils
@@ -229,12 +229,14 @@ class FoodResource(db.Model):
 		super(db.Model, self).__init__(*args, **kwargs)
 		self.booleans = utils.get_food_resource_booleans()
 
+	@cache.memoize()
 	def serialize_name_only(self):
 		return {
 			'name': self.name, 
 			'id': self.id
 		}
 
+	@cache.memoize()
 	def serialize_food_resource(self, include_food_resource_type=True):
 		dict = {
 			'id': self.id, 
@@ -251,6 +253,7 @@ class FoodResource(db.Model):
 			dict["food_resource_type"] = self.food_resource_type.serialize_food_resource_type()
 		return dict
 
+	@cache.memoize()
 	def serialize_map_list(self):
 		return {
 			'id': self.id,
@@ -261,12 +264,12 @@ class FoodResource(db.Model):
 			'address': self.address.serialize_address()
 		}
 
+	def __repr__(self):
+		return "%s(%s)" % (self.__class__.__name__, self.id)
+
 class Role(db.Model):
 	id = db.Column(db.Integer(), primary_key=True)
 	name = db.Column(db.String(100))
-	role_type_enums = ('User','Admin')
-	id = db.Column(db.Integer(), primary_key=True)
-	name = db.Column(db.Enum(*role_type_enums))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class UserRoles(db.Model):

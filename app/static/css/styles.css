@@ -896,3 +896,8 @@ li {
   margin-bottom: 5px;
   padding: 8px 10px;
 }
+
+#size-limit-announcement {
+  font-weight: bold;
+  color: #ef3d23;
+}

@@ -26,9 +26,14 @@ def map():
 		.order_by(FoodResourceType.name_singular).all()
 	html_string = HTML.query.filter_by(page = 'map-announcements').first()
 	food_resource_booleans = get_food_resource_booleans()
+
+	# resources = []
+	# for food_resource in FoodResource.query.all():
+	# 	resources.append(food_resource.serialize_food_resource())
+
 	return render_template('newmaps.html', 
 		food_resource_types=food_resource_types, html_string=html_string,
-		food_resource_booleans=food_resource_booleans)
+		food_resource_booleans=food_resource_booleans, resources = FoodResource.query.filter_by(is_approved = True).all())
 
 @app.route('/_map')
 def address_food_resources():
@@ -56,6 +61,22 @@ def address_food_resources():
 				json_array[index].append(food_resource.serialize_food_resource())
 
 	return jsonify(addresses=json_array, is_done=is_done)
+
+@cache.memoize()
+@app.route('/_map_all_no_filters')
+def all_food_resources():
+	# Collect boolean paramaters passed via JSON.
+	
+	# start_index = request.args.get('start_index', 5, type=int)
+	# end_index = request.args.get('end_index', 10, type=int)
+
+	resources = FoodResource.query.filter_by(is_approved = True).all()
+
+	json_array = []
+	for food_resource in resources:
+		json_array.append(food_resource.serialize_food_resource())
+
+	return jsonify(addresses=json_array)
 
 @app.route('/admin/new', methods=['GET', 'POST'])
 @app.route('/admin/edit/<id>', methods=['GET', 'POST'])
@@ -160,6 +181,10 @@ def new(id=None):
 			# Commit all database changes. 
 			db.session.add(food_resource)
 			db.session.commit()
+
+			# Clears cache
+			cache.delete_memoized('all_food_resources')
+
 			return redirect(url_for('admin'))
 
 	# If GET request is received or POST request fails due to invalid timeslots, 
@@ -486,6 +511,10 @@ def remove_food_resource_type():
 	# Remove the food resource type from the database.
 	db.session.delete(food_resource_type)
 	db.session.commit()
+
+	# Clears cache
+	cache.delete_memoized('all_food_resources')
+
 	return jsonify(success="success")
 
 
@@ -555,6 +584,10 @@ def remove():
 	db.session.delete(food_resource)
 	db.session.delete(food_resource)
 	db.session.commit()
+
+	# Clears cache
+	cache.delete_memoized('all_food_resources')
+
 	return jsonify(is_approved=is_approved)
 
 @app.route('/_approve')
@@ -583,6 +616,10 @@ def approve():
 
 	food_resource.is_approved = True
 	db.session.commit()
+
+	# Clears cache
+	cache.delete_memoized('all_food_resources')
+
 	return jsonify(message="success")
 
 @app.route('/about')
@@ -723,6 +760,9 @@ def csv_input():
 			errors = [str(e)]
 
 		if errors is None or len(errors) is 0:
+			# Clears cache
+			cache.delete_memoized('all_food_resources')
+
 			return jsonify(message = "success")
 		else:
 			response = jsonify({
@@ -905,5 +945,9 @@ def delete_all_food_resources():
 	food_resources = FoodResource.query.all(); 
 	for food_resource in food_resources:
 		db.session.delete(food_resource)
+
+	# Clears cache
+	cache.delete_memoized('all_food_resources')
+
 	db.session.commit()
 	return jsonify(message="success")

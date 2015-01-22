@@ -5,6 +5,7 @@
     <link href="{{ url_for('static', filename='css/foundation.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url_for('static', filename='css/jquery.remodal.css') }}" rel="stylesheet" type="text/css">
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/nprogress.css') }}"/>
     <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
     <script type="text/javascript" 
@@ -15,6 +16,7 @@
     <script src="{{ url_for('static', filename='js/dropzone.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery.remodal.min.js') }}"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="{{ url_for('static', filename='js/nprogress.js') }}"></script>
    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -39,7 +41,7 @@
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-      ga('create', '', 'auto');
+      ga('create', 'UA-58031790-1', 'auto');
       ga('send', 'pageview');
 
       {% if current_user.is_authenticated() %}
