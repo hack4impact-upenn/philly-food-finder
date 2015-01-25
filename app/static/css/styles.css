@@ -352,7 +352,7 @@ button:hover, button:focus, .button:hover, .button:focus {
     border-color: #999999; /* gray */
 }
 
-#checkboxes {
+.checkboxes {
   list-style-type: none;
   display:inline;
   margin: 0px;

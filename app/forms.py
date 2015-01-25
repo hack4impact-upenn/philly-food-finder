@@ -1,4 +1,5 @@
 from app import app
+from app.models import FoodResourceType
 from flask import current_app
 from flask.ext.wtf import Form
 from flask.ext.wtf.recaptcha import RecaptchaField
@@ -6,7 +7,7 @@ from wtforms.validators import InputRequired, Length, URL, Email, Optional, \
 	ValidationError
 from wtforms import TextField, TextAreaField, validators, PasswordField, \
 	StringField, BooleanField, SubmitField, HiddenField, SelectField, \
-	SelectField, FieldList, FormField, Label
+	SelectField, FieldList, FormField, Label, SelectMultipleField
 from flask_user.forms import RegisterForm, unique_email_validator
 from flask_user.translations import lazy_gettext as _
 from app.utils import *
@@ -133,10 +134,10 @@ class AddNewFoodResourceForm(Form):
 			year, please indicate that within 'Additional Information."
 	)
 
-    # For each day of the week, is the food resource open or closed?
+	# For each day of the week, is the food resource open or closed?
 	is_open = FieldList(FormField(IsOpenForm), min_entries=7, max_entries=7)
 
-    # If a food resource is open on a given day, input its hours of operation. 
+	# If a food resource is open on a given day, input its hours of operation. 
 	daily_timeslots = FieldList(FormField(MultiTimeSlotForm), 
 		min_entries=7, max_entries=7)
 
@@ -235,11 +236,11 @@ class InviteForm(RegisterForm):
 	)
 
 	submit = SubmitField(_('Invite'))
-    
-    # Override RegisterForm's validate function so that a temporary password 
-    # can be set 
+	
+	# Override RegisterForm's validate function so that a temporary password 
+	# can be set 
 	def validate(self):
-        # remove certain form fields depending on user manager config
+		# remove certain form fields depending on user manager config
 		user_manager =  current_app.user_manager
 		delattr(self, 'password')
 		delattr(self, 'retype_password')
@@ -249,7 +250,7 @@ class InviteForm(RegisterForm):
 		if not user_manager.enable_email:
 			delattr(self, 'email')
 
-        # Add custom username validator if needed
+		# Add custom username validator if needed
 		if user_manager.enable_username:
 			has_been_added = False
 			for v in self.username.validators:
@@ -257,8 +258,8 @@ class InviteForm(RegisterForm):
 					has_been_added = True
 			if not has_been_added:
 				self.username.validators.append(user_manager.username_validator)
-        
-        # Validate field-validators
+		
+		# Validate field-validators
 		if not super(RegisterForm, self).validate():
 			return False
 
@@ -318,3 +319,56 @@ class AddNewFoodResourceTypeForm(Form):
 			raise ValidationError('Another food resource type already has this \
 				plural name. Plural names must be unique.')
 
+class CheckboxForm(Form):
+	id = TextField()
+	value = BooleanField(
+		validators = []
+	)
+
+	def set_label(self, label):
+		self.value.label = Label(self.value.id, label)
+
+class PrecheckedCheckboxForm(Form):
+	id = TextField()
+	value = BooleanField(
+		validators = [],
+		default = True
+	)
+
+	def set_label(self, label):
+		self.value.label = Label(self.value.id, label)	
+
+# Enter a search for the map.
+class MapSearchForm(Form):
+	search_id = TextField() # Invisible to user
+	address_or_zip_code = TextField(
+		label = 'Address or Zip Code:', 
+		validators = []
+	)
+	geocode = TextField()
+	location_type_booleans = FieldList(FormField(PrecheckedCheckboxForm))
+	booleans = FieldList(FormField(CheckboxForm)) # Advanced Options
+
+	def generate_booleans(self):
+		food_resource_booleans = get_food_resource_booleans()
+		for i, food_resource_boolean in enumerate(food_resource_booleans):
+			self.booleans.append_entry()
+			self.booleans[i].set_label(food_resource_boolean.description_question)
+
+	def label_booleans(self):
+		food_resource_booleans = get_food_resource_booleans()
+		for i, food_resource_boolean in enumerate(food_resource_booleans):
+			self.booleans[i].set_label(food_resource_boolean.description_question)
+
+	def generate_location_type_booleans(self):
+		location_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_plural).all()
+		for i, location_type in enumerate(location_types):
+			self.location_type_booleans.append_entry()
+			self.location_type_booleans[i].set_label(location_type.name_plural)
+
+	def label_location_type_booleans(self):
+		location_types = FoodResourceType.query \
+		.order_by(FoodResourceType.name_plural).all()
+		for i, location_type in enumerate(location_types):
+			self.location_type_booleans[i].set_label(location_type.name_plural)

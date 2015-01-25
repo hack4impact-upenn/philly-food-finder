@@ -14,69 +14,54 @@ from flask_user.emails import send_email
 from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
 from tempfile import NamedTemporaryFile
-import csv, time
-import json
+import csv, time, json, requests
 from operator import itemgetter
 from pygeocoder import Geocoder
 
-@app.route('/')
-@app.route('/map')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/map', methods=['GET', 'POST'])
 def map():
+	map_form = MapSearchForm(request.form)
+
+	days_of_week = get_days_of_week()
+
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_singular).all()
 	html_string = HTML.query.filter_by(page = 'map-announcements').first()
-	food_resource_booleans = get_food_resource_booleans()
 
-	# resources = []
-	# for food_resource in FoodResource.query.all():
-	# 	resources.append(food_resource.serialize_food_resource())
+	if request.method == 'POST':
 
-	return render_template('newmaps.html', 
+		geocode = Geocoder.geocode(map_form.address_or_zip_code.data) \
+			if len(map_form.address_or_zip_code.data) is not 0 else None
+
+		zip_code = geocode.postal_code if geocode is not None else None
+
+		resources = getFilteredFoodResources(
+			has_zip_code_filter = (zip_code is not None), 
+			zip_code = zip_code, 
+			has_open_now_filter = False,
+			resource_type_booleans_array = [checkbox_form.value.data for checkbox_form \
+				in map_form.location_type_booleans],
+			booleans_array = [checkbox_form.value.data for checkbox_form \
+				in map_form.booleans])
+
+		map_form.label_booleans()
+		map_form.label_location_type_booleans()
+
+		return render_template('newmaps.html', form = map_form, days_of_week = days_of_week,
 		food_resource_types=food_resource_types, html_string=html_string,
-		food_resource_booleans=food_resource_booleans, resources = FoodResource.query.filter_by(is_approved = True).all())
+		resources = resources, searched_location = geocode, from_search = True)
 
-@app.route('/_map')
-def address_food_resources():
-	# Collect boolean paramaters passed via JSON.
-	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
-	zip_code = request.args.get('zip_code')
-	booleans_array = json.loads(request.args.get('booleans'))
-	start_index = request.args.get('start_index', 5, type=int)
-	end_index = request.args.get('end_index', 10, type=int)
+	# Not a POST request
 
-	(food_resources, is_done) = getFilteredFoodResources(
-		has_zip_code_filter=has_zip_code_filter, 
-		zip_code=zip_code, 
-		has_open_now_filter=False,
-		booleans_array=booleans_array,
-		start_index=start_index,
-		end_index=end_index)
-
-	json_array = []
-	for i, list in enumerate(food_resources):
-		if len(list) > 0:
-			json_array.append([])
-			index = len(json_array) - 1
-			for food_resource in list:
-				json_array[index].append(food_resource.serialize_food_resource())
-
-	return jsonify(addresses=json_array, is_done=is_done)
-
-
-@app.route('/_map_all_no_filters')
-def all_food_resources():
-	# Collect boolean paramaters passed via JSON.
-	
-	# start_index = request.args.get('start_index', 5, type=int)
-	# end_index = request.args.get('end_index', 10, type=int)
+	map_form.generate_booleans()
+	map_form.generate_location_type_booleans()
 
 	resources = FoodResource.query.filter_by(is_approved = True).all()
 
-	json_array = []
-	for food_resource in resources:
-		json_array.append(food_resource.serialize_food_resource())
-
-	return jsonify(addresses=json_array)
+	return render_template('newmaps.html', form = map_form, days_of_week = days_of_week,
+		food_resource_types=food_resource_types, html_string=html_string,
+		resources = resources)
 
 @app.route('/admin/new', methods=['GET', 'POST'])
 @app.route('/admin/edit/<id>', methods=['GET', 'POST'])

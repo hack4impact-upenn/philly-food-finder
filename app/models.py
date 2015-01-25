@@ -201,7 +201,7 @@ class FoodResource(db.Model):
 	# Hours of operation.
 	are_hours_available = db.Column(db.Boolean, default=False)
 	timeslots = db.relationship(
-		'TimeSlot', # One-to-many relationship (one Address with many TimeSlots).
+		'TimeSlot', # One-to-many relationship (one Resource with many TimeSlots).
 		backref='food_resource', # Declare a new property of the TimeSlot class.
 		lazy='select', uselist=True, 
 		order_by='TimeSlot.start_time')
