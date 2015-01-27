@@ -328,15 +328,11 @@ class CheckboxForm(Form):
 	def set_label(self, label):
 		self.value.label = Label(self.value.id, label)
 
-class PrecheckedCheckboxForm(Form):
-	id = TextField()
+class PrecheckedCheckboxForm(CheckboxForm):
 	value = BooleanField(
 		validators = [],
 		default = True
 	)
-
-	def set_label(self, label):
-		self.value.label = Label(self.value.id, label)	
 
 # Enter a search for the map.
 class MapSearchForm(Form):
