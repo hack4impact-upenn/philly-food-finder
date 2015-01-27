@@ -8,7 +8,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Use a Class-based config to config flask and extensions
 class ConfigClass(object):
     # Flask settings
-    SECRET_KEY =              os.getenv('SECRET_KEY',       '')
+    SECRET_KEY =              os.getenv('SECRET_KEY',       '\x86\xc8\xa9Z\tN\xb2\n\xce\x83\x0f\xef\x80\xd56\x948a\x92\xe5\xc5\xb1\xc5j')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',     
         'sqlite:///' + os.path.join(basedir, 'app.db'))
 
@@ -18,7 +18,7 @@ class ConfigClass(object):
     MAIL_USERNAME =           os.getenv('MAIL_USERNAME',        
         'phillyhungercoalition@gmail.com')
     MAIL_PASSWORD =           os.getenv('MAIL_PASSWORD',        
-        '')
+        'Q8qrHeTH')
     DEFAULT_MAIL_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',  
         '"Philly Food Finder" <phillyhungercoalition@gmail.com>')
     MAIL_SERVER =             os.getenv('MAIL_SERVER',          
@@ -59,7 +59,7 @@ class ConfigClass(object):
 
     # Flask-WTF settings
     RECAPTCHA_PUBLIC_KEY = '6LfRvf8SAAAAAJ4rnEu4hNukozjLnhaQ04LGbC7z'
-    RECAPTCHA_PRIVATE_KEY = ''
+    RECAPTCHA_PRIVATE_KEY = '6LfRvf8SAAAAAFooOH7oUdqco7NkMS2NBGmpzzxO'
 
     DEBUG = True
 
