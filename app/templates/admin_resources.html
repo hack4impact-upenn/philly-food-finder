@@ -4,6 +4,8 @@
 {% from "macros.html" import render_food_resource_boolean with context %}
 
 {% block content %}
+<script src="//fast.eager.io/xaPpyKPnbT.js"></script>
+
 <body id = "resources_p">
 	<div class="row">
 		<h1 class="page-header admin-header" id="edit-resources-header">Manage Food Resources</h1>
@@ -460,6 +462,7 @@
 			var hasZipCodeFilter = 0; // FALSE
 			var regex = /^(\d{5})?$/; // 5-digit number or an empty string.
 			var zipCode = $("#zip-code").val().trim(); 
+
 			if (regex.test(zipCode)) {
 				// Clear any errors.
 				$("#filter-error").html("");

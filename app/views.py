@@ -14,48 +14,54 @@ from flask_user.emails import send_email
 from flask_user.views import _endpoint_url, _send_registered_email
 from flask_login import current_user, login_user, logout_user
 from tempfile import NamedTemporaryFile
-import csv, time
-import json
+import csv, time, json, requests
 from operator import itemgetter
 from pygeocoder import Geocoder
 
-@app.route('/')
-@app.route('/map')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/map', methods=['GET', 'POST'])
 def map():
+	map_form = MapSearchForm(request.form)
+
+	days_of_week = get_days_of_week()
+
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_singular).all()
 	html_string = HTML.query.filter_by(page = 'map-announcements').first()
-	food_resource_booleans = get_food_resource_booleans()
-	return render_template('newmaps.html', 
+
+	if request.method == 'POST':
+
+		geocode = Geocoder.geocode(map_form.address_or_zip_code.data) \
+			if len(map_form.address_or_zip_code.data) is not 0 else None
+
+		zip_code = geocode.postal_code if geocode is not None else None
+
+		resources = getFilteredFoodResources(
+			has_zip_code_filter = (zip_code is not None), 
+			zip_code = zip_code, 
+			has_open_now_filter = False,
+			resource_type_booleans_array = [checkbox_form.value.data for checkbox_form \
+				in map_form.location_type_booleans],
+			booleans_array = [checkbox_form.value.data for checkbox_form \
+				in map_form.booleans])
+
+		map_form.label_booleans()
+		map_form.label_location_type_booleans()
+
+		return render_template('newmaps.html', form = map_form, days_of_week = days_of_week,
 		food_resource_types=food_resource_types, html_string=html_string,
-		food_resource_booleans=food_resource_booleans)
+		resources = resources, searched_location = geocode, from_search = True)
 
-@app.route('/_map')
-def address_food_resources():
-	# Collect boolean paramaters passed via JSON.
-	has_zip_code_filter = request.args.get('has_zip_code_filter', 0, type=int)
-	zip_code = request.args.get('zip_code')
-	booleans_array = json.loads(request.args.get('booleans'))
-	start_index = request.args.get('start_index', 5, type=int)
-	end_index = request.args.get('end_index', 10, type=int)
+	# Not a POST request
 
-	(food_resources, is_done) = getFilteredFoodResources(
-		has_zip_code_filter=has_zip_code_filter, 
-		zip_code=zip_code, 
-		has_open_now_filter=False,
-		booleans_array=booleans_array,
-		start_index=start_index,
-		end_index=end_index)
+	map_form.generate_booleans()
+	map_form.generate_location_type_booleans()
 
-	json_array = []
-	for i, list in enumerate(food_resources):
-		if len(list) > 0:
-			json_array.append([])
-			index = len(json_array) - 1
-			for food_resource in list:
-				json_array[index].append(food_resource.serialize_food_resource())
+	resources = FoodResource.query.filter_by(is_approved = True).all()
 
-	return jsonify(addresses=json_array, is_done=is_done)
+	return render_template('newmaps.html', form = map_form, days_of_week = days_of_week,
+		food_resource_types=food_resource_types, html_string=html_string,
+		resources = resources)
 
 @app.route('/admin/new', methods=['GET', 'POST'])
 @app.route('/admin/edit/<id>', methods=['GET', 'POST'])
@@ -160,6 +166,7 @@ def new(id=None):
 			# Commit all database changes. 
 			db.session.add(food_resource)
 			db.session.commit()
+
 			return redirect(url_for('admin'))
 
 	# If GET request is received or POST request fails due to invalid timeslots, 
@@ -486,6 +493,8 @@ def remove_food_resource_type():
 	# Remove the food resource type from the database.
 	db.session.delete(food_resource_type)
 	db.session.commit()
+
+
 	return jsonify(success="success")
 
 
@@ -555,6 +564,7 @@ def remove():
 	db.session.delete(food_resource)
 	db.session.delete(food_resource)
 	db.session.commit()
+
 	return jsonify(is_approved=is_approved)
 
 @app.route('/_approve')
@@ -583,6 +593,7 @@ def approve():
 
 	food_resource.is_approved = True
 	db.session.commit()
+
 	return jsonify(message="success")
 
 @app.route('/about')
@@ -723,6 +734,7 @@ def csv_input():
 			errors = [str(e)]
 
 		if errors is None or len(errors) is 0:
+
 			return jsonify(message = "success")
 		else:
 			response = jsonify({
@@ -905,5 +917,6 @@ def delete_all_food_resources():
 	food_resources = FoodResource.query.all(); 
 	for food_resource in food_resources:
 		db.session.delete(food_resource)
+
 	db.session.commit()
 	return jsonify(message="success")

@@ -201,7 +201,7 @@ class FoodResource(db.Model):
 	# Hours of operation.
 	are_hours_available = db.Column(db.Boolean, default=False)
 	timeslots = db.relationship(
-		'TimeSlot', # One-to-many relationship (one Address with many TimeSlots).
+		'TimeSlot', # One-to-many relationship (one Resource with many TimeSlots).
 		backref='food_resource', # Declare a new property of the TimeSlot class.
 		lazy='select', uselist=True, 
 		order_by='TimeSlot.start_time')
@@ -261,12 +261,12 @@ class FoodResource(db.Model):
 			'address': self.address.serialize_address()
 		}
 
+	def __repr__(self):
+		return "%s(%s)" % (self.__class__.__name__, self.id)
+
 class Role(db.Model):
 	id = db.Column(db.Integer(), primary_key=True)
 	name = db.Column(db.String(100))
-	role_type_enums = ('User','Admin')
-	id = db.Column(db.Integer(), primary_key=True)
-	name = db.Column(db.Enum(*role_type_enums))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class UserRoles(db.Model):

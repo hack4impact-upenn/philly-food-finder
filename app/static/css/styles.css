@@ -13,6 +13,7 @@
 /* #F7F9F9 - off white */
 /* #999999 - gray */
 /* #DDDDDD - light gray */
+/* #ef3d23 - red */
 
 
 /* background colors */
@@ -352,7 +353,7 @@ button:hover, button:focus, .button:hover, .button:focus {
     border-color: #999999; /* gray */
 }
 
-#checkboxes {
+.checkboxes {
   list-style-type: none;
   display:inline;
   margin: 0px;
@@ -895,4 +896,9 @@ li {
 #food-resource-info {
   margin-bottom: 5px;
   padding: 8px 10px;
+}
+
+#size-limit-announcement {
+  font-weight: bold;
+  color: #ef3d23;
 }

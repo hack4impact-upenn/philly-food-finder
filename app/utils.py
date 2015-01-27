@@ -8,51 +8,52 @@ import re
 import csv
 from app import db
 
-def getFilteredFoodResources(has_zip_code_filter, zip_code, \
-	has_open_now_filter, booleans_array, start_index=None, end_index=None):
+def getFilteredFoodResources(has_zip_code_filter, zip_code, has_open_now_filter, 
+	resource_type_booleans_array, booleans_array):
 	# Create empty arrays to hold food resources.
 	all_resources = []
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_plural).all()
 
 	# Zip code is one of the filters.
-	is_done = []
 	if has_zip_code_filter:
 
 		# Iterate through all food resource types.
 		for i, food_resource_type in enumerate(food_resource_types):
+			if resource_type_booleans_array[i]:
 
-			# Filter for each kind of food resource with a specific zip code.
-			all_resources.append([])
-			is_done.append(get_food_resources_by_location_type_and_zip_code(
-				all_resources[i], # List to populate.
-				food_resource_type, # Location type by which to filter.
-				zip_code, # Zip code by which to filter.
-				start_index,
-				end_index
-			))
+				# Filter for each kind of food resource with a specific zip code.
+				#all_resources.append([])
+				get_food_resources_by_location_type_and_zip_code(
+					all_resources, # List to populate.
+					food_resource_type, # Location type by which to filter.
+					zip_code # Zip code by which to filter.
+				)
 
 	# Zip code is not one of the filters. 
 	else: 
 
 		# Iterate through all food resource types.
 		for i, food_resource_type in enumerate(food_resource_types):
+			if resource_type_booleans_array[i]:
 
-			# Filter for each kind of food resource without a specific zip code.
-			all_resources.append([])
-			is_done.append(get_food_resources_by_location_type(
-				all_resources[i], # List to populate.
-				food_resource_type, # Location type by which to filter.
-				start_index,
-				end_index
-			))
+				# Filter for each kind of food resource without a specific zip code.
+				#all_resources.append([])
+				get_food_resources_by_location_type(
+					all_resources, # List to populate.
+					food_resource_type # Location type by which to filter.
+				)
 
-	# Filter each list by other boolean criteria.
-	for list_to_filter in all_resources:
-		filter_food_resources(list_to_filter, has_open_now_filter, 
+	# # Filter each list by other boolean criteria.
+	# for list_to_filter in all_resources:
+	# 	filter_food_resources(list_to_filter, has_open_now_filter, 
+	# 		booleans_array)
+
+	# Filter entire list by boolean criteria
+	filter_food_resources(all_resources, has_open_now_filter, 
 			booleans_array)
 
-	return (all_resources, is_done)
+	return all_resources
 
 def get_first_day_of_month(day):
 	return datetime.date(day.year, day.month, 1)
@@ -333,6 +334,30 @@ def get_possible_closing_times():
 		closing_time += datetime.timedelta(0, 15*60) # Number of seconds in 15 minutes.
 	return closing_times
 
+def get_days_of_week():
+	return [
+	{'id' : "sunday",      
+				'name': "Sunday",       
+				'index' : 0},
+	{'id' : "monday",      
+				'name': "Monday",       
+				'index' : 1},
+	{'id' : "tuesday",     
+				'name': "Tuesday",      
+				'index' : 2},
+	{'id' : "wednesday",   
+				'name': "Wednesday",    
+				'index' : 3},
+	{'id' : "thursday",    
+				'name': "Thursday",     
+				'index' : 4},
+	{'id' : "friday",      
+				'name': "Friday",       
+				'index' : 5},
+	{'id' : "saturday",    
+				'name': "Saturday",     
+				'index' : 6}]
+
 def get_food_resources_by_location_type(list_to_populate, location_type, start_index=None, end_index=None):
 	query = db.session.query(FoodResource) \
 			.join(FoodResource.address) \
@@ -450,7 +475,7 @@ def import_file(path, charset='utf-8'):
 		spamreader = csv.reader(csvfile)
 		for i, row in enumerate(spamreader):
 			if row:
-				if i >= 2: 
+				if i >= 1: 
 					# Extract food resource's location type.
 					location_type_table = decode_string(row[1], "location_type", i) # Required.
 
