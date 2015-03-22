@@ -7,6 +7,7 @@ from models import *
 import re
 import csv
 from app import db
+from pygeocoder import Geocoder
 
 def getFilteredFoodResources(has_zip_code_filter, zip_code, has_open_now_filter, 
 	resource_type_booleans_array, booleans_array):
@@ -187,6 +188,7 @@ def create_food_resource_from_form(form, additional_errors):
 		food_resource.timeslots = all_timeslots
 		food_resource.address = address
 		food_resource.are_hours_available = are_hours_available
+		food_resource.url = form.website.data
 		food_resource.food_resource_type = food_resource_type
 		form_booleans = form.get_booleans()
 		for food_resource_boolean in food_resource.booleans:
