@@ -310,15 +310,17 @@
   </div>
 </body>
 
-{% if current_user.is_authenticated() %}
 <script>
-    $(".end-edit").hide();
+  $(document).ready(function() {
+    {% if current_user.is_authenticated() %}
+      $(".end-edit").hide();
+    {% endif %}
     $("#advanced-options-checkboxes").hide(); // Hide advanced options
 
     $("#advanced-options-expand").click(function() {
       toggleExpansion('advanced-options-checkboxes', 'search-expand');
     });
+  }); 
 </script>
-{% endif %}
 
 {% endblock %}
