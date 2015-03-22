@@ -548,8 +548,7 @@ def remove():
 				</p><br> Sincerely,<br>' + app.config['USER_APP_NAME'],
 			text_message = 'Your food resource ' + food_resource.name + 
 				' was rejected. Please contact contact us at \
-				phillyfoodinfo@gmail.com to find out why.',
-			reply_to = "phillyfoodinfo@gmail.com"
+				phillyfoodinfo@gmail.com to find out why.'
 		)
 
 	# If the food resource has a contact and its contact has submitted no other 
@@ -586,8 +585,7 @@ def approve():
 				'</b> was added to the map. Thank you!</p><br> Sincerely,<br>' + 
 				app.config['USER_APP_NAME'],
 			text_message = 'Good news! Your food resource ' + 
-				food_resource.name + ' was added to the map. Thank you!',
-			reply_to = "phillyfoodinfo@gmail.com"
+				food_resource.name + ' was added to the map. Thank you!'
 		)
 
 	if len(contact.food_resource) <= 1:
