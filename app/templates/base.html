@@ -74,7 +74,7 @@
             <li class="has-dropdown drop-resources">
               <a href="" id="l_resources">resources</a>
                 <ul class="dropdown">
-                  <li><a href="{{ url_for('neighborhood') }}">Neighborhood<br> Guide</a></li>
+                  <li><a href="{{ url_for('neighborhood') }}">Philly Food Finder<br> Guides</a></li>
                   <li><a href="{{ url_for('farmers') }}">Farmers’ Markets</a></li>
                   <li><a href="{{ url_for('seniors') }}">Seniors</a></li>
                   <li><a href="{{ url_for('share') }}">SHARE Host Sites</a></li>  
@@ -137,15 +137,25 @@
      </div>
     </div>
     <div class="footer fbottom row">
-      <div class="small-10 columns">
+      <div class="small-12 columns">
         Developed by <a href="http://hack4impact.org/">Hack4Impact</a> in partnership with the <a href="http://phillyfpac.org/">Philadelphia Mayor's Food Policy Advisory Council</a> and the <a href="http://www.hungercoalition.org/">Greater Philadelphia Coalition Against Hunger</a>.
       </div>
-      <div class="small-2 columns right">
-        <ul id="footer-pics">
-          <li class="footer-li"> <a href="http://hack4impact.org/"><img class="footer-img" src="{{ url_for('static', filename='img/h4i_logo.png') }}" alt="Hack4Impact"/></a></li>
-          <li class="footer-li"> <a href="http://phillyfpac.org/"><img class="footer-img" src="{{ url_for('static', filename='img/fpac-f_logo.png') }}" alt="Food Policy Advisory Council"></a></li>
-          <li class="footer-li"> <a href="http://www.hungercoalition.org/"><img class="footer-img" src="{{ url_for('static', filename='img/gpcah_logo.png') }}" alt="Greater Philadelphia Coalition Against Hunger"></a></li>
-        </ul>
+      <div class="small-12 columns right">
+        <div class="frame">
+            <span class="helper"></span>
+            <div class="logo">
+              <a href="http://phillyfpac.org/"><img class="logo" src="{{ url_for('static', filename='img/fpac-f_logo.png') }}" alt="Food Policy Advisory Council"></a>
+              <a href="http://www.hungercoalition.org/"><img class="logo" src="{{ url_for('static', filename='img/gpcah_logo.png') }}" alt="Greater Philadelphia Coalition Against Hunger"></a>
+            </div>
+          </div> 
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-12 small-centered columns">
+        <div class="frame">
+          <span class="helper"></span>
+          <a href="http://hack4impact.org/"><img class="logo" id="hack4impact-logo" src="{{ url_for('static', filename='img/applogo_color.png') }}" alt="Hack4Impact"/></a>
+        </div>       
       </div>
     </div></div>
 

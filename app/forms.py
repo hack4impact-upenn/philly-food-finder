@@ -112,9 +112,11 @@ class AddNewFoodResourceForm(Form):
 	address_state = TextField(
 		label = 'State', 
 		validators = [
-			InputRequired("Please provide the food resource's state."),
+			InputRequired("Please provide the food resource's 2-letter state \
+				abbreviation. e.g., PA for Pennsylvania"),
 			Length(1, 2) # Same max length as in Address model.
-		]
+		],
+		description = "2-letter state abbreviation. e.g., PA for Pennsylvania"
 	)
 	address_zip_code = TextField(
 		label = 'Zip Code', 
@@ -144,7 +146,7 @@ class AddNewFoodResourceForm(Form):
 	additional_information = TextAreaField(
 		label = 'Additional information to appear on the website', 
 		validators = [
-			Length(0, 300)
+			Length(0, 2000)
 		], 
 		description = 'Please use this space for additional details to \
 			discuss anything you want to appear in the description of your \

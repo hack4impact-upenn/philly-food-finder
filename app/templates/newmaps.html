@@ -45,6 +45,9 @@
       });
     {% endif %}
 
+    {% if resources|length == 0 %}
+      $("dd.error").append("<small class='error'>No search results. Please try another address or zip code.</small>"); 
+    {% endif %}
 
     {% for resource in resources %}
     (function() {

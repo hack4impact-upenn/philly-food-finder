@@ -549,7 +549,7 @@ function getFoodResourceDescriptionHtml(foodResource) {
 
     /* Add boolean information. */
     if (foodResource["booleans"].length > 0) {
-      newDescription += "<div class='rounded'>Other Attributes:</div> <br>"; 
+      newDescription += "<div class='rounded'>Other:</div> <br>"; 
       for (var j = 0; j < foodResource["booleans"].length; j++) {
         currentBoolean = foodResource["booleans"][j]; 
         if (currentBoolean["value"] == true) {
