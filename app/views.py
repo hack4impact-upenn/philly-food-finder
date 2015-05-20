@@ -543,7 +543,7 @@ def remove():
 			subject = food_resource.name + ' has been rejected',
 			html_message = 'Dear ' + contact.name + ', \
 				<p>Your food resource <b>' + food_resource.name + 
-				'</b> was rejected. Please contact contact us at ' + 
+				'</b> was rejected. Please contact us at ' + 
 				'phillyfoodinfo@gmail.com to find out why.\
 				</p><br> Sincerely,<br>' + app.config['USER_APP_NAME'],
 			text_message = 'Your food resource ' + food_resource.name + 
