@@ -338,8 +338,9 @@ button:hover, button:focus, .button:hover, .button:focus {
   background: #FFF;
 }
 
-#fpac-logo {
+#philly-food-finder-logo {
   height: 50;
+  cursor: pointer !important;
 }
 
 #map {
@@ -475,8 +476,13 @@ button:hover, button:focus, .button:hover, .button:focus {
   padding: 0 10px;
 }
 
+#fpac-logo, #gpcah-logo {
+  cursor: pointer !important;
+}
+
 #hack4impact-logo {
   height: 60px;
+  cursor: pointer !important;
 }
 
 /* Edit Food Resources Page */
