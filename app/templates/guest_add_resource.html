@@ -5,10 +5,12 @@
 
 {% block content %}
 <body id = "add_p">
-  <div class="row">
-      <h1 class="page-header admin-header">Propose a Food Resource</h1>
-      <hr align="center">
-  </div>
+  	<div class="row">
+	    <div class="small-12 columns">
+	      <h1 class="page-header admin-header">Propose a Food Resource</h1>
+	      <hr align="center">
+	    </div>
+	</div>
 
 	<form action="" method="POST" role="form" name="submit_food_resource">
 	    {{ form.hidden_tag() }}
@@ -22,8 +24,7 @@
         {% endif %}
 
         <div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
+		    <div class="small-12 columns">
 				If you are a food provider, please use this form to submit an update to an existing resource or to add a new resource to the map. Once you submit this information and your pin has been approved, your site’s resource will appear on the map.
 				<br><br>
 				If you have any questions, please send us an e-mail at <a href="mailto:phillyfoodinfo@gmail.com">phillyfoodinfo@gmail.com</a>.
@@ -31,8 +32,7 @@
 		</div>
 
 		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
+		    <div class="small-12 columns">
 				<div class="required-disclaimer">
 					Required fields.
 				</div>
@@ -41,8 +41,7 @@
 
 	    <!-- Additional Errors -->
 	    <div class="row">
-		    <div class="large-8 medium-6 medium-centered small-12 columns large-centered 
-		    	medium-centered">
+		    <div class="small-12 columns">
 		        	{% if additional_errors %}
 		                {% for e in additional_errors %}
 		                    {% if e %}
@@ -55,8 +54,7 @@
 		</div>
 
 		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
+		    <div class="small-12 columns">
 		      	<h2 class="text-center page-header">Site Contact Information</h2>
 		      	This information will appear on the map within your site pin.
 			</div>
@@ -87,8 +85,7 @@
 		{{ render_field(form.website) }}
 
 		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
+		    <div class="small-12 columns">
 		      	<h2 class="text-center page-header">Type of Food Resource</h2>
 			</div>
 		</div>
@@ -97,8 +94,7 @@
 		{{ render_field(form.location_type) }}
 
 		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
+		    <div class="small-12 columns">
 		      	<h2 class="text-center page-header">Days / Hours of Operation</h2>
 			</div>
 		</div>
@@ -115,8 +111,7 @@
 		{{ multi_timeslot_form.form.hidden_tag() }}
 
 			<div class="row open-or-closed-container">
-			    <div class="large-8 medium-8 medium-centered small-8 small-centered
-			     columns large-centered">
+			    <div class="small-12 columns">
 			    	<div class="row">
 			      		<div class="small-4 columns" id="middle-padding-section">
 			      			<label>{{ day_of_week.name }}
@@ -192,8 +187,7 @@
 		{% endfor %}
 
 		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
+		    <div class="small-12 columns">
 		      	<h2 class="text-center page-header">Additional Information</h2>
 			</div>
 		</div>
@@ -208,8 +202,7 @@
 		{{ render_field(form.additional_information) }}
 
 		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
+		    <div class="small-12 columns">
 		      	<h2 class="text-center page-header">How can we contact you, if needed?</h2>
 		      	This will NOT appear on the map and will only be used if we need to 
 				contact you about information you submitted.
@@ -232,8 +225,7 @@
 		{{ render_field(form.recaptcha) }}
 
 		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="bottom-padding-section">
+		    <div class="small-12 columns" id="bottom-padding-section">
 	          <input type=submit class="button radius small" value=Submit>
 		    </div>
 		</div>

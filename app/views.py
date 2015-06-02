@@ -690,7 +690,7 @@ def snap():
 	return render_template('snap_info.html', 
 		html_string = HTML.query.filter_by(page = 'snap-info-page').first())
 
-@app.route('/resources/summer-meals')
+@app.route('/resources/meals-for-kids')
 def summer_meals():
 	return render_template('summer_meals.html', 
 		html_string = HTML.query.filter_by(page = 'summer-info-page').first())

@@ -4,22 +4,20 @@
 {% block content %}
 <body id = "info_p">
     <div class="row">
+      <div class="small-12 columns">
         <h1 class="page-header info-header">Meals for Kids</h1>
         <hr align="center">
+      </div>
     </div>
     <div class="row">
-        <div class="large-centered 
-                  large-10 medium-centered medium-8 small-8 small-centered
-                  columns content">
+        <div class="small-12 columns content">
             <div id="editor1" contenteditable="false">
                 {{ html_string.value|safe }}
             </div>
         </div>
     </div>
     {% if current_user.is_authenticated() %}
-    <div class="row"> <div class="large-centered 
-                  large-10 medium-centered medium-8 small-8 small-centered
-                  columns content">
+    <div class="row"> <div class="small-12 columns content">
        <div class="button radius tiny start-edit">Edit</div>
        <div class="button radius tiny end-edit" id="summer-info-page" >Save</div>  
     </div> </div>
