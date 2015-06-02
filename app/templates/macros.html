@@ -1,7 +1,6 @@
 {% macro render_field(field) %}
 <div class="row">
-    <div class="large-8 medium-8 medium-centered small-8 small-centered
-     columns large-centered" id="top-padding-section">
+    <div class="small-12 columns" id="top-padding-section">
     {% if field.flags.required %}
       	<label>{{ field.label(class_='required') }}
     {% else %}
