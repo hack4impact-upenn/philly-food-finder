@@ -59,7 +59,7 @@ class ConfigClass(object):
 
     # Flask-WTF settings
     RECAPTCHA_PUBLIC_KEY = '6LcmKQcTAAAAAC8Gy-On5cNSfIvLu6TNCEMXBErq'
-    RECAPTCHA_PRIVATE_KEY = 'not so secret'
+    RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY',  'not so secret')
 
     DEBUG = True
 
