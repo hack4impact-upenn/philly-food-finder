@@ -2,17 +2,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="row">
-      <h1 class="page-header admin-header">{{ title }}</h1>
-      <hr align="center">
-  </div>
+  	<div class="row">
+        <div class="small-12 columns">
+          <h1 class="page-header admin-header">{{ title }}</h1>
+          <hr align="center">
+        </div>
+    </div>
 
 	<form action="" method="POST" role="form" name="submit_food_resource">
 	    {{ form.hidden_tag() }}
 
 		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
+		    <div class="small-12 columns">
 				<div class="required-disclaimer">
 					Required fields.
 				</div>
@@ -22,8 +23,7 @@
 		<!-- Singular Name -->
 		{% set field = form.name_singular %}
 	    <div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
+		    <div class="small-12 columns">
 		    {% if field.flags.required %}
 		      	<label>{{ field.label(class_='required') }}
 		    {% else %}
@@ -47,8 +47,7 @@
 		<!-- Plural Name -->
 		{% set field = form.name_plural %}
 	    <div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
+		    <div class="small-12 columns">
 	      	{% if field.flags.required %}
 		      	<label>{{ field.label(class_='required') }}
 		    {% else %}
@@ -72,8 +71,7 @@
 		<!-- Hex Color Code -->
 		{% set field = form.color %}
 	    <div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered">
+		    <div class="small-12 columns">
 	     	{% if field.flags.required %}
 		      	<label>{{ field.label(class_='required') }}
 		    {% else %}
@@ -95,8 +93,7 @@
 		</div>
 
 		<div class="row">
-		    <div class="large-8 medium-8 medium-centered small-8 small-centered
-		     columns large-centered" id="bottom-padding-section">
+		    <div class="small-12 columns" id="bottom-padding-section">
 	          <input type=submit class="button radius small" value=Submit>
 		    </div>
 		</div>

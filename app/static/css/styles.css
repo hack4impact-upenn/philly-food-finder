@@ -51,7 +51,7 @@ hr {
   border: #343434;
   background: #343434;
   height: 0.5px; 
-  margin: 0.67em 50;
+  margin: 0.67em 0;
 }
 
 /* formatting for WYSIWYG editor */ 
@@ -63,15 +63,29 @@ hr {
 
 /* Food Resource Form */
 .page-header {
-  margin: 0.4em 50;
+  /*margin: 0.4em 50;*/
   font-weight: 200;
   text-transform: lowercase;
   letter-spacing: 4px;
   font-size: 1.875rem;
 }
 
+.page-header-small {
+  /*margin: 0.4em 50;*/
+  font-weight: 200;
+  text-transform: lowercase;
+  letter-spacing: 4px;
+  font-size: 1.2rem;
+}
+
+@media only screen and (max-width: 1080px) {
+  .page-header, .page-header-small {
+    margin: 0.2em 0 0.2em 0;
+  }
+}
+
 .content .p {
-  margin: 0.67em 50;
+  margin: 0.67em 0;
   font-weight: 300;
   letter-spacing: .4px;
   font-size: 1.275rem;
@@ -338,8 +352,9 @@ button:hover, button:focus, .button:hover, .button:focus {
   background: #FFF;
 }
 
-#fpac-logo {
+#philly-food-finder-logo {
   height: 50;
+  cursor: pointer !important;
 }
 
 #map {
@@ -404,6 +419,10 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 #map-header {
+  color: #0f85c7;
+}
+
+#map-header-small {
   color: #0f85c7;
 }
 
@@ -475,8 +494,13 @@ button:hover, button:focus, .button:hover, .button:focus {
   padding: 0 10px;
 }
 
+#fpac-logo, #gpcah-logo {
+  cursor: pointer !important;
+}
+
 #hack4impact-logo {
   height: 60px;
+  cursor: pointer !important;
 }
 
 /* Edit Food Resources Page */
