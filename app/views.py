@@ -511,31 +511,6 @@ def remove_food_resource_type():
 
 	return jsonify(success="success")
 
-'''@app.route('/_search_query', methods=['GET', 'POST'])
-def save_search_query():
-	# Only record searches for regular users
-	if current_user.is_authenticated():
-		return 'Did not record a search'
-	zip_code = request.form.get('zipCode').strip()
-	print zip_code
-	if (zip_code):
-		print "asdf"
-		zip_requested = ZipSearch.query \
-			.filter_by( \
-				zip_code=zip_code, \
-				date=date.today()) \
-			.first()
-		if (zip_requested):
-			zip_requested.search_count = zip_requested.search_count + 1
-		else:
-			zip_requested = ZipSearch(zip_code=zip_code, search_count=1, \
-				date=date.today())
-			db.session.add(zip_requested)
-		db.session.commit()
-		return 'Recorded a search for ' + zip_code
-	else:
-		return 'Did not record a search'''
-
 @app.route('/_remove')
 @login_required
 def remove():
