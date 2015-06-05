@@ -28,13 +28,28 @@ def map():
 	food_resource_types = FoodResourceType.query \
 		.order_by(FoodResourceType.name_singular).all()
 	html_string = HTML.query.filter_by(page = 'map-announcements').first()
-
 	if request.method == 'POST':
 
 		geocode = Geocoder.geocode(map_form.address_or_zip_code.data) \
 			if len(map_form.address_or_zip_code.data) is not 0 else None
 
 		zip_code = geocode.postal_code if geocode is not None else None
+		
+		# Only record searches for regular users.
+		if not current_user.is_authenticated():
+			if (zip_code):
+				zip_requested = ZipSearch.query \
+					.filter_by( \
+						zip_code=zip_code, \
+						date=date.today()) \
+					.first()
+				if (zip_requested):
+					zip_requested.search_count = zip_requested.search_count + 1
+				else:
+					zip_requested = ZipSearch(zip_code=zip_code, search_count=1, \
+						date=date.today())
+					db.session.add(zip_requested)
+				db.session.commit()
 
 		resources = getFilteredFoodResources(
 			has_zip_code_filter = (zip_code is not None), 
@@ -48,9 +63,9 @@ def map():
 		map_form.label_booleans()
 		map_form.label_location_type_booleans()
 
-		return render_template('newmaps.html', form = map_form, days_of_week = days_of_week,
-		food_resource_types=food_resource_types, html_string=html_string,
-		resources = resources, searched_location = geocode, from_search = True)
+		return render_template('newmaps.html', form=map_form, days_of_week=days_of_week,
+			food_resource_types=food_resource_types, html_string=html_string,
+			resources=resources, searched_location=geocode, from_search=True)
 
 	# Not a POST request
 
@@ -59,7 +74,7 @@ def map():
 
 	resources = FoodResource.query.filter_by(is_approved = True).all()
 
-	return render_template('newmaps.html', form = map_form, days_of_week = days_of_week,
+	return render_template('newmaps.html', form=map_form, days_of_week=days_of_week,
 		food_resource_types=food_resource_types, html_string=html_string,
 		resources = resources)
 
@@ -494,32 +509,7 @@ def remove_food_resource_type():
 	db.session.delete(food_resource_type)
 	db.session.commit()
 
-
 	return jsonify(success="success")
-
-
-@app.route('/_search_query', methods=['GET', 'POST'])
-def save_search_query():
-	# Only record searches for regular users
-	if current_user.is_authenticated():
-		return 'Did not record a search'
-	zip_code = request.form.get('zipCode').strip()
-	if (zip_code):
-		zip_requested = ZipSearch.query \
-			.filter_by( \
-				zip_code=zip_code, \
-				date=date.today()) \
-			.first()
-		if (zip_requested):
-			zip_requested.search_count = zip_requested.search_count + 1
-		else:
-			zip_requested = ZipSearch(zip_code=zip_code, search_count=1, \
-				date=date.today())
-			db.session.add(zip_requested)
-		db.session.commit()
-		return 'Recorded a search for ' + zip_code
-	else:
-		return 'Did not record a search'
 
 @app.route('/_remove')
 @login_required
