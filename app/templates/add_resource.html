@@ -1,263 +1,204 @@
 <!-- extend base layout -->
 {% extends "base.html" %}
 
+{% from "macros.html" import render_field with context %}
+
 {% block content %}
-<h1>Submit New Food Resource</h1>
-<hr align="center">
-
-<form action="" method="POST" role="form" name="submit_food_resource">
-    {{ form.hidden_tag() }}
-
-    <!-- Food Resource Name -->
-    <div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	        	{% if additional_errors %}
-	                {% for e in additional_errors %}
-	                    {% if e %}
-	                        <small class="error">{{ e }}</small>
-	                    {% endif %}
-	                {% endfor %}
-	            {% endif %}
-	      	</label>
+<body id = "add_p">
+	<div class="row">
+	    <div class="small-12 columns">
+	      <h1 class="page-header admin-header">{{ title }}</h1>
+	      <hr align="center">
 	    </div>
 	</div>
+	<form action="" method="POST" role="form" name="submit_food_resource">
+	    {{ form.hidden_tag() }}
 
-   <!-- Food Resource Type -->
-    {% set field = form.name %}
-    <div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	      	<label>{{ form.name.label }}
-	      		<dd class="error">{{ form.name()|safe }}
-	            {% if field.errors %}
-	                {% for e in field.errors %}
-	                    {% if e %}
-	                        <small class="error">{{ e }}</small>
-	                    {% endif %}
-	                {% endfor %}
-	            {% endif %}
-            </label>
+	    <!-- Additional Errors --> 
+	    <div class="row">
+		    <div class="small-12 columns">
+		        	{% if additional_errors %}
+		                {% for e in additional_errors %}
+		                    {% if e %}
+		                        <small class="error">{{ e }}</small>
+		                    {% endif %}
+		                {% endfor %}
+		            {% endif %}
+		      	</label>
+		    </div>
 		</div>
-	</div>
-	<div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	    	<label>Food Resource Type
-		    	<select name='food-resource-type' id="option-title">
-		    		{% for resource_info in resources_info %}
-					 	<option value="{{ resource_info.id }}-option">
-							{{ resource_info.name }}
-						</option>
-					{% endfor %}
-		    	</select>
-	      	</label>
-	    </div>
-  	</div>
 
-
-	<!-- Address Line 1 -->
-	{% set field = form.address_line1 %}
-    <div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	      	<label>{{ form.address_line1.label }}
-	        	<dd class="error">{{ form.address_line1()|safe }}
-	        	{% if field.errors %}
-	                {% for e in field.errors %}
-	                    {% if e %}
-	                        <small class="error">{{ e }}</small>
-	                    {% endif %}
-	                {% endfor %}
-	            {% endif %}
-			</label>
+		<div class="row">
+		    <div class="small-12 columns">
+				<div class="required-disclaimer">
+					Required fields.
+				</div>
+			</div>
 		</div>
-	</div>
 
-
-  <!-- Address Line 2 -->
-	{% set field = form.address_line2 %}
-	<div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	      	<label>{{ form.address_line2.label }}
-	        	<dd class="error">{{ form.address_line2()|safe }}
-	        	{% if field.errors %}
-	                {% for e in field.errors %}
-	                    {% if e %}
-	                        <small class="error">{{ e }}</small>
-	                    {% endif %}
-	                {% endfor %}
-	            {% endif %}
-			</label>
+		<div class="row">
+		    <div class="small-12 columns">
+		      	<h2 class="text-center page-header">Site Contact Information</h2>
+		      	This information will appear on the map within your site pin.
+			</div>
 		</div>
-	</div>
 
-	{% set field = form.address_city %}
-	<div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	      	<label>{{ form.address_city.label }}
-	        	<dd class="error">{{ form.address_city()|safe }}
-	        	{% if field.errors %}
-	                {% for e in field.errors %}
-	                    {% if e %}
-	                        <small class="error">{{ e }}</small>
-	                    {% endif %}
-	                {% endfor %}
-	            {% endif %}
-			</label>
+	   	<!-- Food Resource Name -->
+	    {{ render_field(form.name) }}
+
+		<!-- Address Line 1 -->
+		{{ render_field(form.address_line1) }}
+
+	  	<!-- Address Line 2 -->
+	  	{{ render_field(form.address_line2) }}
+
+		<!-- Address City --> 
+		{{ render_field(form.address_city) }}
+
+		<!-- Address State --> 
+		{{ render_field(form.address_state) }}
+
+		<!-- Address Zip Code --> 
+		{{ render_field(form.address_zip_code) }}
+
+		<!-- Address Phone Number --> 
+		{{ render_field(form.phone_number) }}
+
+		<!-- Website --> 
+		{{ render_field(form.website) }}
+
+		<div class="row">
+		    <div class="small-12 columns">
+		      	<h2 class="text-center page-header">Type of Food Resource</h2>
+			</div>
 		</div>
-	</div>
 
-	{% set field = form.address_state %}
-	<div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	      	<label>{{ form.address_state.label }}
-	        	<dd class="error">{{ form.address_state()|safe }}
-	        	{% if field.errors %}
-	                {% for e in field.errors %}
-	                    {% if e %}
-	                        <small class="error">{{ e }}</small>
-	                    {% endif %}
-	                {% endfor %}
-	            {% endif %}
-			</label>
+		<!-- Food Resource Type -->
+		{{ render_field(form.location_type) }}
+
+		<div class="row">
+		    <div class="small-12 columns">
+		      	<h2 class="text-center page-header">Days / Hours of Operation</h2>
+			</div>
 		</div>
-	</div>
 
-	{% set field = form.address_zip_code %}
-	<div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	      	<label>{{ form.address_zip_code.label }}
-	        	<dd class="error">{{ form.address_zip_code()|safe }}
-	        	{% if field.errors %}
-	                {% for e in field.errors %}
-	                    {% if e %}
-	                        <small class="error">{{ e }}</small>
-	                    {% endif %}
-	                {% endfor %}
-	            {% endif %}
-			</label>
-		</div>
-	</div>
+		<!-- Are hours of operation available? -->
+		{{ render_field(form.are_hours_available) }}
 
-	{% set field = form.phone_number %}
-	<div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	      	<label>{{ form.phone_number.label }}
-	        	<dd class="error">{{ form.phone_number()|safe }}
-	        	{% if field.errors %}
-	                {% for e in field.errors %}
-	                    {% if e %}
-	                        <small class="error">{{ e }}</small>
-	                    {% endif %}
-	                {% endfor %}
-	            {% endif %}
-			</label>
-		</div>
-	</div>
+		{% for multi_timeslot_form in form.daily_timeslots %}
+		{% set day_of_week = days_of_week[loop.index0] %}
+		{% set is_open = form.is_open[loop.index0].is_open %}
+		{% set day_of_week_index = loop.index0 %}
 
-	{% set field = form.website %}
-	<div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	      	<label>{{ form.website.label }}
-	        	<dd class="error">{{ form.website()|safe }}
-	        	{% if field.errors %}
-	                {% for e in field.errors %}
-	                    {% if e %}
-	                        <small class="error">{{ e }}</small>
-	                    {% endif %}
-	                {% endfor %}
-	            {% endif %}
-			</label>
-		</div>
-	</div>
+		{{ form.is_open[loop.index0].form.hidden_tag() }}
+		{{ multi_timeslot_form.form.hidden_tag() }}
 
-	<div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-	      	<label>Days/Hours of Operation
-			</label>
-		</div>
-	</div>
+			<div class="row open-or-closed-container">
+			    <div class="small-12 columns">
+			    	<div class="row">
+			      		<div class="small-4 columns" id="middle-padding-section">
+			      			<label>{{ day_of_week.name }}
+					        	<dd class="error">{{ is_open()|safe }}
+					        	{% if is_open.errors %}
+					                {% for e in is_open.errors %}
+					                    {% if e %}
+					                        <small class="error">{{ e }}</small>
+					                    {% endif %}
+					                {% endfor %}
+					            {% endif %}
+					            </dd>
+			      			</label>
+			      		</div>
+			      		<div class="small-8 columns time-pickers" id="middle-padding-section">
+			      			{% set field = multi_timeslot_form.num_timeslots %}
+			      			<div class="row">
+			      				<div class="large-12 small-12 columns" id="middle-padding-section">
+			      					{% if multi_timeslot_form.num_timeslots.flags.required %}
+								      	<label>{{ field.label(class_='required') }}
+								    {% else %}
+										<label>{{ field.label }}
+								    {% endif %}
+										<dd class="error">{{ field()|safe }}
+										{% if field.errors %}
+											{% for e in field.errors %}
+												{% if e %}
+													<small class="error">{{ e }}</small>
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+										</dd>
+									</label>
+								</div>
+			      			</div>
+			      		{% for timeslot_form in multi_timeslot_form.timeslots %} 
+		      			{% set timeslot_index = loop.index0 %}
+			      			{{ timeslot_form.form.hidden_tag() }}
+				      		<div class="row" id="daily_timeslots-{{ day_of_week_index }}-timeslots-{{ timeslot_index }}">
 
-	{% for day_of_week in days_of_week %}
+										<div class"row"><div class="small-6 columns" id="middle-padding-section">
+										<label>{{ timeslot_form.starts_at.label }}
+											<dd class="error">{{ timeslot_form.starts_at()|safe }}
+											{% if timeslot_form.starts_at.errors %}
+												{% for e in timeslot_form.starts_at.errors %}
+													{% if e %}
+														<small class="error">{{ e }}</small>
+													{% endif %}
+												{% endfor %}
+											{% endif %}
+											</dd>
+										</label>
+										</div></div>
 
-	<div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered">
-      		<div class="large-4 small-4 columns" id="middle-padding-section">
-      			<label>{{ day_of_week.name }}
-			    	<select name='{{ day_of_week.id }}-open-or-closed' class='open-or-closed' id="option-title">
-			    		<option value="closed">Closed</option>
-						<option value="open">Open</option>
-			    	</select>
-      			</label>
-      		</div>
-      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker" id="middle-padding-section">
-      			<label>Opens at
-			    	<select name='{{ day_of_week.id }}-opening-time' id="option-title">
-			    		{% for hour in [8, 9, 10, 11, 12, 1, 2, 3, 4, 5] %}
-			    			{% for minute in ["00", 15, 30, 45] %}
-			    				{% if hour >= 8 and hour <= 11 %}
-									<option value="{{ hour }}-{{ minute }}-am">{{ hour }}:{{ minute }} AM</option>
-								{% else %}
-									<option value="{{ hour }}-{{ minute }}-pm">{{ hour }}:{{ minute }} PM</option>
-								{% endif %}
+										<div class"row"><div class="small-6 columns" id="middle-padding-section">
+											<label>{{ timeslot_form.ends_at.label }}
+												<dd class="error">{{ timeslot_form.ends_at()|safe }}
+												{% if timeslot_form.ends_at.errors %}
+													{% for e in timeslot_form.ends_at.errors %}
+														{% if e %}
+															<small class="error">{{ e }}</small>
+														{% endif %}
+													{% endfor %}
+												{% endif %}
+												</dd>
+											</label>
+										</div></div>
+							</div>
 							{% endfor %}
-						{% endfor %}
-			    	</select>
-      			</label>
-      		</div>
-      		<div class="large-4 small-4 columns {{ day_of_week.id }}-time-picker" id="middle-padding-section">
-      			<label>Closes at
-			    	<select name='{{ day_of_week.id }}-closing-time' id="option-title">
-			    		{% for hour in [11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] %}
-			    			{% for minute in ["00", 15, 30, 45] %}
-			    				{% if hour == 11 %}
-									<option value="{{ hour }}-{{ minute }}-am">{{ hour }}:{{ minute }} AM</option>
-								{% else %}
-									<option value="{{ hour }}-{{ minute }}-pm">{{ hour }}:{{ minute }} PM</option>
-								{% endif %}
-							{% endfor %}
-						{% endfor %}
-			    	</select>
-      			</label>
-      		</div>
-   	  </div>
-	</div>
+						</div>
+					</div>
+		   	  </div>
+			</div>
 
-	{% endfor %}
+		{% endfor %}
 
-	{% set field = form.additional_information %}
-	<div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered" id="top-padding-section">
-	      	<label>{{ form.additional_information.label }}
-	        	<dd class="error">{{ form.additional_information()|safe }}
-	        	{% if field.errors %}
-	                {% for e in field.errors %}
-	                    {% if e %}
-	                        <small class="error">{{ e }}</small>
-	                    {% endif %}
-	                {% endfor %}
-	            {% endif %}
-	      	</label>
-	    </div>
-	</div>
+		<div class="row">
+		    <div class="small-12 columns">
+		      	<h2 class="text-center page-header">Additional Information</h2>
+			</div>
+		</div>
 
-	<div class="row">
-	    <div class="large-8 medium-8 small-12 columns large-centered 
-	    	medium-centered" id="bottom-padding-section">
-	      	<input type="submit" value="Submit">
-	    </div>
-	</div>
-    
-</form>
+		<!-- Boolean fields --> 
+		{% for boolean in form.booleans %}
+			{{ boolean.form.hidden_tag() }}
+			{{ render_field(boolean.value) }}
+		{% endfor %}
+
+		<!-- Additional information -->
+		{{ render_field(form.additional_information) }}
+
+		<div class="row">
+		    <div class="small-12 columns" id="bottom-padding-section">
+	          <input type=submit class="button radius small" value=Submit>
+		    </div>
+		</div>
+	</form>
+</body>
+
+<script>
+	$(document).ready(function() {
+		updateVisibleTimeslots(); 
+		onChangeNumberOfTimeslots(); 
+	}); 
+</script>
 
 {% endblock %}

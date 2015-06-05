@@ -1,36 +1,111 @@
+
+/* #ef3d23 - red */
+/* #f8a11d - orange */
+/* rgba(248, 160, 26, .5) - light orange */
+/* #fdd800 - yellow */
+/* rgba(254, 217, 0, .5) - light yellow */
+/* #009933 - green */
+/* rgba(0, 171, 75, .5) - light green */
+/* #0f85c7 - blue */
+/* #84459b - purple */
+/* #343434 - black */
+/* #2D4FA0 - navy */ 
+/* #F7F9F9 - off white */
+/* #999999 - gray */
+/* #DDDDDD - light gray */
+/* #ef3d23 - red */
+
+
+/* background colors */
+/* some defaults */
 body {
-  background: #fdd800;
+  background-color: #F7F9F9;
+  letter-spacing: .3px;
+  font-weight: 200;
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  min-height:100%;
+}
+
+body#map_p {
+  background-color: #F7F9F9;
+}
+
+.h1 {
+  color: #FFF;
+}
+
+.h2 {
+  color: #FFF;
+}
+
+body#resources_p {
+  background-color: #F7F9F9;
+}
+
+body#add_p {
+  background-color: #F7F9F9;
 }
 
 /* template: line */
 hr {
   border: #343434;
   background: #343434;
-  width: 75%;
   height: 0.5px; 
-  margin: 0.67em 50;
+  margin: 0.67em 0;
+}
+
+/* formatting for WYSIWYG editor */ 
+#editor1 {
+  font-weight: 300;
+  letter-spacing: .4px;
+  font-size: 1.275rem;
 }
 
 /* Food Resource Form */
-h1 {
-  margin: 0.67em 50;
+.page-header {
+  /*margin: 0.4em 50;*/
+  font-weight: 200;
+  text-transform: lowercase;
+  letter-spacing: 4px;
   font-size: 1.875rem;
 }
 
+.page-header-small {
+  /*margin: 0.4em 50;*/
+  font-weight: 200;
+  text-transform: lowercase;
+  letter-spacing: 4px;
+  font-size: 1.2rem;
+}
+
+@media only screen and (max-width: 1080px) {
+  .page-header, .page-header-small {
+    margin: 0.2em 0 0.2em 0;
+  }
+}
+
+.content .p {
+  margin: 0.67em 0;
+  font-weight: 300;
+  letter-spacing: .4px;
+  font-size: 1.275rem;
+}
+
 label {
-  font-size: 1rem;
+  font-size: 1.275rem;
   color: #343434;
-  font-weight: 400;
+  font-weight: 200;
+  margin-top: .275rem;
+  margin-bottom: .1rem;
 }
 
 .row {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 /* placeholder text */
 input:-ms-input-placeholder {
   font-weight: 200;
-  
 }
 
 input::-webkit-input-placeholder {
@@ -56,21 +131,10 @@ input::-moz-placeholder {
   font-size: .875rem;
   font-weight: 200;
   letter-spacing: .2px;
-
 }
 
 #food-resources {
   font-size: .875rem;
-}
-
-/* padding above 'Additional Information'  */
-#top-padding-section {
-  margin-top: 20px;
-}
-
-/* padding for day/time form */
-#middle-padding-section {
-  margin-top: 10px;
 }
 
 /* padding around submit button */
@@ -79,10 +143,39 @@ input::-moz-placeholder {
   margin-top: 10px;
 }
 
-button, .select {
-  padding-bottom: 100px;
-  height: 2.4rem;
+.submit-button {
+  margin-top: 20px;
+}
+
+/* button styling */
+button, .button{
+  background-color: #000;
+  border-color: #666666;
+  color: #FFF;
+  opacity: 0.95;
+}
+
+button.small, .button.small {
   font-size: .875rem;
+  font-weight: 200;
+  letter-spacing: 0.5px;
+}
+
+button:hover, button:focus, .button:hover, .button:focus {
+  background-color: #FFF;
+  color: #000;
+}
+
+/*button.radius, .button.radius {
+  margin-bottom: 100px;
+}*/
+
+.search-buttons {
+  margin-top: 0.5em;
+}
+
+#download-buttons {
+  margin-top: 0.5em;
 }
 
 /* HEADER - top-bar */
@@ -90,7 +183,8 @@ button, .select {
 .top-bar {
   background: #FFF;
   height: 70px;
-  opacity: 0.8;
+  opacity: 0.95;
+  z-index: 1;
 }
 
 .top-bar .name {
@@ -116,13 +210,85 @@ button, .select {
   display: inline-block;
   width: 100%;
   color: #2D4FA0;
-  font-size: 2rem;
+  font-size: 1.875rem;
   font-weight: 200;
   text-transform: none;
   letter-spacing: 4px;
   text-align: center;
-  margin-right: 10px;
-  margin-left: 10px;
+}
+
+.top-bar-section li:not(.has-form) a:not(.button) {
+  background: #FFF;
+}
+
+.top-bar-section li:not(.has-form) a:not(.button):hover {
+  background: #FFF;
+}
+
+.top-bar-section li:not(.has-form) a:active {
+  background: #FFF;
+}
+
+/* dropdown menu */
+.top-bar-section .dropdown li:not(.has-form):not(.active) > a:not(.button) {
+  background: #FFF;
+  color: #2D4FA0;
+  font-size: 1.275rem;
+  font-weight: 200;
+  text-transform: lowercase;  
+  letter-spacing: 2px;
+  text-align: center;
+  padding: 5;
+  z-index: 1;
+  line-height: 25px;
+}
+
+.top-bar-section .dropdown li:not(.has-form) > a:not(.button) {
+  background: #FFF;
+}
+
+/* arrow next to drop down */
+.top-bar-section .has-dropdown > a:after {
+  border-color: #2D4FA0 transparent transparent transparent;
+  top: 37px;
+}
+
+/* dropdown - items */
+.top-bar-section .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
+  background-color: #555555;
+  color: #FFF; 
+}
+
+/* dropdown - top button */
+.top-bar-section ul li:hover:not(.has-form) > a {
+  background-color: #555555;
+  background: #FFF; 
+}
+
+/* resources dropdown */
+.top-bar-section .drop-resources .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
+  background: #009933;
+}
+
+.top-bar-section ul li:hover:not(.has-form) > a {
+  color: #2D4FA0; /* for now, keep navy */
+}
+
+/* admin dropdown */
+.top-bar-section .drop-admin .dropdown li:not(.has-form):not(.active):hover > a:not(.button) {
+  background: #ef3d23;
+}
+
+.drop-admin .top-bar-section ul li:hover:not(.has-form) > a {
+  color: #ef3d23;
+}
+
+.drop-admin {
+  color: #FFF;
+}
+
+#drop-admin-active:active {
+  color: #ef3d23;
 }
 
 /* buttons - not hover */
@@ -132,7 +298,7 @@ button, .select {
   background-color: #FFF;
 }
 
-.top-bar-section li:not(.has-form) a:not(.button):hover {
+.top-bar-section ul li>a:hover {
   background-color: #FFF;
 }
 
@@ -156,8 +322,13 @@ button, .select {
   color: #0585C7;
 }
 
-#l_faq:hover {
+#l_resources:hover {
   color: #09ab4b;
+}
+
+#l_resources:focus {
+  color: #09ab4b;
+  background: #FFF;
 }
 
 #l_about:hover {
@@ -172,72 +343,613 @@ button, .select {
   color: #ef3d23;
 }
 
-img {
+#l_admin:hover {
+  color: #ef3d23;
+}
+
+#l_admin:focus {
+  color: #ef3d23;
+  background: #FFF;
+}
+
+#philly-food-finder-logo {
   height: 50;
+  cursor: pointer !important;
 }
 
 #map {
-    display: block;
+    display: inline-block;
     width: 100%;
     height: 70%;
-    margin-bottom: 4em;
+    margin: .875em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    border-style: solid;
+    border-color: #999999; /* gray */
 }
 
-/* #ef3d23 - red */
-/* #f8a11d - orange */
-/* #fdd800 - yellow */
-/* #09ab4b - green */
-/* #0f85c7 - blue */
-/* #84459b - purple */
-/* #343434 - black */
+.checkboxes {
+  list-style-type: none;
+  display:inline;
+  margin: 0px;
+  font-weight: 200;
+}
+
+/* display checkboxes in one line if screen is big, otherwise stack */
+@media only screen and (min-width: 54.063em) {
+  .checkbox-li {
+    display: inline;
+  }
+}
+
+#checkbox-li {
+  margin: 5px;
+}
+
+#chart_div {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 1em;
+}
+
+#table_div {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 1em;
+}
+
+/* Display non-squashed map controls */
+.gmnoprint img {
+    max-width: none; 
+}
+
+/* header page-specific colors */
+#l_admin .page-header .top-bar-section ul li>a{
+  color: #FFF;
+}
+
+.info-header {
+  color: #009933;
+}
+
+.admin-header {
+  color: #ef3d23;
+}
+
+#map-header {
+  color: #0f85c7;
+}
+
+#map-header-small {
+  color: #0f85c7;
+}
+
+/*
+#contact-line {
+  border: #fdd800;
+  background: #fdd800;;
+}*/
+
+#contact-header {
+  color: #fdd800;
+}
+
+#about-header {
+  color: #f8a11d;
+}
+
+/* footer */
+#footer-spacer {
+  margin-bottom: 2em;
+}
+
+.footer {
+  font-size: 1rem;
+}
+
+.fbottom {
+  margin-bottom: 3%;
+}
+
+#hr-helper {
+  color: #F7F9F9;
+  font-size: .01em;
+}
+
+#footer-pics {
+  text-align: right;
+}
+
+.footer-li {
+  display: inline-block;
+}
+
+.footer-img{
+  height: 70px;
+  width: auto;
+  padding-left: 30px;
+}
+
+.frame {
+  height: 30px;      /* equals max image height */
+  width: 100%;
+  white-space: nowrap;
+  text-align: center; 
+  margin: 1em 0;
+  margin-bottom: 70px; 
+}
+
+.helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.logo {
+  vertical-align: middle;
+  height: 80px;
+  width: auto;
+  padding: 0 10px;
+}
+
+#fpac-logo, #gpcah-logo {
+  cursor: pointer !important;
+}
+
+#hack4impact-logo {
+  height: 60px;
+  cursor: pointer !important;
+}
+
+/* Edit Food Resources Page */
+.resource {
+  font-weight: 200;
+  letter-spacing: .2px;
+}
+
+.row .row {
+  margin: 0;
+}
+
+.resources {
+  background-color: #EEEEEE;
+  padding: 0.5%;
+}
+
+#resources-table {
+
+}
+
+#right-search {
+  padding-right: 0;
+}
+
+b {
+  font-weight: 400;
+}
+
+table thead tr th, table thead tr td {
+  font-size: 1.075rem;
+  font-weight: 200;
+  color: #222222;
+  letter-spacing: .5px;
+}
 
 .block-header, 
 .block-header table {
   color: #343434  ; /* black */
-  margin: 0.6em 0.3em;
-  padding: 0 0.3em;
+  margin: 0em;
+  padding: 0em;
 }
 
-#farmers-markets-header table thead, 
-#farmers-markets-header table {
-  background-color: #fdd800; /* yellow */
-  border: none; 
-}
-
-#food-cupboards-header table thead, 
-#food-cupboards-header table {
-  background-color: #09ab4b; /* green */
-  border: none;
-}
-
-#meals-on-wheels-header table thead, 
-#meals-on-wheels-header table {
-  background-color: #0f85c7; /* blue */
-  border: none; 
-}
-
-#share-host-sites-header table thead, 
-#share-host-sites-header table {
-  background-color: #ef3d23; /* red */
-  border: none; 
-}
-
-#soup-kitchens-header table thead, 
-#soup-kitchens-header table {
-  background-color: #f8a11d; /* orange */
-  border: none; 
-}
-
-#wic-offices-header table thead, 
-#wic-offices-header table {
-  background-color: #84459b; /* purple */
-  border: none; 
-}
-
-.expand {
+.expand-food-resource-type:hover,
+.expand-food-resource:hover,
+.expand-food-resource-type-pending:hover,
+.expand-food-resource-pending:hover  {
   cursor: pointer; 
 }
 
 .error {
   text-transform:none;
+}
+
+.admin-food-resource-pending {
+  background-color: #CCCCCC;
+}
+
+
+.admin-food-resource {
+  background-color: #CCCCCC;
+}
+
+.food-resource-update-button, 
+.add-another-time-picker {
+  color: #2D4FA0; /* navy */
+}
+
+.food-resource-update-button:hover,
+.add-another-time-picker {
+  cursor: pointer;
+  color: #2D4FA0; /* navy */
+
+}
+
+#expand-all-resources-button, 
+#collapse-all-resources-button, 
+#apply-filters-resources-button, 
+#clear-filters-resources-button, 
+#map-search-button, 
+#map-filter-button {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.button-add-another-time-picker {
+  margin-top: 5px;
+}
+
+.no-resources-message {
+  margin: 0.4em;
+  margin-left: 1.375em;
+  line-height: 1.2em; 
+}
+
+#filter-error {
+  color: #ef3d23; /* red */
+}
+
+input[type=checkbox] {
+  margin-top:5px;
+  margin-bottom:5px;
+}
+
+input[type="text"] {
+  margin:0;
+}
+
+.pin-definition {
+  margin-bottom: 1em;
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  letter-spacing: 1px;
+}
+
+.pin-definition img {
+  width: 20px;  
+  height: auto;
+}
+
+.total-num-resources {
+  display: inline;
+  font-weight: bold; 
+}
+
+.color-box {
+  border: 1px solid black;
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+}
+
+.gapi-analytics-auth-styles-signinbutton {
+  margin-left: 33%;
+  margin-right: 50%;
+  width: 8em;
+}
+
+#sample_table_div {
+  height: auto;
+}
+
+li {
+  text-align: left;
+}
+
+.form-field-description {
+  font-size: .725em;
+}
+
+.form-field-description {
+  color: #999999;
+}
+
+.required-asterisk {
+  display: inline;
+  color: #ef3d23;
+  margin: 0 2px;
+  font-weight: bold;
+}
+
+.required-disclaimer {
+  color: #999999;
+}
+
+/* pop-up modal 
+.remodal, .remodal * {
+  font-family: "Helvetica Neue";
+}
+*/
+
+/* Dropzone styling */
+
+.dropzone,
+.dropzone *,
+.dropzone-previews,
+.dropzone-previews * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+/*.dropzone {
+  position: relative;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(0,0,0,0.02);
+  padding: 1em;
+}*/
+.dropzone {
+  position: relative;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  background: #373d3f;
+  color: #fff;
+  text-align: center;
+  padding: 1em;
+  margin: 0;
+  margin-bottom: 1%;
+  min-height: 200px;
+  max-height: 200px;
+  transition: all ease 0.4s;
+  overflow: -moz-scrollbars-horizontal;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+.dropzone:hover {
+  background: #484f52;
+  transition: all ease 0.4s;
+}
+
+.dropzone.dz-clickable {
+  cursor: pointer;
+}
+.dropzone.dz-clickable .dz-message,
+.dropzone.dz-clickable .dz-message span {
+  cursor: pointer;
+}
+.dropzone.dz-clickable * {
+  cursor: default;
+}
+.dropzone .dz-message {
+  opacity: 1;
+  -ms-filter: none;
+  filter: none;
+}
+.dropzone.dz-drag-hover {
+  border-color: rgba(0,0,0,0.15);
+  background: rgba(0,0,0,0.04);
+}
+.dropzone.dz-started .dz-message {
+  display: none;
+}
+
+.dropzone .dz-preview,
+.dropzone-previews .dz-preview {
+  background: rgba(255,255,255,0.8);
+  position: relative;
+  display: inline-block;
+  margin: 17px;
+  vertical-align: top;
+  border: 1px solid #acacac;
+  padding: 6px 6px 6px 6px;
+}
+.dropzone .dz-preview.dz-file-preview [data-dz-thumbnail],
+.dropzone-previews .dz-preview.dz-file-preview [data-dz-thumbnail] {
+  display: none;
+}
+.dropzone .dz-preview .dz-details,
+.dropzone-previews .dz-preview .dz-details {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  background: #ebebeb;
+  padding: 5px;
+  margin-bottom: 22px;
+}
+.dropzone .dz-preview .dz-details .dz-filename,
+.dropzone-previews .dz-preview .dz-details .dz-filename {
+  overflow: hidden;
+  height: 100%;
+  color: #373d3f;
+}
+.dropzone .dz-preview .dz-details img,
+.dropzone-previews .dz-preview .dz-details img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
+}
+/*.dropzone .dz-preview .dz-details .dz-size,
+.dropzone-previews .dz-preview .dz-details .dz-size {
+  position: absolute;
+  bottom: -28px;
+  left: 3px;
+  height: 28px;
+  line-height: 28px;
+}*/
+.dropzone .dz-preview .dz-details .dz-size,
+.dropzone-previews .dz-preview .dz-details .dz-size {
+  padding-top: 0.1em;
+  bottom: -28px;
+  left: 3px;
+  height: 28px;
+  line-height: 28px;
+  text-align: center;
+  color: #373d3f;
+}
+.dropzone .dz-preview.dz-error .dz-error-mark,
+.dropzone-previews .dz-preview.dz-error .dz-error-mark {
+  display: block;
+}
+.dropzone .dz-preview.dz-success .dz-success-mark,
+.dropzone-previews .dz-preview.dz-success .dz-success-mark {
+  display: block;
+}
+.dropzone .dz-preview:hover .dz-details img,
+.dropzone-previews .dz-preview:hover .dz-details img {
+  display: none;
+}
+.dropzone .dz-preview .dz-success-mark,
+.dropzone-previews .dz-preview .dz-success-mark,
+.dropzone .dz-preview .dz-error-mark,
+.dropzone-previews .dz-preview .dz-error-mark {
+  display: none;
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
+  text-align: center;
+  right: -10px;
+  top: -10px;
+}
+.dropzone .dz-preview .dz-success-mark,
+.dropzone-previews .dz-preview .dz-success-mark {
+  color: #8cc657;
+}
+.dropzone .dz-preview .dz-error-mark,
+.dropzone-previews .dz-preview .dz-error-mark {
+  color: #ee162d;
+}
+.dropzone .dz-preview .dz-progress,
+.dropzone-previews .dz-preview .dz-progress {
+  position: absolute;
+  top: 100px;
+  left: 6px;
+  right: 6px;
+  height: 6px;
+  background: #d7d7d7;
+  display: none;
+}
+.dropzone .dz-preview .dz-progress .dz-upload,
+.dropzone-previews .dz-preview .dz-progress .dz-upload {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  background-color: #8cc657;
+}
+.dropzone .dz-preview.dz-processing .dz-progress,
+.dropzone-previews .dz-preview.dz-processing .dz-progress {
+  display: block;
+}
+.dropzone .dz-preview .dz-error-message,
+.dropzone-previews .dz-preview .dz-error-message {
+  display: none;
+  position: absolute;
+  top: -5px;
+  left: -20px;
+  background: rgba(245,245,245,0.8);
+  padding: 8px 10px;
+  color: #800;
+  min-width: 140px;
+  max-width: 500px;
+  z-index: 500;
+}
+.dropzone .dz-preview:hover.dz-error .dz-error-message,
+.dropzone-previews .dz-preview:hover.dz-error .dz-error-message {
+  display: block;
+}
+.dz-message {
+  padding-top: 70px;
+  text-transform: uppercase;
+  font-size: 120%;
+}
+.dz-remove {
+  color: #d64541;
+  text-decoration: none;
+}
+.dz-size, .dz-size > .size {
+  text-align: center;
+}
+.dz-filename {
+  color: #373d3f;
+}
+@-moz-keyframes loading {
+  from {
+    background-position: 0 -400px;
+  }
+  to {
+    background-position: -7px -400px;
+  }
+}
+@-webkit-keyframes loading {
+  from {
+    background-position: 0 -400px;
+  }
+  to {
+    background-position: -7px -400px;
+  }
+}
+@-o-keyframes loading {
+  from {
+    background-position: 0 -400px;
+  }
+  to {
+    background-position: -7px -400px;
+  }
+}
+@keyframes loading {
+  from {
+    background-position: 0 -400px;
+  }
+  to {
+    background-position: -7px -400px;
+  }
+}
+
+.admin-resources-category {
+  font-weight: 400;
+}
+
+#editor1 p {
+  margin-bottom: 0.25rem;
+}
+
+#food-resource-description {
+  background-color: #DDDDDD; /* light gray */
+  padding: 5px 5px 0 5px;
+  font-size: 0.8em;
+} 
+
+#get-directions-link {
+  font-size: 0.8em;
+  cursor: pointer !important; 
+}
+
+.rounded {
+  border-radius: 5px;
+  padding: 0 3px;
+  margin: 1px 0;
+  background-color: #ffffff;
+  display: inline-block;
+}
+
+.food-resource-name {
+  font-size: 1.075rem;
+  font-weight: 200;
+  color: #222222;
+  letter-spacing: .5px;
+}
+
+#food-resource-info {
+  margin-bottom: 5px;
+  padding: 8px 10px;
+}
+
+#size-limit-announcement {
+  font-weight: bold;
+  color: #ef3d23;
 }

@@ -1,0 +1,458 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<body id = "files_p">
+	<div class="remodal-bg">
+		<div class="row">
+	    	<h1 class="page-header admin-header">Bulk Import and Export</h1>
+	     	<hr align="center">
+	  	</div>
+      	<div class="row">
+        	<div class="large-10 medium-10 small-10 large-centered medium-centered small-centered columns">
+  	    		<h2 class="text-center page-header">Resource Data Export</h2>
+  	    		<div class="row">
+  	    			All Food Resource data in the database can be downloaded as a CSV. This CSV will be formatted precisely like the sample below.
+  	    		</div>
+	  	    	<div class="row text-center">
+	  				<a role="button" href="{{ url_for('download') }}" class="button radius medium" id="download-button">Download</a>
+	  			</div>
+      		</div>
+	  	</div>
+	  	<div class="row"><div class="large-10 medium-10 small-10 large-centered medium-centered small-centered columns">
+	    	<h2 class="text-center page-header">Resource Data Import</h2>
+	    	<b>It is very important that the CSV you import <i>exactly</i> matches the expected format.</b> Please click the download button below to download the import CSV. The instructions in this CSV must be followed precisely. Do not change the formatting of this CSV in any way.
+	    	<br><br>
+	    	<div id="size-limit-announcement">Your CSV can only include <u>50</u> resources. If you need to import more than 50 resources, split them up into separate CSV files.</div>
+	    	<br>
+	    	The import CSV looks like this. Please input data exactly like in the sample below. (Scroll right within the table to see more.
+		    <br><br>
+	    	<div class="row">
+	    		<div id="sample_table_div"></div>
+	  		</div>
+
+        	<div class="row text-center" id="download-buttons">
+	    	  <a role="button" href="https://drive.google.com/file/d/0B3772_wowlyaRW5BdEFMTDA2LWM/view?usp=sharing" class="button button radius medium" id="sample-download-button">Download Import CSV</a>
+	  	  	</div>
+      	</div>
+      </div>
+		<div class="row">
+			<div class="large-10 medium-10 small-10 large-centered medium-centered small-centered columns">
+				<div class="row">
+					<div class="small-12 columns">
+						<b>Be patient</b>: Depending on how many resources you're importing, the import process may take several minutes.
+					</div>
+				</div>
+				<div class="row">
+					<div class="small-12 columns">
+						<form action="/_csv_input"
+						  class="dropzone"
+						  id="my-awesome-dropzone"></form>
+
+					  	<div class="row text-center">
+		  					<div class="button radius medium" id="upload-button">Upload</div>  
+						</div>
+					</div>
+				</div>
+			</div>	  
+		</div>
+	</div>
+	<div class="row">
+		<div class="large-10 medium-10 small-10 large-centered medium-centered small-centered columns">
+			<div class="row">
+				<div class="small-12 columns">
+					<h2 class="text-center page-header">Delete All Food Resources</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="small-12 columns">
+					Click the button below to delete all food resources from the database. BEWARE: This action cannot be undone.
+				</div>
+			</div>
+			<div class="row">
+				<div class="small-12 columns">
+					<div class="text-center">
+  						<a role="button" href="#delete-modal" class="button radius medium" id="delete-button">Delete All Food Resources</a>
+  					</div>
+				</div>
+			</div>
+  		</div>
+  	</div>
+
+	<div class="remodal" id="error-modal" data-remodal-id="error-modal" data-remodal-options="hashTracking: false">
+	    <h1>Error</h1>
+	    <p>
+	      We had some trouble importing your CSV. Please read the list of errors below and try again.
+	    </p>
+	    <div id="modal-error-list">
+	    </div>
+	    <br>
+	    <a class="remodal-confirm" href="#">Try Again</a>
+	</div> 
+
+	<div class="remodal" id="success-modal" data-remodal-id="success-modal" data-remodal-options="hashTracking: false">
+	    <h1>Import Successful</h1>
+	    <p>
+	      Your resources were successfully imported! You are being redirected to the admin page.
+	    </p>
+	</div>  
+
+	<div class="remodal" id="delete-modal" data-remodal-id="delete-modal">
+	    <h1>Are you sure?</h1>
+     	<p>
+    		Are you sure you want to delete all food resources in the database?
+	    	<br>
+	    	This action cannot be undone.
+	    </p>
+	    <br>
+	    <a class="remodal-cancel" href="#">No</a>
+	    <a class="remodal-confirm" href="#">Yes</a>
+	</div>  
+
+</body>
+
+<script type="text/javascript">
+	/* Delete all food resources when "Delete All Food Resources" button is clicked. */
+	onClickDeleteAllFoodResources(); 
+
+    google.load("visualization", "1", {packages:["table"]});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+
+ 	var tableData = google.visualization.arrayToDataTable([
+  		['Table 1','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','','','','','','','','','','','','','','','','','',
+	  		'','','','','','',
+	  	{% for food_resource_boolean in food_resource_booleans %}
+	  		'',
+	  	{% endfor %}
+	  		''],
+      	['','Type (SHARE_HOST_SITE, FARMERS_MARKET, FOOD_CUPBOARD, ' +
+	      	'SENIOR_MEAL, SOUP_KITCHEN,  WIC_OFFICE, or new type already ' + 
+	      		'added by an admin)',
+			'Name', 'Address - Line 1', 'Address - Line 2 (optional)', 'City', 
+			'State', 'Zip Code', 'Phone Number (optional)', 
+			'Website (optional)', 'Description (optional)', 
+		{% for food_resource_boolean in food_resource_booleans %}
+			'{{ food_resource_boolean.description_question }} (either \'Yes\' or leave blank)',
+		{% endfor %} 
+			'Hours Available? (either \'Yes\' or leave blank)', 
+			'Open Sunday? (either \'Yes\' or leave blank)', 
+			'Open Monday? (either \'Yes\' or leave blank)', 
+			'Open Tuesday? (either \'Yes\' or leave blank)',
+			'Open Wednesday? (either \'Yes\' or leave blank)',
+			'Open Thursday? (either \'Yes\' or leave blank)', 
+			'Open Friday? (either \'Yes\' or leave blank)',
+			'Open Saturday? (either \'Yes\' or leave blank)', 
+			/* Sunday opening and closing times */
+			'Sunday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Sunday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Sunday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
+			/* Monday opening and closing times */ 
+			'Monday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Monday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Monday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Monday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
+			/* Tuesday opening and closing times */
+			'Tuesday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Tuesday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Tuesday Closing Time #10 (military time - e.g., 8:00 or 17:00)',
+			/* Wednesday opening and closing times */
+			'Wednesday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Wednesday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Wednesday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
+			/* Thursday opening and closing times */
+			'Thursday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Thursday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Thursday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
+			/* Thursday opening and closing times */
+			'Friday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Friday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Friday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Friday Closing Time #10 (military time - e.g., 8:00 or 17:00)', 
+			/* Saturday opening and closing times */
+			'Saturday Opening Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #1 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Opening Time #2 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #2 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #3 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #3 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #4 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #4 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #5 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #5 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #6 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #6 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #7 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #7 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #8 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #8 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #9 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #9 (military time - e.g., 8:00 or 17:00)', 
+			'Saturday Opening Time #10 (military time - e.g., 8:00 or 17:00)',
+			'Saturday Closing Time #10 (military time - e.g., 8:00 or 17:00)'],
+			['1','FARMERS_MARKET','Fair Food Farmstand', '51 N. 12th St', 
+				'Reading Terminal Market', 'Philadelphia', 'PA', '19107', '', 
+				'', 'Open year round',
+			{% for food_resource_boolean in food_resource_booleans %}
+				{% if loop.index0 % 3 == 0 or loop.index0 % 5 == 0 %}
+					'Yes',
+				{% else %}
+					'',
+				{% endif %}
+			{% endfor %}  
+				'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 
+				/* Sunday opening and closing times */
+				'9:00', '17:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Monday opening and closing times */
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Tuesday opening and closing times */ 
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Wednesday opening and closing times */
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Thursday opening and closing times */
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Friday opening and closing times */ 
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				/* Saturday opening and closing times */
+				'8:00', '18:00', 
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', '',
+				'', ''],  
+        ]);
+
+	var tableOptions = {
+		alternatingRowStyle: true,
+		sort: 'disable',
+		width: '100%',
+	};
+
+	var table = new google.visualization
+		.Table(document.getElementById('sample_table_div'));
+	table.draw(tableData, tableOptions);
+    }
+</script>
+
+<script>
+
+// Config dropzone
+Dropzone.options.myAwesomeDropzone = {
+  paramName: "file", 
+  addRemoveLinks: true,
+  maxFiles: 1,
+  acceptedFiles: ".csv",
+  autoProcessQueue: false,
+  dictDefaultMessage: "DROP OR CLICK HERE TO IMPORT A SINGLE CSV",
+  init: function() {
+    this.on("success", function(file, response) {
+    	$('*').css({ 'cursor': 'default' });
+    	var inst = $.remodal.lookup[$('[data-remodal-id=success-modal]').data('remodal')];
+        // open the success modal
+        inst.open();
+
+    	window.setTimeout(function(){
+        	window.location = "{{ url_for('admin') }}";
+    	}, 5000);
+    });
+
+    this.on("error", function(file, errorMessage) { 
+    	$('*').css({ 'cursor': 'default' });
+    	var inst = $.remodal.lookup[$('[data-remodal-id=error-modal]').data('remodal')];
+
+        // open the error modal
+        inst.open();
+
+        // print errors on error modal
+        var htmlString = '<ul>'
+
+        for(i = 0; i < errorMessage.errors.length; i++) {
+        	htmlString += '<li>'+errorMessage.errors[i]+'</li>';
+        }
+
+        htmlString += '</ul>';
+
+        $('#modal-error-list').html(htmlString);
+
+		// When modal is closed, redirect to files page.
+		$(document).on('close', '#error-modal', function () {
+		    console.log('close');
+		    window.location = "{{ url_for('files') }}";
+		});
+    });
+  },
+};
+
+$("#upload-button").click(function() {
+	var dropzone = Dropzone.forElement("#my-awesome-dropzone");
+	$('*').css({ 'cursor': 'wait' });
+	dropzone.processQueue();
+});
+
+</script>
+
+{% endblock %}

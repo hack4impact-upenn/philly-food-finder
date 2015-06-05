@@ -2,19 +2,20 @@
   <head>
 
     <!-- CSS -->
-    <link href="../static/css/foundation.min.css" rel="stylesheet" type="text/css">
-    <link href="../static/css/normalize.css" rel="stylesheet" type="text/css">
-    <link href="../static/css/foundation.css" rel="stylesheet" type="text/css">
-    <link href="../static/css/styles.css" rel="stylesheet" type="text/css">
-    <script src="../static/js/vendor/jquery.js"></script>
-    <script src="../static/js/foundation.min.js"></script>
+    <link href="{{ url_for('static', filename='css/foundation.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for('static', filename='css/jquery.remodal.css') }}" rel="stylesheet" type="text/css">
+    <script src="{{ url_for('static', filename='js/vendor/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/foundation.min.js') }}"></script>
     <script type="text/javascript" 
             src="http://maps.google.com/maps/api/js?sensor=true"></script>
-    <script src="../static/js/gmaps.js"></script>
-    <script src="../static/js/custom.js"></script>
-    <script src="../static/js/ckeditor/ckeditor.js"></script>
+    <script src="{{ url_for('static', filename='js/gmaps.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ckeditor/ckeditor.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dropzone.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.remodal.min.js') }}"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
    
-    <!-- JavaScript -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Don't launch the Foundation JS until the DOM has loaded -->
@@ -31,11 +32,26 @@
     <script type=text/javascript>
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     </script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-58031790-1', 'auto');
+      ga('send', 'pageview');
+
+      {% if current_user.is_authenticated() %}
+        ga("set", "&uid", "{{ current_user.email }}"); // Set the user ID using signed-in user_id.
+      {% endif %}
+
+    </script>
     
     {% if title %}
-    <title>{{title}} - GPCAH</title>
+    <title>{{title}} - Philly Food Finder</title>
     {% else %}
-    <title>GPCAH</title>
+    <title>Philly Food Finder</title>
     {% endif %}
 
   </head>
@@ -45,7 +61,7 @@
            data-options="sticky_on: large">
         <ul class="title-area">
           <li class="name">
-            <h1><a href="#"><img src="../static/img/FPAC_logo.svg"/></a></h1>
+            <h1><img src="{{ url_for('static', filename='img/philly_food_finder_logo.jpg') }}" id="philly-food-finder-logo"/></h1>
           </li>
           <li class="toggle-topbar menu-icon"><a href="#"><span>menu</span></a>
           </li>
@@ -53,11 +69,41 @@
 
         <section class="top-bar-section">
           <ul class="left">
-            <li><a href="#" id="l_map">map</a></li>
-            <li><a href="{{ url_for('faq') }}" id="l_faq">faq</a></li>
+            <li><a href="{{ url_for('map') }}" id="l_map">map</a></li>
+
+            <li class="has-dropdown drop-resources">
+              <a href="" id="l_resources">resources</a>
+                <ul class="dropdown">
+                  <li><a href="{{ url_for('neighborhood') }}">Philly Food Finder<br> Guides</a></li>
+                  <li><a href="{{ url_for('farmers') }}">Farmers’ Markets</a></li>
+                  <li><a href="{{ url_for('seniors') }}">Seniors</a></li>
+                  <li><a href="{{ url_for('share') }}">SHARE Food Program</a></li>  
+                  <li><a href="{{ url_for('snap') }}">SNAP (Food Stamps)</a></li>
+                  <li><a href="{{ url_for('summer_meals') }}">Meals for Kids</a></li>
+                  <li><a href="{{ url_for('wic') }}">WIC</a></li>                
+
+                </ul>
+            </li>
             <li><a href="{{ url_for('about') }}" id="l_about">about</a></li>
             <li><a href="{{ url_for('contact') }}" id="l_contact">contact</a></li>
-            
+
+            {% if current_user.is_authenticated() %}
+            <li class="has-dropdown drop-admin">
+              <a href="{{ url_for('admin') }}" id="l_admin">admin</a>
+
+                <ul class="drop-admin dropdown">
+                  <li><a href="{{ url_for('admin') }}">Manage<br>Food Resources</a></li>
+                  <li><a href="{{ url_for('new') }}">Add<br>Food Resource</a></li>
+                  <li><a href="{{ url_for('view_food_resource_types') }}">Manage Food<br>Resource Types</a></li>
+                  <li><a href="{{ url_for('new_food_resource_type') }}">Add Food<br>Resource Type</a></li>
+                  <li><a href="{{ url_for('files') }}">Bulk Import<br>and Export</a></li>
+                  <li><a href="{{ url_for('analytics') }}">Analytics</a></li>
+                  <li><a href="{{ url_for('user.register') }}">Invite Admins</a></li>
+                  <li><a href="{{ url_for('user.change_password') }}">Change Password</a></li>
+                </ul>
+            </li>
+            {% endif %}
+           
           </ul>
 
          <!-- Right Nav Section -->
@@ -72,26 +118,6 @@
             {% endif %}
           </ul>
 
-<!--<<<<<<< HEAD
-  <section class="top-bar-section"> 
-    <ul class="right">
-      {% if current_user.is_authenticated() %}
-        <li><a href=" {{ url_for('user.logout') }} "> Logout </a></li>
-      {% endif %}
-      {% if not current_user.is_authenticated() %}
-        <li><a href=" {{ url_for('user.login') }} "> Login </a></li>
-      {% endif %}
-      <li class="has-dropdown">
-        <a href="#">Right Button Dropdown</a>
-        <ul class="dropdown">
-          <li><a href="#">First link in dropdown</a></li>
-          <li class="active"><a href="#">Active link in dropdown</a></li>
-        </ul>
-      </li>
-    </ul>
-=======
->>>>>>> nancy-->
-
         </section>
       </nav>
     </div>
@@ -100,21 +126,38 @@
 
     {% endblock %}
 
-
-    {% block content_faq %}
-
-    {% endblock %}
-
-
-
-    <!-- sections of stuff
-    <a name="map"></a>
-    <h3 data-magellan-destination="map">map</h3>
-
-    <a name="faq"></a>
-    <h3 data-magellan-destination="faq">faq</h3>
-    -->
-
+    <div class="row">
+        <h4 id="hr-helper">.</h4>
+        <hr align="center">
+    </div>
+    <div class="footer row">
+      <div class="small-12 small-centered columns">
+        Do you manage a food resource? Would you like to add your new or updated information to our site? Submit your food resource's information
+        <a href="/propose-resource">here</a>.
+     </div>
+    </div>
+    <div class="footer fbottom row">
+      <div class="small-12 columns">
+        Developed by <a href="http://hack4impact.org/">Hack4Impact</a> in partnership with the <a href="http://phillyfpac.org/">Philadelphia Mayor's Food Policy Advisory Council</a> and the <a href="http://www.hungercoalition.org/">Greater Philadelphia Coalition Against Hunger</a>.
+      </div>
+      <div class="small-12 columns right">
+        <div class="frame">
+            <span class="helper"></span>
+            <div class="logo">
+              <a href="http://phillyfpac.org/"><img class="logo" id="fpac-logo" src="{{ url_for('static', filename='img/FPAC_logo.svg') }}" alt="Food Policy Advisory Council"></a>
+              <a href="http://www.hungercoalition.org/"><img class="logo" id="gpcah-logo" src="{{ url_for('static', filename='img/gpcah_logo_big.jpg') }}" alt="Greater Philadelphia Coalition Against Hunger"></a>
+            </div>
+          </div> 
+      </div>
+    </div>
+    <div class="row">
+      <div class="small-12 small-centered columns">
+        <div class="frame">
+          <span class="helper"></span>
+          <a href="http://hack4impact.org/"><img class="logo" id="hack4impact-logo" src="{{ url_for('static', filename='img/applogo_color.png') }}" alt="Hack4Impact"/></a>
+        </div>       
+      </div>
+    </div></div>
 
   </body>
 </html>

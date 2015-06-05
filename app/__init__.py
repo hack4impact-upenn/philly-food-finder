@@ -8,18 +8,19 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # Use a Class-based config to config flask and extensions
 class ConfigClass(object):
     # Flask settings
-    SECRET_KEY =              os.getenv('SECRET_KEY',       '')
+    SECRET_KEY =              os.getenv('SECRET_KEY',       'not so secret')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',     
         'sqlite:///' + os.path.join(basedir, 'app.db'))
+
     CSRF_ENABLED = True
 
     # Flask-Mail settings
     MAIL_USERNAME =           os.getenv('MAIL_USERNAME',        
         'phillyhungercoalition@gmail.com')
     MAIL_PASSWORD =           os.getenv('MAIL_PASSWORD',        
-        '')
+        'not so secret')
     DEFAULT_MAIL_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',  
-        '"Foodle" <phillyhungercoalition@gmail.com>')
+        '"Philly Food Finder" <phillyhungercoalition@gmail.com>')
     MAIL_SERVER =             os.getenv('MAIL_SERVER',          
         'smtp.gmail.com')
     MAIL_PORT =           int(os.getenv('MAIL_PORT',            '465'))
@@ -32,7 +33,7 @@ class ConfigClass(object):
     USER_ENABLE_CHANGE_USERNAME    = False
     USER_ENABLE_FORGOT_PASSWORD    = True
     USER_ENABLE_CHANGE_PASSWORD    = True
-    USER_APP_NAME        = 'Foodle'                # Used by email templates
+    USER_APP_NAME        = 'Philly Food Finder'                
     USER_PASSWORD_HASH		= 'sha512_crypt'
     USER_PASSWORD_HASH_MODE          = 'passlib'
     USER_CONFIRM_EMAIL_EXPIRATION    = 9223372036854775807
@@ -56,9 +57,14 @@ class ConfigClass(object):
     USER_AFTER_REGISTER_ENDPOINT = 'invite_sent'
     USER_AFTER_CONFIRM_ENDPOINT = 'user.change_password'
 
+    # Flask-WTF settings
+    RECAPTCHA_PUBLIC_KEY = '6LcmKQcTAAAAAC8Gy-On5cNSfIvLu6TNCEMXBErq'
+    RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY',  'not so secret')
+
+    DEBUG = True
+
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')
-#app.config.from_object('config')
 
 db = SQLAlchemy(app) 	# Initialize Flask-SQLAlchemy
 mail = Mail(app)		# Initialize Flask-Mail

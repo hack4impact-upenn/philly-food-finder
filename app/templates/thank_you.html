@@ -1,0 +1,24 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <h1 class="page-header">
+	  {%trans%}Thanks!{%endtrans%}</h1>
+    <hr align="center">
+</div>
+
+<div class="row">
+  <div class="large-8 medium-8 medium-centered small-8 small-centered
+              columns large-centered">
+	  <p>Thank you for helping to keep Philly Food Finder up-to-date! Once your pin is approved, it will appear on the map. If you have any questions, please contact us at <a href="mailto:phillyfoodinfo@gmail.com">phillyfoodinfo@gmail.com</a>.</p>
+  </div>
+</div>
+
+<div class = "row text-center">
+        <a href="{{ url_for('guest_new_food_resource') }}" 
+           class="button radius small">Submit Another Food Resource</a>
+</div>
+
+{% endblock %}

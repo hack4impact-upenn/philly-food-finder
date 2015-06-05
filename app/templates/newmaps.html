@@ -1,114 +1,323 @@
-  {% extends "base.html" %}
+{% extends "base.html" %}
 
-<!-- Map -->
-  {% block content %}
+{% block content %}
+
+{% from "macros.html" import render_field with context %}
+{% from "macros.html" import render_checkbox_field with context %}
+
+<script src="//fast.eager.io/xaPpyKPnbT.js"></script>
+
 <script type="text/javascript">
-    var map;
-    $(document).ready(function(){
-      map = new GMaps({
-        el: 'map',
-        lat: -12.043333,
-        lng: -77.028333
+  resetMarkerInfoDiv(); 
+  var map;
+  var alreadyJumped = false; // Ensured click on pin only jumps to description once
+
+  $(document).ready(function() {
+    {% if from_search %}
+      document.getElementById('geocoding_form').scrollIntoView();
+    {% endif %}
+
+    /* Create a new map. */
+    map = new GMaps({     
+      el: 'map',
+      lat: 39.9500,
+      lng: -75.1667
+    });
+
+    $('*').css({ 'cursor': 'wait' });
+
+    updateMap();
+
+    $('*').css({ 'cursor': 'default' });
+
+  });
+
+  function updateMap() {
+    {% if searched_location %}
+      var markerImage = "../static/img/mbb_black.png";
+      map.addMarker({
+        lat : "{{ searched_location.coordinates[0]|safe }}",
+        lng : "{{ searched_location.coordinates[1]|safe }}",
+        title: "Current Address",
+        icon : { url: markerImage,
+          size: new google.maps.Size(50,50),
+          scaledSize: new google.maps.Size(20,25) }
       });
-      $('#geocoding_form').submit(function(e){
-        e.preventDefault();
-        GMaps.geocode({
-          address: $('#address').val().trim(),
-          callback: function(results, status){
-            if(status=='OK'){
-              var latlng = results[0].geometry.location;
-              map.setCenter(latlng.lat(), latlng.lng());
-            $.getJSON($SCRIPT_ROOT + '/_map', 
-            function(data) {
-              for (var i = 0; i < data["addresses"].length; i++)
-              {
-                newAddress = data["addresses"][i]["address"]["line1"];
-                newTitle = "Default Title"
-                newDescription = "Default Description";
-                newType = "Default Type";
-                image = "../static/img/FPAC_LOGO.png";
+    {% endif %}
 
-                if (data["addresses"][i]["name"] != null)
-                  { newTitle = data["addresses"][i]["name"]; }
+    {% if resources|length == 0 %}
+      $("dd.error").append("<small class='error'>No search results. Please try another address or zip code.</small>"); 
+    {% endif %}
 
-                if (data["addresses"][i]["description"] != null)
-                  { newDescription = data["addresses"][i]["description"]; }
+    {% for resource in resources %}
+    (function() {
+      var newAddress = "{{ resource.address.line1|safe + ', ' + resource.address.city|safe + ', ' + resource.address.state|safe + " " + resource.address.zip_code|safe }}";
+      var newTitle = "{{ resource.name|safe }}";
+      var filename = "{{ resource.food_resource_type.colored_pin.pin_image_name|safe }}"; 
+      var image = "../static/img/" + filename; 
+      var latitude = "{{ resource.address.latitude|safe }}";
+      var longitude = "{{ resource.address.longitude|safe }}";
 
-                newType = data["addresses"][i]["location_type"];
+      /* First row is name of the food resource. */
+      var newDescription = "<div class='row' id='food-resource-info'>" 
+        + "<div class='small-12 columns'>";
 
-                if (newType == 'FARMERS_MARKET') { image = "../static/img/m_yellow.png" }
+      newDescription += "<div class='food-resource-name'>" + newTitle + "</div>";
+      newDescription += "</div></div>"; 
 
-                else if (newType == 'FOOD_CUPBOARD') { image = "../static/img/m_blue.png" }
+      /* Second row is food resource information. */
+      newDescription += "<div class='row'>" 
+        + "<div class='small-6 medium-4 columns'>"; 
 
-                else if (newType == 'MEALS_ON_WHEELS') { image = "../static/img/m_green.png" }
+      /* Add basic information about Food Resource */
+      newDescription += 
+        "<div class='rounded'>Food Resource Type:</div> " + "{{ resource.food_resource_type.name_singular|safe }}" + "<br>" 
+        + "<div class='rounded'>Address:</div> " + newAddress + "<br>";
+      
+      newDescription += "<div class='rounded'>Phone Number:</div> " + {{ resource.phone_numbers[0].number|tojson|safe }} + "<br>";
+      
+      {% if resource.description %}
+      newDescription += "<div class='rounded'>Description:</div> " + {{ resource.description|tojson|safe }} + "<br>";
+      {% endif %}
 
-                else if (newType == 'SHARE') { image = "../static/img/m_red.png" }
+      {% if resource.url %}
+      newDescription += "<div class='rounded'>Website:</div> " + "{{ resource.url|safe }}" + "<br>" ;
+      {% endif %}
 
-                else if (newType == 'SOUP_KITCHEN') { image = "../static/img/m_orange.png" }
+      /* Column break */ 
+      newDescription += "</div>" + "<div class='small-6 medium-4 columns'>";
 
-                else if (newType == 'WIC_OFFICE') { image = "../static/img/m_purple.png" }
-                else 
-                  { image = "../static/img/FPAC_LOGO.png"}
-                
-                console.log(newAddress); 
-                console.log(newTitle);
-                console.log(newDescription);
-                console.log(newType);
-                console.log(image);
-                GMaps.geocode({
-                  address: newAddress,
-                  callback: function(results, status) {
-                    if (status == 'OK')
-                    {
-                      var newMarker = results[0].geometry.location;   
-                      console.log(newAddress); 
-                      console.log(newTitle);
-                      console.log(newDescription);
-                      console.log(newType);
-                      console.log(image);                                      
-                      map.addMarker({
-                        lat: newMarker.lat(),
-                        lng: newMarker.lng(),
-                        title: newTitle,
-                        icon: {url: image,
-                              size: new google.maps.Size(50,50),
-                              scaledSize: new google.maps.Size(20,25)},
-                        infoWindow: {
-                          content: newDescription
-                        }
-                      })
-                    }
-                  }
-                  });
-              }
-           });
+      /* Add hours of operation. */
+      newDescription += "<div class='rounded'>Hours of Operation</div><br>";
+
+      {% if resource.are_hours_available %}
+
+        {% for day in days_of_week %}
+            var dayOfWeekName = "{{ day['name']|safe }}";
+
+            {% set day_timeslots = [] %}
+
+            {% for timeslot in resource.timeslots %}
+              {% if timeslot.day_of_week == day.index %}
+                // {{ day_timeslots.append(timeslot) }}
+              {% endif %}
+            {% endfor %}
+
+            newDescription += "<u>" + dayOfWeekName + "</u>: "; 
+
+            {% if day_timeslots|count == 0 %}
+              newDescription += "Closed <br>";
+            {% else %}
+              {% for timeslot in day_timeslots %}
+                newDescription += "<br>" + "{{ timeslot.start_time.strftime('%I:%M %p')|safe }}" + " - " + "{{ timeslot.end_time.strftime('%I:%M %p')|safe }}";
+              {% endfor %}
+              newDescription += "<br>";
+            {% endif %}
+
+        {% endfor %}
+
+      {% else %}
+      newDescription += "Not available.<br>"
+      {% endif %}  
+
+      /* Column break */ 
+      newDescription += "</div>" + "<div class='small-6 medium-4 columns'>";
+
+      /* Add boolean information. */
+      {% if resource.booleans|length > 0 %}
+        newDescription += "<div class='rounded'>Other Attributes:</div> <br>"; 
+        {% for boolean in resource.booleans %}
+          {% if boolean.value %}
+            {% set boolean_quality = boolean.description_question|replace('?','') %} 
+            newDescription += "• " + "{{ boolean_quality|safe }}" + "<br>";  
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      newDescription += "</div></div>"
+
+      /* End of generation of newDescription */
+
+      /* Change the format of the address to generate a Google Maps link with directions. */
+      var removedCommas = newAddress.split(",").join("");
+      var linkInfo = newAddress.split(" ").join("+");
+      var completeLink = "https://maps.google.com?daddr=" + linkInfo; 
+      /* Only add address to map if its address is valid. */
+      {% if resource.address.valid_address %}
+        /* Add each marker to map. */   
+
+        map.addMarker({
+          lat : latitude,
+          lng : longitude,
+          title: newTitle,
+          //animation : google.maps.Animation.DROP,
+          icon : { url: image,
+                  size: new google.maps.Size(50,50),
+                  scaledSize: new google.maps.Size(20,25) },
+          click: function(e) {
+            document.getElementById("marker-info").innerHTML = newDescription;
+            $('.linkInsert').attr('href', completeLink);
+            var hexColor = '{{ resource.food_resource_type.colored_pin.hex_color|safe }}';
+            $("#food-resource-info").css("background-color", hexColor); 
+            if(!alreadyJumped) {
+              document.getElementById('map-search-button').scrollIntoView();
+              alreadyJumped = true;
             }
           }
-        });
-      });                                
-    });
-    </script>
-  <h1>GMaps.js &mdash; Markers</h1>
+        }); 
+      {% endif %}
+
+      /* Fit map window to show all markers. */
+      map.fitZoom(); 
+
+    } ()); // Call anonymous function.
+    {% endfor %}
+
+
+  }                       
+</script>
+
+<body id = "map_p">
   <div class="row">
-    <div class="span11">
+    <div class="small-12 columns">
+      <h1 class="page-header" id="map-header">Philly Food Finder</h1>
+      <h2 class="page-header-small" id="map-header-small">A Guide to Food Assistance in Philadelphia</h2>
+      <hr align="center">
+    </div>
+  </div>
+
+  <!-- Editable content box for "Announcements" --> 
+  <div class="row">
+      <div class="small-12 columns content">
+          <div id="editor1" contenteditable="false">
+              {{ html_string.value|safe }}
+          </div>
+      </div>
+  </div>
+  {% if current_user.is_authenticated() %}
+  <div class="row"> 
+    <div class="small-12 columns content">
+      <div class="button radius tiny start-edit">Edit</div>
+      <div class="button radius tiny end-edit" id="map-announcements">Save</div> 
+    </div> 
+  </div>
+  {% endif %}
+
+  <!-- Map filtering -->
+  <div class="row">
+    <div class="small-12 columns content">
       <form method="post" id="geocoding_form">
-        <label for="address">Address:</label>
-        <div class="input large-8 medium-8 small-12 columns">
-          <input type="text" id="address" name="address" />
-          <input type="submit" class="btn" value="Search" />
+        <div class="row">
+          <div class="small-12 columns">
+                <div class="row">
+                  <dt>{{ form.address_or_zip_code.label }}
+                  <dd class="error">{{ form.address_or_zip_code()|safe }}
+                    {% if form.address_or_zip_code.errors %}
+                        {% for e in form.address_or_zip_code.errors %}
+                            {% if e %}
+                                <small class="error">{{ e }}</small>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+          </div>
+        </div>
+        <div class="row">
+          <ul id="resource-type-checkboxes" class="checkboxes">
+            {% for checkbox_form in form.location_type_booleans %}
+            <div class="large-4 small-6 columns">
+              <li class="checkbox-li">
+                {{ checkbox_form.hidden_tag() }}
+                {{ render_checkbox_field(checkbox_form.value) }}
+              </li>
+            </div>
+            {% endfor %}
+          </ul>
+        </div>
+        <br>
+        <div class="row block-header">
+          <table>
+              <thead>
+                <tr>
+                    <th width="200" class="search-expand" id="advanced-options-expand">+</th>
+                    <th width="100%">Advanced Options</th>  
+                </tr>
+              </thead>
+          </table>
+          <div id="advanced-options-checkboxes">
+            <ul class="checkboxes">
+                {% for checkbox_form in form.booleans %}
+                <div class="large-4 small-6 columns">
+                  <li class="checkbox-li">
+                    {{ checkbox_form.hidden_tag() }}
+                    {{ render_checkbox_field(checkbox_form.value) }}
+                  </li>
+                </div>
+                {% endfor %}
+            </ul>
+          </div>
+        </div>    
+        <div class="row">                                        
+          <div class="small-12 columns">
+            <input type="submit" class="button radius small" value="Search" id="map-search-button" />
+          </div>
         </div>
       </form>      
-      <div class="large-8 medium-8 small-12 columns large-centered">
-          <div id="map"></div>
+      <div id="map-container">
+        <div class="row">
+          <div class="small-12 columns" id="map"></div>
+        </div>
+      </div> 
+
+      <!-- Information about the selected pin -->
+      <div class="row">
+        <div class="small-12 columns">
+          <div id="food-resource-description">
+            <div id="marker-info">Click on a pin for more information!<br></div>
+            <div id="directions-link">
+              <p>
+                <a id="get-directions-link" class="linkInsert" href="http://www.maps.google.com" target="_blank">Get directions!</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map legend: Pin images with associated food resource types --> 
+      <div class="row">
+        <div class="small-12 columns">
+          <div id="map-key">
+              <div class="small-6 medium-4 columns pin-definition">
+                  <img src="../static/img/mbb_black.png" alt="Black Pin"/>
+                  Searched Location
+              </div>
+
+              {% for food_resource_type in food_resource_types %}
+              <div class="small-6 medium-4 columns pin-definition">
+                  <img src="../static/img/{{ food_resource_type.colored_pin.pin_image_name }}" alt="{{ food_resource_type.colored_pin.color_name}} Pin"/>
+                  {{ food_resource_type.name_singular }}
+              </div>
+              {% endfor %}
+          </div>
+          <div id="footer-spacer">
+          </div>
+        </div>
       </div>
     </div> 
   </div>
-  {% endblock %}
+</body>
 
+<script>
+  $(document).ready(function() {
+    {% if current_user.is_authenticated() %}
+      $(".end-edit").hide();
+    {% endif %}
+    $("#advanced-options-checkboxes").hide(); // Hide advanced options
 
-<!-- FAQ -->
-  {% block content_faq %}
+    $("#advanced-options-expand").click(function() {
+      toggleExpansion('advanced-options-checkboxes', 'search-expand');
+    });
+  }); 
+</script>
 
-
-
-  {% endblock %}
+{% endblock %}

@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block content %}
+<body id = "charts_p">
+    <div class="row">
+        <h1 class="page-header admin-header">Admin Analytics</h1>
+        <hr align="center">
+    </div>
+    <div class="row">
+        <div class="large-8 medium-8 small-8 large-centered medium-centered small-centered columns">
+            <h2 class="text-center page-header">Searches by Zip Code</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="small-4 small-centered columns">
+            <select id="chart-search-range">
+                <option selected value="all-time">All Time</option>
+                <option disabled>────────────────────</option>
+                <option value="today">Today</option>
+                <option value="this-month">This Month</option>
+                <option value="last-month">Last Month</option>
+                <option disabled>────────────────────</option>
+                <option value="last-7-days">Last 7 Days</option>
+                <option value="last-30-days">Last 30 Days</option>
+                <option value="last-60-days">Last 60 Days</option>
+                <option value="last-90-days">Last 90 Days</option>
+                <option value="last-12-months">Last 12 Months</option>
+                <option disabled>────────────────────</option>
+                <option value="custom-date-range">Custom Date Range</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div id="chart_div"></div>
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+            <div class="no-data">
+                No data to display.
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <h2 class="text-center page-header">Raw Data</h2>
+    </div>
+    <div class="row">
+        <div id="table_div"></div>
+    </div>
+    <div class="row">
+        <div class="small-12 columns">
+            <div class="no-data">
+                No data to display.
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <h2 class="text-center page-header">Google Analytics</h2>
+    </div>
+    <div class="row">
+        <p>The charts below display a snapshot of the Google Analytics data collected for the site. However, for more complete data please visit <a href="http://www.google.com/analytics">http://www.google.com/analytics</a>.</p>
+        <p>The "Admin Usage View" displays unique admin sessions over time on the site. The only users recorded in this graph are administrators logged into the site. The "All Web Site Data" View displays unique sessions over time for all users on the site.</p>
+    </div>
+
+    <div class="row">
+        <div class="large-centered large-12 medium-centered medium-8 small-centered columns">
+            <section id="auth-button"></section>
+        </div>
+    </div>
+    <div class="row">
+        <div class="large-centered large-12 medium-centered medium-8 small-centered columns">
+            <section id="view-selector"></section>
+        </div>
+    </div>
+    <div class="row">
+        <div class="large-centered large-12 medium-centered medium-8 small-centered columns">
+            <section id="timeline"></section>
+        </div>
+    </div>
+
+    <div class="remodal" data-remodal-id="modal">
+        <h1>Custom Date Range</h1>
+        <p>
+            Enter your custom date range. 
+            <div class="row">
+                <div class="small-6 columns">
+                    Start: 
+                    <input type="text" name="start-date" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="small-6 columns">
+                    End: 
+                    <input type="text" name="end-date" placeholder="dd/mm/yyyy">
+                </div>
+            </div>
+            <div class="row">
+                <div class="small-12 columns">
+                    <div id="date-errors"></div>
+                </div>
+            </div>
+        </p>
+        <a class="remodal-cancel" href="#">Cancel</a>
+        <div class="button radius small" id="custom-date-range-apply-button">Apply</div>
+    </div>
+
+<script>
+    var previousOption = "all-time";
+    $(document).ready(function() {
+        
+        var inst = $.remodal.lookup[$('[data-remodal-id=modal]').data('remodal')];
+
+        $("#chart-search-range").change(function() {
+            var dataType = $(this).val();
+            if (dataType == "custom-date-range") {
+                inst.open();
+                $(document).on('cancel', '.remodal', function () {
+                    $("#chart-search-range").val(previousOption);
+                });
+                $(document).on('close', '.remodal', function () {
+                    $("#chart-search-range").val(previousOption);
+                }); 
+            } else {
+                previousOption = dataType;
+                updateChart(dataType); 
+            }
+        }); 
+
+        $("#custom-date-range-apply-button").click(function() {
+            var startDate = $("[name='start-date']").val();
+            var endDate = $("[name='end-date']").val();
+            var errorsDiv = $("#date-errors");
+            errorsDiv.empty();
+            var errorsFound = false; 
+            if (!isValidDateFormat(startDate)) {
+                errorsDiv.append("Start date is invalid.<br>");
+                errorsFound = true; 
+            }
+            if (!isValidDateFormat(endDate)) {
+                errorsDiv.append("End date is invalid.<br>");
+                errorsFound = true; 
+            }
+            if (!isValidDateRange(startDate, endDate)) {
+                errorsDiv.append("Date range is invalid.<br>");
+                errorsFound = true; 
+            }
+            if (!errorsFound) {
+                previousOption = "custom-date-range";
+                updateChart("custom-date-range", startDate, endDate); 
+                inst.close(); 
+            }
+        });
+    }); 
+
+    google.load("visualization", "1", { packages:["corechart","table"] });
+    google.setOnLoadCallback(updateChartDefault);
+
+    function updateChartDefault() {
+        updateChart(previousOption);
+    }
+
+    function updateChart(dataType, startDate, endDate) {
+        $('*').css({ 'cursor': 'wait' });
+        startDate = startDate || ""; 
+        endDate = endDate || "";
+        $.getJSON($SCRIPT_ROOT + '/_admin/_analytics', {
+            data_type: dataType, 
+            start_date: startDate, 
+            end_date: endDate
+        },
+        function(data) {
+            $('*').css({ 'cursor': 'default' });
+            if ("zip_codes" in data) {
+                zipCodes = data["zip_codes"];
+                if (zipCodes.length == 0) {
+                    $("#chart_div").hide();
+                    $("#table_div").hide(); 
+                    $(".no-data").show(); 
+                }
+                else {
+                    $(".no-data").hide(); 
+                    $("#chart_div").show();
+                    $("#table_div").show();
+                    drawChart(zipCodes);
+                }
+            }
+        }); 
+    }
+
+    function drawChart(array) {
+        var data = [];
+        data.push(['Zip Code', 'Searches']);
+        for (var i = 0; i < array.length; i++) {
+            data.push([array[i][0], array[i][1]]);
+        }
+        var chartData = google.visualization.arrayToDataTable(data);
+        var tableData = google.visualization.arrayToDataTable(data);
+
+        var chartOptions = {
+            backgroundColor: { fill:'transparent' },
+            legend: { position: 'none' },
+            chartArea: { top:'5%', width:'85%', height:'75%' }
+        };
+
+        var tableOptions = {
+            alternatingRowStyle: true,
+            page: 'enable',
+            pageSize: 20,
+        };
+
+        var chart = new google.visualization.ColumnChart(document
+            .getElementById('chart_div'));
+        var table = new google.visualization.Table(document
+            .getElementById('table_div'));
+        chart.draw(chartData, chartOptions);
+        table.draw(tableData, tableOptions);
+    }
+</script>
+
+<script>
+    (function(w,d,s,g,js,fjs){
+      g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(cb){this.q.push(cb)}};
+      js=d.createElement(s);fjs=d.getElementsByTagName(s)[0];
+      js.src='https://apis.google.com/js/platform.js';
+      fjs.parentNode.insertBefore(js,fjs);js.onload=function(){g.load('analytics')};
+    }(window,document,'script'));
+</script>
+
+<script>
+    gapi.analytics.ready(function() {
+
+        // Step 3: Authorize the user.
+        var CLIENTID = '13491890355-nacvo5r9n49qf8e4ed8hskcg5tb8dtpr.apps.googleusercontent.com'
+
+        gapi.analytics.auth.authorize({
+            container: 'auth-button',
+            clientid: CLIENTID,
+        });
+
+        // Step 4: Create the view selector.
+        var viewSelector = new gapi.analytics.ViewSelector({
+            container: 'view-selector'
+        });
+
+        // Step 5: Create the timeline chart.
+        var timeline = new gapi.analytics.googleCharts.DataChart({
+            reportType: 'ga',
+            query: {
+                'dimensions': 'ga:date',
+                'metrics': 'ga:sessions',
+                'start-date': '30daysAgo',
+                'end-date': 'yesterday',
+            },
+            chart: {
+                type: 'LINE',
+                container: 'timeline'
+            }
+        });
+
+        // Step 6: Hook up the components to work together.
+        gapi.analytics.auth.on('success', function(response) {
+            viewSelector.execute();
+        });
+
+        viewSelector.on('change', function(ids) {
+            var newIds = {
+                query: {
+                    ids: ids
+                }
+            }
+            timeline.set(newIds).execute();
+        });
+    });
+</script>
+ 
+</body>
+
+{% endblock %}

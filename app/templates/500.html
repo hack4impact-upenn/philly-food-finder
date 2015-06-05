@@ -2,7 +2,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>An unexpected error has occurred</h1>
-<p>The administrator has been notified. Sorry for the inconvenience!</p>
-<p><a href="{{url_for('index')}}">Back</a></p>
+
+<div class="row">
+    <h1 class="page-header">
+        An unexpected error has occurred.
+    </h1>
+    <hr align="center">
+  </div>
+
+<div class="row">
+  <div class="large-12 medium-12 medium-centered small-8 small-centered
+              columns large-centered">
+    <p>The administrator has been notified. Sorry for the inconvenience!</p>
+    <p><a href="{{ url_for('map') }}">Home</a></p>
+  </div>
+</div>
+
 {% endblock %}
