@@ -1,9 +1,13 @@
 from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
+from celery import Celery
+from flask.ext.cache import Cache
 import os
 from flask_mail import Mail
+from flask_user import SQLAlchemyAdapter, UserManager
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+
 
 # Use a Class-based config to config flask and extensions
 class ConfigClass(object):
@@ -19,7 +23,9 @@ class ConfigClass(object):
         'phillyhungercoalition@gmail.com')
     MAIL_PASSWORD =           os.getenv('MAIL_PASSWORD',        
         'not so secret')
-    DEFAULT_MAIL_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',  
+    DEFAULT_MAIL_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',
+        '"Philly Food Finder" <phillyhungercoalition@gmail.com>')
+    MAIL_DEFAULT_SENDER =     os.getenv('MAIL_DEFAULT_SENDER',
         '"Philly Food Finder" <phillyhungercoalition@gmail.com>')
     MAIL_SERVER =             os.getenv('MAIL_SERVER',          
         'smtp.gmail.com')
@@ -61,6 +67,14 @@ class ConfigClass(object):
     RECAPTCHA_PUBLIC_KEY = '6LcmKQcTAAAAAC8Gy-On5cNSfIvLu6TNCEMXBErq'
     RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY',  'not so secret')
 
+    # Celery
+    CELERY_BROKER_URL = os.environ.get('REDIS_URL') or 'redis://localhost:6379'
+    CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL') or 'redis://localhost:6379'
+
+    # Cache
+    CACHE_TYPE = 'redis'
+    CACHE_REDIS_URL = os.environ.get('REDIS_URL') or 'redis://localhost:6379'
+
     DEBUG = True
 
 app = Flask(__name__)
@@ -69,12 +83,26 @@ app.config.from_object(__name__+'.ConfigClass')
 db = SQLAlchemy(app) 	# Initialize Flask-SQLAlchemy
 mail = Mail(app)		# Initialize Flask-Mail
 
-from app import views, models, forms
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
+
+cache = Cache(
+    app,
+    config={
+        'CACHE_TYPE': app.config['CACHE_TYPE'],
+        'CACHE_REDIS_URL': app.config['CACHE_REDIS_URL'],
+    }
+)
+
+from app import views, models, forms, tasks
 from forms import InviteForm
 from app.models import User
 from app.views import *
-from flask_user import SQLAlchemyAdapter, UserManager
 
 db_adapter = SQLAlchemyAdapter(db, User)        # Register the User model
-user_manager = UserManager(db_adapter, app, register_form = InviteForm, 
-    register_view_function = invite)     # Initialize Flask-User
+user_manager = UserManager(                     # Initialize Flask-User
+    db_adapter,
+    app,
+    register_form=InviteForm,
+    register_view_function=invite
+)
