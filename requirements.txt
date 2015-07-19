@@ -20,7 +20,6 @@ MarkupSafe==0.23
 SQLAlchemy==0.9.8
 Tempita==0.5.2
 WTForms==2.0.1
-WebUI==0.1.7
 Werkzeug==0.10.1
 Whoosh==2.6.0
 alembic==0.6.7
@@ -55,5 +54,3 @@ sqlalchemy-migrate==0.7.2
 sqlparse==0.1.13
 virtualenv==1.11.6
 wsgiref==0.1.2
-wxPython==3.0.2.0
-wxPython-common==3.0.2.0
