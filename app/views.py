@@ -820,7 +820,7 @@ def download():
                         .start_time.strftime('%H:%M'))
                     data.append(day_of_week_timeslots[j] \
                         .end_time.strftime('%H:%M'))
-        outcsv.writerow(data)
+        outcsv.writerow([s.encode("utf-8") if s else '' for s in data])
 
     def generate():
         with open('.mydump.csv', 'rb') as f:
