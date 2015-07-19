@@ -13,7 +13,7 @@ class ColoredPin(db.Model):
     food_resource = db.relationship(
         'FoodResourceType', # One-to-many relationship (one FoodResourceType with many FoodResource).
         backref='colored_pin', # Declare a new property of the FoodResource class.
-        lazy='select', uselist=False)
+        lazy='joined', uselist=False)
 
     def serialize_colored_pin(self):
         return {
@@ -34,7 +34,7 @@ class FoodResourceType(db.Model):
     food_resources = db.relationship(
         'FoodResource', # One-to-many relationship (one FoodResourceType with many FoodResource).
         backref='food_resource_type', # Declare a new property of the FoodResource class.
-        lazy='select',
+        lazy='joined',
         uselist=True,
         order_by='FoodResource.name')
 
@@ -116,8 +116,9 @@ class Address(db.Model):
             'zip_code': self.zip_code,
             'latitude': self.latitude,
             'longitude': self.longitude,
-            'food_resource_id': self.food_resource_id
+            'food_resource_id': self.food_resource_id,
         }
+
 
 class TimeSlot(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -157,7 +158,7 @@ class FoodResourceContact(db.Model):
     email = db.Column(db.String(255))
     phone_number = db.Column(db.String(35))
     food_resource = db.relationship('FoodResource',
-        backref='food_resource_contact', lazy='select', uselist=True)
+        backref='food_resource_contact', lazy='joined', uselist=True)
 
 class FoodResourceBoolean(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -191,27 +192,27 @@ class FoodResource(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(100))
     phone_numbers = db.relationship('PhoneNumber', backref='food_resource',
-        lazy='select', uselist=True)
+        lazy='joined', uselist=True)
     url = db.Column(db.Text)
     description = db.Column(db.Text)
     food_resource_type_id = db.Column(db.Integer,
         db.ForeignKey('food_resource_type.id'))
     address = db.relationship('Address', backref='food_resource',
-        lazy='select', uselist=False)
+        lazy='joined', uselist=False)
 
     # Hours of operation.
     are_hours_available = db.Column(db.Boolean, default=False)
     timeslots = db.relationship(
         'TimeSlot', # One-to-many relationship (one Resource with many TimeSlots).
         backref='food_resource', # Declare a new property of the TimeSlot class.
-        lazy='select', uselist=True,
+        lazy='joined', uselist=True,
         order_by='TimeSlot.start_time')
 
     # Boolean fields.
     booleans = db.relationship(
         'FoodResourceBoolean', # One-to-many relationship (one FoodResource with many FoodResourceBooleans).
         backref='food_resource', # Declare a new property of the FoodResourceBoolean class.
-        lazy='select', uselist=True)
+        lazy='joined', uselist=True)
 
     # Fields for when non-admins submit resources.
     is_approved = db.Column(db.Boolean(), default=True)
