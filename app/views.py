@@ -62,6 +62,7 @@ def map():
                     db.session.add(zip_requested)
                 db.session.commit()
 
+        print 'querying for resources\n'
         resources = getFilteredFoodResources(
             has_zip_code_filter = (zip_code is not None),
             zip_code = zip_code,
@@ -70,6 +71,7 @@ def map():
                 in map_form.location_type_booleans],
             booleans_array = [checkbox_form.value.data for checkbox_form \
                 in map_form.booleans])
+        print '\ndone querying for resources'
 
         map_form.label_booleans()
         map_form.label_location_type_booleans()
@@ -83,7 +85,9 @@ def map():
     map_form.generate_booleans()
     map_form.generate_location_type_booleans()
 
+    print 'querying for resources\n'
     resources = FoodResource.query.filter_by(is_approved = True).all()
+    print '\ndone querying for resources'
 
     return render_template('newmaps.html', form=map_form, days_of_week=days_of_week,
         food_resource_types=food_resource_types, html_string=html_string,
