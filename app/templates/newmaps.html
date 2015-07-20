@@ -5,6 +5,9 @@
 {% from "macros.html" import render_field with context %}
 {% from "macros.html" import render_checkbox_field with context %}
 
+<!--Cache template for 12 hours (43200 seconds) with searched_location and resources as the keys-->
+{% cache 43200, searched_location|string, resources|string %}
+
 <script src="//fast.eager.io/xaPpyKPnbT.js"></script>
 
 <script type="text/javascript">
@@ -319,5 +322,5 @@
     });
   }); 
 </script>
-
+{% endcache %}
 {% endblock %}
