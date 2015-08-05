@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask.ext.sqlalchemy import SQLAlchemy
 from celery import Celery
 from flask.ext.cache import Cache
+from flask.ext.compress import Compress
 import os
 from flask_mail import Mail
 from flask_user import SQLAlchemyAdapter, UserManager
@@ -80,6 +81,7 @@ class ConfigClass(object):
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')
 
+Compress(app)           # Initialize Flask-Compress
 db = SQLAlchemy(app) 	# Initialize Flask-SQLAlchemy
 mail = Mail(app)		# Initialize Flask-Mail
 
