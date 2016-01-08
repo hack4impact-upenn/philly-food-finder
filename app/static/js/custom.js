@@ -151,6 +151,10 @@ function toggleOpenOrClosed() {
 	})
 }
 
+function escapeBannedCharactersInID(id) {
+    return id.replace( /(:|\.|\[|\]|,)/g, "\\$1" );
+}
+
 /**
 @function toggleExpansion Expand or collapse the given ID if it is currently
 hidden or visible, respectively.
@@ -159,7 +163,7 @@ hidden or visible, respectively.
 symbol should be toggled (e.g., "+" to "-" if expanding an element).
 */
 function toggleExpansion(idToToggle, classToToggleExpandSymbol) {
-    	idToToggle = idToToggle.replace(".", "\\.");
+    	idToToggle = escapeBannedCharactersInID(idToToggle);
 	if ($("#"+idToToggle).is(":hidden")) {
 		show(idToToggle, classToToggleExpandSymbol);
 	} else {
@@ -170,8 +174,9 @@ function toggleExpansion(idToToggle, classToToggleExpandSymbol) {
 /**
 @function hide Collapse the element associated with the given ID.
 @param {String} idToHide - id of the element that should be hidden. This
-                           function assumes that all periods in idToHide have
-                           been escaped.
+                           function assumes that all banned characters in
+                           idToHide have been escaped (see
+                           escapeBannedCharactersInID).
 @param {String} classToToggleExpandSymbol - class of the element whose expand
 symbol should be toggled (e.g., "+" to "-" if expanding an element).
 */
@@ -185,8 +190,9 @@ function hide(idToHide, classToToggleExpandSymbol) {
 /**
 @function show Expand the element associated with the given ID.
 @param {String} idToShow - id of the element that should be shown. This
-                           function assumes that all periods in idToHide have
-                           been escaped.
+                           function assumes that all banned characters in
+                           idToHide have been escaped (see
+                           escapeBannedCharactersInID).
 @param {String} classToToggleExpandSymbol - class of the element whose expand
 symbol should be toggled (e.g., "+" to "-" if expanding an element).
 */
@@ -204,7 +210,7 @@ function show(idToShow, classToToggleExpandSymbol) {
 symbol should be toggled (e.g., "+" to "-" if expanding an element).
 */
 function hideAll(idToHide, classToToggleExpandSymbol) {
-    	idToHide = idToHide.replace(".", "\\.");
+       idToHide = escapeBannedCharactersInID(idToHide);
 	$("[id$='" + idToHide + "']").each(function() {
 		var id = $(this).attr("id");
 		hide(id, classToToggleExpandSymbol);
@@ -218,7 +224,7 @@ function hideAll(idToHide, classToToggleExpandSymbol) {
 symbol should be toggled (e.g., "+" to "-" if expanding an element).
 */
 function showAll(idToShow, classToToggleExpandSymbol) {
-    	idToShow = idToShow.replace(".", "\\.");
+       idToShow = escapeBannedCharactersInID(idToShow);
 	$("[id$='" + idToShow + "']").each(function() {
 		var id = $(this).attr("id");
 		show(id, classToToggleExpandSymbol);
