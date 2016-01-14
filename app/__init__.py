@@ -6,6 +6,7 @@ from flask.ext.compress import Compress
 import os
 from flask_mail import Mail
 from flask_user import SQLAlchemyAdapter, UserManager
+from raygun4py.middleware import flask as flask_raygun
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -77,7 +78,8 @@ class ConfigClass(object):
     CACHE_TYPE = 'redis'
     CACHE_REDIS_URL = os.environ.get('REDIS_URL') or 'redis://localhost:6379'
 
-    DEBUG = True
+    # Raygun
+    RAYGUN_APIKEY = os.environ.get('RAYGUN_APIKEY') or 'debug'
 
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')
@@ -85,6 +87,9 @@ app.config.from_object(__name__+'.ConfigClass')
 Compress(app)           # Initialize Flask-Compress
 db = SQLAlchemy(app) 	# Initialize Flask-SQLAlchemy
 mail = Mail(app)		# Initialize Flask-Mail
+
+if not app.debug:
+    flask_raygun.Provider(app, app.config['RAYGUN_APIKEY']).attach()
 
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
