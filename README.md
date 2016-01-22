@@ -72,3 +72,6 @@ will hold any libraries you install.
 		python run.py
 
 9. Head on over to http://0.0.0.0:5000/!
+
+## License
+[MIT License](LICENSE.md)
