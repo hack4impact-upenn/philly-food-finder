@@ -159,5 +159,12 @@
       </div>
     </div></div>
 
+    <script type=text/javascript>
+      {% with msgs = get_flashed_messages() %}
+        {% for msg in msgs %}
+            alert('{{ msg }}');
+        {% endfor %}
+      {% endwith %}
+    </script>
   </body>
 </html>

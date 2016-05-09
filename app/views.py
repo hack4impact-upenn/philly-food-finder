@@ -12,6 +12,7 @@ from flask import (
     jsonify,
     current_app,
     Response,
+    flash
 )
 from variables import *
 from datetime import date
@@ -26,7 +27,7 @@ import csv
 import time
 import json
 from operator import itemgetter
-from pygeocoder import Geocoder
+from pygeocoder import Geocoder, GeocoderError
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -41,8 +42,14 @@ def map():
     html_string = HTML.query.filter_by(page = 'map-announcements').first()
     if request.method == 'POST':
 
-        geocode = Geocoder.geocode(map_form.address_or_zip_code.data) \
-            if len(map_form.address_or_zip_code.data) is not 0 else None
+        try:
+            geocode = Geocoder.geocode(map_form.address_or_zip_code.data) \
+                if len(map_form.address_or_zip_code.data) is not 0 else None
+
+        except GeocoderError:
+            flash('Could not find {}.'
+                  .format(map_form.address_or_zip_code.data))
+            geocode = None
 
         zip_code = geocode.postal_code if geocode is not None else None
 
