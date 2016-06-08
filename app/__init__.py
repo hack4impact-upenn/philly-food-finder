@@ -80,6 +80,7 @@ class ConfigClass(object):
 
     # Raygun
     RAYGUN_APIKEY = os.environ.get('RAYGUN_APIKEY') or 'debug'
+    GEOCODE_APIKEY = os.environ.get('GEOCODE_APIKEY')
 
 app = Flask(__name__)
 app.config.from_object(__name__+'.ConfigClass')

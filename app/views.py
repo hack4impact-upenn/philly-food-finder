@@ -43,7 +43,7 @@ def map():
     if request.method == 'POST':
 
         try:
-            geocode = Geocoder.geocode(map_form.address_or_zip_code.data) \
+            geocode = Geocoder(api_key=app.config['GEOCODE_APIKEY']).geocode(map_form.address_or_zip_code.data) \
                 if len(map_form.address_or_zip_code.data) is not 0 else None
 
         except GeocoderError:
