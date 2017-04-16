@@ -57,7 +57,7 @@ def map():
         # Previously, non-numeric characters in the zip would cause problems.
         # Here we remove non-numeric characters.
         if zip_code is not None:
-            re.sub('[^0-9]','', zip_code)
+            zip_code = re.sub('[^0-9]','', zip_code)
 
         # Only record searches for regular users.
         if not current_user.is_authenticated():
