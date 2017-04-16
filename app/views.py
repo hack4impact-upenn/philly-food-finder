@@ -26,6 +26,7 @@ from flask_login import current_user
 import csv
 import time
 import json
+import re
 from operator import itemgetter
 from pygeocoder import Geocoder, GeocoderError
 
@@ -52,6 +53,11 @@ def map():
             geocode = None
 
         zip_code = geocode.postal_code if geocode is not None else None
+
+        # Previously, non-numeric characters in the zip would cause problems.
+        # Here we remove non-numeric characters.
+        if zip_code is not None:
+            re.sub('[^0-9]','', zip_code)
 
         # Only record searches for regular users.
         if not current_user.is_authenticated():
