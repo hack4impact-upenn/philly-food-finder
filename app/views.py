@@ -59,6 +59,13 @@ def map():
         if zip_code is not None:
             zip_code = re.sub('[^0-9]','', zip_code)
 
+        # If the zip code is longer than 5 characters, the user did something
+        # wrong.
+        if zip_code is not None and len(zip_code) > 5:
+            flash('Zip code should only be 5 characters.')
+            zip_code = None
+            geocode = None
+
         # Only record searches for regular users.
         if not current_user.is_authenticated():
             if zip_code:
